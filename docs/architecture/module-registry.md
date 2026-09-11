@@ -6,11 +6,11 @@ scope: Todos os pacotes ativos do projeto de destino.
 non_objectives: Nao substituir README de pacote, ADR, contrato ou documentacao de operacao detalhada.
 owner: Arquitetura e owners dos modulos
 status: Active
-version: 1.0
+version: 1.1
 date: 2026-09-10
-last_reviewed: 2026-09-10
+last_reviewed: 2026-09-11
 keywords: modulos, pacotes, paths, owners, comandos
-related_files: README.md, ../README.md
+related_files: README.md, ../README.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md
 code_references: backend/, frontend/, website/, infra/
 principal_statement: As pastas base sao scaffolds documentais e nenhuma implementacao deve presumir stack, comando ou owner ainda nao materializado no projeto de destino.
 ---
@@ -26,7 +26,7 @@ principal_statement: As pastas base sao scaffolds documentais e nenhuma implemen
 | Owner | Pessoa ou equipe responsável |
 | Entrypoints | Arquivos, serviços, APIs ou comandos principais |
 | Dependências | Módulos consumidos e direção permitida |
-| Instruções | Adaptador local e standards aplicáveis |
+| Instruções | Adaptador local, AgentOrchestrator e standards aplicáveis com versões |
 | Teste | Comando focalizado e suíte impactada |
 | Quality gate | Comandos determinísticos aplicáveis |
 
@@ -52,3 +52,9 @@ Nenhum módulo implementado no baseline.
 
 Criação, remoção, renomeação, mudança de owner, dependência ou comando de módulo
 atualiza este manifesto na mesma mudança.
+
+## Change log
+
+| Versão | Data | Mudança |
+| --- | --- | --- |
+| 1.1 | 2026-09-11 | Exige registrar o orquestrador e os standards selecionados nas instruções de cada módulo ativo. |

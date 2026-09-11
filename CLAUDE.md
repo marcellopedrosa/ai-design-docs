@@ -4,6 +4,8 @@ Este adaptador é semanticamente equivalente ao `AGENTS.md` da raiz. Comece por
 `docs/ai/README.md`, use `docs/README.md` como mapa, consulte
 `docs/adrs/README.md` antes de ADRs específicos e use
 `docs/architecture/module-registry.md` para módulos, owners e comandos.
+`docs/agents/AgentOrchestrator.md` é o único papel inicial: ele classifica a
+solicitação, seleciona standards e coordena gates sem presumir outros agentes.
 
 Toda alteração em `docs/` atualiza o `README.md` da coleção imediata e atende ao
 contrato mínimo e à taxonomia do ADR-0000. Execute o validador documental do
@@ -33,4 +35,3 @@ autorizados por este baseline; aplique a política explícita do projeto de dest
 Regras locais podem especializar seu pacote sem enfraquecer fontes superiores. No
 handoff, informe arquivos, decisões, comandos, resultados, skips, falhas,
 limitações e pendências; não declare conclusão sem evidência reproduzível.
-
