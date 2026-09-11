@@ -6,11 +6,11 @@ scope: Documentacao versionada sob docs/.
 non_objectives: Nao duplicar requisitos, decisoes, standards ou configuracao operacional.
 owner: Arquitetura e owners das colecoes
 status: Active
-version: 1.1
+version: 1.2
 date: 2026-09-10
 last_reviewed: 2026-09-11
-keywords: documentacao, indice, descoberta-progressiva, governanca, gemini, antigravity
-related_files: ai/README.md, adrs/ADR-0000-governanca-do-harness-documental.md, settings/google-gemini.md
+keywords: documentacao, indice, descoberta-progressiva, governanca, orquestrador, standards, gemini, antigravity
+related_files: ai/README.md, adrs/ADR-0000-governanca-do-harness-documental.md, agents/AgentOrchestrator.md, agents/standards/README.md, settings/google-gemini.md
 code_references: ../AGENTS.md, ../CLAUDE.md, ../GEMINI.md, ../.agents/rules/documentation-governance.md; a topologia do projeto de destino deve ser registrada no manifesto.
 principal_statement: Cada tipo de informacao possui uma fonte canonica e deve ser carregado somente quando relevante.
 ---
@@ -36,8 +36,8 @@ de verdade.
 | Settings | Regra | Active | [settings/README.md](settings/README.md) |
 | ADRs | Decisão | Active | [adrs/README.md](adrs/README.md) |
 | Arquitetura | Contexto | Active | [architecture/README.md](architecture/README.md) |
-| Agentes | Regra | Active | [agents/README.md](agents/README.md) |
-| Standards | Regra | Active | [agents/standards/README.md](agents/standards/README.md) |
+| Agentes | Regra | AgentOrchestrator active | [agents/README.md](agents/README.md) |
+| Standards | Regra | Biblioteca active; seleção por aplicabilidade | [agents/standards/README.md](agents/standards/README.md) |
 | Skills operacionais | Contexto | Active | [agents/skills/README.md](agents/skills/README.md) |
 | Templates | Template | Active | [templates/README.md](templates/README.md) |
 | Automação documental | Contexto | Active | [automation/README.md](automation/README.md) |
@@ -58,6 +58,10 @@ de verdade.
 `Empty baseline` significa que somente o contrato da coleção existe. O primeiro
 artefato real ativa o inventário e exige owner e estado próprios.
 
+O [AgentOrchestrator](agents/AgentOrchestrator.md) é o único agente inicial. A
+presença de um standard no catálogo o torna disponível, não automaticamente
+aplicável; o plano registra quais regras foram ativadas.
+
 ## Regra de leitura
 
 1. Comece em [ai/README.md](ai/README.md).
@@ -73,4 +77,5 @@ artefato real ativa o inventário e exige owner e estado próprios.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.2 | 2026-09-11 | Registra o orquestrador inicial e a biblioteca portátil de standards condicionais. |
 | 1.1 | 2026-09-11 | Inclui Gemini CLI e Antigravity na camada operacional do harness. |

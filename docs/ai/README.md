@@ -6,11 +6,11 @@ scope: Navegacao, ordem de leitura, relevancia e conflitos.
 non_objectives: Nao republicar regras, requisitos, decisoes, arquitetura ou configuracao de runtime.
 owner: Arquitetura
 status: Active
-version: 1.1
+version: 1.2
 date: 2026-09-10
 last_reviewed: 2026-09-11
-keywords: agentes, navegacao, contexto-progressivo, ordem-de-leitura, gemini, antigravity
-related_files: ../README.md, ../adrs/README.md, ../architecture/module-registry.md, ../settings/google-gemini.md
+keywords: agentes, orquestrador, standards, navegacao, contexto-progressivo, gemini, antigravity
+related_files: ../README.md, ../adrs/README.md, ../architecture/module-registry.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../settings/google-gemini.md
 code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md, ../../.agents/rules/documentation-governance.md
 principal_statement: Carregue primeiro as fontes diretamente relacionadas e expanda o contexto somente por referencias ou lacunas comprovadas.
 ---
@@ -41,19 +41,20 @@ lacuna e consulte o owner.
 | Estrutura, módulo ou comando | [`architecture/module-registry.md`](../architecture/module-registry.md) |
 | API, evento ou schema | [`contracts/`](../contracts/README.md) |
 | Execução planejada | [`task_plans/`](../task_plans/README.md) |
+| Coordenação, decomposição ou handoff | [`AgentOrchestrator.md`](../agents/AgentOrchestrator.md) |
 | Regra técnica | [`agents/standards/`](../agents/standards/README.md) |
 | Operação e segurança do agente | [`settings/`](../settings/README.md) |
 
 ## Ordem para mudanças
 
-1. Adaptadores ativos e este manual.
+1. Adaptadores ativos, este manual e o [AgentOrchestrator](../agents/AgentOrchestrator.md).
 2. PRD aplicável `Validated`, ou `not applicable` justificado.
 3. Requirement diretamente relacionado e seus critérios de aceite.
 4. Índice de ADRs e somente os ADRs selecionados.
 5. Manifesto de módulos e arquitetura da área.
 6. Contrato de interface aplicável.
 7. Planos relacionados.
-8. Somente standards referenciados pelas fontes anteriores.
+8. Baseline e somente standards condicionais ativados pelas fontes e pelo risco.
 9. Gate `implementation-readiness` para qualquer mudança executável.
 10. Código, testes e configuração afetados somente após `READY`.
 
@@ -69,4 +70,5 @@ essas fontes sem transformar este manual em configuração de runtime.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.2 | 2026-09-11 | Torna o AgentOrchestrator a entrada operacional e referencia o catálogo portátil de standards. |
 | 1.1 | 2026-09-11 | Acrescenta a rota de descoberta para Gemini CLI e Antigravity. |

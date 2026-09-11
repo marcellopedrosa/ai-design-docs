@@ -2,15 +2,15 @@
 document_id: ADR-0000
 primary_nature: Decisao
 objective: Definir a referencia normativa para inicializar e manter o harness documental e as instrucoes de agentes.
-scope: Topologia documental, precedencia, bootstrap, descoberta progressiva, lifecycle, readiness, assurance, skills e adaptadores Codex, Claude Code, Gemini CLI e Antigravity.
+scope: Topologia documental, precedencia, bootstrap, agente inicial, biblioteca de standards, lifecycle, readiness, assurance, skills e adaptadores Codex, Claude Code, Gemini CLI e Antigravity.
 non_objectives: Nao definir dominio, stack, comandos, limiares de cobertura, release, segredos ou configuracoes pessoais.
 owner: Arquitetura e mantenedores do harness
 status: Accepted
-version: 1.1
+version: 1.2
 date: 2026-09-10
 last_reviewed: 2026-09-11
-keywords: governanca, bootstrap, agentes, clear, readiness, assurance, portabilidade, gemini, antigravity
-related_files: ../README.md, ../ai/README.md, ../settings/google-gemini.md, ../agents/standards/software-engineering-lifecycle.md, ../agents/standards/implementation-readiness-standard.md, ../agents/standards/software-quality-standard.md
+keywords: governanca, bootstrap, orquestrador, standards, clear, readiness, assurance, portabilidade, gemini, antigravity
+related_files: ../README.md, ../ai/README.md, ../settings/google-gemini.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/standards/software-engineering-lifecycle.md, ../agents/standards/implementation-readiness-standard.md, ../agents/standards/software-quality-standard.md
 code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md, ../../.agents/rules/documentation-governance.md, ../../.agents/skills/, ../../.claude/skills/
 principal_statement: Todo projeto adotante converge de forma nao destrutiva para fontes tipadas, indexadas, rastreaveis e carregadas progressivamente, com readiness antes e assurance depois da implementacao.
 ---
@@ -40,7 +40,10 @@ Todo projeto adotante DEVE manter:
 - `docs/adrs/README.md` e este ADR como decisão de bootstrap;
 - `docs/architecture/module-registry.md` como manifesto da topologia real;
 - `docs/settings/` para política agnóstica de ambiente e assistentes;
-- `docs/agents/standards/` para regras reutilizáveis;
+- `docs/agents/AgentOrchestrator.md` como único agente inicial do bootstrap;
+- `docs/agents/standards/` como biblioteca canônica de regras reutilizáveis,
+  separando standards transversais de standards condicionais por capacidade,
+  risco ou stack;
 - `docs/agents/skills/README.md` para catalogar skills operacionais;
 - `docs/templates/` para todo tipo recorrente;
 - um `README.md` em cada coleção ativa, com inventário completo;
@@ -59,6 +62,10 @@ proibida enquanto o alias interoperável for suportado.
 A convergência é idempotente e não destrutiva: inventaria primeiro, preserva o
 desconhecido, cria somente o delta inequívoco e produz zero alteração quando
 repetida sobre o mesmo estado conforme.
+
+Os arquivos deste pacote são canônicos dentro do harness. Após a adoção, suas
+cópias versionadas no projeto de destino tornam-se as fontes canônicas locais e
+NÃO DEVEM depender normativamente de paths ou contexto do projeto de origem.
 
 ## 3. Precedência
 
@@ -122,7 +129,10 @@ resumem e apontam; não incorporam documentos catalogados.
 | --- | --- |
 | Adaptador global do runtime | Obrigatório para todo runtime suportado. |
 | `backend/`, `frontend/`, `website/` e `infra/` com `README.md` | Scaffolds de clonagem; manter, renomear ou remover conforme a topologia real e reconciliar o manifesto. |
-| Mapa, manual de IA, ADRs, arquitetura, settings, standards e templates | Baseline obrigatório. |
+| Mapa, manual de IA, ADRs, arquitetura, settings, catálogo de standards e templates | Baseline obrigatório. |
+| `docs/agents/AgentOrchestrator.md` | Único agente inicial obrigatório; outros papéis exigem responsabilidade, autoridade e handoff independentes. |
+| Lifecycle, readiness, quality, development e security | Standards transversais ativados conforme o tipo de mudança definido no catálogo. |
+| Standards de stack, interface, integração e capacidade | Permanecem disponíveis na biblioteca e são ativados somente por ADR, manifesto, contrato, escopo ou risco aplicável. |
 | Skills `governanca-documental`, `implementation-readiness`, `quality-gate` | Obrigatórias em cada path nativo necessário; `.agents/skills/` é compartilhado por Codex e Google e `.claude/skills/` atende Claude Code. |
 | `GEMINI.md` e `.agents/rules/documentation-governance.md` | Obrigatórios quando Gemini CLI e Antigravity forem suportados; compõem a política canônica sem copiá-la. |
 | Product, requirements, use cases e contracts | Ativar quando o tipo de trabalho existir. |
@@ -136,7 +146,8 @@ real ativa seu inventário.
 
 ## 6. Bootstrap não destrutivo
 
-1. Identifique raiz, runtime ativo e adaptadores aplicáveis.
+1. Identifique raiz, runtime ativo, adaptadores aplicáveis e o AgentOrchestrator
+   como papel inicial.
 2. Leia somente os adaptadores, `docs/ai/README.md` e `docs/README.md`.
 3. Inventarie diretórios, índices, manifesto e descritores de skills sem abrir toda
    a documentação.
@@ -145,20 +156,22 @@ real ativa seu inventário.
 5. Preserve artefato desconhecido até conhecer owner, natureza e destino.
 6. Crie ou ajuste somente itens aditivos, reversíveis e inequívocos.
 7. Atualize índices e manifesto no mesmo conjunto da mudança correspondente.
-8. Configure validadores e comandos a partir da stack observada; não invente
+8. Selecione no catálogo o baseline e os standards condicionais realmente
+   aplicáveis; registre versões, owners, paths, ferramentas e comandos locais.
+9. Configure validadores e comandos a partir da stack observada; não invente
    comandos ou limiares.
-9. Registre inventário, delta, verificações, pendências e owner.
-10. Repita a avaliação; conformidade exige delta vazio na segunda execução.
+10. Registre inventário, delta, verificações, pendências e owner.
+11. Repita a avaliação; conformidade exige delta vazio na segunda execução.
 
 Migração, remoção, renomeação ou sobrescrita ampla exige plano e autorização
 próprios. Um bootstrap diagnóstico termina no inventário e não autoriza escrita.
 
 ## 7. Descoberta progressiva
 
-A ordem padrão é adaptador → manual de IA → PRD → requirement → índice de ADRs →
-ADRs selecionados → manifesto → contrato → plano → standards referenciados →
-artefatos executáveis. Coleções alheias entram somente por link explícito ou lacuna
-comprovada.
+A ordem padrão é adaptador → manual de IA → AgentOrchestrator → PRD → requirement →
+índice de ADRs → ADRs selecionados → manifesto → contrato → plano → standards
+ativados → artefatos executáveis. Coleções alheias entram somente por link
+explícito ou lacuna comprovada.
 
 Skills têm quatro níveis: metadados para descoberta; `SKILL.md` na ativação; fontes
 canônicas selecionadas durante o procedimento; e referências/recursos somente na
@@ -237,6 +250,11 @@ e conclusão. Nome do diretório, frontmatter e catálogo devem coincidir. Skill
 equivalentes em runtimes diferentes preservam o mesmo núcleo sem copiar campos
 exclusivos de um runtime.
 
+O AgentOrchestrator é uma especificação documental compartilhada, não um adapter de
+runtime nem uma skill. Cada runtime inicia por esse papel e pode executar uma
+capacidade especializada diretamente. Criar outro agente exige o template próprio,
+entrada individual no índice e handoff que justifique sua existência.
+
 ## 12. Segurança e autonomia
 
 Leitura local, diagnóstico não destrutivo, edição reversível solicitada e testes
@@ -255,14 +273,18 @@ Conformidade exige:
 1. índices completos e links válidos;
 2. contrato mínimo e natureza primária em todo documento;
 3. manifesto com todos os módulos ativos;
-4. equivalência semântica entre adaptadores, imports Google e skills nos paths nativos;
-5. nenhuma regra local enfraquecendo fonte superior;
-6. `READY` vigente antes de implementação;
-7. testes e gates proporcionais depois da implementação;
-8. comandos, resultados, skips, falhas e pendências no handoff;
-9. nenhuma leitura ou publicação de segredo;
-10. automação declarada como configurada ou ausente, sem falso verde;
-11. segunda avaliação do bootstrap com delta vazio.
+4. AgentOrchestrator como único agente inicial e inventário individual de todo
+   papel adicional ativado;
+5. catálogo completo de standards, aplicabilidade registrada e nenhuma referência
+   normativa ao projeto de origem;
+6. equivalência semântica entre adaptadores, imports Google e skills nos paths nativos;
+7. nenhuma regra local enfraquecendo fonte superior;
+8. `READY` vigente antes de implementação;
+9. testes e gates proporcionais depois da implementação;
+10. comandos, resultados, skips, falhas e pendências no handoff;
+11. nenhuma leitura ou publicação de segredo;
+12. automação declarada como configurada ou ausente, sem falso verde;
+13. segunda avaliação do bootstrap com delta vazio.
 
 Regras deterministas devem migrar de prompt para validador, hook, sandbox ou CI no
 projeto de destino. O contrato de automação está em `docs/automation/README.md`.
@@ -278,4 +300,5 @@ mudança. Reversão da governança exige ADR sucessor e preservação do histór
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.2 | 2026-09-11 | Define AgentOrchestrator como único agente inicial e incorpora a biblioteca canônica de standards com ativação condicional. |
 | 1.1 | 2026-09-11 | Aceita Gemini CLI e Antigravity como adapters do harness, reutilizando `.agents/skills/` e separando arquivos versionados de settings efetivos do Project. |

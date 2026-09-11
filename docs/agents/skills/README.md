@@ -6,11 +6,11 @@ scope: Nome, gatilho, owner, estado e caminhos nativos das skills.
 non_objectives: Nao armazenar SKILL.md nem duplicar seu procedimento.
 owner: Plataforma de IA
 status: Active
-version: 1.1
+version: 1.2
 date: 2026-09-10
 last_reviewed: 2026-09-11
 keywords: skills, catalogo, codex, claude-code, gemini-cli, antigravity
-related_files: ../../adrs/ADR-0000-governanca-do-harness-documental.md, ../../settings/google-gemini.md, ../../templates/TPL-00009-skill-operacional.md
+related_files: ../AgentOrchestrator.md, ../standards/README.md, ../../adrs/ADR-0000-governanca-do-harness-documental.md, ../../settings/google-gemini.md, ../../templates/TPL-00009-skill-operacional.md
 code_references: ../../../.agents/skills/, ../../../.claude/skills/, ../../../.agents/rules/documentation-governance.md
 principal_statement: Cada skill catalogada resolve para um descritor nativo e semanticamente equivalente em todo runtime suportado.
 ---
@@ -37,8 +37,12 @@ discriminante, limites de segurança e entrada neste catálogo.
 `.agents/skills/` é o caminho interoperável compartilhado por Codex, Gemini CLI e
 Antigravity. Não crie `.gemini/skills/` com o mesmo conteúdo.
 
+O [AgentOrchestrator](../AgentOrchestrator.md) seleciona e aciona essas skills; a
+skill executa um procedimento e não cria um novo papel de agente.
+
 ## Change log
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.2 | 2026-09-11 | Relaciona o catálogo ao AgentOrchestrator sem transformar skills em agentes. |
 | 1.1 | 2026-09-11 | Registra o reuso das skills `.agents` pelos runtimes Google. |

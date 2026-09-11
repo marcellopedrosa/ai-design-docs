@@ -6,6 +6,9 @@
   sua subárvore, mas não enfraquecer segurança, ADR aceito ou standard global.
 - Antes de trabalhar, leia `docs/ai/README.md`. Use `docs/README.md` como mapa e não
   carregue coleções inteiras sem necessidade.
+- Use `docs/agents/AgentOrchestrator.md` como papel inicial para classificar a
+  solicitação, selecionar standards e coordenar gates. Nenhum outro agente é
+  presumido ativo pelo baseline.
 - Consulte `docs/adrs/README.md` antes de abrir um ADR e
   `docs/architecture/module-registry.md` para módulos, owners e comandos.
 
@@ -54,4 +57,3 @@
 
 Informe arquivos alterados, decisões, comandos, resultados, skips, falhas,
 limitações e pendências. Não declare conclusão sem evidência reproduzível.
-

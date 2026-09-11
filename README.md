@@ -6,11 +6,11 @@ scope: Governanca documental, descoberta progressiva, planejamento, readiness, a
 non_objectives: Nao fornecer codigo, scripts executaveis, stack, dominio, credenciais ou decisoes do projeto de origem.
 owner: Mantenedores do harness
 status: Active
-version: 1.1
+version: 1.2
 date: 2026-09-10
 last_reviewed: 2026-09-11
-keywords: harness, documentacao, agentes, clear, readiness, quality-gate, template, gemini, antigravity
-related_files: AGENTS.md, CLAUDE.md, GEMINI.md, backend/README.md, frontend/README.md, website/README.md, infra/README.md, docs/README.md, docs/settings/google-gemini.md, docs/adrs/ADR-0000-governanca-do-harness-documental.md
+keywords: harness, documentacao, agentes, orquestrador, standards, clear, readiness, quality-gate, gemini, antigravity
+related_files: AGENTS.md, CLAUDE.md, GEMINI.md, backend/README.md, frontend/README.md, website/README.md, infra/README.md, docs/README.md, docs/agents/AgentOrchestrator.md, docs/agents/standards/README.md, docs/settings/google-gemini.md, docs/adrs/ADR-0000-governanca-do-harness-documental.md
 code_references: .agents/rules/documentation-governance.md, .agents/skills/, .claude/skills/; pacote exclusivamente documental.
 principal_statement: O pacote fornece as fontes e os contratos necessarios para adotar a mesma governanca sem transportar contexto de produto ou de stack.
 ---
@@ -31,6 +31,9 @@ de produção, script executável ou decisão pertencente ao projeto de origem.
   workspace para Google Antigravity;
 - skills operacionais documentais pareadas;
 - ADR de governança e mapa de precedência;
+- `AgentOrchestrator` como único agente inicial do bootstrap;
+- biblioteca portátil de standards transversais e condicionais por capacidade ou
+  stack, cada um com ativação explícita;
 - lifecycle C.L.E.A.R.;
 - Implementation Readiness Gate;
 - Test, Quality e Security/Compliance Gates;
@@ -54,20 +57,25 @@ de produção, script executável ou decisão pertencente ao projeto de origem.
    [frontend](frontend/README.md), [website](website/README.md) e
    [infra](infra/README.md) conforme a topologia real, atualizando o manifesto e
    este índice na mesma mudança.
-5. Ative somente as coleções necessárias. Cada coleção ativa precisa de `README.md`,
+5. Preserve o [AgentOrchestrator](docs/agents/AgentOrchestrator.md) como único
+   agente inicial. Crie agentes adicionais somente quando houver responsabilidade,
+   autoridade e handoff independentes.
+6. Ative somente as coleções necessárias. Cada coleção ativa precisa de `README.md`,
    owner, convenção de nomes, estados e inventário completo.
-6. Crie os primeiros artefatos pelos templates de [`docs/templates/`](docs/templates/README.md).
-7. Configure no projeto de destino os validadores e comandos descritos em
+7. Selecione no [catálogo portátil](docs/agents/standards/README.md) o baseline e
+   apenas os standards condicionais compatíveis com a stack e o risco registrados.
+8. Crie os primeiros artefatos pelos templates de [`docs/templates/`](docs/templates/README.md).
+9. Configure no projeto de destino os validadores e comandos descritos em
    [`docs/automation/README.md`](docs/automation/README.md). Enquanto eles não
    existirem, reporte `Automação não configurada`; não declare um gate automático
    como aprovado por inspeção subjetiva.
-8. Revise `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` e a regra Antigravity para manter
+10. Revise `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` e a regra Antigravity para manter
    equivalência sem inserir regras de stack que pertençam a um pacote específico.
-9. Se usar Antigravity, configure a regra de workspace como `Always On`, habilite o
+11. Se usar Antigravity, configure a regra de workspace como `Always On`, habilite o
    sandbox e confira permissões conforme
    [`docs/settings/google-gemini.md`](docs/settings/google-gemini.md). Se usar
    Gemini CLI, confirme contexto e skills com `/memory` e `/skills`.
-10. Execute a checklist de bootstrap do ADR-0000 e repita o inventário. A segunda
+12. Execute a checklist de bootstrap do ADR-0000 e repita o inventário. A segunda
    execução deve produzir delta vazio.
 
 ## Fluxo C.L.E.A.R.
@@ -99,7 +107,7 @@ docs/
   adrs/{README.md,ADR-0000-governanca-do-harness-documental.md}
   architecture/{README.md,module-registry.md}
   settings/{README.md,settings.md}
-  agents/{README.md,skills/README.md,standards/...}
+  agents/{README.md,AgentOrchestrator.md,skills/README.md,standards/...}
   templates/{README.md,TPL-*.md}
   automation/README.md
   <colecoes de produto e historico>/README.md
@@ -109,6 +117,9 @@ docs/
 
 - Os limiares de cobertura, comandos de teste, nomes de módulos e regras de release
   pertencem ao projeto de destino.
+- Os standards de tecnologia permanecem disponíveis, mas inativos até serem
+  selecionados por ADR, manifesto, contrato, escopo ou risco. A cópia adotada é a
+  referência canônica local e não depende deste repositório de origem.
 - As quatro pastas de aplicação/infraestrutura são scaffolds base, não afirmações
   de que todo projeto precisa desses quatro módulos. Remoção ou renomeação durante
   a adoção deve reconciliar o mapa e o manifesto.
@@ -124,4 +135,5 @@ docs/
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.2 | 2026-09-11 | Inclui AgentOrchestrator como único agente inicial e a biblioteca portátil de standards com ativação condicional. |
 | 1.1 | 2026-09-11 | Adiciona suporte portátil a Gemini CLI e Antigravity e sua verificação de adoção. |
