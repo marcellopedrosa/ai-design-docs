@@ -6,11 +6,11 @@ scope: A1 Test, A2 Quality, A3 Security/Compliance, niveis de execucao, metricas
 non_objectives: Nao fixar framework, comando de stack, limiar de cobertura ou autorizar ambiente externo.
 owner: Arquitetura e Qualidade
 status: Active
-version: 1.0
+version: 1.1
 date: 2026-09-10
-last_reviewed: 2026-09-10
+last_reviewed: 2026-09-11
 keywords: quality-gate, testes, cobertura, seguranca, metricas, assurance
-related_files: software-engineering-lifecycle.md, implementation-readiness-standard.md, ../../automation/README.md
+related_files: ../AgentOrchestrator.md, README.md, software-engineering-lifecycle.md, implementation-readiness-standard.md, development-standard.md, security-standard.md, backend-testing-standard.md, frontend-testing-standard.md, ../../automation/README.md
 code_references: N/A - executores pertencem ao projeto de destino.
 principal_statement: Testes demonstram comportamento; qualidade e seguranca exigem gates proprios, evidencia atual e correspondencia com o READY.
 ---
@@ -99,3 +99,11 @@ Waiver exige owner humano, justificativa, escopo, risco, compensação, expiraç
 plano de remoção. Não transforma teste falho em aprovado, não oculta evidência, não
 é permanente e não autoriza rede, produção, segredo, Git ou operação destrutiva.
 
+O [AgentOrchestrator](../AgentOrchestrator.md) coordena a seleção e a independência
+dos subgates; os standards de stack acrescentam evidência somente quando ativados.
+
+## Change log
+
+| Versão | Data | Mudança |
+| --- | --- | --- |
+| 1.1 | 2026-09-11 | Relaciona Assurance ao orquestrador e aos standards condicionais de teste e segurança. |

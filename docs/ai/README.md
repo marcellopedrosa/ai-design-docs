@@ -6,12 +6,12 @@ scope: Navegacao, ordem de leitura, relevancia e conflitos.
 non_objectives: Nao republicar regras, requisitos, decisoes, arquitetura ou configuracao de runtime.
 owner: Arquitetura
 status: Active
-version: 1.0
+version: 1.1
 date: 2026-09-10
-last_reviewed: 2026-09-10
-keywords: agentes, navegacao, contexto-progressivo, ordem-de-leitura
-related_files: ../README.md, ../adrs/README.md, ../architecture/module-registry.md
-code_references: N/A - manual de navegacao.
+last_reviewed: 2026-09-11
+keywords: agentes, navegacao, contexto-progressivo, ordem-de-leitura, gemini, antigravity
+related_files: ../README.md, ../adrs/README.md, ../architecture/module-registry.md, ../settings/google-gemini.md
+code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md, ../../.agents/rules/documentation-governance.md
 principal_statement: Carregue primeiro as fontes diretamente relacionadas e expanda o contexto somente por referencias ou lacunas comprovadas.
 ---
 
@@ -61,3 +61,12 @@ Não leia por padrão documentos de negócio, use cases, relatórios, lições,
 templates, ADRs não selecionados ou pacotes fora do escopo. Eles entram somente por
 relação explícita ou lacuna comprovada.
 
+Os adapters ativos são `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` e a regra de workspace
+Antigravity. O [mapeamento Google](../settings/google-gemini.md) define como validar
+essas fontes sem transformar este manual em configuração de runtime.
+
+## Change log
+
+| Versão | Data | Mudança |
+| --- | --- | --- |
+| 1.1 | 2026-09-11 | Acrescenta a rota de descoberta para Gemini CLI e Antigravity. |

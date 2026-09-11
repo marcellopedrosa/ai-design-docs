@@ -6,12 +6,12 @@ scope: Operacoes no workspace de desenvolvimento e teste.
 non_objectives: Nao definir requisitos, regras de negocio, arquitetura do produto ou configuracao pessoal.
 owner: Plataforma de IA e DevOps
 status: Active
-version: 1.0
+version: 1.1
 date: 2026-09-10
 last_reviewed: 2026-09-10
-keywords: permissoes, seguranca, testes, git, segredos
-related_files: ../adrs/ADR-0000-governanca-do-harness-documental.md, ../../AGENTS.md, ../../CLAUDE.md
-code_references: N/A - o projeto de destino deve registrar controles deterministas.
+keywords: permissoes, seguranca, testes, git, segredos, gemini, antigravity
+related_files: ../adrs/ADR-0000-governanca-do-harness-documental.md, google-gemini.md, ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md
+code_references: ../../.agents/rules/documentation-governance.md; o projeto de destino deve registrar outros controles deterministas.
 principal_statement: Operacoes seguem menor privilegio; autonomia segura nunca amplia acesso a rede, producao ou segredos.
 ---
 
@@ -45,3 +45,11 @@ principal_statement: Operacoes seguem menor privilegio; autonomia segura nunca a
 Alterar autonomia, precedência ou acesso externo exige decisão aceita e atualização
 coordenada dos adaptadores de todos os runtimes suportados.
 
+O [mapeamento Google](google-gemini.md) especializa esta matriz para Gemini CLI e
+Antigravity sem duplicar a política nem as skills de `.agents/skills/`.
+
+## Change log
+
+| Versão | Data | Mudança |
+| --- | --- | --- |
+| 1.1 | 2026-09-11 | Liga a política agnóstica aos mecanismos nativos de Gemini CLI e Antigravity. |

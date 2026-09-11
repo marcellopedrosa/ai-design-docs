@@ -1,18 +1,18 @@
 ---
 document_id: AGENTS-INDEX
 primary_nature: Contexto
-objective: Catalogar papeis de agentes e suas fontes operacionais.
+objective: Catalogar o agente inicial, papéis futuros e suas fontes operacionais.
 scope: Agentes ativos, gatilhos, owners, standards, skills e handoffs.
-non_objectives: Nao registrar personas de produto nem duplicar instrucoes dos runtimes.
+non_objectives: Não registrar personas decorativas, ativar agentes por tecnologia ou duplicar instruções dos runtimes.
 owner: Arquitetura e Plataforma de IA
 status: Active
-version: 1.0
+version: 1.1
 date: 2026-09-10
-last_reviewed: 2026-09-10
-keywords: agentes, papeis, catalogo, handoff
-related_files: skills/README.md, standards/README.md, ../templates/TPL-00009-skill-operacional.md
-code_references: ../../AGENTS.md, ../../CLAUDE.md
-principal_statement: Papeis especializados somente sao criados quando possuem responsabilidade, gatilho e handoff independentes.
+last_reviewed: 2026-09-11
+keywords: agentes, orquestrador, bootstrap, papeis, catalogo, handoff
+related_files: AgentOrchestrator.md, skills/README.md, standards/README.md, ../templates/TPL-00011-agent.md
+code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md
+principal_statement: O AgentOrchestrator é o único agente inicial; papéis adicionais exigem responsabilidade, autoridade e handoff independentes.
 ---
 
 # Agentes
@@ -21,19 +21,31 @@ principal_statement: Papeis especializados somente sao criados quando possuem re
 
 - Conteúdo aceito: papel, gatilhos, entradas, saídas, limites, tools e handoffs de
   agentes especializados.
-- Nomes: `<RoleName>.md`.
-- Estados: `Draft`, `Active`, `Deprecated`.
+- Nomes: RoleName.md.
+- Estados: Draft, Active, Deprecated.
 - Critério de granularidade: um papel por responsabilidade e autoridade
-  independentes; não criar um agente por tecnologia sem necessidade operacional.
+  independentes; não criar agente apenas por tecnologia ou etapa nominal.
+
+## Agente inicial
+
+| Agente | Responsabilidade | Ativação | Status |
+| --- | --- | --- | --- |
+| [AgentOrchestrator](AgentOrchestrator.md) | Descoberta, planejamento, seleção de standards, readiness, coordenação de execução e assurance | Sempre no bootstrap | Active |
+
+Nenhum outro agente especializado integra o baseline. O AgentOrchestrator pode
+rotear uma tarefa por capacidade e o agente principal do runtime pode exercê-la
+diretamente. Um novo papel persistente só é criado com owner, limites, entradas,
+saídas e handoffs próprios, usando o
+[template de agente](../templates/TPL-00011-agent.md), e entra neste índice na mesma
+mudança.
 
 ## Subcoleções
 
 - [Standards](standards/README.md)
 - [Skills operacionais](skills/README.md)
 
-## Agentes especializados
+## Change log
 
-Nenhum agente especializado ativo no baseline. O agente principal do runtime aplica
-os standards e skills catalogados até o projeto demonstrar a necessidade de um papel
-com owner e handoff próprios.
-
+| Versão | Data | Mudança |
+| --- | --- | --- |
+| 1.1 | 2026-09-11 | Define AgentOrchestrator como único agente inicial e mantém papéis especializados sob ativação explícita. |

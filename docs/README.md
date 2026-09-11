@@ -6,12 +6,12 @@ scope: Documentacao versionada sob docs/.
 non_objectives: Nao duplicar requisitos, decisoes, standards ou configuracao operacional.
 owner: Arquitetura e owners das colecoes
 status: Active
-version: 1.0
+version: 1.1
 date: 2026-09-10
-last_reviewed: 2026-09-10
-keywords: documentacao, indice, descoberta-progressiva, governanca
-related_files: ai/README.md, adrs/ADR-0000-governanca-do-harness-documental.md
-code_references: N/A - a topologia do projeto de destino deve ser registrada no manifesto.
+last_reviewed: 2026-09-11
+keywords: documentacao, indice, descoberta-progressiva, governanca, gemini, antigravity
+related_files: ai/README.md, adrs/ADR-0000-governanca-do-harness-documental.md, settings/google-gemini.md
+code_references: ../AGENTS.md, ../CLAUDE.md, ../GEMINI.md, ../.agents/rules/documentation-governance.md; a topologia do projeto de destino deve ser registrada no manifesto.
 principal_statement: Cada tipo de informacao possui uma fonte canonica e deve ser carregado somente quando relevante.
 ---
 
@@ -23,7 +23,7 @@ principal_statement: Cada tipo de informacao possui uma fonte canonica e deve se
 | --- | --- | --- |
 | Regras de ambiente e do assistente | [`settings/`](settings/README.md) | Segurança, permissões, limites e invariantes globais. |
 | Documentação funcional e técnica | Coleções tipadas abaixo | Produto, requisitos, decisões, arquitetura, planos e histórico. |
-| Operação do runtime | `AGENTS.md`, `CLAUDE.md` e adaptadores locais | Descoberta, comandos essenciais e diferenças por pacote. |
+| Operação do runtime | `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.agents/rules/` e adaptadores locais | Descoberta, comandos essenciais e diferenças por pacote. |
 
 [`ai/README.md`](ai/README.md) é navegação entre as camadas, não uma quarta fonte
 de verdade.
@@ -68,3 +68,9 @@ artefato real ativa o inventário e exige owner e estado próprios.
 5. Consulte [architecture/module-registry.md](architecture/module-registry.md).
 6. Abra contratos, casos de uso, planos e standards somente quando referenciados
    pelas fontes anteriores ou necessários para resolver uma lacuna.
+
+## Change log
+
+| Versão | Data | Mudança |
+| --- | --- | --- |
+| 1.1 | 2026-09-11 | Inclui Gemini CLI e Antigravity na camada operacional do harness. |

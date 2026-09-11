@@ -2,16 +2,16 @@
 document_id: ADR-0000
 primary_nature: Decisao
 objective: Definir a referencia normativa para inicializar e manter o harness documental e as instrucoes de agentes.
-scope: Topologia documental, precedencia, bootstrap, descoberta progressiva, lifecycle, readiness, assurance, skills e adaptadores.
+scope: Topologia documental, precedencia, bootstrap, descoberta progressiva, lifecycle, readiness, assurance, skills e adaptadores Codex, Claude Code, Gemini CLI e Antigravity.
 non_objectives: Nao definir dominio, stack, comandos, limiares de cobertura, release, segredos ou configuracoes pessoais.
 owner: Arquitetura e mantenedores do harness
 status: Accepted
-version: 1.0
+version: 1.1
 date: 2026-09-10
-last_reviewed: 2026-09-10
-keywords: governanca, bootstrap, agentes, clear, readiness, assurance, portabilidade
-related_files: ../README.md, ../ai/README.md, ../agents/standards/software-engineering-lifecycle.md, ../agents/standards/implementation-readiness-standard.md, ../agents/standards/software-quality-standard.md
-code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../.agents/skills/, ../../.claude/skills/
+last_reviewed: 2026-09-11
+keywords: governanca, bootstrap, agentes, clear, readiness, assurance, portabilidade, gemini, antigravity
+related_files: ../README.md, ../ai/README.md, ../settings/google-gemini.md, ../agents/standards/software-engineering-lifecycle.md, ../agents/standards/implementation-readiness-standard.md, ../agents/standards/software-quality-standard.md
+code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md, ../../.agents/rules/documentation-governance.md, ../../.agents/skills/, ../../.claude/skills/
 principal_statement: Todo projeto adotante converge de forma nao destrutiva para fontes tipadas, indexadas, rastreaveis e carregadas progressivamente, com readiness antes e assurance depois da implementacao.
 ---
 
@@ -25,7 +25,7 @@ essas naturezas são misturadas, o agente carrega contexto excessivo, infere dec
 ausentes e produz handoffs não verificáveis.
 
 O harness deve ser independente de domínio, stack e fornecedor de IA. Nomes como
-`AGENTS.md`, `CLAUDE.md` e `SKILL.md` são adaptadores; os invariantes comuns
+`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.agents/rules/` e `SKILL.md` são adaptadores; os invariantes comuns
 continuam sendo precedência, menor privilégio, escopo explícito, fontes canônicas,
 readiness, testes e evidência.
 
@@ -45,8 +45,16 @@ Todo projeto adotante DEVE manter:
 - `docs/templates/` para todo tipo recorrente;
 - um `README.md` em cada coleção ativa, com inventário completo;
 - adaptadores globais enxutos para cada runtime suportado;
-- skills pareadas de governança, readiness e quality gate quando Codex e Claude
-  Code forem ambos suportados.
+- skills de governança, readiness e quality gate em `.agents/skills/` quando
+  Codex ou Google forem suportados e variantes equivalentes em `.claude/skills/`
+  quando Claude Code também for suportado;
+- mapeamento de runtime em `docs/settings/` para toda superfície suportada cuja
+  descoberta, permissão ou sandbox difira do baseline agnóstico.
+
+Gemini CLI usa `GEMINI.md` hierárquico e pode importar `AGENTS.md`; Antigravity usa
+regras de workspace em `.agents/rules/`. Os dois runtimes Google e o Codex podem
+reutilizar `.agents/skills/`, portanto uma árvore `.gemini/skills/` duplicada é
+proibida enquanto o alias interoperável for suportado.
 
 A convergência é idempotente e não destrutiva: inventaria primeiro, preserva o
 desconhecido, cria somente o delta inequívoco e produz zero alteração quando
@@ -115,7 +123,8 @@ resumem e apontam; não incorporam documentos catalogados.
 | Adaptador global do runtime | Obrigatório para todo runtime suportado. |
 | `backend/`, `frontend/`, `website/` e `infra/` com `README.md` | Scaffolds de clonagem; manter, renomear ou remover conforme a topologia real e reconciliar o manifesto. |
 | Mapa, manual de IA, ADRs, arquitetura, settings, standards e templates | Baseline obrigatório. |
-| Skills `governanca-documental`, `implementation-readiness`, `quality-gate` | Obrigatórias em cada runtime com suporte a skills. |
+| Skills `governanca-documental`, `implementation-readiness`, `quality-gate` | Obrigatórias em cada path nativo necessário; `.agents/skills/` é compartilhado por Codex e Google e `.claude/skills/` atende Claude Code. |
+| `GEMINI.md` e `.agents/rules/documentation-governance.md` | Obrigatórios quando Gemini CLI e Antigravity forem suportados; compõem a política canônica sem copiá-la. |
 | Product, requirements, use cases e contracts | Ativar quando o tipo de trabalho existir. |
 | Business, analysis, reports, lessons, compliance, onboard e pocs | Ativar somente com necessidade, artefato e owner reais. |
 | Adaptador ou skill local de pacote | Criar apenas quando houver especialização local. |
@@ -216,6 +225,12 @@ Adaptador global contém somente rota de leitura, topologia resumida, comandos
 essenciais, guardrails e handoff. Regra de stack ou comando de pacote pertence ao
 adaptador local mais próximo.
 
+O adapter Gemini CLI importa `AGENTS.md` por `GEMINI.md`. A regra Antigravity
+reside em `.agents/rules/`, importa o adapter raiz, fica abaixo de 12.000 caracteres
+e deve ter sua ativação `Always On` observada no Project. Settings globais em
+`~/.gemini/` não são versionados. A presença dos arquivos não prova Project,
+sandbox, permissões ou ativação efetivos; essa fronteira deve constar no handoff.
+
 Skill operacional possui diretório próprio, `SKILL.md`, `name` e `description`,
 objetivo, gatilhos, não-gatilhos, procedimento, limites, entradas, saídas, evidência
 e conclusão. Nome do diretório, frontmatter e catálogo devem coincidir. Skills
@@ -240,7 +255,7 @@ Conformidade exige:
 1. índices completos e links válidos;
 2. contrato mínimo e natureza primária em todo documento;
 3. manifesto com todos os módulos ativos;
-4. equivalência semântica entre adaptadores e skills pareadas;
+4. equivalência semântica entre adaptadores, imports Google e skills nos paths nativos;
 5. nenhuma regra local enfraquecendo fonte superior;
 6. `READY` vigente antes de implementação;
 7. testes e gates proporcionais depois da implementação;
@@ -258,3 +273,9 @@ Mudança editorial atualiza versão e histórico local. Mudança de obrigação,
 precedência, autonomia ou topologia exige revisão arquitetural e nova versão aceita
 deste ADR ou ADR sucessor. Remoção ou renomeação atualiza links e índices na mesma
 mudança. Reversão da governança exige ADR sucessor e preservação do histórico.
+
+## Change log
+
+| Versão | Data | Mudança |
+| --- | --- | --- |
+| 1.1 | 2026-09-11 | Aceita Gemini CLI e Antigravity como adapters do harness, reutilizando `.agents/skills/` e separando arquivos versionados de settings efetivos do Project. |
