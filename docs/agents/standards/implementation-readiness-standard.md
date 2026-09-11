@@ -6,11 +6,11 @@ scope: Incertezas, dependencias, contrato de task, decomposicao semantica e evid
 non_objectives: Nao aprovar decisoes pelo humano, substituir requisitos ou auditar codigo pronto.
 owner: Arquitetura, Produto e Qualidade
 status: Active
-version: 1.0
+version: 1.1
 date: 2026-09-10
-last_reviewed: 2026-09-10
+last_reviewed: 2026-09-11
 keywords: readiness, definition-of-ready, assumptions, decomposicao, blocked
-related_files: software-engineering-lifecycle.md, ../../templates/TPL-00005-task-plan.md, ../../templates/TPL-00006-implementation-plan.md
+related_files: ../AgentOrchestrator.md, README.md, software-engineering-lifecycle.md, development-standard.md, ../../templates/TPL-00005-task-plan.md, ../../templates/TPL-00006-implementation-plan.md
 code_references: ../../../.agents/skills/implementation-readiness/SKILL.md, ../../../.claude/skills/implementation-readiness/SKILL.md
 principal_statement: Somente uma task atomica, decidida, aprovada e verificavel recebe READY; toda incerteza material remanescente produz BLOCKED.
 ---
@@ -97,3 +97,11 @@ recusa evidência ausente, stale ou divergente. Mudança em qualquer fonte ou re
 exige nova auditoria. O relatório registra blockers, decision owner e condição de
 retomada.
 
+O [AgentOrchestrator](../AgentOrchestrator.md) aplica este gate no bootstrap e
+registra no plano quais standards condicionais foram ativados.
+
+## Change log
+
+| Versão | Data | Mudança |
+| --- | --- | --- |
+| 1.1 | 2026-09-11 | Integra o gate ao orquestrador inicial e ao catálogo portátil. |

@@ -6,11 +6,11 @@ scope: Da definicao do problema ao release e verificacao.
 non_objectives: Nao criar requisitos, decidir arquitetura, escolher stack ou autorizar ambiente externo.
 owner: Arquitetura, Produto e Qualidade
 status: Active
-version: 1.0
+version: 1.1
 date: 2026-09-10
-last_reviewed: 2026-09-10
+last_reviewed: 2026-09-11
 keywords: clear, lifecycle, gates, planejamento, assurance, release
-related_files: implementation-readiness-standard.md, software-quality-standard.md, ../../templates/README.md
+related_files: ../AgentOrchestrator.md, README.md, implementation-readiness-standard.md, software-quality-standard.md, development-standard.md, security-standard.md, ../../templates/README.md
 code_references: N/A - comandos sao registrados no manifesto e nos standards do projeto.
 principal_statement: Nenhuma fase executavel inicia sem seus gates anteriores, e nenhum release ocorre sem assurance e autorizacao proprias.
 ---
@@ -69,3 +69,12 @@ Context → Logic & Layout → [READY] → Execution → Assurance → Release
 Cada transição registra owner anterior e seguinte, artefatos, versões, paths,
 resultado do gate, evidência, pendências e condição de retomada.
 
+O [AgentOrchestrator](../AgentOrchestrator.md) é o responsável inicial por aplicar
+esta sequência e selecionar os standards condicionais no catálogo. A execução da
+capacidade não exige criar outro agente.
+
+## Change log
+
+| Versão | Data | Mudança |
+| --- | --- | --- |
+| 1.1 | 2026-09-11 | Liga o lifecycle ao orquestrador inicial e à biblioteca portátil de standards. |

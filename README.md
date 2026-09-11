@@ -6,12 +6,12 @@ scope: Governanca documental, descoberta progressiva, planejamento, readiness, a
 non_objectives: Nao fornecer codigo, scripts executaveis, stack, dominio, credenciais ou decisoes do projeto de origem.
 owner: Mantenedores do harness
 status: Active
-version: 1.0
+version: 1.1
 date: 2026-09-10
-last_reviewed: 2026-09-10
-keywords: harness, documentacao, agentes, clear, readiness, quality-gate, template
-related_files: AGENTS.md, CLAUDE.md, backend/README.md, frontend/README.md, website/README.md, infra/README.md, docs/README.md, docs/adrs/ADR-0000-governanca-do-harness-documental.md
-code_references: N/A - pacote exclusivamente documental.
+last_reviewed: 2026-09-11
+keywords: harness, documentacao, agentes, clear, readiness, quality-gate, template, gemini, antigravity
+related_files: AGENTS.md, CLAUDE.md, GEMINI.md, backend/README.md, frontend/README.md, website/README.md, infra/README.md, docs/README.md, docs/settings/google-gemini.md, docs/adrs/ADR-0000-governanca-do-harness-documental.md
+code_references: .agents/rules/documentation-governance.md, .agents/skills/, .claude/skills/; pacote exclusivamente documental.
 principal_statement: O pacote fornece as fontes e os contratos necessarios para adotar a mesma governanca sem transportar contexto de produto ou de stack.
 ---
 
@@ -27,7 +27,8 @@ de produção, script executável ou decisão pertencente ao projeto de origem.
 
 ## O que está incluído
 
-- adaptadores globais para Codex e Claude Code;
+- adaptadores globais para Codex, Claude Code e Gemini CLI, mais regra de
+  workspace para Google Antigravity;
 - skills operacionais documentais pareadas;
 - ADR de governança e mapa de precedência;
 - lifecycle C.L.E.A.R.;
@@ -60,9 +61,13 @@ de produção, script executável ou decisão pertencente ao projeto de origem.
    [`docs/automation/README.md`](docs/automation/README.md). Enquanto eles não
    existirem, reporte `Automação não configurada`; não declare um gate automático
    como aprovado por inspeção subjetiva.
-8. Revise `AGENTS.md` e `CLAUDE.md` para manter equivalência sem inserir regras de
-   stack que pertençam a um pacote específico.
-9. Execute a checklist de bootstrap do ADR-0000 e repita o inventário. A segunda
+8. Revise `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` e a regra Antigravity para manter
+   equivalência sem inserir regras de stack que pertençam a um pacote específico.
+9. Se usar Antigravity, configure a regra de workspace como `Always On`, habilite o
+   sandbox e confira permissões conforme
+   [`docs/settings/google-gemini.md`](docs/settings/google-gemini.md). Se usar
+   Gemini CLI, confirme contexto e skills com `/memory` e `/skills`.
+10. Execute a checklist de bootstrap do ADR-0000 e repita o inventário. A segunda
    execução deve produzir delta vazio.
 
 ## Fluxo C.L.E.A.R.
@@ -80,6 +85,8 @@ de produção, script executável ou decisão pertencente ao projeto de origem.
 ```text
 AGENTS.md
 CLAUDE.md
+GEMINI.md
+.agents/rules/documentation-governance.md
 .agents/skills/{governanca-documental,implementation-readiness,quality-gate}/SKILL.md
 .claude/skills/{governanca-documental,implementation-readiness,quality-gate}/SKILL.md
 backend/README.md
@@ -105,10 +112,16 @@ docs/
 - As quatro pastas de aplicação/infraestrutura são scaffolds base, não afirmações
   de que todo projeto precisa desses quatro módulos. Remoção ou renomeação durante
   a adoção deve reconciliar o mapa e o manifesto.
-- Codex e Claude Code são adaptadores opcionais. Remova um adaptador e sua árvore de
-  skills apenas se o runtime não for suportado, atualizando o catálogo na mesma
-  mudança.
+- Codex, Claude Code, Gemini CLI e Antigravity são opcionais. `.agents/skills/` é
+  compartilhado por Codex e Google; remova um adapter ou variante de skill apenas
+  se nenhum runtime consumidor permanecer, atualizando o catálogo na mesma mudança.
 - O pacote não escolhe licença. Antes de publicar um repositório público, o owner
   deve adicionar uma licença compatível com o uso pretendido.
 - Este diretório não executa `git push`, cria repositório remoto nem publica no
   GitHub. Essas ações exigem destino, política e autorização próprios.
+
+## Change log
+
+| Versão | Data | Mudança |
+| --- | --- | --- |
+| 1.1 | 2026-09-11 | Adiciona suporte portátil a Gemini CLI e Antigravity e sua verificação de adoção. |
