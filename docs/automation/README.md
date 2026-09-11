@@ -1,0 +1,73 @@
+---
+document_id: AUTOMATION-CONTRACT
+primary_nature: Contexto
+objective: Definir contratos para validadores que o projeto de destino deve implementar.
+scope: Governanca documental, readiness verificavel, quality gates e evidencias.
+non_objectives: Nao fornecer scripts, escolher stack, executar comandos ou simular automacao ausente.
+owner: Plataforma, Arquitetura e Qualidade
+status: Active
+version: 1.0
+date: 2026-09-10
+last_reviewed: 2026-09-10
+keywords: automacao, validadores, contratos, quality-gate, docs
+related_files: ../adrs/ADR-0000-governanca-do-harness-documental.md, ../agents/standards/software-quality-standard.md
+code_references: N/A - implementacao intencionalmente excluida deste pacote documental.
+principal_statement: Automacao deve falhar de forma fechada e publicar evidencia estruturada; ausencia nunca equivale a PASS.
+---
+
+# Contratos de automação
+
+Este pacote é exclusivamente documental. O projeto adotante deve implementar os
+entrypoints abaixo na linguagem e no local compatíveis com sua stack.
+
+## Validador documental
+
+Deve validar, no mínimo:
+
+- presença dos artefatos obrigatórios e `README.md` de cada coleção ativa;
+- frontmatter/contrato mínimo, IDs, nomes, estados e owners;
+- inventário individual e links relativos;
+- paridade semântica e nomes das skills pareadas;
+- equivalência dos adaptadores globais;
+- ausência de segredos e referências específicas indevidas;
+- manifesto coerente com os módulos ativos;
+- idempotência do bootstrap.
+
+## Implementation Readiness
+
+A presença estrutural dos campos pode ser automatizada, mas a decisão `READY`
+permanece uma auditoria semântica. Regex não deve encerrar assumption, aprovar
+fonte, decidir produto ou emitir falso `READY`. O plano deve registrar auditor,
+data, versões, paths, controles e resultado.
+
+## Executor de Quality Gate
+
+A interface deve receber explicitamente:
+
+- `scope`: pacote ou união de pacotes;
+- `level`: `focused`, `pr` ou `release`;
+- `target`: um ou mais paths alterados;
+- `focus`: seletor obrigatório no nível `focused`, quando aplicável;
+- referência ao `READY` vigente.
+
+O executor não deve depender de descoberta implícita por Git. Deve produzir saída
+humana e, quando possível, resultado estruturado com `PASS`, `FAIL` ou `BLOCKED`,
+comandos executados, códigos de saída e causas.
+
+## Comportamento fail-closed
+
+- Ferramenta, configuração, relatório ou ambiente obrigatório ausente → `BLOCKED`.
+- Violação observada → `FAIL`.
+- Todos os controles aplicáveis executados e aprovados → `PASS`.
+- Arquivo de ambiente local potencialmente sensível → não ler; interromper o build
+  e usar fixture isolada ou variáveis sintéticas autorizadas.
+- Teste de contrato do executor deve cobrir ajuda, argumentos inválidos, seleção de
+  comandos, sucesso, falha, configuração ausente e proteção de segredo.
+
+## Estado deste pacote
+
+`Automação não configurada`. Isso é deliberado: somente documentação agnóstica foi
+transportada. O bootstrap no projeto de destino deve registrar paths, comandos,
+dependências, testes do validador e integração com CI antes de declarar automação
+ativa.
+
