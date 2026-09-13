@@ -44,14 +44,19 @@
 - Corrija falhas pertencentes ao escopo e reexecute enquanto houver progresso. Não
   reduza limiar, omita teste ou produza falso verde.
 
-## Segurança e Git
+## Segurança e entrega Git
 
 - Leitura local e edição reversível solicitada são permitidas dentro do escopo.
 - Instalação, download, rede, sistema externo, exclusão ampla ou ação irreversível
   exigem autorização explícita.
 - Não acesse produção, dados reais, segredos ou credenciais.
 - Git de escrita, push, PR, merge, tag, rebase, reset ou alteração de remote não são
-  autorizados por este baseline. Obedeça a política explícita do projeto de destino.
+  autorizados por este baseline.
+- Um projeto adotante pode autorizar somente a entrega governada descrita no
+  ADR-0000 e na skill `git-delivery`, depois de registrar convenção de branch,
+  mensagem, paths, gates, hook e comando de publicação. A skill não concede essa
+  autorização; PR, merge, rebase, reset, tag, force-push e alteração de remote
+  continuam fora do contrato.
 
 ## Handoff
 

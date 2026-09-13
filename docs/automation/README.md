@@ -6,9 +6,9 @@ scope: Governanca documental, readiness verificavel, quality gates e evidencias.
 non_objectives: Nao fornecer scripts, escolher stack, executar comandos ou simular automacao ausente.
 owner: Plataforma, Arquitetura e Qualidade
 status: Active
-version: 1.2
+version: 1.3
 date: 2026-09-10
-last_reviewed: 2026-09-11
+last_reviewed: 2026-09-13
 keywords: automacao, validadores, contratos, quality-gate, agentes, standards, gemini, antigravity
 related_files: ../adrs/ADR-0000-governanca-do-harness-documental.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/standards/software-quality-standard.md, ../settings/google-gemini.md
 code_references: N/A - implementacao intencionalmente excluida deste pacote documental.
@@ -58,6 +58,23 @@ O executor não deve depender de descoberta implícita por Git. Deve produzir sa
 humana e, quando possível, resultado estruturado com `PASS`, `FAIL` ou `BLOCKED`,
 comandos executados, códigos de saída e causas.
 
+## Entrega Git governada (opcional)
+
+Se o projeto adotar a skill `git-delivery`, deve registrar e implementar controles
+determinísticos para:
+
+- validar branch, tipo e coordenada convencionados localmente;
+- validar a mensagem de commit e instalá-la por hook versionado;
+- aceitar paths e referência ao `READY` como entradas explícitas;
+- reexecutar os gates aplicáveis antes de publicar;
+- permitir somente o comando de push e o remote explicitamente aprovados;
+- falhar fechado para detached HEAD, convenção inválida, hook ausente ou gate não
+  aprovado.
+
+O scaffold de referência da skill ilustra uma convenção possível, não define a
+convenção do projeto adotante. PR, merge, rebase, reset, force-push, tag, alteração
+de remote e leitura de credenciais permanecem fora desse contrato.
+
 ## Comportamento fail-closed
 
 - Ferramenta, configuração, relatório ou ambiente obrigatório ausente → `BLOCKED`.
@@ -83,5 +100,6 @@ comprovar os arquivos versionados e deve reportar essa fronteira.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.3 | 2026-09-13 | Acrescenta o contrato opt-in e fail-closed para entrega Git governada. |
 | 1.2 | 2026-09-11 | Acrescenta validação do agente inicial e do catálogo portátil de standards. |
 | 1.1 | 2026-09-11 | Inclui o contrato de validação dos adapters Google e separa estado versionado de verificação no runtime. |

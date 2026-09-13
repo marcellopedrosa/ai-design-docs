@@ -6,9 +6,9 @@ scope: Alterações de código, configuração executável, migrations e infraes
 non_objectives: Não escolher linguagem, framework, arquitetura, comandos, branch ou limiares do projeto adotante.
 owner: Engenharia e Qualidade
 status: Active
-version: 1.0
+version: 1.1
 date: 2026-09-11
-last_reviewed: 2026-09-11
+last_reviewed: 2026-09-13
 keywords: desenvolvimento, codigo, manutencao, verificacao, portabilidade
 related_files: README.md, software-engineering-lifecycle.md, implementation-readiness-standard.md, software-quality-standard.md, security-standard.md
 code_references: N/A - paths e comandos dependem do manifesto do projeto adotante.
@@ -39,7 +39,9 @@ stack complementam este arquivo sem reduzi-lo.
 - Formatação, lint, análise estática, tipagem, build e testes seguem comandos
   canônicos registrados no manifesto ou adapter mais próximo.
 - Git, rede, instalações, release e ambientes externos seguem a política explícita
-  do projeto; este standard não concede autorização.
+  do projeto; este standard não concede autorização. Quando a entrega Git governada
+  estiver adotada, commit e push obedecem à skill `git-delivery`, ao hook e aos gates
+  locais; isso não autoriza PR, merge, rebase, reset, tag ou alteração de remote.
 
 ## Evidência
 
@@ -57,4 +59,5 @@ e paths governados. Ausência de ferramenta obrigatória é BLOCKED, não PASS.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.1 | 2026-09-13 | Vincula a entrega Git opcional ao contrato, hook e gates do projeto adotante. |
 | 1.0 | 2026-09-11 | Cria baseline portátil de desenvolvimento. |

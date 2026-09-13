@@ -6,9 +6,9 @@ scope: Operacoes no workspace de desenvolvimento e teste.
 non_objectives: Nao definir requisitos, regras de negocio, arquitetura do produto ou configuracao pessoal.
 owner: Plataforma de IA e DevOps
 status: Active
-version: 1.1
+version: 1.2
 date: 2026-09-10
-last_reviewed: 2026-09-10
+last_reviewed: 2026-09-13
 keywords: permissoes, seguranca, testes, git, segredos, gemini, antigravity
 related_files: ../adrs/ADR-0000-governanca-do-harness-documental.md, google-gemini.md, ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md
 code_references: ../../.agents/rules/documentation-governance.md; o projeto de destino deve registrar outros controles deterministas.
@@ -26,6 +26,7 @@ principal_statement: Operacoes seguem menor privilegio; autonomia segura nunca a
 | Criar, manter e executar testes seguros | `allow`; obrigatório em mudança de software |
 | Git de leitura e diagnóstico | `allow`, sem ler credenciais |
 | Git de escrita, push, PR ou integração | `deny` até política explícita do projeto |
+| Entrega Git governada | `ask`/`allow` somente após adoção explícita do ADR, da skill, do hook e dos gates locais |
 | Instalação, download, rede ou sistema externo | `ask`, com escopo explícito |
 | Produção ou dados reais | `deny` |
 | Segredos e credenciais | `deny`; não ler, registrar, transmitir ou versionar |
@@ -43,7 +44,9 @@ principal_statement: Operacoes seguem menor privilegio; autonomia segura nunca a
 ## Mudança da matriz
 
 Alterar autonomia, precedência ou acesso externo exige decisão aceita e atualização
-coordenada dos adaptadores de todos os runtimes suportados.
+coordenada dos adaptadores de todos os runtimes suportados. A autorização de entrega
+Git precisa delimitar branch, mensagem, paths, gates, hook, push e operações
+proibidas; não autoriza PR, integração, histórico, credenciais ou alteração de remote.
 
 O [mapeamento Google](google-gemini.md) especializa esta matriz para Gemini CLI e
 Antigravity sem duplicar a política nem as skills de `.agents/skills/`.
@@ -52,4 +55,5 @@ Antigravity sem duplicar a política nem as skills de `.agents/skills/`.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.2 | 2026-09-13 | Mantém Git bloqueado por padrão e define a ativação explícita da entrega Git governada. |
 | 1.1 | 2026-09-11 | Liga a política agnóstica aos mecanismos nativos de Gemini CLI e Antigravity. |

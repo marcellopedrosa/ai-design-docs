@@ -6,9 +6,9 @@ scope: Da definicao do problema ao release e verificacao.
 non_objectives: Nao criar requisitos, decidir arquitetura, escolher stack ou autorizar ambiente externo.
 owner: Arquitetura, Produto e Qualidade
 status: Active
-version: 1.1
+version: 1.2
 date: 2026-09-10
-last_reviewed: 2026-09-11
+last_reviewed: 2026-09-13
 keywords: clear, lifecycle, gates, planejamento, assurance, release
 related_files: ../AgentOrchestrator.md, README.md, implementation-readiness-standard.md, software-quality-standard.md, development-standard.md, security-standard.md, ../../templates/README.md
 code_references: N/A - comandos sao registrados no manifesto e nos standards do projeto.
@@ -63,6 +63,9 @@ Context → Logic & Layout → [READY] → Execution → Assurance → Release
 - Mudança de fonte, versão, escopo ou path invalida o `READY` anterior.
 - Falha encontrada em Assurance retorna à primeira fase capaz de corrigir a causa.
 - Release não é autorizado pelo simples fato de os testes estarem verdes.
+- Commit ou push não são sinônimos de release. Quando a entrega Git governada for
+  adotada, ela exige gates em `PASS` e a skill `git-delivery`, mas não autoriza
+  integração, rollout ou acesso externo adicional.
 
 ## Handoff mínimo
 
@@ -77,4 +80,5 @@ capacidade não exige criar outro agente.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.2 | 2026-09-13 | Separa entrega Git governada do release e de sua autorização própria. |
 | 1.1 | 2026-09-11 | Liga o lifecycle ao orquestrador inicial e à biblioteca portátil de standards. |
