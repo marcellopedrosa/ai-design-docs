@@ -6,12 +6,12 @@ scope: Topologia documental, precedencia, bootstrap, agente inicial, biblioteca 
 non_objectives: Nao definir dominio, stack, comandos, limiares de cobertura, release, segredos ou configuracoes pessoais.
 owner: Arquitetura e mantenedores do harness
 status: Accepted
-version: 1.3
+version: 1.4
 date: 2026-09-10
 last_reviewed: 2026-09-13
 keywords: governanca, bootstrap, orquestrador, standards, clear, readiness, assurance, entrega-git, portabilidade, gemini, antigravity
-related_files: ../README.md, ../ai/README.md, ../settings/settings.md, ../settings/google-gemini.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/standards/software-engineering-lifecycle.md, ../agents/standards/implementation-readiness-standard.md, ../agents/standards/software-quality-standard.md, ../agents/skills/README.md, ../automation/README.md
-code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md, ../../.agents/rules/documentation-governance.md, ../../.agents/skills/, ../../.claude/skills/; hooks e validadores de entrega pertencem ao projeto adotante.
+related_files: ../README.md, ../ai/README.md, ../settings/settings.md, ../settings/google-gemini.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/standards/software-engineering-lifecycle.md, ../agents/standards/implementation-readiness-standard.md, ../agents/standards/software-quality-standard.md, ../agents/skills/README.md, ../automation/README.md, ../scripts/README.md
+code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md, ../../.agents/rules/documentation-governance.md, ../../.agents/skills/, ../../.claude/skills/, ../scripts/; hooks e validadores de entrega pertencem ao projeto adotante.
 principal_statement: Todo projeto adotante converge de forma nao destrutiva para fontes tipadas, indexadas, rastreaveis e carregadas progressivamente, com readiness antes e assurance depois da implementacao.
 ---
 
@@ -46,6 +46,8 @@ Todo projeto adotante DEVE manter:
   risco ou stack;
 - `docs/agents/skills/README.md` para catalogar skills operacionais;
 - `docs/templates/` para todo tipo recorrente;
+- `docs/scripts/` quando o projeto versionar a implementação de validadores do
+  harness, sem torná-la uma fonte concorrente do contrato em `docs/automation/`;
 - um `README.md` em cada coleção ativa, com inventário completo;
 - adaptadores globais enxutos para cada runtime suportado;
 - skills de governança, readiness e quality gate em `.agents/skills/` quando
@@ -141,6 +143,7 @@ resumem e apontam; não incorporam documentos catalogados.
 | Product, requirements, use cases e contracts | Ativar quando o tipo de trabalho existir. |
 | Business, analysis, reports, lessons, compliance, onboard e pocs | Ativar somente com necessidade, artefato e owner reais. |
 | Adaptador ou skill local de pacote | Criar apenas quando houver especialização local. |
+| `docs/scripts/` | Ativar quando o projeto mantiver código de validadores; cada script e teste deve ser adaptado à topologia local e permanecer inativo enquanto a adaptação não estiver validada. |
 | Validador executável | Implementar no projeto de destino; ausência deve ser explícita e nunca simulada como `PASS`. |
 
 Diretório vazio não demonstra conformidade. Neste pacote, as coleções opcionais
@@ -301,7 +304,8 @@ Conformidade exige:
     os adaptadores e o enforcement versionado, sem autorização implícita.
 
 Regras deterministas devem migrar de prompt para validador, hook, sandbox ou CI no
-projeto de destino. O contrato de automação está em `docs/automation/README.md`.
+projeto de destino. O contrato de automação está em `docs/automation/README.md`; se
+o código do validador for versionado, seu inventário e testes ficam em `docs/scripts/`.
 
 ## 14. Controle de mudança
 
@@ -314,6 +318,7 @@ mudança. Reversão da governança exige ADR sucessor e preservação do histór
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.4 | 2026-09-13 | Mapeia `docs/scripts/` como implementação condicional de validadores, sujeita à adaptação e testes no destino. |
 | 1.3 | 2026-09-13 | Disponibiliza entrega Git governada como capacidade opt-in, com enforcement local e sem ampliar o baseline de permissões. |
 | 1.2 | 2026-09-11 | Define AgentOrchestrator como único agente inicial e incorpora a biblioteca canônica de standards com ativação condicional. |
 | 1.1 | 2026-09-11 | Aceita Gemini CLI e Antigravity como adapters do harness, reutilizando `.agents/skills/` e separando arquivos versionados de settings efetivos do Project. |

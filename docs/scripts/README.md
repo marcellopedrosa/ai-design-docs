@@ -1,21 +1,37 @@
 ---
 document_id: DOCUMENTATION-SCRIPTS-INDEX
 primary_nature: Contexto
-objective: Catalogar validadores executáveis da governança documental e suas verificações herméticas.
-scope: Scripts Node.js em docs/scripts/ e wrappers shell relacionados que comprovam o contrato do ADR-0000.
-non_objectives: Nao conter scripts de runtime do produto, migrações destrutivas ou automação com acesso externo.
+objective: Catalogar validadores executáveis do harness e suas verificações herméticas.
+scope: Scripts em docs/scripts/ que implementam, após adaptação local, contratos definidos pelo ADR-0000 e docs/automation/.
+non_objectives: Nao definir política por código, conter runtime do produto, migrações destrutivas ou automação com acesso externo.
 owner: Arquitetura e Qualidade
 status: Active
 date: 2026-08-26
-version: 1.18
-last_reviewed: 2026-09-11
-keywords: validacao-documental, governanca, ADR-0000, testes, quality-metrics, cobertura, node, gemini, antigravity
-related_files: docs/adrs/ADR-0000-governanca-documentacao-agentes-ia.md, docs/product_requirements/README.md, docs/contracts/README.md, docs/settings/google-gemini.md, docs/agents/standards/software-quality-standard.md, docs/agents/standards/implementation-readiness-standard.md, infra/scripts/validate-docs.sh, infra/scripts/validate-quality-gates.sh, docs/task_plans/TP-00020-documentation-governance-convergence.md, docs/task_plans/TP-00045-clear-quality-gate-governance.md, docs/task_plans/TP-00046-implementation-readiness-governance.md, docs/task_plans/TP-00051-product-requirements-governance.md, docs/task_plans/TP-00052-backend-api-contract-baseline.md, docs/task_plans/TP-00058-google-gemini-antigravity-documentation-governance.md
-code_references: GEMINI.md, .agents/rules/documentation-governance.md, backend/GEMINI.md, frontend/GEMINI.md, website/GEMINI.md, infra/GEMINI.md, docs/scripts/validate-google-runtime-governance.mjs, docs/scripts/validate-google-runtime-governance.test.mjs, docs/scripts/validate-documentation-governance.mjs, docs/scripts/validate-documentation-governance.test.mjs, docs/scripts/validate-api-contract-coverage.mjs, docs/scripts/validate-api-contract-coverage.test.mjs, docs/scripts/validate-quality-metrics.mjs, docs/scripts/validate-quality-metrics.test.mjs, docs/scripts/validate-plan-granularity.mjs, docs/scripts/validate-plan-granularity.test.mjs, docs/scripts/validate-quality-policy.mjs, docs/scripts/validate-quality-policy.test.mjs, infra/scripts/validate-docs.sh, infra/scripts/validate-quality-metrics.mjs, infra/scripts/validate-plan-granularity.mjs, infra/scripts/validate-quality-gates.sh, infra/scripts/tests/validate-quality-gates-test.sh, infra/scripts/validate-ip-infra-docs.sh, infra/scripts/tests/validate-ip-infra-docs-test.sh, .github/workflows/backend-ci-cd.yml, .github/workflows/security-ci.yml
-principal_statement: O gate canônico falha quando estrutura, contrato, índices, links, adaptadores, templates ou skills divergem do ADR-0000.
+version: 1.19
+last_reviewed: 2026-09-13
+keywords: validacao-documental, governanca, ADR-0000, testes, quality-metrics, cobertura, node, portabilidade
+related_files: ../README.md, ../adrs/ADR-0000-governanca-do-harness-documental.md, ../automation/README.md, ../agents/skills/README.md, ../agents/standards/software-quality-standard.md, ../agents/standards/implementation-readiness-standard.md
+code_references: validate-documentation-governance.mjs, validate-documentation-governance.test.mjs, validate-google-runtime-governance.mjs, validate-google-runtime-governance.test.mjs, validate-api-contract-coverage.mjs, validate-api-contract-coverage.test.mjs, validate-quality-metrics.mjs, validate-quality-metrics.test.mjs, validate-plan-granularity.mjs, validate-plan-granularity.test.mjs, validate-quality-policy.mjs, validate-quality-policy.test.mjs; wrappers pertencem ao projeto adotante.
+principal_statement: Scripts portados só se tornam controles ativos depois de remover premissas do projeto de origem, configurar seus wrappers locais e aprovar seus testes herméticos.
 ---
 
 # Scripts de governança documental
+
+## Estado de portabilidade
+
+Os scripts desta coleção foram migrados como material de adaptação e ainda contêm
+premissas de topologia, stack, nomes de módulos, paths e wrappers de seu projeto de
+origem. Portanto, não constituem o gate canônico deste harness nem podem ser
+executados como evidência de `PASS` antes de uma unidade de trabalho com `READY`:
+
+1. separar regras agnósticas de convenções locais;
+2. parametrizar ou remover paths, stacks, módulos e workflows assumidos;
+3. implementar o wrapper e os comandos do projeto adotante;
+4. adaptar e executar os testes herméticos;
+5. registrar a ativação em `docs/automation/README.md` e nos adaptadores.
+
+Até então, o estado é `Partial` e a ausência de automação continua sendo reportada
+como `Automação não configurada`.
 
 ## Contrato da coleção
 
@@ -126,6 +142,7 @@ aceitas como caminho canônico; use caminho, sufixo, basename ou glob explícito
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.19 | 2026-09-13 | Reclassifica os scripts migrados como extensão condicional a ser adaptada e validada no destino. |
 | 1.18 | 2026-09-11 | Separa a governança Google em validador e teste pequenos para preservar o limite de manutenção dos targets. |
 | 1.17 | 2026-09-11 | Protege a presença e composição dos adapters Gemini CLI/Antigravity e seu mapeamento de settings. |
 | 1.16 | 2026-09-10 | Indexa o validador portátil de tamanho/revisão semântica de TP/IP, seu teste e wrapper integrado ao Quality Gate. |

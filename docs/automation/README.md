@@ -6,12 +6,12 @@ scope: Governanca documental, readiness verificavel, quality gates e evidencias.
 non_objectives: Nao fornecer scripts, escolher stack, executar comandos ou simular automacao ausente.
 owner: Plataforma, Arquitetura e Qualidade
 status: Active
-version: 1.3
+version: 1.4
 date: 2026-09-10
 last_reviewed: 2026-09-13
 keywords: automacao, validadores, contratos, quality-gate, agentes, standards, gemini, antigravity
-related_files: ../adrs/ADR-0000-governanca-do-harness-documental.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/standards/software-quality-standard.md, ../settings/google-gemini.md
-code_references: N/A - implementacao intencionalmente excluida deste pacote documental.
+related_files: ../adrs/ADR-0000-governanca-do-harness-documental.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/standards/software-quality-standard.md, ../scripts/README.md, ../settings/google-gemini.md
+code_references: ../scripts/ - extensao migrada, ainda sem ativacao portatil.
 principal_statement: Automacao deve falhar de forma fechada e publicar evidencia estruturada; ausencia nunca equivale a PASS.
 ---
 
@@ -19,6 +19,11 @@ principal_statement: Automacao deve falhar de forma fechada e publicar evidencia
 
 Este pacote é exclusivamente documental. O projeto adotante deve implementar os
 entrypoints abaixo na linguagem e no local compatíveis com sua stack.
+
+Quando o projeto escolher versionar o código dos validadores, ele deve residir em
+[`docs/scripts/`](../scripts/README.md). O contrato permanece nesta coleção; scripts
+não podem introduzir exigências, paths ou stacks que não estejam aprovados nas fontes
+canônicas locais.
 
 ## Validador documental
 
@@ -100,6 +105,7 @@ comprovar os arquivos versionados e deve reportar essa fronteira.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.4 | 2026-09-13 | Vincula a implementação opcional de validadores a `docs/scripts/` sem ativá-la por presença. |
 | 1.3 | 2026-09-13 | Acrescenta o contrato opt-in e fail-closed para entrega Git governada. |
 | 1.2 | 2026-09-11 | Acrescenta validação do agente inicial e do catálogo portátil de standards. |
 | 1.1 | 2026-09-11 | Inclui o contrato de validação dos adapters Google e separa estado versionado de verificação no runtime. |

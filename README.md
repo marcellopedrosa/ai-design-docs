@@ -6,11 +6,11 @@ scope: Governanca documental, descoberta progressiva, planejamento, readiness, a
 non_objectives: Nao fornecer codigo, scripts executaveis, stack, dominio, credenciais ou decisoes do projeto de origem.
 owner: Mantenedores do harness
 status: Active
-version: 1.3
+version: 1.4
 date: 2026-09-10
 last_reviewed: 2026-09-13
 keywords: harness, documentacao, agentes, orquestrador, standards, clear, readiness, quality-gate, entrega-git, gemini, antigravity
-related_files: AGENTS.md, CLAUDE.md, GEMINI.md, backend/README.md, frontend/README.md, website/README.md, infra/README.md, docs/README.md, docs/agents/AgentOrchestrator.md, docs/agents/standards/README.md, docs/agents/skills/README.md, docs/settings/settings.md, docs/settings/google-gemini.md, docs/adrs/ADR-0000-governanca-do-harness-documental.md
+related_files: AGENTS.md, CLAUDE.md, GEMINI.md, backend/README.md, frontend/README.md, website/README.md, infra/README.md, docs/README.md, docs/scripts/README.md, docs/agents/AgentOrchestrator.md, docs/agents/standards/README.md, docs/agents/skills/README.md, docs/settings/settings.md, docs/settings/google-gemini.md, docs/adrs/ADR-0000-governanca-do-harness-documental.md
 code_references: .agents/rules/documentation-governance.md, .agents/skills/, .claude/skills/; pacote exclusivamente documental, sem hooks ou scripts executáveis.
 principal_statement: O pacote fornece as fontes e os contratos necessarios para adotar a mesma governanca sem transportar contexto de produto ou de stack.
 ---
@@ -44,6 +44,8 @@ de produção, script executável ou decisão pertencente ao projeto de origem.
   uma com seu próprio `README.md`;
 - templates para os artefatos recorrentes;
 - contrato para conectar validadores específicos do projeto de destino.
+- extensão `docs/scripts/` migrada como material de adaptação, desativada até que
+  seus pressupostos sejam reconciliados com o projeto adotante.
 
 ## Adoção em outro projeto
 
@@ -107,6 +109,7 @@ website/README.md
 infra/README.md
 docs/
   README.md
+  scripts/{README.md,validate-*.mjs,validate-*.test.mjs}
   ai/README.md
   adrs/{README.md,ADR-0000-governanca-do-harness-documental.md}
   architecture/{README.md,module-registry.md}
@@ -140,6 +143,7 @@ docs/
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.4 | 2026-09-13 | Mapeia os scripts migrados como extensão condicional, sem declarar automação portátil ativa. |
 | 1.3 | 2026-09-13 | Inclui a capacidade opt-in `git-delivery` sem transportar scripts nem permissões do projeto de origem. |
 | 1.2 | 2026-09-11 | Inclui AgentOrchestrator como único agente inicial e a biblioteca portátil de standards com ativação condicional. |
 | 1.1 | 2026-09-11 | Adiciona suporte portátil a Gemini CLI e Antigravity e sua verificação de adoção. |
