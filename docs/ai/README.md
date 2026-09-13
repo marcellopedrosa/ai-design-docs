@@ -6,11 +6,11 @@ scope: Navegacao, ordem de leitura, relevancia e conflitos.
 non_objectives: Nao republicar regras, requisitos, decisoes, arquitetura ou configuracao de runtime.
 owner: Arquitetura
 status: Active
-version: 1.2
+version: 1.3
 date: 2026-09-10
-last_reviewed: 2026-09-11
-keywords: agentes, orquestrador, standards, navegacao, contexto-progressivo, gemini, antigravity
-related_files: ../README.md, ../adrs/README.md, ../architecture/module-registry.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../settings/google-gemini.md
+last_reviewed: 2026-09-13
+keywords: agentes, orquestrador, standards, skills, entrega-git, navegacao, contexto-progressivo, gemini, antigravity
+related_files: ../README.md, ../adrs/README.md, ../architecture/module-registry.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/skills/README.md, ../settings/settings.md, ../settings/google-gemini.md
 code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md, ../../.agents/rules/documentation-governance.md
 principal_statement: Carregue primeiro as fontes diretamente relacionadas e expanda o contexto somente por referencias ou lacunas comprovadas.
 ---
@@ -43,6 +43,7 @@ lacuna e consulte o owner.
 | Execução planejada | [`task_plans/`](../task_plans/README.md) |
 | Coordenação, decomposição ou handoff | [`AgentOrchestrator.md`](../agents/AgentOrchestrator.md) |
 | Regra técnica | [`agents/standards/`](../agents/standards/README.md) |
+| Commit ou publicação Git solicitados | [`agents/skills/`](../agents/skills/README.md), política de ambiente e ADR-0000 |
 | Operação e segurança do agente | [`settings/`](../settings/README.md) |
 
 ## Ordem para mudanças
@@ -70,5 +71,6 @@ essas fontes sem transformar este manual em configuração de runtime.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.3 | 2026-09-13 | Acrescenta a rota condicional para entrega Git governada. |
 | 1.2 | 2026-09-11 | Torna o AgentOrchestrator a entrada operacional e referencia o catálogo portátil de standards. |
 | 1.1 | 2026-09-11 | Acrescenta a rota de descoberta para Gemini CLI e Antigravity. |

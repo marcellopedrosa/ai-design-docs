@@ -30,7 +30,10 @@ Leitura local e edição reversível solicitada são permitidas no escopo. Insta
 download, rede, sistema externo, exclusão ampla e ação irreversível exigem
 autorização explícita. Não acesse produção, dados reais, segredos ou credenciais.
 Git de escrita, push, PR, merge, tag, rebase, reset ou alteração de remote não são
-autorizados por este baseline; aplique a política explícita do projeto de destino.
+autorizados por este baseline. Um projeto adotante pode autorizar somente a entrega
+governada do ADR-0000 e da skill `git-delivery` após registrar convenção de branch,
+mensagem, paths, gates, hook e publicação. A skill não concede autorização; PR,
+merge, rebase, reset, tag, force-push e alteração de remote continuam proibidos.
 
 Regras locais podem especializar seu pacote sem enfraquecer fontes superiores. No
 handoff, informe arquivos, decisões, comandos, resultados, skips, falhas,

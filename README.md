@@ -6,12 +6,12 @@ scope: Governanca documental, descoberta progressiva, planejamento, readiness, a
 non_objectives: Nao fornecer codigo, scripts executaveis, stack, dominio, credenciais ou decisoes do projeto de origem.
 owner: Mantenedores do harness
 status: Active
-version: 1.2
+version: 1.3
 date: 2026-09-10
-last_reviewed: 2026-09-11
-keywords: harness, documentacao, agentes, orquestrador, standards, clear, readiness, quality-gate, gemini, antigravity
-related_files: AGENTS.md, CLAUDE.md, GEMINI.md, backend/README.md, frontend/README.md, website/README.md, infra/README.md, docs/README.md, docs/agents/AgentOrchestrator.md, docs/agents/standards/README.md, docs/settings/google-gemini.md, docs/adrs/ADR-0000-governanca-do-harness-documental.md
-code_references: .agents/rules/documentation-governance.md, .agents/skills/, .claude/skills/; pacote exclusivamente documental.
+last_reviewed: 2026-09-13
+keywords: harness, documentacao, agentes, orquestrador, standards, clear, readiness, quality-gate, entrega-git, gemini, antigravity
+related_files: AGENTS.md, CLAUDE.md, GEMINI.md, backend/README.md, frontend/README.md, website/README.md, infra/README.md, docs/README.md, docs/agents/AgentOrchestrator.md, docs/agents/standards/README.md, docs/agents/skills/README.md, docs/settings/settings.md, docs/settings/google-gemini.md, docs/adrs/ADR-0000-governanca-do-harness-documental.md
+code_references: .agents/rules/documentation-governance.md, .agents/skills/, .claude/skills/; pacote exclusivamente documental, sem hooks ou scripts executáveis.
 principal_statement: O pacote fornece as fontes e os contratos necessarios para adotar a mesma governanca sem transportar contexto de produto ou de stack.
 ---
 
@@ -30,6 +30,8 @@ de produção, script executável ou decisão pertencente ao projeto de origem.
 - adaptadores globais para Codex, Claude Code e Gemini CLI, mais regra de
   workspace para Google Antigravity;
 - skills operacionais documentais pareadas;
+- skill `git-delivery` opt-in, com scaffold de enforcement adaptável ao projeto de
+  destino;
 - ADR de governança e mapa de precedência;
 - `AgentOrchestrator` como único agente inicial do bootstrap;
 - biblioteca portátil de standards transversais e condicionais por capacidade ou
@@ -77,6 +79,8 @@ de produção, script executável ou decisão pertencente ao projeto de origem.
    Gemini CLI, confirme contexto e skills com `/memory` e `/skills`.
 12. Execute a checklist de bootstrap do ADR-0000 e repita o inventário. A segunda
    execução deve produzir delta vazio.
+13. Se adotar entrega Git governada, aceite a política local, implemente e teste o
+   hook/validador, atualize os adaptadores e só então habilite `git-delivery`.
 
 ## Fluxo C.L.E.A.R.
 
@@ -95,8 +99,8 @@ AGENTS.md
 CLAUDE.md
 GEMINI.md
 .agents/rules/documentation-governance.md
-.agents/skills/{governanca-documental,implementation-readiness,quality-gate}/SKILL.md
-.claude/skills/{governanca-documental,implementation-readiness,quality-gate}/SKILL.md
+.agents/skills/{governanca-documental,implementation-readiness,quality-gate,git-delivery}/SKILL.md
+.claude/skills/{governanca-documental,implementation-readiness,quality-gate,git-delivery}/SKILL.md
 backend/README.md
 frontend/README.md
 website/README.md
@@ -129,11 +133,13 @@ docs/
 - O pacote não escolhe licença. Antes de publicar um repositório público, o owner
   deve adicionar uma licença compatível com o uso pretendido.
 - Este diretório não executa `git push`, cria repositório remoto nem publica no
-  GitHub. Essas ações exigem destino, política e autorização próprios.
+  GitHub. A skill distribuída só descreve o contrato para o projeto adotante; push
+  exige destino, política, enforcement e autorização próprios.
 
 ## Change log
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.3 | 2026-09-13 | Inclui a capacidade opt-in `git-delivery` sem transportar scripts nem permissões do projeto de origem. |
 | 1.2 | 2026-09-11 | Inclui AgentOrchestrator como único agente inicial e a biblioteca portátil de standards com ativação condicional. |
 | 1.1 | 2026-09-11 | Adiciona suporte portátil a Gemini CLI e Antigravity e sua verificação de adoção. |

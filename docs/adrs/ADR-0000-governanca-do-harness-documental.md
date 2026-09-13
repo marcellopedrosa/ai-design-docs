@@ -2,16 +2,16 @@
 document_id: ADR-0000
 primary_nature: Decisao
 objective: Definir a referencia normativa para inicializar e manter o harness documental e as instrucoes de agentes.
-scope: Topologia documental, precedencia, bootstrap, agente inicial, biblioteca de standards, lifecycle, readiness, assurance, skills e adaptadores Codex, Claude Code, Gemini CLI e Antigravity.
+scope: Topologia documental, precedencia, bootstrap, agente inicial, biblioteca de standards, lifecycle, readiness, assurance, skills, entrega Git opt-in e adaptadores Codex, Claude Code, Gemini CLI e Antigravity.
 non_objectives: Nao definir dominio, stack, comandos, limiares de cobertura, release, segredos ou configuracoes pessoais.
 owner: Arquitetura e mantenedores do harness
 status: Accepted
-version: 1.2
+version: 1.3
 date: 2026-09-10
-last_reviewed: 2026-09-11
-keywords: governanca, bootstrap, orquestrador, standards, clear, readiness, assurance, portabilidade, gemini, antigravity
-related_files: ../README.md, ../ai/README.md, ../settings/google-gemini.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/standards/software-engineering-lifecycle.md, ../agents/standards/implementation-readiness-standard.md, ../agents/standards/software-quality-standard.md
-code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md, ../../.agents/rules/documentation-governance.md, ../../.agents/skills/, ../../.claude/skills/
+last_reviewed: 2026-09-13
+keywords: governanca, bootstrap, orquestrador, standards, clear, readiness, assurance, entrega-git, portabilidade, gemini, antigravity
+related_files: ../README.md, ../ai/README.md, ../settings/settings.md, ../settings/google-gemini.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/standards/software-engineering-lifecycle.md, ../agents/standards/implementation-readiness-standard.md, ../agents/standards/software-quality-standard.md, ../agents/skills/README.md, ../automation/README.md
+code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md, ../../.agents/rules/documentation-governance.md, ../../.agents/skills/, ../../.claude/skills/; hooks e validadores de entrega pertencem ao projeto adotante.
 principal_statement: Todo projeto adotante converge de forma nao destrutiva para fontes tipadas, indexadas, rastreaveis e carregadas progressivamente, com readiness antes e assurance depois da implementacao.
 ---
 
@@ -51,6 +51,8 @@ Todo projeto adotante DEVE manter:
 - skills de governança, readiness e quality gate em `.agents/skills/` quando
   Codex ou Google forem suportados e variantes equivalentes em `.claude/skills/`
   quando Claude Code também for suportado;
+- a skill `git-delivery` nos paths nativos quando o projeto desejar disponibilizar
+  uma entrega Git governada opt-in;
 - mapeamento de runtime em `docs/settings/` para toda superfície suportada cuja
   descoberta, permissão ou sandbox difira do baseline agnóstico.
 
@@ -134,6 +136,7 @@ resumem e apontam; não incorporam documentos catalogados.
 | Lifecycle, readiness, quality, development e security | Standards transversais ativados conforme o tipo de mudança definido no catálogo. |
 | Standards de stack, interface, integração e capacidade | Permanecem disponíveis na biblioteca e são ativados somente por ADR, manifesto, contrato, escopo ou risco aplicável. |
 | Skills `governanca-documental`, `implementation-readiness`, `quality-gate` | Obrigatórias em cada path nativo necessário; `.agents/skills/` é compartilhado por Codex e Google e `.claude/skills/` atende Claude Code. |
+| Skill `git-delivery` | Disponível como capacidade opt-in. Só é ativada após política local aceita, hook/validador versionados, gates e comandos de publicação delimitados. |
 | `GEMINI.md` e `.agents/rules/documentation-governance.md` | Obrigatórios quando Gemini CLI e Antigravity forem suportados; compõem a política canônica sem copiá-la. |
 | Product, requirements, use cases e contracts | Ativar quando o tipo de trabalho existir. |
 | Business, analysis, reports, lessons, compliance, onboard e pocs | Ativar somente com necessidade, artefato e owner reais. |
@@ -255,6 +258,12 @@ runtime nem uma skill. Cada runtime inicia por esse papel e pode executar uma
 capacidade especializada diretamente. Criar outro agente exige o template próprio,
 entrada individual no índice e handoff que justifique sua existência.
 
+`git-delivery` não altera o baseline de menor privilégio. Sua adoção exige que o
+projeto de destino registre convenção de branch e mensagem, paths autorizados, gates
+repetidos antes da publicação, hook versionado, remote e comando de push permitidos,
+além de operações explicitamente proibidas. O scaffold distribuído pela skill é uma
+referência substituível, não uma convenção imposta pelo harness.
+
 ## 12. Segurança e autonomia
 
 Leitura local, diagnóstico não destrutivo, edição reversível solicitada e testes
@@ -262,9 +271,12 @@ seguros podem ser autônomos no escopo. Rede, instalação, sistema externo, exc
 ampla e ação irreversível exigem autorização. Produção, dados reais, segredos e
 credenciais são negados no baseline.
 
-Este pacote não autoriza Git de escrita ou entrega. O projeto de destino pode adotar
-política mais permissiva somente por decisão explícita que defina branch, paths,
-gates, comandos permitidos e operações proibidas.
+Este pacote não autoriza Git de escrita ou entrega por padrão. O projeto de destino
+PODE adotar a capacidade opt-in `git-delivery` somente por decisão explícita que
+defina branch, mensagem, paths, gates, hook, comandos/remote permitidos e operações
+proibidas. Essa autorização é limitada à criação/troca da branch aprovada, commit
+validado e push explicitamente permitido; NÃO autoriza PR, merge, rebase, reset,
+force-push, tag, alteração de remote ou leitura de credenciais.
 
 ## 13. Validação e baseline de conformidade
 
@@ -285,6 +297,8 @@ Conformidade exige:
 11. nenhuma leitura ou publicação de segredo;
 12. automação declarada como configurada ou ausente, sem falso verde;
 13. segunda avaliação do bootstrap com delta vazio.
+14. quando `git-delivery` estiver ativa, paridade entre a skill, a política local,
+    os adaptadores e o enforcement versionado, sem autorização implícita.
 
 Regras deterministas devem migrar de prompt para validador, hook, sandbox ou CI no
 projeto de destino. O contrato de automação está em `docs/automation/README.md`.
@@ -300,5 +314,6 @@ mudança. Reversão da governança exige ADR sucessor e preservação do histór
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.3 | 2026-09-13 | Disponibiliza entrega Git governada como capacidade opt-in, com enforcement local e sem ampliar o baseline de permissões. |
 | 1.2 | 2026-09-11 | Define AgentOrchestrator como único agente inicial e incorpora a biblioteca canônica de standards com ativação condicional. |
 | 1.1 | 2026-09-11 | Aceita Gemini CLI e Antigravity como adapters do harness, reutilizando `.agents/skills/` e separando arquivos versionados de settings efetivos do Project. |

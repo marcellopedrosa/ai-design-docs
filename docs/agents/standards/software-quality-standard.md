@@ -6,9 +6,9 @@ scope: A1 Test, A2 Quality, A3 Security/Compliance, niveis de execucao, metricas
 non_objectives: Nao fixar framework, comando de stack, limiar de cobertura ou autorizar ambiente externo.
 owner: Arquitetura e Qualidade
 status: Active
-version: 1.1
+version: 1.2
 date: 2026-09-10
-last_reviewed: 2026-09-11
+last_reviewed: 2026-09-13
 keywords: quality-gate, testes, cobertura, seguranca, metricas, assurance
 related_files: ../AgentOrchestrator.md, README.md, software-engineering-lifecycle.md, implementation-readiness-standard.md, development-standard.md, security-standard.md, backend-testing-standard.md, frontend-testing-standard.md, ../../automation/README.md
 code_references: N/A - executores pertencem ao projeto de destino.
@@ -42,6 +42,11 @@ Gate não decompõe retroativamente uma implementação.
 | `release` | Antes de promover artefato | Repetir `pr` e adicionar E2E, smoke e gates ambientais autorizados |
 
 `focused` não substitui `pr`; `release` não concede acesso a produção ou rede.
+
+Quando o projeto adota entrega Git governada, o nível de entrega definido localmente
+deve revalidar os gates aplicáveis antes do push e receber branch, paths e referência
+ao `READY` como entradas explícitas. Esse controle não transforma commit ou push em
+release nem autoriza operações Git fora do contrato.
 
 ## Seleção por mudança
 
@@ -106,4 +111,5 @@ dos subgates; os standards de stack acrescentam evidência somente quando ativad
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.2 | 2026-09-13 | Define a evidência de gates para entrega Git opcional sem equipará-la a release. |
 | 1.1 | 2026-09-11 | Relaciona Assurance ao orquestrador e aos standards condicionais de teste e segurança. |

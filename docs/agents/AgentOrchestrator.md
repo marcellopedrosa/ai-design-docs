@@ -6,9 +6,9 @@ scope: Entrada de trabalho, seleção de fontes e standards, decomposição, rot
 non_objectives: Não decidir produto ou arquitetura, implementar artefatos executáveis, conceder permissões, acessar produção ou presumir agentes especializados.
 owner: Arquitetura e Plataforma de IA
 status: Active
-version: 1.0
+version: 1.1
 date: 2026-09-11
-last_reviewed: 2026-09-11
+last_reviewed: 2026-09-13
 keywords: orquestrador, agente-inicial, handoff, readiness, assurance, clear
 related_files: README.md, standards/README.md, standards/software-engineering-lifecycle.md, standards/implementation-readiness-standard.md, standards/software-quality-standard.md, standards/project-reporting-standard.md, skills/README.md, ../templates/TPL-00005-task-plan.md, ../templates/TPL-00006-implementation-plan.md
 code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md, ../../.agents/skills/, ../../.claude/skills/
@@ -61,7 +61,10 @@ executável. O orquestrador identifica o owner da decisão e não inventa respos
    cada resultado independente.
 9. Corrigir e reexecutar falhas enquanto houver progresso; registrar impasse real,
    owner e condição de retomada quando BLOCKED.
-10. Entregar handoff reproduzível com arquivos, decisões, comandos, resultados,
+10. Quando o projeto tiver adotado entrega Git governada e o usuário solicitar
+    commit ou publicação, acionar `git-delivery` somente após os gates exigidos.
+    A ausência dessa adoção mantém Git de escrita bloqueado.
+11. Entregar handoff reproduzível com arquivos, decisões, comandos, resultados,
     skips, falhas, riscos e pendências.
 
 ## Contrato de handoff
@@ -92,6 +95,8 @@ Ele não pode:
 - ampliar paths, rede, sistema externo, produção, segredo ou operação destrutiva
   sem autorização própria;
 - declarar release, merge ou deploy autorizado apenas porque Assurance passou.
+- interpretar a presença da skill `git-delivery` como autorização para escrever ou
+  publicar no Git.
 
 ## Observabilidade e conclusão
 
@@ -105,4 +110,5 @@ permanece FAIL ou BLOCKED, nunca sucesso parcial implícito.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.1 | 2026-09-13 | Encaminha entrega Git somente quando o projeto a adota explicitamente. |
 | 1.0 | 2026-09-11 | Extrai o orquestrador como único agente inicial e remove dependências de domínio, stack e agentes ausentes. |
