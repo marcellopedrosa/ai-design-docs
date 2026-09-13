@@ -6,11 +6,11 @@ scope: Documentacao versionada sob docs/.
 non_objectives: Nao duplicar requisitos, decisoes, standards ou configuracao operacional.
 owner: Arquitetura e owners das colecoes
 status: Active
-version: 1.3
+version: 1.4
 date: 2026-09-10
 last_reviewed: 2026-09-13
 keywords: documentacao, indice, descoberta-progressiva, governanca, orquestrador, standards, skills, entrega-git, gemini, antigravity
-related_files: ai/README.md, adrs/ADR-0000-governanca-do-harness-documental.md, agents/AgentOrchestrator.md, agents/standards/README.md, agents/skills/README.md, automation/README.md, settings/settings.md, settings/google-gemini.md
+related_files: ai/README.md, adrs/ADR-0000-governanca-do-harness-documental.md, agents/AgentOrchestrator.md, agents/standards/README.md, agents/skills/README.md, automation/README.md, scripts/README.md, settings/settings.md, settings/google-gemini.md
 code_references: ../AGENTS.md, ../CLAUDE.md, ../GEMINI.md, ../.agents/rules/documentation-governance.md; a topologia do projeto de destino deve ser registrada no manifesto.
 principal_statement: Cada tipo de informacao possui uma fonte canonica e deve ser carregado somente quando relevante.
 ---
@@ -41,6 +41,7 @@ de verdade.
 | Skills operacionais | Contexto | Active | [agents/skills/README.md](agents/skills/README.md) |
 | Templates | Template | Active | [templates/README.md](templates/README.md) |
 | Automação documental | Contexto | Active | [automation/README.md](automation/README.md) |
+| Scripts de governança | Contexto | Partial; requer adaptação ao destino | [scripts/README.md](scripts/README.md) |
 | Negócio | Contexto | Empty baseline | [business/README.md](business/README.md) |
 | Skills de negócio | Contexto | Empty baseline | [business/skills/README.md](business/skills/README.md) |
 | Product requirements | Requisito | Empty baseline | [product_requirements/README.md](product_requirements/README.md) |
@@ -77,6 +78,7 @@ aplicável; o plano registra quais regras foram ativadas.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.4 | 2026-09-13 | Mapeia `scripts/` como extensão executável condicional, separada do contrato documental. |
 | 1.3 | 2026-09-13 | Registra a capacidade opt-in de entrega Git nos pontos de descoberta do harness. |
 | 1.2 | 2026-09-11 | Registra o orquestrador inicial e a biblioteca portátil de standards condicionais. |
 | 1.1 | 2026-09-11 | Inclui Gemini CLI e Antigravity na camada operacional do harness. |
