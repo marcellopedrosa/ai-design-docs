@@ -7,11 +7,11 @@ non_objectives: Nao definir política por código, conter runtime do produto, mi
 owner: Arquitetura e Qualidade
 status: Active
 date: 2026-08-26
-version: 1.19
+version: 1.20
 last_reviewed: 2026-09-13
 keywords: validacao-documental, governanca, ADR-0000, testes, quality-metrics, cobertura, node, portabilidade
 related_files: ../README.md, ../adrs/ADR-0000-governanca-do-harness-documental.md, ../automation/README.md, ../agents/skills/README.md, ../agents/standards/software-quality-standard.md, ../agents/standards/implementation-readiness-standard.md
-code_references: validate-documentation-governance.mjs, validate-documentation-governance.test.mjs, validate-google-runtime-governance.mjs, validate-google-runtime-governance.test.mjs, validate-api-contract-coverage.mjs, validate-api-contract-coverage.test.mjs, validate-quality-metrics.mjs, validate-quality-metrics.test.mjs, validate-plan-granularity.mjs, validate-plan-granularity.test.mjs, validate-quality-policy.mjs, validate-quality-policy.test.mjs; wrappers pertencem ao projeto adotante.
+code_references: validate-documentation-governance.mjs, validate-documentation-governance.test.mjs, validate-google-runtime-governance.mjs, validate-google-runtime-governance.test.mjs, validate-api-contract-coverage.mjs, validate-api-contract-coverage.test.mjs, validate-quality-metrics.mjs, validate-quality-metrics.test.mjs, validate-plan-granularity.mjs, validate-plan-granularity.test.mjs, validate-quality-policy.mjs, validate-quality-policy.test.mjs; wrappers, hooks e thresholds pertencem ao projeto adotante.
 principal_statement: Scripts portados só se tornam controles ativos depois de remover premissas do projeto de origem, configurar seus wrappers locais e aprovar seus testes herméticos.
 ---
 
@@ -89,7 +89,8 @@ como `Automação não configurada`.
   ADR, standards, adapters, templates, skills, executores e wrappers percam os
   contratos de métricas, loop corretivo e entrega Git mínima.
 - [Teste hermético da política](validate-quality-policy.test.mjs): cobre política
-  completa, certificação ausente, divergência de skills e descoberta Git proibida.
+  completa, certificação ausente, divergência de skills, hook de commit, branch
+  governada e descoberta Git proibida.
 
 ## Execução canônica
 
@@ -142,6 +143,7 @@ aceitas como caminho canônico; use caminho, sufixo, basename ou glob explícito
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.20 | 2026-09-13 | Alinha o catalogo portavel ao hook de commit e a entrega Git governada adotavel. |
 | 1.19 | 2026-09-13 | Reclassifica os scripts migrados como extensão condicional a ser adaptada e validada no destino. |
 | 1.18 | 2026-09-11 | Separa a governança Google em validador e teste pequenos para preservar o limite de manutenção dos targets. |
 | 1.17 | 2026-09-11 | Protege a presença e composição dos adapters Gemini CLI/Antigravity e seu mapeamento de settings. |

@@ -6,13 +6,13 @@ scope: GEMINI.md, regras e skills de workspace, projetos, permissoes, sandbox e 
 non_objectives: Nao configurar runtime no host, versionar preferencias globais em ~/.gemini, armazenar project IDs ou duplicar skills interoperaveis.
 owner: Plataforma de IA e DevOps
 status: Active
-version: 1.0
+version: 1.1
 date: 2026-09-11
-last_reviewed: 2026-09-11
+last_reviewed: 2026-09-13
 keywords: google-gemini, gemini-cli, antigravity, GEMINI.md, rules, skills, permissions, sandbox
 related_files: settings.md, ../ai/README.md, ../agents/skills/README.md, ../adrs/ADR-0000-governanca-do-harness-documental.md
 code_references: ../../GEMINI.md, ../../.agents/rules/documentation-governance.md, ../../.agents/skills/
-principal_statement: Google Gemini e Antigravity reutilizam a politica e as skills do harness por caminhos nativos, sem transformar configuracao pessoal em fonte versionada.
+principal_statement: Os runtimes Google reutilizam AGENTS.md e .agents/skills por adaptadores nativos pequenos, enquanto settings pessoais e de projeto externos ao Git sao verificados sem serem tratados como politica versionada.
 ---
 
 # Mapeamento do Google Gemini e Antigravity
@@ -21,9 +21,9 @@ principal_statement: Google Gemini e Antigravity reutilizam a politica e as skil
 
 | Superfície | Mecanismo oficial | Baseline do harness |
 | --- | --- | --- |
-| Gemini CLI | Contexto hierárquico em `GEMINI.md` e import `@file`. | `GEMINI.md` raiz importa `AGENTS.md`; um adotante cria o mesmo par em pacote somente quando existir especialização local. |
-| Google Antigravity | Regras de workspace em `.agents/rules/`. | `.agents/rules/documentation-governance.md` importa `AGENTS.md` e deve ser marcada `Always On` no Project adotante. |
-| Skills dos dois runtimes | Skills de workspace em `.agents/skills/`; Gemini CLI também aceita `.gemini/skills/`. | Reutilizar somente `.agents/skills/`, sem terceira cópia. |
+| Gemini CLI | Contexto hierarquico em `GEMINI.md` e import `@file`; skills em `.agents/skills/` ou `.gemini/skills/`. | `GEMINI.md` raiz importa `AGENTS.md`; um adotante cria o mesmo par em pacote somente quando existir especializacao local. |
+| Google Antigravity | Regras de workspace em `.agents/rules/` e skills de workspace em `.agents/skills/`. | `.agents/rules/documentation-governance.md` importa `AGENTS.md` e deve ser marcada `Always On` no Project adotante. |
+| Skills dos dois runtimes | Alias interoperavel `.agents/skills/`. | Reutilizar somente `.agents/skills/`, sem terceira copia em `.gemini/skills/` enquanto o alias for suportado. |
 | Configuração global | `~/.gemini/GEMINI.md` e configurações em `~/.gemini/`. | Pessoal, externa ao Git e subordinada à política do projeto. |
 
 ## Baseline de segurança
@@ -37,6 +37,7 @@ principal_statement: Google Gemini e Antigravity reutilizam a politica e as skil
   houver allows específicos, pois a regra mais ampla prevalece.
 - Projects podem conter múltiplas pastas; cada pasta autorizada, seus settings e
   suas regras devem ser verificados sem presumir propagação entre repositórios.
+- Mudanca em adapter exige sessao nova ou reload nativo antes da verificacao.
 
 Settings e permissões do Project são estado operacional do Antigravity. O harness
 não inventa arquivo ou schema versionado para preferências que as fontes oficiais
@@ -77,4 +78,5 @@ verificado`.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.1 | 2026-09-13 | Explicita alias interoperavel de skills, composicao por reload e verificacao operacional. |
 | 1.0 | 2026-09-11 | Adiciona o mapeamento portátil dos dois runtimes Google sem duplicar política ou skills. |

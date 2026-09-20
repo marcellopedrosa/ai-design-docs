@@ -6,11 +6,11 @@ scope: Documentacao versionada sob docs/.
 non_objectives: Nao duplicar requisitos, decisoes, standards ou configuracao operacional.
 owner: Arquitetura e owners das colecoes
 status: Active
-version: 1.4
+version: 1.5
 date: 2026-09-10
 last_reviewed: 2026-09-13
-keywords: documentacao, indice, descoberta-progressiva, governanca, orquestrador, standards, skills, entrega-git, gemini, antigravity
-related_files: ai/README.md, adrs/ADR-0000-governanca-do-harness-documental.md, agents/AgentOrchestrator.md, agents/standards/README.md, agents/skills/README.md, automation/README.md, scripts/README.md, settings/settings.md, settings/google-gemini.md
+keywords: documentacao, indice, descoberta-progressiva, governanca, orquestrador, standards, skills, entrega-git, codex, claude-code, gemini, antigravity
+related_files: ai/README.md, adrs/ADR-0000-governanca-do-harness-documental.md, agents/AgentOrchestrator.md, agents/standards/README.md, agents/skills/README.md, automation/README.md, scripts/README.md, settings/settings.md, settings/codex.md, settings/claude-code.md, settings/google-gemini.md
 code_references: ../AGENTS.md, ../CLAUDE.md, ../GEMINI.md, ../.agents/rules/documentation-governance.md; a topologia do projeto de destino deve ser registrada no manifesto.
 principal_statement: Cada tipo de informacao possui uma fonte canonica e deve ser carregado somente quando relevante.
 ---
@@ -33,7 +33,7 @@ de verdade.
 | Coleção | Natureza | Estado inicial | Índice |
 | --- | --- | --- | --- |
 | Navegação de IA | Contexto | Active | [ai/README.md](ai/README.md) |
-| Settings | Regra | Active | [settings/README.md](settings/README.md) |
+| Settings | Regra | Active; mapeia Codex, Claude Code, Gemini CLI e Antigravity quando suportados | [settings/README.md](settings/README.md) |
 | ADRs | Decisão | Active | [adrs/README.md](adrs/README.md) |
 | Arquitetura | Contexto | Active | [architecture/README.md](architecture/README.md) |
 | Agentes | Regra | AgentOrchestrator active | [agents/README.md](agents/README.md) |
@@ -78,6 +78,7 @@ aplicável; o plano registra quais regras foram ativadas.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.5 | 2026-09-13 | Indexa os mapeamentos portateis de Codex e Claude Code em settings. |
 | 1.4 | 2026-09-13 | Mapeia `scripts/` como extensão executável condicional, separada do contrato documental. |
 | 1.3 | 2026-09-13 | Registra a capacidade opt-in de entrega Git nos pontos de descoberta do harness. |
 | 1.2 | 2026-09-11 | Registra o orquestrador inicial e a biblioteca portátil de standards condicionais. |
