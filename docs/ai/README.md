@@ -6,11 +6,11 @@ scope: Navegacao, ordem de leitura, relevancia e conflitos.
 non_objectives: Nao republicar regras, requisitos, decisoes, arquitetura ou configuracao de runtime.
 owner: Arquitetura
 status: Active
-version: 1.4
+version: 1.5
 date: 2026-09-10
 last_reviewed: 2026-09-13
-keywords: agentes, orquestrador, standards, skills, entrega-git, navegacao, contexto-progressivo, gemini, antigravity
-related_files: ../README.md, ../adrs/README.md, ../architecture/module-registry.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/skills/README.md, ../automation/README.md, ../scripts/README.md, ../settings/settings.md, ../settings/google-gemini.md
+keywords: agentes, orquestrador, standards, skills, entrega-git, navegacao, contexto-progressivo, codex, claude-code, gemini, antigravity
+related_files: ../README.md, ../adrs/README.md, ../architecture/module-registry.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/skills/README.md, ../automation/README.md, ../scripts/README.md, ../settings/settings.md, ../settings/codex.md, ../settings/claude-code.md, ../settings/google-gemini.md
 code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md, ../../.agents/rules/documentation-governance.md
 principal_statement: Carregue primeiro as fontes diretamente relacionadas e expanda o contexto somente por referencias ou lacunas comprovadas.
 ---
@@ -45,7 +45,7 @@ lacuna e consulte o owner.
 | Regra técnica | [`agents/standards/`](../agents/standards/README.md) |
 | Commit ou publicação Git solicitados | [`agents/skills/`](../agents/skills/README.md), política de ambiente e ADR-0000 |
 | Adaptar ou executar validadores do harness | [`scripts/`](../scripts/README.md) e [`automation/`](../automation/README.md) |
-| Operação e segurança do agente | [`settings/`](../settings/README.md) |
+| Operação e segurança do agente | [`settings/`](../settings/README.md), incluindo o runtime ativo quando houver mapeamento próprio |
 
 ## Ordem para mudanças
 
@@ -65,13 +65,15 @@ templates, ADRs não selecionados ou pacotes fora do escopo. Eles entram somente
 relação explícita ou lacuna comprovada.
 
 Os adapters ativos são `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` e a regra de workspace
-Antigravity. O [mapeamento Google](../settings/google-gemini.md) define como validar
-essas fontes sem transformar este manual em configuração de runtime.
+Antigravity, quando o projeto adotante suportar esses runtimes. Os mapeamentos em
+[`settings/`](../settings/README.md) definem como validar essas fontes sem
+transformar este manual em configuração de runtime.
 
 ## Change log
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.5 | 2026-09-13 | Inclui rotas para os mapeamentos portateis de Codex e Claude Code. |
 | 1.4 | 2026-09-13 | Acrescenta a rota condicional para os scripts executáveis de governança. |
 | 1.3 | 2026-09-13 | Acrescenta a rota condicional para entrega Git governada. |
 | 1.2 | 2026-09-11 | Torna o AgentOrchestrator a entrada operacional e referencia o catálogo portátil de standards. |

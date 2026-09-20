@@ -6,11 +6,11 @@ scope: Regras reutilizáveis de lifecycle, engenharia, arquitetura, interfaces, 
 non_objectives: Não duplicar conteúdo normativo, ativar uma stack ou substituir especialização do projeto adotante.
 owner: Arquitetura e Qualidade
 status: Active
-version: 2.1
+version: 2.2
 date: 2026-09-10
 last_reviewed: 2026-09-13
-keywords: standards, catalogo, lifecycle, readiness, qualidade, entrega-git, stack, ativacao
-related_files: ../AgentOrchestrator.md, software-engineering-lifecycle.md, implementation-readiness-standard.md, software-quality-standard.md, development-standard.md, ../../adrs/ADR-0000-governanca-do-harness-documental.md
+keywords: standards, catalogo, lifecycle, readiness, qualidade, entrega-git, branch, hook, stack, ativacao
+related_files: ../AgentOrchestrator.md, software-engineering-lifecycle.md, implementation-readiness-standard.md, software-quality-standard.md, development-standard.md, security-standard.md, ../../settings/settings.md, ../../adrs/ADR-0000-governanca-do-harness-documental.md
 code_references: N/A - standards documentais; ativação executável pertence ao projeto adotante.
 principal_statement: Esta coleção é a fonte canônica da biblioteca portátil; presença disponibiliza uma regra, enquanto escopo, risco, ADR e manifesto determinam sua ativação.
 ---
@@ -93,12 +93,13 @@ aplicabilidade.
    decisão arquitetural explícita.
 
 Entrega Git não é um standard adicional nem uma ativação implícita deste catálogo:
-quando adotada, é uma capacidade operacional sujeita à política, aos gates e ao
-enforcement local descritos pela skill `git-delivery`.
+quando adotada, é uma capacidade operacional sujeita à política, aos gates, ao hook
+local de commit e ao enforcement local descritos pela skill `git-delivery`.
 
 ## Change log
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 2.2 | 2026-09-13 | Explicita hook local e settings como parte da ativacao opt-in de entrega Git. |
 | 2.1 | 2026-09-13 | Relaciona lifecycle, qualidade e desenvolvimento à capacidade opt-in de entrega Git. |
 | 2.0 | 2026-09-11 | Incorpora a biblioteca portátil completa e separa disponibilidade, status e ativação por projeto. |
