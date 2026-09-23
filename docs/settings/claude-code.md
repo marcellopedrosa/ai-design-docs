@@ -31,10 +31,11 @@ Imports locais podem reutilizar o adaptador do mesmo pacote, mas nao devem carre
 documentacao extensa por padrao. Mudanca de adaptador deve reexecutar o validador
 documental local e confirmar a cadeia em uma sessao nova.
 
-A configuracao efetiva deve permitir somente operacoes Git expressamente adotadas
-pelo projeto: branch/commit no escopo e push da branch certificada. Integracao,
-alteracao de historico, branches protegidas, credenciais e remotes continuam
-negados conforme a politica do harness.
+A configuracao efetiva deve permitir as operacoes Git descritas em
+[`git-delivery.md`](git-delivery.md). Trabalho em branches separadas e sua
+integracao por PR, merge, rebase ou push sao permitidos conforme os gates. Escrita
+direta e force-push na branch principal sao proibidos; credenciais nao podem ser
+acessadas.
 
 ## Change log
 

@@ -138,7 +138,7 @@ resumem e apontam; não incorporam documentos catalogados.
 | Lifecycle, readiness, quality, development e security | Standards transversais ativados conforme o tipo de mudança definido no catálogo. |
 | Standards de stack, interface, integração e capacidade | Permanecem disponíveis na biblioteca e são ativados somente por ADR, manifesto, contrato, escopo ou risco aplicável. |
 | Skills `governanca-documental`, `implementation-readiness`, `quality-gate` | Obrigatórias em cada path nativo necessário; `.agents/skills/` é compartilhado por Codex e Google e `.claude/skills/` atende Claude Code. |
-| Skill `git-delivery` | Disponível como capacidade opt-in. Só é ativada após política local aceita, hook/validador versionados, gates e comandos de publicação delimitados. |
+| Skill `git-delivery` | Capacidade disponível; cada projeto define sua política local de branches, integração, gates e proteção da branch principal. |
 | `GEMINI.md` e `.agents/rules/documentation-governance.md` | Obrigatórios quando Gemini CLI e Antigravity forem suportados; compõem a política canônica sem copiá-la. |
 | Product, requirements, use cases e contracts | Ativar quando o tipo de trabalho existir. |
 | Business, analysis, reports, lessons, compliance, onboard e pocs | Ativar somente com necessidade, artefato e owner reais. |
@@ -261,11 +261,12 @@ runtime nem uma skill. Cada runtime inicia por esse papel e pode executar uma
 capacidade especializada diretamente. Criar outro agente exige o template próprio,
 entrada individual no índice e handoff que justifique sua existência.
 
-`git-delivery` não altera o baseline de menor privilégio. Sua adoção exige que o
-projeto de destino registre convenção de branch e mensagem, paths autorizados, gates
-repetidos antes da publicação, hook versionado, remote e comando de push permitidos,
-além de operações explicitamente proibidas. O scaffold distribuído pela skill é uma
-referência substituível, não uma convenção imposta pelo harness.
+`git-delivery` não impõe uma convenção única ao harness. Cada projeto registra sua
+política local de branches, paths, gates e hooks. A política deve permitir integração
+de trabalhos independentes e proteger a branch principal contra escrita direta; PR,
+merge, rebase, tags, push e alterações de remote seguem os limites locais. Nenhuma
+regra do harness pode bloquear novos artefatos ou mudanças válidas apenas por serem
+novos. O scaffold distribuído pela skill é uma referência substituível.
 
 ## 12. Segurança e autonomia
 
@@ -274,12 +275,12 @@ seguros podem ser autônomos no escopo. Rede, instalação, sistema externo, exc
 ampla e ação irreversível exigem autorização. Produção, dados reais, segredos e
 credenciais são negados no baseline.
 
-Este pacote não autoriza Git de escrita ou entrega por padrão. O projeto de destino
-PODE adotar a capacidade opt-in `git-delivery` somente por decisão explícita que
-defina branch, mensagem, paths, gates, hook, comandos/remote permitidos e operações
-proibidas. Essa autorização é limitada à criação/troca da branch aprovada, commit
-validado e push explicitamente permitido; NÃO autoriza PR, merge, rebase, reset,
-force-push, tag, alteração de remote ou leitura de credenciais.
+Este pacote não define uma convenção Git única. A política local do projeto PODE
+autorizar branch, commit, push, PR, merge, rebase, tags e alteração de remote,
+registrando os limites e gates aplicáveis. A branch principal DEVE ser protegida
+contra escrita direta e force-push. Integrações devem preservar o trabalho das
+branches envolvidas; conflitos devem ser resolvidos sem descartar mudanças válidas.
+Leitura ou exposição de credenciais continua proibida.
 
 ## 13. Validação e baseline de conformidade
 

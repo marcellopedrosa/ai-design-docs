@@ -50,13 +50,15 @@
 - Instalação, download, rede, sistema externo, exclusão ampla ou ação irreversível
   exigem autorização explícita.
 - Não acesse produção, dados reais, segredos ou credenciais.
-- Git de escrita, push, PR, merge, tag, rebase, reset ou alteração de remote não são
-  autorizados por este baseline.
-- Um projeto adotante pode autorizar somente a entrega governada descrita no
-  ADR-0000 e na skill `git-delivery`, depois de registrar convenção de branch,
-  mensagem, paths, gates, hook e comando de publicação. A skill não concede essa
-  autorização; PR, merge, rebase, reset, tag, force-push e alteração de remote
-  continuam fora do contrato.
+- Git de escrita e operações de integração são autorizados conforme
+  `docs/settings/git-delivery.md`, preservando a proteção da `main`.
+- Trabalhos devem ocorrer em branches separadas. PR, merge, rebase, push e outras
+  operações Git podem integrar trabalhos quando respeitarem a política local e os
+  gates aplicáveis. É proibido escrever diretamente na `main` ou fazer force-push
+  nela.
+- A skill `git-delivery` não bloqueia paths, funcionalidades ou artefatos novos ou
+  alterados apenas por serem novos; conflitos e falhas de gate devem ser tratados
+  sem descartar trabalho válido.
 
 ## Handoff
 

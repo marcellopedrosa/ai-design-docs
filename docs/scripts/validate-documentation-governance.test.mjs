@@ -348,7 +348,7 @@ test('protege nome, natureza e lifecycle da coleção de PRDs', () => {
 
 test('protege o esqueleto e o fechamento do Product Definition Gate', () => {
   const index = `PRD-NNNNN-short-title.md Draft In Review Validated Deprecated
-Product Definition Gate TPL-00012-PromptTemplateCriarPRD.md
+Product Definition Gate TPL-00001-prd.md
 não copia seus acceptance criteria; referencia casos de uso sem recontar fluxos;
 referencia ADRs sem decidir arquitetura; F-<CONTEXTO>-NNN;
 referência a IDs/seção de aceite`;

@@ -103,7 +103,7 @@ export function validateRepository(repositoryRoot) {
     'AGENTS.md', 'GEMINI.md', '.agents/rules/documentation-governance.md',
     'docs/settings/google-gemini.md', 'docs/settings/README.md',
     'docs/settings/settings.md', 'docs/README.md', 'docs/ai/README.md',
-    'docs/adrs/ADR-0000-governanca-documentacao-agentes-ia.md',
+    'docs/adrs/ADR-0000-governanca-do-harness-documental.md',
     'docs/agents/skills/README.md', 'docs/architecture/module-registry.md',
     ...PACKAGES.flatMap((packageName) => [
       `${packageName}/AGENTS.md`, `${packageName}/GEMINI.md`
@@ -132,7 +132,7 @@ export function validateRepository(repositoryRoot) {
       content: read(`${packageName}/GEMINI.md`)
     })),
     googleSettings: read('docs/settings/google-gemini.md'),
-    adr: read('docs/adrs/ADR-0000-governanca-documentacao-agentes-ia.md'),
+    adr: read('docs/adrs/ADR-0000-governanca-do-harness-documental.md'),
     docsMap: read('docs/README.md'),
     aiManual: read('docs/ai/README.md'),
     settingsIndex: read('docs/settings/README.md'),

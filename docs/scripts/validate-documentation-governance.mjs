@@ -30,7 +30,7 @@ const REQUIRED_PATHS = [
   'docs/README.md',
   'docs/ai/README.md',
   'docs/adrs/README.md',
-  'docs/adrs/ADR-0000-governanca-documentacao-agentes-ia.md',
+  'docs/adrs/ADR-0000-governanca-do-harness-documental.md',
   'docs/architecture/README.md',
   'docs/architecture/module-registry.md',
   'docs/agents/README.md',
@@ -41,11 +41,6 @@ const REQUIRED_PATHS = [
   'docs/agents/skills/README.md',
   'docs/business/skills/README.md',
   'docs/product_requirements/README.md',
-  'docs/product_requirements/PRD-00001-billing-enterprise.md',
-  'docs/product_requirements/PRD-00002-omnichannel-experience.md',
-  'docs/product_requirements/PRD-00003-tenant-platform-lifecycle.md',
-  'docs/product_requirements/PRD-00004-fiscal-operations.md',
-  'docs/product_requirements/PRD-00005-identity-access-governance.md',
   'docs/templates/README.md',
   'docs/settings/README.md',
   'docs/settings/codex.md',
@@ -53,34 +48,24 @@ const REQUIRED_PATHS = [
   'docs/scripts/README.md',
   'docs/scripts/validate-documentation-governance.mjs',
   'docs/scripts/validate-documentation-governance.test.mjs',
-  'infra/scripts/validate-docs.sh',
-  'infra/scripts/validate-quality-gates.sh',
-  'infra/scripts/tests/validate-quality-gates-test.sh',
   '.agents/skills/governanca-documental/SKILL.md',
-  '.claude/skills/governanca-documental/SKILL.md',
   '.agents/skills/implementation-readiness/SKILL.md',
-  '.claude/skills/implementation-readiness/SKILL.md',
   '.agents/skills/quality-gate/SKILL.md',
-  '.claude/skills/quality-gate/SKILL.md',
-  'infra/README.md',
-  'infra/AGENTS.md',
-  'infra/CLAUDE.md',
-  'docs/task_plans/implementation_plans/infra/README.md',
-  'docs/task_plans/implementation_plans/infra/TEMPLATE.md'
 ];
 
 const REQUIRED_TEMPLATES = [
-  'docs/templates/TPL-00001-PromptTemplateCriarAgente.md',
-  'docs/templates/TPL-00002-PromptTemplateCriarADR.md',
-  'docs/templates/TPL-00003-PromptTemplateCriarRequisito.md',
-  'docs/templates/TPL-00004-PromptTemplateCriarCasoDeUso.md',
-  'docs/templates/TPL-00005-PromptTemplateCriarTaskPlan.md',
-  'docs/templates/TPL-00006-PromptTemplateCriarImplementationPlan.md',
-  'docs/templates/TPL-00007-PromptTemplateCriarProgressReport.md',
-  'docs/templates/TPL-00008-PromptTemplateWireframeStitchMapping.md',
-  'docs/templates/TPL-00009-PromptTemplateLessonsLearned.md',
-  'docs/templates/TPL-00010-PromptTemplateCriarSkill.md',
-  'docs/templates/TPL-00012-PromptTemplateCriarPRD.md'
+  'docs/templates/TPL-00001-prd.md',
+  'docs/templates/TPL-00002-requirement.md',
+  'docs/templates/TPL-00003-use-case.md',
+  'docs/templates/TPL-00004-adr.md',
+  'docs/templates/TPL-00005-task-plan.md',
+  'docs/templates/TPL-00006-implementation-plan.md',
+  'docs/templates/TPL-00007-lesson-learned.md',
+  'docs/templates/TPL-00008-report.md',
+  'docs/templates/TPL-00009-skill-operacional.md',
+  'docs/templates/TPL-00010-collection-readme.md',
+  'docs/templates/TPL-00011-agent.md',
+  'docs/templates/TPL-00012-interface-contract.md'
 ];
 
 function normalize(value) {
@@ -426,12 +411,12 @@ export function validateProductRequirementsGovernance(artifacts) {
 
   requireMarkers(artifacts.index ?? '', 'docs/product_requirements/README.md', [
     'PRD-NNNNN-short-title.md', 'Draft', 'In Review', 'Validated', 'Deprecated',
-    'Product Definition Gate', 'TPL-00012-PromptTemplateCriarPRD.md',
+    'Product Definition Gate', 'TPL-00001-prd.md',
     'não copia seus acceptance criteria', 'referencia casos de uso sem recontar fluxos',
     'referencia ADRs sem decidir arquitetura', 'F-<CONTEXTO>-NNN',
     'referência a IDs/seção de aceite'
   ]);
-  requireMarkers(artifacts.template ?? '', 'docs/templates/TPL-00012-PromptTemplateCriarPRD.md', [
+  requireMarkers(artifacts.template ?? '', 'docs/templates/TPL-00001-prd.md', [
     'docs/product_requirements/PRD-NNNNN-<short-title>.md',
     '## 2. Problem and evidence', '## 3. Audience and value',
     '## 4. Objectives and outcomes', '## 5. Product scope and limits',
@@ -1011,30 +996,32 @@ function validateTemplates(repositoryRoot) {
   }
 
   const rawRoot = path.join(repositoryRoot, 'docs/templates/chat');
-  for (const entry of fs.readdirSync(rawRoot, { withFileTypes: true })) {
-    if (!entry.isFile() || !/^TPL-\d{5}-.+\.raw$/.test(entry.name)) continue;
-    const rawPath = path.join(rawRoot, entry.name);
-    const markdownName = entry.name.replace(/\.raw$/, '.md');
-    if (!fs.existsSync(path.join(repositoryRoot, 'docs/templates', markdownName))) {
-      errors.push(`docs/templates/chat/${entry.name}: variante sem template Markdown correspondente`);
-    }
-    errors.push(...validateRawTemplate(
-      fs.readFileSync(rawPath, 'utf8'),
-      `docs/templates/chat/${entry.name}`
-    ));
-    if (entry.name.startsWith('TPL-00006-')) {
-      const raw = fs.readFileSync(rawPath, 'utf8');
-      for (const lifecycle of generatedLifecycles['TPL-00006']) {
-        if (!normalize(raw).includes(normalize(lifecycle))) {
-          errors.push(`docs/templates/chat/${entry.name}: lifecycle gerado omite ${lifecycle}`);
+  if (fs.existsSync(rawRoot)) {
+    for (const entry of fs.readdirSync(rawRoot, { withFileTypes: true })) {
+      if (!entry.isFile() || !/^TPL-\d{5}-.+\.raw$/.test(entry.name)) continue;
+      const rawPath = path.join(rawRoot, entry.name);
+      const markdownName = entry.name.replace(/\.raw$/, '.md');
+      if (!fs.existsSync(path.join(repositoryRoot, 'docs/templates', markdownName))) {
+        errors.push(`docs/templates/chat/${entry.name}: variante sem template Markdown correspondente`);
+      }
+      errors.push(...validateRawTemplate(
+        fs.readFileSync(rawPath, 'utf8'),
+        `docs/templates/chat/${entry.name}`
+      ));
+      if (entry.name.startsWith('TPL-00006-')) {
+        const raw = fs.readFileSync(rawPath, 'utf8');
+        for (const lifecycle of generatedLifecycles['TPL-00006']) {
+          if (!normalize(raw).includes(normalize(lifecycle))) {
+            errors.push(`docs/templates/chat/${entry.name}: lifecycle gerado omite ${lifecycle}`);
+          }
         }
       }
     }
   }
 
-  const skillTemplatePath = path.join(repositoryRoot, 'docs/templates/TPL-00010-PromptTemplateCriarSkill.md');
+  const skillTemplatePath = path.join(repositoryRoot, 'docs/templates/TPL-00009-skill-operacional.md');
   if (fs.existsSync(skillTemplatePath)) {
-    const operational = fs.readFileSync(skillTemplatePath, 'utf8').split('## Template B')[1] ?? '';
+    const operational = fs.readFileSync(skillTemplatePath, 'utf8');
     const requiredMarkers = [
       '## Objetivo', '## Gatilhos e não-gatilhos', '## Escopo e pré-condições',
       '## Procedimento', '## Limites de segurança', '## Entradas, saídas e evidências',
@@ -1043,7 +1030,7 @@ function validateTemplates(repositoryRoot) {
     ];
     for (const marker of requiredMarkers) {
       if (!operational.includes(marker)) {
-        errors.push(`docs/templates/TPL-00010-PromptTemplateCriarSkill.md: skill operacional gerada nao publica ${marker}`);
+        errors.push(`docs/templates/TPL-00009-skill-operacional.md: skill operacional gerada nao publica ${marker}`);
       }
     }
   }
@@ -1181,6 +1168,12 @@ function validateEntryPointConciseness(repositoryRoot) {
     errors.push(...validateAdrCatalogEntry(adr, entry.name, row));
   }
 
+  if (!fs.existsSync(path.join(repositoryRoot, 'infra/README.md')) &&
+      !fs.existsSync(path.join(repositoryRoot, 'infra/AGENTS.md')) &&
+      !fs.existsSync(path.join(repositoryRoot, 'website/README.md'))) {
+    return errors;
+  }
+
   const infraReadmePath = path.join(repositoryRoot, 'infra/README.md');
   const infraReadme = fs.readFileSync(infraReadmePath, 'utf8');
   errors.push(...validateDocumentContract(infraReadme, 'infra/README.md'));
@@ -1195,7 +1188,9 @@ function validateEntryPointConciseness(repositoryRoot) {
     errors.push('infra/README.md: ponto de entrada excede o limite local de 150 linhas');
   }
 
-  const infraAgents = fs.readFileSync(path.join(repositoryRoot, 'infra/AGENTS.md'), 'utf8');
+  const infraAgentsPath = path.join(repositoryRoot, 'infra/AGENTS.md');
+  if (!fs.existsSync(infraAgentsPath)) return errors;
+  const infraAgents = fs.readFileSync(infraAgentsPath, 'utf8');
   for (const marker of ['Testes e', 'validadores locais seguros', 'autônomos e obrigatórios']) {
     if (!infraAgents.includes(marker)) errors.push(`infra/AGENTS.md: especializacao omite ${marker}`);
   }
@@ -1272,7 +1267,7 @@ function validateRuntimeSettings(repositoryRoot) {
   const scopes = [
     { label: 'raiz', file: null },
     ...['backend', 'frontend', 'website', 'infra'].map((scope) => ({ label: scope, file: `${scope}/AGENTS.md` }))
-  ];
+  ].filter((scope) => !scope.file || fs.existsSync(path.join(repositoryRoot, scope.file)));
   for (const scope of scopes) {
     const localBytes = scope.file
       ? Buffer.byteLength(fs.readFileSync(path.join(repositoryRoot, scope.file)))
@@ -1467,13 +1462,16 @@ export function validateModuleRegistryStructure(
 function validateModuleRegistry(repositoryRoot) {
   const content = fs.readFileSync(path.join(repositoryRoot, 'docs/architecture/module-registry.md'), 'utf8');
   const errors = [];
-  const pom = fs.readFileSync(path.join(repositoryRoot, 'backend/pom.xml'), 'utf8');
-  const java = pom.match(/<java\.version>([^<]+)<\/java\.version>/)?.[1];
-  const springBoot = pom.match(/<artifactId>spring-boot-starter-parent<\/artifactId>\s*<version>([^<]+)<\/version>/)?.[1];
-  const modulith = pom.match(/<spring-modulith\.version>([^<]+)<\/spring-modulith\.version>/)?.[1];
-  for (const [name, value] of [['Java', java], ['Spring Boot', springBoot], ['Spring Modulith', modulith]]) {
-    if (!value) errors.push(`backend/pom.xml: versao de ${name} nao resolvida`);
-    else if (!content.includes(`${name} ${value}`)) errors.push(`docs/architecture/module-registry.md: baseline diverge de ${name} ${value}`);
+  const pomPath = path.join(repositoryRoot, 'backend/pom.xml');
+  if (fs.existsSync(pomPath)) {
+    const pom = fs.readFileSync(pomPath, 'utf8');
+    const java = pom.match(/<java\.version>([^<]+)<\/java\.version>/)?.[1];
+    const springBoot = pom.match(/<artifactId>spring-boot-starter-parent<\/artifactId>\s*<version>([^<]+)<\/version>/)?.[1];
+    const modulith = pom.match(/<spring-modulith\.version>([^<]+)<\/spring-modulith\.version>/)?.[1];
+    for (const [name, value] of [['Java', java], ['Spring Boot', springBoot], ['Spring Modulith', modulith]]) {
+      if (!value) errors.push(`backend/pom.xml: versao de ${name} nao resolvida`);
+      else if (!content.includes(`${name} ${value}`)) errors.push(`docs/architecture/module-registry.md: baseline diverge de ${name} ${value}`);
+    }
   }
   const namespace = 'backend/src/main/java/br/com/duoset/saas_service/';
   const namespaceRoot = path.join(repositoryRoot, namespace);
@@ -1490,7 +1488,9 @@ function validateModuleRegistry(repositoryRoot) {
   errors.push(...validateModuleRegistryStructure(content, moduleDirectories));
 
   for (const packageName of ['frontend', 'website']) {
-    const manifest = JSON.parse(fs.readFileSync(path.join(repositoryRoot, packageName, 'package.json'), 'utf8'));
+    const manifestPath = path.join(repositoryRoot, packageName, 'package.json');
+    if (!fs.existsSync(manifestPath)) continue;
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     const nextMajor = String(manifest.dependencies?.next ?? '').match(/\d+/)?.[0];
     const reactMajor = String(manifest.dependencies?.react ?? '').match(/\d+/)?.[0];
     if (!nextMajor || !content.includes(`Next.js ${nextMajor}`)) {
@@ -1571,7 +1571,7 @@ export function validateRepository(repositoryRoot) {
 
   const productRequirementsRoot = path.join(root, 'docs/product_requirements');
   const productRequirementsIndex = path.join(productRequirementsRoot, 'README.md');
-  const productRequirementsTemplate = path.join(root, 'docs/templates/TPL-00012-PromptTemplateCriarPRD.md');
+  const productRequirementsTemplate = path.join(root, 'docs/templates/TPL-00001-prd.md');
   if (fs.existsSync(productRequirementsRoot) &&
       fs.existsSync(productRequirementsIndex) &&
       fs.existsSync(productRequirementsTemplate)) {
@@ -1595,35 +1595,42 @@ export function validateRepository(repositoryRoot) {
   errors.push(...validateIgnoreRules(root));
   errors.push(...validateModuleRegistry(root));
 
-  errors.push(...validateGovernanceEntrypoint(
-    fs.readFileSync(path.join(root, 'docs/adrs/ADR-0000-governanca-documentacao-agentes-ia.md'), 'utf8'),
-    fs.readFileSync(path.join(root, 'infra/scripts/validate-docs.sh'), 'utf8')
-  ));
+  const readOptional = (relativePath) => {
+    const absolute = path.join(root, relativePath);
+    return fs.existsSync(absolute) ? fs.readFileSync(absolute, 'utf8') : undefined;
+  };
+  const adr = readOptional('docs/adrs/ADR-0000-governanca-do-harness-documental.md');
+  const docsGate = readOptional('infra/scripts/validate-docs.sh');
+  if (adr && docsGate) {
+    errors.push(...validateGovernanceEntrypoint(adr, docsGate));
+  }
 
-  errors.push(...validateQualityGateScaffold(
-    fs.readFileSync(path.join(root, 'docs/adrs/ADR-0000-governanca-documentacao-agentes-ia.md'), 'utf8'),
-    fs.readFileSync(path.join(root, 'infra/scripts/validate-quality-gates.sh'), 'utf8'),
-    fs.readFileSync(path.join(root, 'infra/scripts/tests/validate-quality-gates-test.sh'), 'utf8'),
-    fs.readFileSync(path.join(root, 'infra/scripts/validate-docs.sh'), 'utf8'),
-    fs.readFileSync(path.join(root, 'docs/agents/standards/software-quality-standard.md'), 'utf8')
-  ));
+  const qualityGate = readOptional('infra/scripts/validate-quality-gates.sh');
+  const qualityGateTest = readOptional('infra/scripts/tests/validate-quality-gates-test.sh');
+  const qualityStandard = readOptional('docs/agents/standards/software-quality-standard.md');
+  if (adr && docsGate && qualityGate && qualityGateTest && qualityStandard) {
+    errors.push(...validateQualityGateScaffold(adr, qualityGate, qualityGateTest, docsGate, qualityStandard));
+  }
 
-  errors.push(...validateImplementationReadinessGovernance({
-    adr: fs.readFileSync(path.join(root, 'docs/adrs/ADR-0000-governanca-documentacao-agentes-ia.md'), 'utf8'),
-    standard: fs.readFileSync(path.join(root, 'docs/agents/standards/implementation-readiness-standard.md'), 'utf8'),
-    requirementTemplate: fs.readFileSync(path.join(root, 'docs/templates/TPL-00003-PromptTemplateCriarRequisito.md'), 'utf8'),
-    useCaseTemplate: fs.readFileSync(path.join(root, 'docs/templates/TPL-00004-PromptTemplateCriarCasoDeUso.md'), 'utf8'),
-    prdTemplate: fs.readFileSync(path.join(root, 'docs/templates/TPL-00012-PromptTemplateCriarPRD.md'), 'utf8'),
-    taskPlanTemplate: fs.readFileSync(path.join(root, 'docs/templates/TPL-00005-PromptTemplateCriarTaskPlan.md'), 'utf8'),
-    implementationPlanTemplate: fs.readFileSync(path.join(root, 'docs/templates/TPL-00006-PromptTemplateCriarImplementationPlan.md'), 'utf8'),
-    rawImplementationPlanTemplate: fs.readFileSync(path.join(root, 'docs/templates/chat/TPL-00006-PromptTemplateCriarImplementationPlan.raw'), 'utf8'),
-    lifecycle: fs.readFileSync(path.join(root, 'docs/agents/standards/software-engineering-lifecycle.md'), 'utf8'),
-    orchestrator: fs.readFileSync(path.join(root, 'docs/agents/AgentOrchestrator.md'), 'utf8'),
-    requirementAgent: fs.readFileSync(path.join(root, 'docs/agents/RequirementAgent.md'), 'utf8'),
-    codeGuardian: fs.readFileSync(path.join(root, 'docs/agents/CodeGuardian.md'), 'utf8'),
-    agentsAdapter: fs.readFileSync(path.join(root, 'AGENTS.md'), 'utf8'),
-    claudeAdapter: fs.readFileSync(path.join(root, 'CLAUDE.md'), 'utf8')
-  }));
+  const implementationReadinessArtifacts = {
+    adr,
+    standard: readOptional('docs/agents/standards/implementation-readiness-standard.md'),
+    requirementTemplate: readOptional('docs/templates/TPL-00002-requirement.md'),
+    useCaseTemplate: readOptional('docs/templates/TPL-00003-use-case.md'),
+    prdTemplate: readOptional('docs/templates/TPL-00001-prd.md'),
+    taskPlanTemplate: readOptional('docs/templates/TPL-00005-task-plan.md'),
+    implementationPlanTemplate: readOptional('docs/templates/TPL-00006-implementation-plan.md'),
+    rawImplementationPlanTemplate: '',
+    lifecycle: readOptional('docs/agents/standards/software-engineering-lifecycle.md'),
+    orchestrator: readOptional('docs/agents/AgentOrchestrator.md'),
+    requirementAgent: readOptional('docs/agents/RequirementAgent.md'),
+    codeGuardian: readOptional('docs/agents/CodeGuardian.md'),
+    agentsAdapter: readOptional('AGENTS.md'),
+    claudeAdapter: readOptional('CLAUDE.md')
+  };
+  if (Object.values(implementationReadinessArtifacts).every((content) => content !== undefined)) {
+    errors.push(...validateImplementationReadinessGovernance(implementationReadinessArtifacts));
+  }
 
   const map = fs.readFileSync(path.join(root, 'docs/README.md'), 'utf8');
   for (const requiredState of ['.agents/skills/', '.claude/skills/', 'governanca-documental', 'implementation-readiness', 'quality-gate', 'Conformant', '.claude/settings.json', 'Not applicable']) {

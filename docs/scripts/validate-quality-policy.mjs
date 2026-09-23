@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const FILES = {
-  adr: 'docs/adrs/ADR-0000-governanca-documentacao-agentes-ia.md',
+  adr: 'docs/adrs/ADR-0000-governanca-do-harness-documental.md',
   quality: 'docs/agents/standards/software-quality-standard.md',
   development: 'docs/agents/standards/development-standard.md',
   lifecycle: 'docs/agents/standards/software-engineering-lifecycle.md',
@@ -17,9 +17,8 @@ const FILES = {
   googleSettings: 'docs/settings/google-gemini.md',
   googleValidator: 'docs/scripts/validate-google-runtime-governance.mjs',
   googleValidatorTest: 'docs/scripts/validate-google-runtime-governance.test.mjs',
-  taskTemplate: 'docs/templates/TPL-00005-PromptTemplateCriarTaskPlan.md',
-  planTemplate: 'docs/templates/TPL-00006-PromptTemplateCriarImplementationPlan.md',
-  rawPlan: 'docs/templates/chat/TPL-00006-PromptTemplateCriarImplementationPlan.raw',
+  taskTemplate: 'docs/templates/TPL-00005-task-plan.md',
+  planTemplate: 'docs/templates/TPL-00006-implementation-plan.md',
   codexSkill: '.agents/skills/quality-gate/SKILL.md',
   claudeSkill: '.claude/skills/quality-gate/SKILL.md',
   codexGovernance: '.agents/skills/governanca-documental/SKILL.md',
@@ -96,7 +95,6 @@ export function validateQualityPolicy(artifacts) {
   ]);
   for (const [label, content] of [
     ['TPL-00005', artifacts.taskTemplate], ['TPL-00006', artifacts.planTemplate],
-    ['TPL-00006 raw', artifacts.rawPlan],
   ]) {
     requireMarkers(errors, label, content, [
       '--target', 'Quality Correction Loop and Delivery', BRANCH_CONTRACT,

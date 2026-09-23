@@ -25,8 +25,8 @@ principal_statement: O Codex compoe adaptadores progressivos e so prepara ou pub
   `.agents/skills/<nome>/SKILL.md`.
 - A skill `governanca-documental` executa a validacao agregada; `implementation-readiness`
   bloqueia handoff executavel sem fontes e DoD prontos; `quality-gate` orquestra
-  Teste x QA quando software for alterado; `git-delivery` fica condicionada a
-  politica local aceita.
+  Teste x QA quando software for alterado; `git-delivery` segue a politica local
+  de integracao e protecao da branch principal.
 
 ## Baseline versionado e configuracao pessoal
 
@@ -44,10 +44,10 @@ Aplicam-se a precedencia e a matriz de autonomia de `settings.md`. Mudanca de
 adaptador deve reexecutar o validador documental local e confirmar, em sessao nova,
 quais arquivos foram carregados pelo runtime.
 
-A permissao Git do runtime deve representar exatamente o ADR-0000 adotado:
-branch/commit no escopo e push da branch certificada podem ser permitidos; merge,
-rebase, force-push, branches protegidas, credenciais, tags e alteracao de remote
-permanecem proibidos.
+A permissao Git do runtime deve representar a politica local em
+[`git-delivery.md`](git-delivery.md): trabalho em branches separadas e integracao
+por PR, merge, rebase ou push sao permitidos conforme os gates. Escrita direta e
+force-push na branch principal sao proibidos; credenciais nao podem ser acessadas.
 
 ## Change log
 
