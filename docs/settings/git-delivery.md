@@ -6,13 +6,13 @@ scope: Branches, commits, publicacao, revisao e integracao de mudancas deste pro
 non_objectives: Nao definir fluxo de produto, convencao universal de nomes ou acesso a credenciais.
 owner: Mantenedores do projeto
 status: Active
-version: 1.0
+version: 1.1
 date: 2026-09-23
 last_reviewed: 2026-09-23
 keywords: git, branches, multiagentes, integracao, main, pull-request
 related_files: settings.md, ../adrs/ADR-0000-governanca-do-harness-documental.md, ../../AGENTS.md, ../../.agents/skills/git-delivery/SKILL.md
 code_references: N/A - politica documental.
-principal_statement: Trabalhos podem ser desenvolvidos e integrados em branches independentes; a branch principal main nao recebe escrita direta nem force-push.
+principal_statement: Todo commit solicitado e publicado na branch de trabalho definida, enquanto a branch principal main permanece protegida contra escrita direta e force-push.
 ---
 
 # Politica de entrega Git
@@ -27,6 +27,9 @@ Neste repositório, a branch principal é `main`.
   separadas para permitir execucao paralela.
 - PR, push, merge, rebase, tags e alteracao de remote podem ser usados para publicar,
   revisar e integrar trabalho, respeitando os gates e as protecoes do repositorio.
+- Todo commit solicitado nesta politica deve ser seguido obrigatoriamente de push
+  para a branch de trabalho definida para a entrega. O push nao pode ter como
+  destino a `main`.
 - Nenhuma operacao pode escrever diretamente na `main` ou fazer force-push nela.
 - Integracao nao deve descartar silenciosamente commits ou mudancas validas de
   qualquer branch participante.
@@ -38,14 +41,22 @@ Neste repositório, a branch principal é `main`.
    `main` diretamente.
 2. Desenvolva e valide as mudancas na branch isolada, preservando os paths e
    resultados produzidos por outros participantes.
-3. Publique a branch e abra PR quando o fluxo do repositorio usar revisao por PR.
-4. Antes de integrar, resolva conflitos considerando as intencoes de todas as
+3. Depois do commit, publique obrigatoriamente a branch definida, usando o remote
+   configurado e o upstream dessa branch; se ainda nao houver upstream, publique
+   explicitamente a branch de trabalho. Nunca use `main` como destino.
+4. Abra PR quando o fluxo do repositorio usar revisao por PR.
+5. Antes de integrar, resolva conflitos considerando as intencoes de todas as
    mudancas envolvidas e execute novamente os gates afetados.
-5. Integre por merge, rebase ou mecanismo equivalente permitido pelas protecoes do
+6. Integre por merge, rebase ou mecanismo equivalente permitido pelas protecoes do
    repositorio. A integracao deve preservar autoria e historico conforme a
    convencao local.
-6. Confirme que a `main` recebeu mudancas pela integracao aprovada e que os gates
-   exigidos passaram.
+7. Confirme que a branch de trabalho foi publicada e que a `main` so recebeu
+   mudancas pela integracao aprovada e que os gates exigidos passaram.
+
+Se o push da branch de trabalho falhar por conectividade, autenticacao, ausencia de
+remote ou protecao do servidor, preserve o commit local e reporte a entrega como
+bloqueada, com a causa. Nao substitua o destino nem altere o remote para contornar
+o bloqueio.
 
 ## Paths, gates e convencoes
 
@@ -80,4 +91,5 @@ protecões configuradas no servidor.
 
 | Versao | Data | Mudanca |
 | --- | --- | --- |
+| 1.1 | 2026-09-23 | Torna obrigatorio publicar na branch de trabalho todo commit solicitado, mantendo a `main` protegida. |
 | 1.0 | 2026-09-23 | Define integracao multiagente e protecao da branch principal. |

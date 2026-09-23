@@ -6,9 +6,9 @@ scope: Nome, gatilho, owner, estado e caminhos nativos das skills.
 non_objectives: Nao armazenar SKILL.md nem duplicar seu procedimento.
 owner: Plataforma de IA
 status: Active
-version: 1.3
+version: 1.4
 date: 2026-09-10
-last_reviewed: 2026-09-13
+last_reviewed: 2026-09-23
 keywords: skills, catalogo, codex, claude-code, gemini-cli, antigravity
 related_files: ../AgentOrchestrator.md, ../standards/README.md, ../../adrs/ADR-0000-governanca-do-harness-documental.md, ../../settings/google-gemini.md, ../../templates/TPL-00009-skill-operacional.md
 code_references: ../../../.agents/skills/, ../../../.claude/skills/, ../../../.agents/rules/documentation-governance.md
@@ -51,10 +51,15 @@ skill executa um procedimento e não cria um novo papel de agente.
 suas convenções e proteções; branches de trabalho podem ser integradas sem escrita
 direta ou force-push na branch principal.
 
+Todo commit solicitado como entrega deve ser seguido obrigatoriamente de push para
+a branch de trabalho definida. Falhas de publicação são reportadas como `BLOCKED`
+sem mudar o destino ou alterar o remote.
+
 ## Change log
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.4 | 2026-09-23 | Esclarece que commit solicitado exige push da branch de trabalho definida. |
 | 1.3 | 2026-09-13 | Cataloga `git-delivery` como capacidade opt-in de entrega governada. |
 | 1.2 | 2026-09-11 | Relaciona o catálogo ao AgentOrchestrator sem transformar skills em agentes. |
 | 1.1 | 2026-09-11 | Registra o reuso das skills `.agents` pelos runtimes Google. |

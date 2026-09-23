@@ -39,11 +39,15 @@ efetivas do repositório.
 3. Inclua todos os paths necessários ao resultado aprovado, inclusive artefatos
    novos, sem descartar mudanças de outros participantes.
 4. Execute os gates aplicáveis antes de publicar ou integrar.
-5. Publique a branch e use PR, merge, rebase ou o fluxo de integração do repositório.
+5. Após cada commit solicitado, faça obrigatoriamente push para a branch de trabalho
+   definida, usando o remote configurado. Nunca publique diretamente na `main`.
+   Se o push falhar, preserve o commit local e reporte `BLOCKED` com a causa; não
+   altere o remote nem troque o destino para contornar a falha.
 6. Resolva conflitos considerando as intenções de todos os trabalhos; repita gates
-   afetados e registre branch, paths, SHA, comandos e resultados.
-7. Confirme que nenhuma operação escreveu diretamente na `main` ou fez force-push
-   nela.
+   afetados, abra PR quando aplicável e registre branch, destino do push, paths,
+   SHA, comandos e resultados.
+7. Confirme que o push publicou a branch definida e que nenhuma operação escreveu
+   diretamente na `main` ou fez force-push nela.
 
 ## Limites
 
@@ -69,8 +73,8 @@ e adapte-o à política local antes de habilitar a skill.
 
 ## Saídas
 
-Commit ou integração na branch de trabalho com SHA, branches, paths e gates
-registrados; falhas permanecem explícitas e mudanças pendentes são preservadas.
+Commit e push da branch de trabalho com SHA, branches, paths e gates registrados;
+falhas permanecem explícitas e mudanças pendentes são preservadas.
 
 ## Critério de conclusão
 
