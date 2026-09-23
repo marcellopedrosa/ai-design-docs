@@ -17,6 +17,10 @@ principal_statement: Skill instrui um procedimento repetivel e aponta para stand
 
 # Template — Operational Skill
 
+Crie em `.agents/skills/<nome>/SKILL.md` e, quando Claude Code for suportado,
+espelhe o núcleo em `.claude/skills/<nome>/SKILL.md`; atualize o catálogo em
+`docs/agents/skills/README.md` na mesma mudança.
+
 Crie o mesmo núcleo semântico em cada runtime suportado e atualize o catálogo.
 
 ```markdown

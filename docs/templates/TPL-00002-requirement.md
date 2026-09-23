@@ -17,6 +17,9 @@ principal_statement: Requirement e a fonte canonica de comportamento e so avanca
 
 # Template — Requirement
 
+Crie em `docs/requirements/REQ-NNNNN-<short-title>.md` e atualize o `README.md` da
+coleção na mesma mudança.
+
 ```markdown
 ---
 document_id: REQ-NNNNN

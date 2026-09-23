@@ -1,40 +1,68 @@
 # Instruções globais do projeto para Claude Code
 
-Este adaptador é semanticamente equivalente ao `AGENTS.md` da raiz. Comece por
-`docs/ai/README.md`, use `docs/README.md` como mapa, consulte
-`docs/adrs/README.md` antes de ADRs específicos e use
-`docs/architecture/module-registry.md` para módulos, owners e comandos.
-`docs/agents/AgentOrchestrator.md` é o único papel inicial: ele classifica a
-solicitação, seleciona standards e coordena gates sem presumir outros agentes.
+Estas instruções são semanticamente equivalentes ao `AGENTS.md` da raiz. Este
+arquivo governa toda a árvore; instruções locais podem especializar sua subárvore,
+mas não enfraquecer segurança, ADR aceito ou standard global.
 
-Toda alteração em `docs/` atualiza o `README.md` da coleção imediata e atende ao
-contrato mínimo e à taxonomia do ADR-0000. Execute o validador documental do
-projeto; se ele ainda não existir, valide estrutura, metadados, links e índices
-manualmente e reporte `Automação não configurada`.
+## Entrada documental
 
-Antes de escrever código, configuração executável, migration ou IaC, aplique a
-skill `implementation-readiness` e exija `READY` para task ID, versões, escopo e
-paths exatos. PRD aplicável não `Validated`, hipótese ou assumption pendente, Open
-Question, `TBD`, conflito, dependência ausente ou DoD subjetiva produz `BLOCKED`.
-Falta de atomicidade aciona decomposição semântica por resultado e handoff, nunca
-divisão puramente por arquivo, camada, linhas ou testes. Em `BLOCKED`, materialize
-a resposta na fonte canônica, obtenha a aprovação aplicável e repita o gate.
+- Antes de trabalhar, leia `docs/ai/README.md`. Use `docs/README.md` como mapa e não
+  carregue coleções inteiras sem necessidade.
+- Use `docs/agents/AgentOrchestrator.md` como papel inicial para classificar a
+  solicitação, selecionar standards e coordenar gates. Nenhum outro agente é
+  presumido ativo pelo baseline.
+- Consulte `docs/adrs/README.md` antes de abrir um ADR e
+  `docs/architecture/module-registry.md` para módulos, owners e comandos.
 
-Toda mudança de software cria ou atualiza teste relevante e executa teste
-focalizado, suíte impactada e gates aplicáveis em ambiente seguro. A1 Test, A2
-Quality e A3 Security/Compliance são independentes e exigem evidência própria. O
-Quality Gate deve corresponder ao mesmo `READY`; divergência retorna ao planejamento.
-Não reduza limiar, omita teste nem produza falso verde.
+## Documentação
 
-Leitura local e edição reversível solicitada são permitidas no escopo. Instalação,
-download, rede, sistema externo, exclusão ampla e ação irreversível exigem
-autorização explícita. Não acesse produção, dados reais, segredos ou credenciais.
-Git de escrita, push, PR, merge, tag, rebase, reset ou alteração de remote não são
-autorizados por este baseline. Um projeto adotante pode autorizar somente a entrega
-governada do ADR-0000 e da skill `git-delivery` após registrar convenção de branch,
-mensagem, paths, gates, hook e publicação. A skill não concede autorização; PR,
-merge, rebase, reset, tag, force-push e alteração de remote continuam proibidos.
+- Todo artefato criado, movido, renomeado, reclassificado ou removido em `docs/`
+  deve atualizar o `README.md` da coleção imediata na mesma mudança.
+- Todo documento atende ao contrato mínimo e à taxonomia do ADR-0000.
+- Execute o validador documental configurado no projeto. Se ainda não houver um,
+  valide estrutura, metadados, links e índices manualmente e registre a lacuna como
+  `Automação não configurada`.
 
-Regras locais podem especializar seu pacote sem enfraquecer fontes superiores. No
-handoff, informe arquivos, decisões, comandos, resultados, skips, falhas,
-limitações e pendências; não declare conclusão sem evidência reproduzível.
+## Antes de implementação
+
+- Aplique `implementation-readiness` antes de escrever código, configuração
+  executável, migration ou IaC e exija `READY` para o task ID, versões, escopo e
+  paths exatos.
+- PRD aplicável não `Validated`, assumption ou hipótese não encerrada, Open
+  Question, `TBD`, conflito, dependência ausente ou DoD subjetiva produz `BLOCKED`.
+- Falta de atomicidade aciona decomposição semântica por resultado e handoff. Não
+  divida apenas por arquivo, camada, quantidade de linhas ou testes.
+- Em `BLOCKED`, não infira decisão. Materialize a resposta na fonte canônica,
+  obtenha a aprovação aplicável e repita o gate.
+
+## Execução e assurance
+
+- Toda mudança de software cria ou atualiza teste relevante e executa teste
+  focalizado, suíte impactada e gates aplicáveis em ambiente seguro.
+- O Quality Gate exige o mesmo `READY` usado pela implementação. Divergência de
+  versão, escopo ou path retorna ao planejamento.
+- A1 Test, A2 Quality e A3 Security/Compliance são independentes. Um resultado
+  verde não aprova os demais.
+- Corrija falhas pertencentes ao escopo e reexecute enquanto houver progresso. Não
+  reduza limiar, omita teste ou produza falso verde.
+
+## Segurança e entrega Git
+
+- Leitura local e edição reversível solicitada são permitidas dentro do escopo.
+- Instalação, download, rede, sistema externo, exclusão ampla ou ação irreversível
+  exigem autorização explícita.
+- Não acesse produção, dados reais, segredos ou credenciais.
+- Git de escrita e operações de integração são autorizados conforme
+  `docs/settings/git-delivery.md`, preservando a proteção da `main`.
+- Trabalhos devem ocorrer em branches separadas. PR, merge, rebase, push e outras
+  operações Git podem integrar trabalhos quando respeitarem a política local e os
+  gates aplicáveis. É proibido escrever diretamente na `main` ou fazer force-push
+  nela.
+- A skill `git-delivery` não bloqueia paths, funcionalidades ou artefatos novos ou
+  alterados apenas por serem novos; conflitos e falhas de gate devem ser tratados
+  sem descartar trabalho válido.
+
+## Handoff
+
+Informe arquivos alterados, decisões, comandos, resultados, skips, falhas,
+limitações e pendências. Não declare conclusão sem evidência reproduzível.

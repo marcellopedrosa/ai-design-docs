@@ -63,6 +63,19 @@ O [AgentOrchestrator](agents/AgentOrchestrator.md) é o único agente inicial. A
 presença de um standard no catálogo o torna disponível, não automaticamente
 aplicável; o plano registra quais regras foram ativadas.
 
+## Matriz de ativação
+
+| Capacidade | Descoberta | Estado de referência |
+| --- | --- | --- |
+| Skills compartilhadas | `.agents/skills/` | Conformant quando indexadas e pareadas com o runtime suportado |
+| Skills Claude Code | `.claude/skills/` | Conformant quando espelham o núcleo compartilhado |
+| Configuração específica do Claude Code | `.claude/settings.json` | Not applicable no baseline; permissões seguem a configuração efetiva do ambiente |
+| Skills de governança | `governanca-documental`, `implementation-readiness`, `quality-gate` | Conformant quando os descritores e o catálogo concordam |
+
+`Conformant`, `Partial`, `Planned` e `Not applicable` descrevem o estado de adoção
+local. A presença de um path ou skill não ativa permissões fora da política e dos
+adaptadores vigentes.
+
 ## Regra de leitura
 
 1. Comece em [ai/README.md](ai/README.md).

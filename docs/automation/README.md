@@ -17,6 +17,13 @@ principal_statement: Automacao deve falhar de forma fechada e publicar evidencia
 
 # Contratos de automação
 
+## Contrato da coleção
+
+- Nomes: `README.md` para o contrato e `<assunto>` para cada capacidade descrita.
+- Estados: `Draft`, `Active`, `Deprecated`; estado `Active` não comprova execução.
+- Critério de granularidade: separar contratos quando owner, interface ou lifecycle
+  de adoção forem independentes.
+
 Este pacote é exclusivamente documental. O projeto adotante deve implementar os
 entrypoints abaixo na linguagem e no local compatíveis com sua stack.
 

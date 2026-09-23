@@ -17,6 +17,9 @@ principal_statement: Implementation Plan mantem codigo, teste e evidencia do mes
 
 # Template — Implementation Plan
 
+Crie em `docs/task_plans/implementation_plans/<area>/IP-<AREA>-NNNNN-short-title.md`
+e atualize o `README.md` imediato na mesma mudança.
+
 ```markdown
 ---
 document_id: IP-AREA-NNNNN

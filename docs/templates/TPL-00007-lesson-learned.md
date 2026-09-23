@@ -17,6 +17,9 @@ principal_statement: A licao preserva o mecanismo da falha e a prevencao reutili
 
 # Template — Lesson Learned
 
+Crie em `docs/lessons_learned/<area>/LL-<AREA>-NNNNN-short-title.md` e atualize o
+`README.md` imediato na mesma mudança.
+
 ```markdown
 ---
 document_id: LL-AREA-NNNNN

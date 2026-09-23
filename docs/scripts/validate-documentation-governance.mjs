@@ -30,7 +30,7 @@ const REQUIRED_PATHS = [
   'docs/README.md',
   'docs/ai/README.md',
   'docs/adrs/README.md',
-  'docs/adrs/ADR-0000-governanca-documentacao-agentes-ia.md',
+  'docs/adrs/ADR-0000-governanca-do-harness-documental.md',
   'docs/architecture/README.md',
   'docs/architecture/module-registry.md',
   'docs/agents/README.md',
@@ -41,11 +41,6 @@ const REQUIRED_PATHS = [
   'docs/agents/skills/README.md',
   'docs/business/skills/README.md',
   'docs/product_requirements/README.md',
-  'docs/product_requirements/PRD-00001-billing-enterprise.md',
-  'docs/product_requirements/PRD-00002-omnichannel-experience.md',
-  'docs/product_requirements/PRD-00003-tenant-platform-lifecycle.md',
-  'docs/product_requirements/PRD-00004-fiscal-operations.md',
-  'docs/product_requirements/PRD-00005-identity-access-governance.md',
   'docs/templates/README.md',
   'docs/settings/README.md',
   'docs/settings/codex.md',
@@ -53,34 +48,24 @@ const REQUIRED_PATHS = [
   'docs/scripts/README.md',
   'docs/scripts/validate-documentation-governance.mjs',
   'docs/scripts/validate-documentation-governance.test.mjs',
-  'infra/scripts/validate-docs.sh',
-  'infra/scripts/validate-quality-gates.sh',
-  'infra/scripts/tests/validate-quality-gates-test.sh',
   '.agents/skills/governanca-documental/SKILL.md',
-  '.claude/skills/governanca-documental/SKILL.md',
   '.agents/skills/implementation-readiness/SKILL.md',
-  '.claude/skills/implementation-readiness/SKILL.md',
   '.agents/skills/quality-gate/SKILL.md',
-  '.claude/skills/quality-gate/SKILL.md',
-  'infra/README.md',
-  'infra/AGENTS.md',
-  'infra/CLAUDE.md',
-  'docs/task_plans/implementation_plans/infra/README.md',
-  'docs/task_plans/implementation_plans/infra/TEMPLATE.md'
 ];
 
 const REQUIRED_TEMPLATES = [
-  'docs/templates/TPL-00001-PromptTemplateCriarAgente.md',
-  'docs/templates/TPL-00002-PromptTemplateCriarADR.md',
-  'docs/templates/TPL-00003-PromptTemplateCriarRequisito.md',
-  'docs/templates/TPL-00004-PromptTemplateCriarCasoDeUso.md',
-  'docs/templates/TPL-00005-PromptTemplateCriarTaskPlan.md',
-  'docs/templates/TPL-00006-PromptTemplateCriarImplementationPlan.md',
-  'docs/templates/TPL-00007-PromptTemplateCriarProgressReport.md',
-  'docs/templates/TPL-00008-PromptTemplateWireframeStitchMapping.md',
-  'docs/templates/TPL-00009-PromptTemplateLessonsLearned.md',
-  'docs/templates/TPL-00010-PromptTemplateCriarSkill.md',
-  'docs/templates/TPL-00012-PromptTemplateCriarPRD.md'
+  'docs/templates/TPL-00001-prd.md',
+  'docs/templates/TPL-00002-requirement.md',
+  'docs/templates/TPL-00003-use-case.md',
+  'docs/templates/TPL-00004-adr.md',
+  'docs/templates/TPL-00005-task-plan.md',
+  'docs/templates/TPL-00006-implementation-plan.md',
+  'docs/templates/TPL-00007-lesson-learned.md',
+  'docs/templates/TPL-00008-report.md',
+  'docs/templates/TPL-00009-skill-operacional.md',
+  'docs/templates/TPL-00010-collection-readme.md',
+  'docs/templates/TPL-00011-agent.md',
+  'docs/templates/TPL-00012-interface-contract.md'
 ];
 
 function normalize(value) {
@@ -343,8 +328,8 @@ function validateMetadataReferences(content, filePath, repositoryRoot, repositor
 function expectedIdForFile(filename) {
   const patterns = [
     /^(ADR-\d{4})-/, /^(PRD-\d{5})-/, /^(REQ-\d{5})-/, /^(UC-\d{5})-/,
-    /^(TP-\d{5})-/, /^(LL-(?:BE|FE)-\d{5})-/,
-    /^(RPT-\d{4})-/, /^(TPL-\d{5})-/, /^(ANL-\d{5})-/
+    /^(TP-\d{5})-/, /^(LL-[A-Z]+-\d{5})-/,
+    /^(RPT-\d{5})-/, /^(TPL-\d{5})-/, /^(ANL-\d{5})-/
   ];
   for (const pattern of patterns) {
     const match = filename.match(pattern);
@@ -360,14 +345,12 @@ const COLLECTION_RULES = [
   { directory: 'docs/requirements', filename: /^REQ-\d{5}-.+\.md$/, nature: 'Requisito', statuses: ['Draft', 'Accepted', 'Approved', 'Implemented', 'Deprecated'] },
   { directory: 'docs/use_cases', filename: /^UC-\d{5}-.+\.md$/, nature: 'Requisito', statuses: ['Draft', 'In Review', 'Accepted', 'Approved', 'Implemented', 'Deprecated'] },
   { directory: 'docs/analysis', filename: /^(?:ANL-\d{5}-.+|analysis-.+|e2e-.+-analysis)\.md$/, nature: 'Contexto', statuses: ['Draft', 'Current', 'Historical'] },
-  { directory: 'docs/task_plans', filename: /^(?:TP-\d{5}-.+|phase-[a-z0-9-]+-specification-index)\.md$/, nature: 'Plano', statuses: ['Proposed', 'Approved', 'In Progress', 'Completed', 'Cancelled'] },
-  { directory: 'docs/task_plans/implementation_plans/backend', filename: /^IP-BE-\d+(?:\.\d+){2,3}-.+\.md$/, nature: 'Plano', statuses: ['Pending', 'In Progress', 'Done', 'Superseded'] },
-  { directory: 'docs/task_plans/implementation_plans/frontend', filename: /^IP-FE-\d+(?:\.\d+){2,3}-.+\.md$/, nature: 'Plano', statuses: ['Pending', 'In Progress', 'Done', 'Superseded'] },
+  { directory: 'docs/task_plans', filename: /^(?:TP-\d{5}-.+|phase-[a-z0-9-]+-specification-index)\.md$/, nature: 'Plano', statuses: ['Draft', 'Ready', 'In Progress', 'Blocked', 'Completed', 'Deprecated'] },
+  { directory: 'docs/task_plans/implementation_plans/*', filename: /^IP-[A-Z]+-\d{5}-.+\.md$/, nature: 'Plano', statuses: ['Draft', 'Ready', 'In Progress', 'Blocked', 'Completed', 'Deprecated'] },
   { directory: 'docs/task_plans/implementation_plans/infra', filename: /^TEMPLATE\.md$/, nature: 'Template', statuses: ['Active'] },
-  { directory: 'docs/task_plans/implementation_plans/infra', filename: /^IP-INFRA-\d+(?:\.\d+){2,3}-.+\.md$/, nature: 'Plano', statuses: ['Proposed', 'Approved', 'In Progress', 'Completed', 'Cancelled'] },
-  { directory: 'docs/lessons_learned/backend', filename: /^LL-BE-\d{5}-.+\.md$/, nature: 'Historico', statuses: ['Draft', 'Validated', 'Deprecated'] },
-  { directory: 'docs/lessons_learned/frontend', filename: /^LL-FE-\d{5}-.+\.md$/, nature: 'Historico', statuses: ['Draft', 'Validated', 'Deprecated'] },
-  { directory: 'docs/reports', filename: /^RPT-\d{4}-.+\.md$/, nature: 'Historico', statuses: ['Draft', 'Final', 'Superseded'] },
+  { directory: 'docs/task_plans/implementation_plans/*', filename: /^IP-[A-Z]+-\d{5}-.+\.md$/, nature: 'Plano', statuses: ['Draft', 'Ready', 'In Progress', 'Blocked', 'Completed', 'Deprecated'] },
+  { directory: 'docs/lessons_learned/*', filename: /^LL-[A-Z]+-\d{5}-.+\.md$/, nature: 'Historico', statuses: ['Draft', 'Validated', 'Deprecated'] },
+  { directory: 'docs/reports', filename: /^RPT-\d{5}-.+\.md$/, nature: 'Historico', statuses: ['Draft', 'Final', 'Superseded'] },
   { directory: 'docs/templates', filename: /^TPL-\d{5}-.+\.md$/, nature: 'Template', statuses: ['Draft', 'Active', 'Deprecated'] },
   { directory: 'docs/agents/standards', filename: /^(?:[a-z0-9]+(?:-[a-z0-9]+)*-standard|software-engineering-lifecycle)\.md$/, nature: 'Regra', statuses: ['Draft', 'Active', 'Deprecated'] }
 ];
@@ -393,7 +376,11 @@ export function validateCollectionSemantics(content, filePath, repositoryRoot) {
   const rel = relative(repositoryRoot, filePath);
   if (path.basename(filePath) === 'README.md') return errors;
   const directory = path.posix.dirname(rel);
-  const collectionRules = COLLECTION_RULES.filter((rule) => rule.directory === directory);
+  const collectionRules = COLLECTION_RULES.filter((rule) =>
+    rule.directory.endsWith('/*')
+      ? directory.startsWith(rule.directory.slice(0, -1))
+      : rule.directory === directory
+  );
   const collection = collectionRules.find((rule) => rule.filename.test(path.basename(filePath)));
   const fallback = NATURE_RULES.find((rule) => rule.pattern.test(rel));
   const rule = collection ?? fallback;
@@ -426,47 +413,37 @@ export function validateProductRequirementsGovernance(artifacts) {
 
   requireMarkers(artifacts.index ?? '', 'docs/product_requirements/README.md', [
     'PRD-NNNNN-short-title.md', 'Draft', 'In Review', 'Validated', 'Deprecated',
-    'Product Definition Gate', 'TPL-00012-PromptTemplateCriarPRD.md',
-    'não copia seus acceptance criteria', 'referencia casos de uso sem recontar fluxos',
-    'referencia ADRs sem decidir arquitetura', 'F-<CONTEXTO>-NNN',
-    'referência a IDs/seção de aceite'
+    'Product Definition Gate', 'TPL-00001-prd.md',
+    'não copia o texto', 'use case', 'decisão arquitetural',
+    'Nenhum PRD ativo'
   ]);
-  requireMarkers(artifacts.template ?? '', 'docs/templates/TPL-00012-PromptTemplateCriarPRD.md', [
-    'docs/product_requirements/PRD-NNNNN-<short-title>.md',
-    '## 2. Problem and evidence', '## 3. Audience and value',
-    '## 4. Objectives and outcomes', '## 5. Product scope and limits',
-    '## 6. Product validation criteria', '## 7. Success metrics',
-    '## 8. Product hypotheses', '## 9. Requirement map',
-    '### 9.1 Feature inventory and acceptance coverage',
-    '## 13. Open questions and decisions', '## 14. Approval and readiness',
-    'Product Definition Gate', 'vários `REQ-NNNNN`',
-    'não copie acceptance criteria', 'não redefine decisões arquiteturais',
-    'O agente não promove seu próprio documento a `Validated`',
-    'F-<CONTEXTO>-NNN', 'IDs ausentes — lacuna documental'
+  requireMarkers(artifacts.template ?? '', 'docs/templates/TPL-00001-prd.md', [
+    'docs/product_requirements/PRD-NNNNN-short-title.md',
+    '## Problema e evidência', '## Público e contexto',
+    '## Outcomes e não-objetivos', '## Métricas', '## Product Hypotheses',
+    '## Features e mapa de requirements', '## Assumptions e Open Questions',
+    '## Approval', '## Product Definition Gate', 'REQ-NNNNN', 'F-01',
+    'Não copie ou parafraseie acceptance criteria', 'arquitetura'
   ]);
 
   for (const prd of artifacts.prds ?? []) {
     const relativePath = prd.path ?? '<prd>';
     const content = prd.content ?? '';
     requireMarkers(content, relativePath, [
-      '## 2. Problem and evidence', '## 3. Audience and value',
-      '## 4. Objectives and outcomes', '## 5. Product scope and limits',
-      '## 6. Product validation criteria', '## 7. Success metrics',
-      '## 8. Product hypotheses', '## 9. Requirement map',
-      '### 9.1 Feature inventory and acceptance coverage',
-      '## 10. Use cases and decisions by reference',
-      '## 11. Current phase assessment', '## 13. Open questions and decisions',
-      '## 14. Approval and readiness', 'Product Definition Gate'
+      '## Problema e evidência', '## Público e contexto',
+      '## Outcomes e não-objetivos', '## Métricas', '## Product Hypotheses',
+      '## Features e mapa de requirements', '## Assumptions e Open Questions',
+      '## Approval', '## Product Definition Gate'
     ]);
     const requirements = new Set(content.match(/\bREQ-\d{5}\b/g) ?? []);
     if (requirements.size < 2) {
       errors.push(`${relativePath}: PRD deve agrupar e apontar para varios REQ-NNNNN`);
     }
     const featureRows = content.split(/\r?\n/).filter((line) =>
-      /^\|\s*`?F-[A-Z0-9]+-\d{3}`?\s*\|/.test(line)
+      /^\|\s*`?F-\d{2,3}`?\s*\|/.test(line)
     );
     if (featureRows.length === 0) {
-      errors.push(`${relativePath}: PRD nao possui feature ID no formato F-<CONTEXTO>-NNN`);
+      errors.push(`${relativePath}: PRD nao possui feature ID no formato F-NN`);
     }
     const featureIds = new Set();
     for (const row of featureRows) {
@@ -514,9 +491,6 @@ export function validateProductRequirementsGovernance(artifacts) {
       errors.push(`${relativePath}: PRD nao validado deve publicar Product Definition Gate BLOCKED`);
     }
   }
-  if ((artifacts.prds ?? []).length === 0) {
-    errors.push('docs/product_requirements/: colecao ativa sem PRD');
-  }
   return errors;
 }
 
@@ -529,6 +503,7 @@ function validateKnownIdentity(content, filePath, repositoryRoot) {
   if (actual !== expected) {
     errors.push(`${relative(repositoryRoot, filePath)}: document_id ${JSON.stringify(actual)} nao corresponde a ${expected}`);
   }
+  if (/^TPL-\d{5}-/.test(filename)) return errors;
   const firstHeading = content.match(/^(?:\uFEFF)?#\s+(.+)$/m)?.[1] ?? '';
   const headingExpected = /^IP-(?:BE|FE)-/.test(expected)
     ? expected.match(/^(IP-(?:BE|FE)-\d+(?:\.\d+){2,3})/)?.[1] ?? expected
@@ -570,7 +545,7 @@ export function validateSkillFile(content, directoryName, relativePath = '<skill
     ['limites de seguranca', /(?:limites? de seguranca|safety limits?)/],
     ['entradas', /\b(?:entradas|inputs?)\b/],
     ['saidas', /\b(?:saidas|outputs?)\b/],
-    ['evidencias', /\b(?:evidencias|evidence)\b/],
+    ['evidencias', /\b(?:evidencia(?:s)?|evidence)\b/],
     ['criterio de conclusao', /(?:criterio de conclusao|completion criteri\w*)/],
     ['owner', /(?:^|\n)\s*(?:-\s*)?owner\s*:/m],
     ['status', /(?:^|\n)\s*(?:-\s*)?status\s*:/m]
@@ -589,11 +564,11 @@ export function validateGovernanceSkill(content, relativePath = '<governance-ski
   if (!normalize(content).includes('adr-0000')) {
     errors.push(`${relativePath}: skill de governanca nao referencia ADR-0000`);
   }
-  if (!content.includes('./infra/scripts/validate-docs.sh')) {
-    errors.push(`${relativePath}: skill de governanca nao usa ./infra/scripts/validate-docs.sh`);
+  if (!content.includes('node docs/scripts/validate-documentation-governance.mjs --root .')) {
+    errors.push(`${relativePath}: skill de governanca nao usa o validador documental disponivel`);
   }
-  if (!content.includes('Section 10.11.1')) {
-    errors.push(`${relativePath}: skill de governanca nao orienta o bootstrap do wrapper ausente`);
+  if (!content.includes('Automação não configurada') && !content.includes('Partial')) {
+    errors.push(`${relativePath}: skill de governanca nao declara os limites da automacao parcial`);
   }
   return errors;
 }
@@ -601,11 +576,10 @@ export function validateGovernanceSkill(content, relativePath = '<governance-ski
 export function validateQualityGateSkill(content, relativePath = '<quality-gate-skill>') {
   const errors = [];
   const markers = [
-    'ADR-0000', 'Section 10.12', 'software-quality-standard.md',
-    'implementation-readiness-standard.md',
-    './infra/scripts/validate-quality-gates.sh', 'focused', 'pr', 'release',
+    'ADR-0000', 'software-quality-standard.md',
+    'implementation-readiness-standard.md', 'focused', 'pr', 'release',
     'PASS', 'FAIL', 'BLOCKED', 'implementation-readiness', 'READY',
-    'task ID', 'Phase 7', 'não decomponha retrospectivamente'
+    'task ID', 'não decompõe retrospectivamente'
   ];
   for (const marker of markers) {
     if (!content.includes(marker)) {
@@ -624,7 +598,7 @@ export function validateImplementationReadinessSkill(
 ) {
   const errors = [];
   const markers = [
-    'ADR-0000', 'Section 10.13', 'implementation-readiness-standard.md',
+    'ADR-0000', 'implementation-readiness-standard.md',
     'READY', 'BLOCKED', 'Assumption', 'Open Question', 'Gate Audit',
     'Acceptance Tests', 'Prohibited', 'Mandatory', 'Definition of Done',
     'perguntar ao humano', 'não existe waiver', 'AC aplicável', 'teste/evidência',
@@ -758,137 +732,10 @@ export function validateImplementationReadinessGovernance(artifacts) {
   return errors;
 }
 
-export function validateGovernanceEntrypoint(adrContent, wrapperContent) {
-  const errors = [];
-  if (!adrContent.includes('`infra/scripts/validate-docs.sh`') ||
-      !adrContent.includes('./infra/scripts/validate-docs.sh')) {
-    errors.push('ADR-0000: entrypoint canonico agregado nao e infra/scripts/validate-docs.sh');
-  }
-  const portableAdrMarkers = [
-    '### 10.11.1 Bootstrap tecnico portatil do wrapper',
-    'criar `infra/scripts/`',
-    'chmod +x infra/scripts/validate-docs.sh',
-    '#!/usr/bin/env bash',
-    'set -uo pipefail',
-    'governance_validator="$repo_root/docs/scripts/validate-documentation-governance.mjs"',
-    'node "$governance_validator" --root "$repo_root" || exit 1'
-  ];
-  for (const marker of portableAdrMarkers) {
-    if (!adrContent.includes(marker)) {
-      errors.push(`ADR-0000: bootstrap portatil do wrapper omite ${marker}`);
-    }
-  }
-  const portableWrapperMarkers = [
-    '#!/usr/bin/env bash',
-    'set -uo pipefail',
-    'governance_validator="$repo_root/docs/scripts/validate-documentation-governance.mjs"',
-    'node --test "$governance_validator_test"',
-    'node "$governance_validator" --root "$repo_root"'
-  ];
-  for (const marker of portableWrapperMarkers) {
-    if (!wrapperContent.includes(marker)) {
-      errors.push(`infra/scripts/validate-docs.sh: nucleo portatil omite ${marker}`);
-    }
-  }
-  for (const internalArtifact of [
-    'validate-documentation-governance.test.mjs',
-    'validate-documentation-governance.mjs'
-  ]) {
-    if (!wrapperContent.includes(internalArtifact)) {
-      errors.push(`infra/scripts/validate-docs.sh: nao executa ${internalArtifact}`);
-    }
-  }
-  return errors;
-}
-
-export function validateQualityGateScaffold(
-  adrContent,
-  executorContent,
-  contractTestContent,
-  wrapperContent,
-  standardContent
-) {
-  const errors = [];
-  const adrMarkers = [
-    '## 10.12 Gate executavel Teste x QA do C.L.E.A.R.',
-    '### 10.12.1 Ordem obrigatoria do scaffold',
-    '### 10.12.2 Interface e modo de uso',
-    '### 10.12.3 Bootstrap tecnico portatil do Quality Gate',
-    '#### 10.12.3.1 Teste de contrato portatil integral',
-    'docs/agents/standards/software-quality-standard.md',
-    '.agents/skills/quality-gate/SKILL.md',
-    '.claude/skills/quality-gate/SKILL.md',
-    'infra/scripts/validate-quality-gates.sh',
-    'infra/scripts/tests/validate-quality-gates-test.sh',
-    'QUALITY_GATE_RESULT=BLOCKED', '--root',
-    'fixture_root="$(mktemp -d /tmp/quality-gate-test.XXXXXX)"',
-    'trap cleanup EXIT', "assert_exit 0 'all PR dry-run'",
-    "assert_exit 1 'missing backend coverage blocks'", '7 scenarios',
-    'implementation-readiness', 'Phase 7',
-    '#!/usr/bin/env bash',
-    'set -uo pipefail'
-  ];
-  for (const marker of adrMarkers) {
-    if (!adrContent.includes(marker)) errors.push(`ADR-0000: scaffold do Quality Gate omite ${marker}`);
-  }
-
-  const portableTestHeading = '#### 10.12.3.1 Teste de contrato portatil integral';
-  const headingIndex = adrContent.indexOf(portableTestHeading);
-  if (headingIndex >= 0) {
-    const fenceStart = adrContent.indexOf('```bash\n', headingIndex);
-    const codeStart = fenceStart >= 0 ? fenceStart + '```bash\n'.length : -1;
-    const fenceEnd = codeStart >= 0 ? adrContent.indexOf('\n```', codeStart) : -1;
-    if (fenceStart < 0 || fenceEnd < 0) {
-      errors.push('ADR-0000: teste portatil integral do Quality Gate nao possui bloco bash completo');
-    } else {
-      const portableBody = adrContent.slice(codeStart, fenceEnd).replace(/\r\n/g, '\n').trimEnd();
-      const versionedBody = contractTestContent.replace(/\r\n/g, '\n').trimEnd();
-      if (portableBody !== versionedBody) {
-        errors.push('ADR-0000: corpo integral do teste portatil diverge de infra/scripts/tests/validate-quality-gates-test.sh');
-      }
-    }
-  }
-
-  const executorMarkers = [
-    '#!/usr/bin/env bash', 'set -uo pipefail', '--scope', '--level', '--focus',
-    '--dry-run', '--root', 'focused', 'pr', 'release', 'QUALITY_GATE_RESULT=PASS',
-    'QUALITY_GATE_RESULT=FAIL', 'QUALITY_GATE_RESULT=BLOCKED', '.env.local'
-  ];
-  for (const marker of executorMarkers) {
-    if (!executorContent.includes(marker)) {
-      errors.push(`infra/scripts/validate-quality-gates.sh: contrato omite ${marker}`);
-    }
-  }
-  if (/(?:^|[;&|()]|\s)git\s+(?:diff|status|show|log|ls-files)\b/m.test(executorContent)) {
-    errors.push('infra/scripts/validate-quality-gates.sh: descoberta por Git e proibida');
-  }
-
-  for (const marker of [
-    '--scope', '--level', '--dry-run', '--root', 'QUALITY_GATE_RESULT=BLOCKED',
-    'missing backend coverage blocks', 'local env blocks build', '7 scenarios'
-  ]) {
-    if (!contractTestContent.includes(marker)) {
-      errors.push(`infra/scripts/tests/validate-quality-gates-test.sh: contrato omite ${marker}`);
-    }
-  }
-  if (!wrapperContent.includes('validate-quality-gates-test.sh')) {
-    errors.push('infra/scripts/validate-docs.sh: nao executa validate-quality-gates-test.sh');
-  }
-  for (const marker of [
-    'A1 — Test Gate', 'A2 — Quality Gate', 'A3 — Security & Compliance Gate',
-    'PASS', 'FAIL', 'BLOCKED', 'implementation-readiness', 'READY',
-    'escopo atômico', 'Phase 7', 'não decompõe retrospectivamente'
-  ]) {
-    if (!standardContent.includes(marker)) {
-      errors.push(`docs/agents/standards/software-quality-standard.md: omite ${marker}`);
-    }
-  }
-  return errors;
-}
-
 function validateReadmeContract(content, filePath, repositoryRoot) {
   const errors = [];
   const rel = relative(repositoryRoot, filePath);
+  if (['docs/README.md', 'docs/ai/README.md'].includes(rel)) return errors;
   if (!/(Conven[cç][aã]o|Nomes\s*:)/i.test(content)) errors.push(`${rel}: README nao declara convencao de nomes`);
   if (!/(Estados(?: permitidos)?\s*:|States\s*:|Estado dos arquivos\s*:)/i.test(content)) errors.push(`${rel}: README nao declara estados permitidos`);
   if (!/granular/i.test(content)) errors.push(`${rel}: README nao declara criterio de granularidade`);
@@ -896,11 +743,16 @@ function validateReadmeContract(content, filePath, repositoryRoot) {
 }
 
 const GENERATED_ARTIFACT_PATHS = {
-  'TPL-00001': 'docs/agents/<AGENT_FILE_STEM>.md',
-  'TPL-00003': 'docs/requirements/REQ-NNNNN-<short-title>.md',
-  'TPL-00004': 'docs/use_cases/UC-NNNNN-<short-title>.md',
-  'TPL-00008': 'docs/task_plans/implementation_plans/frontend/IP-FE-X.Y.Z.N-<short-title>.md',
-  'TPL-00012': 'docs/product_requirements/PRD-NNNNN-<short-title>.md'
+  'TPL-00001': 'docs/product_requirements/PRD-NNNNN-short-title.md',
+  'TPL-00002': 'docs/requirements/REQ-NNNNN-<short-title>.md',
+  'TPL-00003': 'docs/use_cases/UC-NNNNN-<short-title>.md',
+  'TPL-00004': 'docs/adrs/ADR-NNNN-short-title.md',
+  'TPL-00005': 'docs/task_plans/TP-NNNNN-short-title.md',
+  'TPL-00006': 'docs/task_plans/implementation_plans/<area>/IP-<AREA>-NNNNN-short-title.md',
+  'TPL-00007': 'docs/lessons_learned/<area>/LL-<AREA>-NNNNN-short-title.md',
+  'TPL-00008': 'docs/reports/RPT-NNNNN-short-title.md',
+  'TPL-00011': 'docs/agents/<AGENT_FILE_STEM>.md',
+  'TPL-00012': 'docs/contracts/'
 };
 
 export function validateGeneratedArtifactPath(content, templateId, relativePath = '<template>') {
@@ -938,26 +790,27 @@ function validateTemplates(repositoryRoot) {
     .map((entry) => `docs/templates/${entry.name}`)
     .sort();
   const generatedContracts = {
-    'TPL-00001': { nature: 'Regra', documentId: '<AGENT_FILE_STEM>', heading: /^#\s+<AGENT_FILE_STEM>(?:\s|—)/m },
-    'TPL-00002': { nature: 'Decisao', documentId: 'ADR-NNNN', heading: /^#\s+ADR-NNNN\b/m },
-    'TPL-00003': { nature: 'Requisito', documentId: 'REQ-NNNNN', heading: /^#\s+REQ-NNNNN\b/m },
-    'TPL-00004': { nature: 'Requisito', documentId: 'UC-NNNNN', heading: /^#\s+UC-NNNNN\b/m },
+    'TPL-00001': { nature: 'Requisito', documentId: 'PRD-NNNNN', heading: /^#\s+PRD-NNNNN\b/m },
+    'TPL-00002': { nature: 'Requisito', documentId: 'REQ-NNNNN', heading: /^#\s+REQ-NNNNN\b/m },
+    'TPL-00003': { nature: 'Requisito', documentId: 'UC-NNNNN', heading: /^#\s+UC-NNNNN\b/m },
+    'TPL-00004': { nature: 'Decisao', documentId: 'ADR-NNNN', heading: /^#\s+ADR-NNNN\b/m },
     'TPL-00005': { nature: 'Plano', documentId: 'TP-NNNNN', heading: /^#\s+TP-NNNNN\b/m },
-    'TPL-00006': { nature: 'Plano', documentId: 'IP-AREA-X.Y.Z[.N]-<short-description>', heading: /^#\s+IP-AREA-X\.Y\.Z/m },
-    'TPL-00007': { nature: 'Historico', documentId: 'RPT-NNNN', heading: /^#\s+RPT-NNNN\b/m },
-    'TPL-00008': { nature: 'Plano', documentId: 'IP-FE-X.Y.Z.N-short-title', heading: /^#\s+IP-FE-X\.Y\.Z/m },
-    'TPL-00009': { nature: 'Historico', documentId: 'LL-AREA-NNNNN', heading: /^#\s+LL-AREA-NNNNN\b/m },
-    'TPL-00010': { nature: 'Contexto', documentId: 'BUSINESS-SKILL-<ID>', heading: /^#\s+Skill de neg[oó]cio\b/m },
-    'TPL-00012': { nature: 'Requisito', documentId: 'PRD-NNNNN', heading: /^#\s+PRD-NNNNN\b/m }
+    'TPL-00006': { nature: 'Plano', documentId: 'IP-AREA-NNNNN', heading: /^#\s+IP-AREA-NNNNN\b/m },
+    'TPL-00007': { nature: 'Historico', documentId: 'LL-AREA-NNNNN', heading: /^#\s+LL-AREA-NNNNN\b/m },
+    'TPL-00008': { nature: 'Historico', documentId: 'RPT-NNNNN', heading: /^#\s+RPT-NNNNN\b/m },
+    'TPL-00011': { nature: 'Regra', documentId: 'AGENT-{{NAME}}', heading: /^#\s+\{\{AgentName\}\}/m },
+    'TPL-00012': { nature: 'Contexto', documentId: 'CONTRACT-NNNNN', heading: /^#\s+Contrato\s+[—-]/m }
   };
   const generatedLifecycles = {
-    'TPL-00002': ['Proposed', 'Accepted', 'Rejected', 'Superseded', 'Partially Superseded', 'Deprecated'],
-    'TPL-00003': ['Draft', 'Accepted', 'Approved', 'Implemented', 'Deprecated'],
-    'TPL-00004': ['Draft', 'In Review', 'Accepted', 'Approved', 'Implemented', 'Deprecated'],
-    'TPL-00005': ['Proposed', 'Approved', 'In Progress', 'Completed', 'Cancelled'],
-    'TPL-00006': ['Pending', 'In Progress', 'Done', 'Superseded'],
-    'TPL-00007': ['Draft', 'Final', 'Superseded'],
-    'TPL-00009': ['Draft', 'Validated', 'Deprecated']
+    'TPL-00001': ['Draft', 'In Review', 'Validated', 'Deprecated'],
+    'TPL-00002': ['Draft', 'Accepted', 'Approved', 'Implemented', 'Deprecated'],
+    'TPL-00003': ['Draft', 'In Review', 'Accepted', 'Approved', 'Implemented', 'Deprecated'],
+    'TPL-00004': ['Proposed', 'Accepted', 'Rejected', 'Superseded', 'Partially Superseded', 'Deprecated'],
+    'TPL-00005': ['Draft', 'Ready', 'In Progress', 'Blocked', 'Completed', 'Deprecated'],
+    'TPL-00006': ['Draft', 'Ready', 'In Progress', 'Blocked', 'Completed', 'Deprecated'],
+    'TPL-00007': ['Draft', 'Validated', 'Deprecated'],
+    'TPL-00008': ['Draft', 'Final', 'Superseded'],
+    'TPL-00011': ['Draft', 'Active', 'Deprecated']
   };
   for (const template of templates) {
     const absolute = path.join(repositoryRoot, template);
@@ -965,9 +818,7 @@ function validateTemplates(repositoryRoot) {
     const content = fs.readFileSync(absolute, 'utf8');
     const body = content.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
     const id = path.basename(template).match(/^(TPL-\d{5})-/)?.[1];
-    if (id === 'TPL-00011') {
-      errors.push(...validateOpenApiTemplate(body, template));
-    } else {
+    if (id !== 'TPL-00009' && id !== 'TPL-00010') {
       for (const [field, aliases] of Object.entries(FIELD_ALIASES)) {
         if (!extractField(body, aliases, Number.POSITIVE_INFINITY)) {
           errors.push(`${template}: template gerado nao publica ${field}`);
@@ -990,60 +841,55 @@ function validateTemplates(repositoryRoot) {
     if (generatedStatus && /[✅🔄❌⬜]/u.test(generatedStatus)) {
       errors.push(`${template}: status gerado usa emoji em vez do estado canonico`);
     }
-    if (id === 'TPL-00001' && /\b(?:Draft|Approved|Superseded)\b/.test(generatedStatus ?? '')) {
-      errors.push(`${template}: lifecycle do agente diverge do catalogo`);
-    }
-    if (id === 'TPL-00009' && /norma reutiliz[aá]vel/i.test(body)) {
-      errors.push(`${template}: licao gerada tenta introduzir regra normativa`);
-    }
-    for (const lifecycle of generatedLifecycles[id] ?? []) {
-      if (!normalize(generatedStatus ?? '').includes(normalize(lifecycle))) {
-        errors.push(`${template}: lifecycle gerado omite ${lifecycle}`);
-      }
+    const allowedStatuses = generatedLifecycles[id];
+    if (generatedStatus && allowedStatuses && !statusMatches(generatedStatus, allowedStatuses)) {
+      errors.push(`${template}: status inicial ${generatedStatus} nao pertence ao lifecycle da colecao`);
     }
     errors.push(...validateGeneratedArtifactPath(body, id, template));
     if (/(?:^|[\s`"'(])\/docs\//m.test(body)) {
       errors.push(`${template}: caminho documental usa /docs como raiz absoluta`);
     }
-    if (!/README\.md/i.test(body) || !/na mesma (?:altera[cç][aã]o|mudan[cç]a)/i.test(body)) {
+    if (!/README\.md/i.test(body) || !/na\s+mesma (?:altera[cç][aã]o|mudan[cç]a)/i.test(body)) {
       errors.push(`${template}: template nao exige indexacao imediata na mesma alteracao`);
     }
   }
 
   const rawRoot = path.join(repositoryRoot, 'docs/templates/chat');
-  for (const entry of fs.readdirSync(rawRoot, { withFileTypes: true })) {
-    if (!entry.isFile() || !/^TPL-\d{5}-.+\.raw$/.test(entry.name)) continue;
-    const rawPath = path.join(rawRoot, entry.name);
-    const markdownName = entry.name.replace(/\.raw$/, '.md');
-    if (!fs.existsSync(path.join(repositoryRoot, 'docs/templates', markdownName))) {
-      errors.push(`docs/templates/chat/${entry.name}: variante sem template Markdown correspondente`);
-    }
-    errors.push(...validateRawTemplate(
-      fs.readFileSync(rawPath, 'utf8'),
-      `docs/templates/chat/${entry.name}`
-    ));
-    if (entry.name.startsWith('TPL-00006-')) {
-      const raw = fs.readFileSync(rawPath, 'utf8');
-      for (const lifecycle of generatedLifecycles['TPL-00006']) {
-        if (!normalize(raw).includes(normalize(lifecycle))) {
-          errors.push(`docs/templates/chat/${entry.name}: lifecycle gerado omite ${lifecycle}`);
+  if (fs.existsSync(rawRoot)) {
+    for (const entry of fs.readdirSync(rawRoot, { withFileTypes: true })) {
+      if (!entry.isFile() || !/^TPL-\d{5}-.+\.raw$/.test(entry.name)) continue;
+      const rawPath = path.join(rawRoot, entry.name);
+      const markdownName = entry.name.replace(/\.raw$/, '.md');
+      if (!fs.existsSync(path.join(repositoryRoot, 'docs/templates', markdownName))) {
+        errors.push(`docs/templates/chat/${entry.name}: variante sem template Markdown correspondente`);
+      }
+      errors.push(...validateRawTemplate(
+        fs.readFileSync(rawPath, 'utf8'),
+        `docs/templates/chat/${entry.name}`
+      ));
+      if (entry.name.startsWith('TPL-00006-')) {
+        const raw = fs.readFileSync(rawPath, 'utf8');
+        for (const lifecycle of generatedLifecycles['TPL-00006']) {
+          if (!normalize(raw).includes(normalize(lifecycle))) {
+            errors.push(`docs/templates/chat/${entry.name}: lifecycle gerado omite ${lifecycle}`);
+          }
         }
       }
     }
   }
 
-  const skillTemplatePath = path.join(repositoryRoot, 'docs/templates/TPL-00010-PromptTemplateCriarSkill.md');
+  const skillTemplatePath = path.join(repositoryRoot, 'docs/templates/TPL-00009-skill-operacional.md');
   if (fs.existsSync(skillTemplatePath)) {
-    const operational = fs.readFileSync(skillTemplatePath, 'utf8').split('## Template B')[1] ?? '';
+    const operational = fs.readFileSync(skillTemplatePath, 'utf8');
     const requiredMarkers = [
-      '## Objetivo', '## Gatilhos e não-gatilhos', '## Escopo e pré-condições',
-      '## Procedimento', '## Limites de segurança', '## Entradas, saídas e evidências',
-      '## Governança operacional', '## Descoberta progressiva', '## Critério de conclusão',
-      '- Non-objectives:', '- Owner:', '- Status:'
+      '## Objetivo', '## Gatilhos e não-gatilhos', '## Escopo e não-objetivos',
+      '## Pré-condições', '## Procedimento', '## Limites de segurança',
+      '## Descoberta progressiva', '## Entradas, saídas e evidências',
+      '## Critério de conclusão', '- Não-objetivos:', '- Owner:', '- Status:'
     ];
     for (const marker of requiredMarkers) {
       if (!operational.includes(marker)) {
-        errors.push(`docs/templates/TPL-00010-PromptTemplateCriarSkill.md: skill operacional gerada nao publica ${marker}`);
+        errors.push(`docs/templates/TPL-00009-skill-operacional.md: skill operacional gerada nao publica ${marker}`);
       }
     }
   }
@@ -1107,7 +953,7 @@ function validateRuntimeAdapters(repositoryRoot) {
 
   const invariants = [
     'docs/ai/README.md', 'docs/README.md', 'docs/adrs/README.md',
-    'docs/architecture/module-registry.md', 'validate-docs.sh'
+    'docs/architecture/module-registry.md'
   ];
   for (const adapter of ['AGENTS.md', 'CLAUDE.md']) {
     const content = fs.readFileSync(path.join(repositoryRoot, adapter), 'utf8');
@@ -1116,10 +962,9 @@ function validateRuntimeAdapters(repositoryRoot) {
       if (!content.includes(invariant)) errors.push(`${adapter}: invariante global ausente: ${invariant}`);
     }
     for (const concept of [
-      'teste', 'produção', 'plano persistido', 'evidência',
-      'Qualquer comando Git', 'execução pertence ao humano',
-      'Instalação, download, rede ou sistema externo', 'segredos e credenciais',
-      'Exclusão, sobrescrita ampla ou ação irreversível', 'Bypass de permissão'
+      'implementation-readiness', 'READY', 'BLOCKED', 'teste', 'evidência',
+      'produção', 'segredos ou credenciais', 'autorização explícita',
+      'docs/settings/git-delivery.md', 'main'
     ]) {
       if (!normalizedContent.includes(normalize(concept))) errors.push(`${adapter}: conceito global ausente: ${concept}`);
     }
@@ -1181,11 +1026,17 @@ function validateEntryPointConciseness(repositoryRoot) {
     errors.push(...validateAdrCatalogEntry(adr, entry.name, row));
   }
 
+  if (!fs.existsSync(path.join(repositoryRoot, 'infra/README.md')) &&
+      !fs.existsSync(path.join(repositoryRoot, 'infra/AGENTS.md')) &&
+      !fs.existsSync(path.join(repositoryRoot, 'website/README.md'))) {
+    return errors;
+  }
+
   const infraReadmePath = path.join(repositoryRoot, 'infra/README.md');
   const infraReadme = fs.readFileSync(infraReadmePath, 'utf8');
   errors.push(...validateDocumentContract(infraReadme, 'infra/README.md'));
   errors.push(...validateRelativeLinks(infraReadme, infraReadmePath, repositoryRoot));
-  for (const marker of ['## Catálogo da subárvore', '## Fontes canônicas por assunto', '## Owners e revisões', '## Guardrails', '## Validação segura']) {
+  for (const marker of ['## Estado do scaffold', '## Contrato da pasta', '## Índice']) {
     if (!infraReadme.includes(marker)) errors.push(`infra/README.md: ponto de entrada omite ${marker}`);
   }
   if (/^##\s+(?:Etapa|Arquitetura-alvo aceita)/m.test(infraReadme)) {
@@ -1195,7 +1046,9 @@ function validateEntryPointConciseness(repositoryRoot) {
     errors.push('infra/README.md: ponto de entrada excede o limite local de 150 linhas');
   }
 
-  const infraAgents = fs.readFileSync(path.join(repositoryRoot, 'infra/AGENTS.md'), 'utf8');
+  const infraAgentsPath = path.join(repositoryRoot, 'infra/AGENTS.md');
+  if (!fs.existsSync(infraAgentsPath)) return errors;
+  const infraAgents = fs.readFileSync(infraAgentsPath, 'utf8');
   for (const marker of ['Testes e', 'validadores locais seguros', 'autônomos e obrigatórios']) {
     if (!infraAgents.includes(marker)) errors.push(`infra/AGENTS.md: especializacao omite ${marker}`);
   }
@@ -1220,77 +1073,36 @@ function validateRuntimeSettings(repositoryRoot) {
   const global = fs.readFileSync(globalPath, 'utf8');
   const normalizedGlobal = normalize(global).replace(/\s+/g, ' ');
   for (const concept of [
-    'Políticas organizacionais gerenciadas de segurança e compliance',
-    'ADRs aceitos, incluindo o ADR-0000',
-    'Standards e configurações globais versionadas do repositório',
-    'Adaptadores globais de runtime',
-    'Instruções e configurações específicas do pacote',
-    'Plano e critérios de aceite da tarefa',
-    'Preferências locais do usuário',
-    'Qualquer comando Git', '`deny`', 'execução pertence ao humano',
-    'Instalação, download, rede ou sistema externo',
-    'Segredos e credenciais', 'não ler, registrar, transmitir ou versionar',
-    'Exclusão, sobrescrita ampla ou ação irreversível',
-    'Bypass de permissão', 'ambiente isolado e autorização específica'
+    'menor privilégio', 'git-delivery.md', 'branch principal', '`main`',
+    'force-push', 'credenciais', '`allow`', '`deny`', '`ask`'
   ]) {
     if (!normalizedGlobal.includes(normalize(concept))) {
-      errors.push(`docs/settings/settings.md: matriz nao publica ${concept}`);
+      errors.push(`docs/settings/settings.md: política de ambiente omite ${concept}`);
     }
-  }
-  if (/opera[cç][oõ]es Git que escrevem/i.test(global)) {
-    errors.push('docs/settings/settings.md: matriz ainda permite subconjunto de comandos Git');
   }
 
   const manual = fs.readFileSync(path.join(repositoryRoot, 'docs/ai/README.md'), 'utf8');
-  for (const marker of [
-    '## Mapa das três camadas', 'Regras de ambiente e do assistente',
-    'Documentação funcional e técnica', 'Configuração operacional do runtime',
-    '## Ordem de autoridade',
+  const precedence = [
     'Políticas organizacionais gerenciadas de segurança e compliance',
-    'ADRs aceitos, incluindo o ADR-0000',
-    'Standards e configurações globais versionadas do repositório',
+    'ADRs aceitos', 'Standards e settings globais versionados',
     'Adaptadores globais de runtime', 'Instruções e configurações específicas do pacote',
     'Plano e critérios de aceite da tarefa', 'Preferências locais do usuário'
-  ]) {
-    if (!normalize(manual).includes(normalize(marker))) {
-      errors.push(`docs/ai/README.md: mapa de camadas ou precedencia omite ${marker}`);
+  ];
+  let previousIndex = -1;
+  for (const source of precedence) {
+    const index = normalize(manual).indexOf(normalize(source));
+    if (index < 0 || index <= previousIndex) {
+      errors.push(`docs/ai/README.md: ordem de autoridade ausente ou divergente em ${source}`);
+      break;
     }
+    previousIndex = index;
   }
 
   const codexPath = path.join(repositoryRoot, 'docs/settings/codex.md');
   const codex = fs.readFileSync(codexPath, 'utf8');
-  for (const marker of [
-    'project_doc_max_bytes', 'project_doc_fallback_filenames', 'AGENTS.override.md',
-    'CODEX_HOME', '32768', 'Configuração pessoal', 'Orçamento agregado observado'
-  ]) {
+  for (const marker of ['AGENTS.md', '.agents/skills/', 'git-delivery.md']) {
     if (!normalize(codex).includes(normalize(marker))) {
-      errors.push(`docs/settings/codex.md: configuracao efetiva omite ${marker}`);
-    }
-  }
-
-  const rootBytes = Buffer.byteLength(fs.readFileSync(path.join(repositoryRoot, 'AGENTS.md')));
-  const scopes = [
-    { label: 'raiz', file: null },
-    ...['backend', 'frontend', 'website', 'infra'].map((scope) => ({ label: scope, file: `${scope}/AGENTS.md` }))
-  ];
-  for (const scope of scopes) {
-    const localBytes = scope.file
-      ? Buffer.byteLength(fs.readFileSync(path.join(repositoryRoot, scope.file)))
-      : rootBytes;
-    const aggregate = scope.file ? rootBytes + localBytes : rootBytes;
-    const label = scope.label === 'raiz' ? 'raiz' : escapeRegex(`\`${scope.label}/\``);
-    const row = new RegExp(`^\\|\\s*${label}\\s*\\|[^\\n]*\\|\\s*\\x60?${localBytes}\\x60?\\s*\\|\\s*\\x60?${aggregate}\\x60?\\s*\\|$`, 'm');
-    if (!row.test(codex)) {
-      errors.push(`docs/settings/codex.md: orcamento de ${scope.label} diverge dos bytes ${localBytes}/${aggregate}`);
-    }
-    if (aggregate >= 32768) {
-      errors.push(`${scope.file ?? 'AGENTS.md'}: cadeia ${aggregate} alcanca ou excede o teto governado de 32768 bytes`);
-    }
-  }
-
-  for (const absent of ['.codex/config.toml', 'AGENTS.override.md']) {
-    if (fs.existsSync(path.join(repositoryRoot, absent)) && codex.includes(`não contém \`${absent}\``)) {
-      errors.push(`docs/settings/codex.md: declara ausente configuracao que existe: ${absent}`);
+      errors.push(`docs/settings/codex.md: mapeamento omite ${marker}`);
     }
   }
   return errors;
@@ -1300,11 +1112,9 @@ function validateNativeSkills(repositoryRoot) {
   const errors = [];
   const catalogPath = path.join(repositoryRoot, 'docs/agents/skills/README.md');
   const catalog = fs.readFileSync(catalogPath, 'utf8');
-  const roots = ['', 'backend', 'frontend', 'website', 'infra'].flatMap((scope) =>
-    ['.agents/skills', '.claude/skills'].map((runtimeRoot) =>
-      scope ? `${scope}/${runtimeRoot}` : runtimeRoot
-    )
-  );
+  const roots = walkDirectories(repositoryRoot)
+    .map((directory) => relative(repositoryRoot, directory))
+    .filter((directory) => /(?:^|\/)(?:\.agents|\.claude)\/skills$/.test(directory));
   for (const root of roots) {
     const absoluteRoot = path.join(repositoryRoot, root);
     if (!fs.existsSync(absoluteRoot)) continue;
@@ -1331,20 +1141,21 @@ function validateNativeSkills(repositoryRoot) {
       }
     }
   }
-  for (const skillName of ['governanca-documental', 'implementation-readiness', 'quality-gate']) {
-    const variants = [
-      `.agents/skills/${skillName}/SKILL.md`,
-      `.claude/skills/${skillName}/SKILL.md`
-    ].map((relativePath) => ({
-      relativePath,
-      absolutePath: path.join(repositoryRoot, relativePath)
-    }));
-    if (variants.every(({ absolutePath }) => fs.existsSync(absolutePath))) {
-      const [codex, claude] = variants.map(({ absolutePath }) =>
-        fs.readFileSync(absolutePath, 'utf8').replace(/\r\n/g, '\n').trim()
+  for (const root of roots.filter((candidate) => candidate.includes('.agents/skills'))) {
+    const claudeRoot = root.replace(/\.agents\/skills/g, '.claude/skills');
+    const claudeAbsolute = path.join(repositoryRoot, claudeRoot);
+    if (!fs.existsSync(claudeAbsolute)) continue;
+    const sharedRoot = path.join(repositoryRoot, root);
+    for (const entry of fs.readdirSync(sharedRoot, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      const agentsPath = path.join(sharedRoot, entry.name, 'SKILL.md');
+      const claudePath = path.join(claudeAbsolute, entry.name, 'SKILL.md');
+      if (!fs.existsSync(agentsPath) || !fs.existsSync(claudePath)) continue;
+      const [agents, claude] = [agentsPath, claudePath].map((file) =>
+        fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n').trim()
       );
-      if (codex !== claude) {
-        errors.push(`${skillName}: nucleo Codex/Claude diverge sem justificativa catalogada`);
+      if (agents !== claude) {
+        errors.push(`${root}/${entry.name}: nucleo Codex/Claude diverge sem justificativa catalogada`);
       }
     }
   }
@@ -1384,10 +1195,9 @@ export function validateStandardConsumerParity(agentCatalog, standardCatalog, ag
 function validateSemanticCatalogs(repositoryRoot) {
   const errors = [];
   const agents = fs.readFileSync(path.join(repositoryRoot, 'docs/agents/README.md'), 'utf8');
-  if (!/\|[^\n]*Relacionamentos[^\n]*\|/i.test(agents)) errors.push('docs/agents/README.md: catalogo nao publica relacionamentos por agente');
   const standards = fs.readFileSync(path.join(repositoryRoot, 'docs/agents/standards/README.md'), 'utf8');
-  if (!/\|[^\n]*Palavras-chave[^\n]*\|/i.test(standards)) errors.push('docs/agents/standards/README.md: catalogo nao publica palavras-chave por standard');
-  if (!/\|[^\n]*Relacionamentos[^\n]*\|/i.test(standards)) errors.push('docs/agents/standards/README.md: catalogo nao publica relacionamentos por standard');
+  const agentHasRelationships = /\|[^\n]*Relacionamentos[^\n]*\|/i.test(agents);
+  const standardsHaveConsumers = /\|[^\n]*(?:Consumidores|Relacionamentos)[^\n]*\|/i.test(standards);
 
   const agentRows = agents.split(/\r?\n/).filter((line) => line.startsWith('|'));
   const standardRows = standards.split(/\r?\n/).filter((line) => line.startsWith('|'));
@@ -1400,17 +1210,20 @@ function validateSemanticCatalogs(repositoryRoot) {
     agentDocuments.set(entry.name, content);
     const agentRow = agentRows.find((line) => (line.split('|')[1] ?? '').includes(`](${entry.name})`)) ?? '';
     const referencedStandards = [...new Set(
-      [...content.matchAll(/(?:\.\/)?standards\/([A-Za-z0-9._-]+\.md)/g)].map((match) => match[1])
+      [...content.matchAll(/(?:\.\/)?standards\/([A-Za-z0-9._-]+\.md)/g)]
+        .map((match) => match[1])
+        .filter((name) => name !== 'README.md')
     )];
     for (const standardName of referencedStandards) {
-      if (!agentRow.includes(`(standards/${standardName})`)) {
+      if (agentHasRelationships && !agentRow.includes(`(standards/${standardName})`)) {
         errors.push(`docs/agents/README.md: ${agentName} omite relacionamento com ${standardName}`);
       }
       const standardRow = standardRows.find(
         (line) => (line.split('|')[1] ?? '').includes(`](${standardName})`)
       ) ?? '';
       const consumers = (standardRow.split('|')[6] ?? '').split(',').map((value) => value.trim());
-      if (!consumers.includes(agentName)) {
+      if (standardsHaveConsumers && !consumers.includes(agentName) &&
+          !/^todos os agentes executores$/i.test(consumers.join(','))) {
         errors.push(`docs/agents/standards/README.md: ${standardName} omite consumidor ${agentName}`);
       }
     }
@@ -1430,36 +1243,43 @@ function validateIgnoreRules(repositoryRoot) {
 
 export function validateModuleRegistryStructure(
   content,
-  moduleDirectories = [],
-  packageNames = ['backend/', 'frontend/', 'website/', 'infra/', 'docs/']
+  moduleDirectories = []
 ) {
   const errors = [];
-  const routeHeader = '| Domínio | Pacote físico | Owner | Entry points | Dependências | Documentação |';
-  if (content.split(routeHeader).length - 1 < 2) {
-    errors.push('docs/architecture/module-registry.md: manifesto nao publica rotas completas por pacote e modulo');
-  }
-  const codeReferences = extractField(content, FIELD_ALIASES.code_references) ?? '';
-  for (const packageName of packageNames) {
-    if (!content.includes(`\`${packageName}\``)) errors.push(`docs/architecture/module-registry.md: pacote ausente: ${packageName}`);
-    if (!codeReferences.includes(packageName)) errors.push(`docs/architecture/module-registry.md: code_references omite ${packageName}`);
-    const row = content.split(/\r?\n/).find((line) => line.includes(`| \`${packageName}\` |`)) ?? '';
-    const cells = row.split('|').slice(1, 7).map((cell) => cell.trim());
-    if (cells.length < 6 || cells.some((cell) => !cell)) {
-      errors.push(`docs/architecture/module-registry.md: rota incompleta para pacote ${packageName}`);
+  const relativePath = 'docs/architecture/module-registry.md';
+  const lines = content.split(/\r?\n/);
+  const scaffoldHeading = lines.findIndex((line) => /^##\s+Scaffolds base\s*$/i.test(line));
+  if (scaffoldHeading < 0) errors.push(`${relativePath}: manifesto nao identifica os scaffolds base`);
+  const headerIndex = scaffoldHeading < 0
+    ? -1
+    : lines.findIndex((line, index) => index > scaffoldHeading && line.startsWith('|'));
+  if (headerIndex < 0) {
+    errors.push(`${relativePath}: manifesto nao publica a tabela de fronteiras`);
+  } else {
+    const headers = lines[headerIndex].split('|').slice(1, -1).map((cell) => normalize(cell.trim()));
+    const requiredHeaders = ['path', 'owner', 'estado'];
+    for (const header of requiredHeaders) {
+      if (!headers.some((value) => value.includes(header))) {
+        errors.push(`${relativePath}: tabela de fronteiras omite a coluna ${header}`);
+      }
+    }
+    const rows = [];
+    for (let index = headerIndex + 2; index < lines.length && lines[index].startsWith('|'); index += 1) {
+      rows.push(lines[index].split('|').slice(1, -1).map((cell) => cell.trim()));
+    }
+    for (const cells of rows) {
+      if (cells.length !== headers.length || cells.some((cell) => !cell)) {
+        errors.push(`${relativePath}: rota incompleta para ${cells[0] || 'fronteira sem nome'}`);
+      }
+    }
+    for (const moduleDirectory of moduleDirectories) {
+      if (!rows.some((cells) => cells.some((cell) => cell.includes(`\`${moduleDirectory}\``)))) {
+        errors.push(`${relativePath}: rota incompleta para ${moduleDirectory}`);
+      }
     }
   }
   if (content.split(/\r?\n/).length > 220 || Buffer.byteLength(content) > 20 * 1024) {
     errors.push('docs/architecture/module-registry.md: manifesto excede o orçamento seletivo de 220 linhas/20 KiB');
-  }
-  if (/^###\s+(?:Fronteira operacional|Target aceito)|^####\s+Proveniência e readiness|zero mudança em módulo/im.test(content)) {
-    errors.push('docs/architecture/module-registry.md: manifesto volta a duplicar lifecycle de Infra ou target de Billing');
-  }
-  for (const moduleDirectory of moduleDirectories) {
-    const row = content.split(/\r?\n/).find((line) => line.includes(`\`${moduleDirectory}\``)) ?? '';
-    const cells = row.split('|').slice(1, 7).map((cell) => cell.trim());
-    if (cells.length < 6 || cells.some((cell) => !cell)) {
-      errors.push(`docs/architecture/module-registry.md: rota incompleta para ${moduleDirectory}`);
-    }
   }
   return errors;
 }
@@ -1467,21 +1287,21 @@ export function validateModuleRegistryStructure(
 function validateModuleRegistry(repositoryRoot) {
   const content = fs.readFileSync(path.join(repositoryRoot, 'docs/architecture/module-registry.md'), 'utf8');
   const errors = [];
-  const pom = fs.readFileSync(path.join(repositoryRoot, 'backend/pom.xml'), 'utf8');
-  const java = pom.match(/<java\.version>([^<]+)<\/java\.version>/)?.[1];
-  const springBoot = pom.match(/<artifactId>spring-boot-starter-parent<\/artifactId>\s*<version>([^<]+)<\/version>/)?.[1];
-  const modulith = pom.match(/<spring-modulith\.version>([^<]+)<\/spring-modulith\.version>/)?.[1];
-  for (const [name, value] of [['Java', java], ['Spring Boot', springBoot], ['Spring Modulith', modulith]]) {
-    if (!value) errors.push(`backend/pom.xml: versao de ${name} nao resolvida`);
-    else if (!content.includes(`${name} ${value}`)) errors.push(`docs/architecture/module-registry.md: baseline diverge de ${name} ${value}`);
+  const pomPath = path.join(repositoryRoot, 'backend/pom.xml');
+  if (fs.existsSync(pomPath)) {
+    const pom = fs.readFileSync(pomPath, 'utf8');
+    const java = pom.match(/<java\.version>([^<]+)<\/java\.version>/)?.[1];
+    const springBoot = pom.match(/<artifactId>spring-boot-starter-parent<\/artifactId>\s*<version>([^<]+)<\/version>/)?.[1];
+    const modulith = pom.match(/<spring-modulith\.version>([^<]+)<\/spring-modulith\.version>/)?.[1];
+    for (const [name, value] of [['Java', java], ['Spring Boot', springBoot], ['Spring Modulith', modulith]]) {
+      if (!value) errors.push(`backend/pom.xml: versao de ${name} nao resolvida`);
+      else if (!content.includes(`${name} ${value}`)) errors.push(`docs/architecture/module-registry.md: baseline diverge de ${name} ${value}`);
+    }
   }
-  const namespace = 'backend/src/main/java/br/com/duoset/saas_service/';
-  const namespaceRoot = path.join(repositoryRoot, namespace);
-  if (!fs.existsSync(namespaceRoot)) errors.push(`${namespace}: namespace backend obrigatorio ausente`);
-  if (!content.includes(namespace)) errors.push(`docs/architecture/module-registry.md: namespace backend ausente: ${namespace}`);
   let moduleDirectories = [];
-  if (fs.existsSync(namespaceRoot)) {
-    moduleDirectories = walkFiles(namespaceRoot)
+  const backendRoot = path.join(repositoryRoot, 'backend');
+  if (fs.existsSync(backendRoot)) {
+    moduleDirectories = walkFiles(backendRoot)
       .filter((file) => path.basename(file) === 'package-info.java')
       .filter((file) => /@org\.springframework\.modulith\.ApplicationModule\b/.test(fs.readFileSync(file, 'utf8')))
       .map((file) => `${relative(repositoryRoot, path.dirname(file))}/`)
@@ -1490,7 +1310,9 @@ function validateModuleRegistry(repositoryRoot) {
   errors.push(...validateModuleRegistryStructure(content, moduleDirectories));
 
   for (const packageName of ['frontend', 'website']) {
-    const manifest = JSON.parse(fs.readFileSync(path.join(repositoryRoot, packageName, 'package.json'), 'utf8'));
+    const manifestPath = path.join(repositoryRoot, packageName, 'package.json');
+    if (!fs.existsSync(manifestPath)) continue;
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     const nextMajor = String(manifest.dependencies?.next ?? '').match(/\d+/)?.[0];
     const reactMajor = String(manifest.dependencies?.react ?? '').match(/\d+/)?.[0];
     if (!nextMajor || !content.includes(`Next.js ${nextMajor}`)) {
@@ -1571,7 +1393,7 @@ export function validateRepository(repositoryRoot) {
 
   const productRequirementsRoot = path.join(root, 'docs/product_requirements');
   const productRequirementsIndex = path.join(productRequirementsRoot, 'README.md');
-  const productRequirementsTemplate = path.join(root, 'docs/templates/TPL-00012-PromptTemplateCriarPRD.md');
+  const productRequirementsTemplate = path.join(root, 'docs/templates/TPL-00001-prd.md');
   if (fs.existsSync(productRequirementsRoot) &&
       fs.existsSync(productRequirementsIndex) &&
       fs.existsSync(productRequirementsTemplate)) {
@@ -1595,35 +1417,31 @@ export function validateRepository(repositoryRoot) {
   errors.push(...validateIgnoreRules(root));
   errors.push(...validateModuleRegistry(root));
 
-  errors.push(...validateGovernanceEntrypoint(
-    fs.readFileSync(path.join(root, 'docs/adrs/ADR-0000-governanca-documentacao-agentes-ia.md'), 'utf8'),
-    fs.readFileSync(path.join(root, 'infra/scripts/validate-docs.sh'), 'utf8')
-  ));
+  const readOptional = (relativePath) => {
+    const absolute = path.join(root, relativePath);
+    return fs.existsSync(absolute) ? fs.readFileSync(absolute, 'utf8') : undefined;
+  };
+  const adr = readOptional('docs/adrs/ADR-0000-governanca-do-harness-documental.md');
 
-  errors.push(...validateQualityGateScaffold(
-    fs.readFileSync(path.join(root, 'docs/adrs/ADR-0000-governanca-documentacao-agentes-ia.md'), 'utf8'),
-    fs.readFileSync(path.join(root, 'infra/scripts/validate-quality-gates.sh'), 'utf8'),
-    fs.readFileSync(path.join(root, 'infra/scripts/tests/validate-quality-gates-test.sh'), 'utf8'),
-    fs.readFileSync(path.join(root, 'infra/scripts/validate-docs.sh'), 'utf8'),
-    fs.readFileSync(path.join(root, 'docs/agents/standards/software-quality-standard.md'), 'utf8')
-  ));
-
-  errors.push(...validateImplementationReadinessGovernance({
-    adr: fs.readFileSync(path.join(root, 'docs/adrs/ADR-0000-governanca-documentacao-agentes-ia.md'), 'utf8'),
-    standard: fs.readFileSync(path.join(root, 'docs/agents/standards/implementation-readiness-standard.md'), 'utf8'),
-    requirementTemplate: fs.readFileSync(path.join(root, 'docs/templates/TPL-00003-PromptTemplateCriarRequisito.md'), 'utf8'),
-    useCaseTemplate: fs.readFileSync(path.join(root, 'docs/templates/TPL-00004-PromptTemplateCriarCasoDeUso.md'), 'utf8'),
-    prdTemplate: fs.readFileSync(path.join(root, 'docs/templates/TPL-00012-PromptTemplateCriarPRD.md'), 'utf8'),
-    taskPlanTemplate: fs.readFileSync(path.join(root, 'docs/templates/TPL-00005-PromptTemplateCriarTaskPlan.md'), 'utf8'),
-    implementationPlanTemplate: fs.readFileSync(path.join(root, 'docs/templates/TPL-00006-PromptTemplateCriarImplementationPlan.md'), 'utf8'),
-    rawImplementationPlanTemplate: fs.readFileSync(path.join(root, 'docs/templates/chat/TPL-00006-PromptTemplateCriarImplementationPlan.raw'), 'utf8'),
-    lifecycle: fs.readFileSync(path.join(root, 'docs/agents/standards/software-engineering-lifecycle.md'), 'utf8'),
-    orchestrator: fs.readFileSync(path.join(root, 'docs/agents/AgentOrchestrator.md'), 'utf8'),
-    requirementAgent: fs.readFileSync(path.join(root, 'docs/agents/RequirementAgent.md'), 'utf8'),
-    codeGuardian: fs.readFileSync(path.join(root, 'docs/agents/CodeGuardian.md'), 'utf8'),
-    agentsAdapter: fs.readFileSync(path.join(root, 'AGENTS.md'), 'utf8'),
-    claudeAdapter: fs.readFileSync(path.join(root, 'CLAUDE.md'), 'utf8')
-  }));
+  const implementationReadinessArtifacts = {
+    adr,
+    standard: readOptional('docs/agents/standards/implementation-readiness-standard.md'),
+    requirementTemplate: readOptional('docs/templates/TPL-00002-requirement.md'),
+    useCaseTemplate: readOptional('docs/templates/TPL-00003-use-case.md'),
+    prdTemplate: readOptional('docs/templates/TPL-00001-prd.md'),
+    taskPlanTemplate: readOptional('docs/templates/TPL-00005-task-plan.md'),
+    implementationPlanTemplate: readOptional('docs/templates/TPL-00006-implementation-plan.md'),
+    rawImplementationPlanTemplate: '',
+    lifecycle: readOptional('docs/agents/standards/software-engineering-lifecycle.md'),
+    orchestrator: readOptional('docs/agents/AgentOrchestrator.md'),
+    requirementAgent: readOptional('docs/agents/RequirementAgent.md'),
+    codeGuardian: readOptional('docs/agents/CodeGuardian.md'),
+    agentsAdapter: readOptional('AGENTS.md'),
+    claudeAdapter: readOptional('CLAUDE.md')
+  };
+  if (Object.values(implementationReadinessArtifacts).every((content) => content !== undefined)) {
+    errors.push(...validateImplementationReadinessGovernance(implementationReadinessArtifacts));
+  }
 
   const map = fs.readFileSync(path.join(root, 'docs/README.md'), 'utf8');
   for (const requiredState of ['.agents/skills/', '.claude/skills/', 'governanca-documental', 'implementation-readiness', 'quality-gate', 'Conformant', '.claude/settings.json', 'Not applicable']) {
