@@ -6,9 +6,9 @@ scope: Governanca documental, descoberta progressiva, planejamento, readiness, a
 non_objectives: Nao fornecer codigo, scripts executaveis, stack, dominio, credenciais ou decisoes do projeto de origem.
 owner: Mantenedores do harness
 status: Active
-version: 1.4
+version: 1.5
 date: 2026-09-10
-last_reviewed: 2026-09-13
+last_reviewed: 2026-09-23
 keywords: harness, documentacao, agentes, orquestrador, standards, clear, readiness, quality-gate, entrega-git, gemini, antigravity
 related_files: AGENTS.md, CLAUDE.md, GEMINI.md, backend/README.md, frontend/README.md, website/README.md, infra/README.md, docs/README.md, docs/scripts/README.md, docs/agents/AgentOrchestrator.md, docs/agents/standards/README.md, docs/agents/skills/README.md, docs/settings/settings.md, docs/settings/google-gemini.md, docs/adrs/ADR-0000-governanca-do-harness-documental.md
 code_references: .agents/rules/documentation-governance.md, .agents/skills/, .claude/skills/; pacote exclusivamente documental, sem hooks ou scripts executáveis.
@@ -48,6 +48,23 @@ de produção, script executável ou decisão pertencente ao projeto de origem.
   seus pressupostos sejam reconciliados com o projeto adotante.
 
 ## Adoção em outro projeto
+
+### Identidade do projeto adotante
+
+Faça esta adaptação quando este conteúdo deixar de ser apenas o repositório-fonte
+`ai-design-docs` e passar a compor um projeto ou repositório de destino. Antes do
+primeiro commit de adoção:
+
+- Atualize o título e os metadados deste `README.md` para descrever o projeto
+  adotante, com objetivo, escopo, owner e links reais do destino.
+- Procure referências ao repositório-fonte e substitua somente nomes, URLs e
+  instruções que realmente identifiquem a origem. Não faça substituição global:
+  nomes de coleções, paths canônicos, IDs de templates e conceitos do harness
+  permanecem quando continuarem aplicáveis.
+- Mantenha, renomeie ou remova os scaffolds conforme a topologia adotante e
+  reconcilie links, índices, manifesto e adaptadores na mesma mudança.
+- Antes de qualquer push, confira que o remote e a branch de trabalho apontam para
+  o repositório de destino, nunca para o remoto-fonte nem para a branch principal.
 
 1. Copie todo o conteúdo deste diretório, incluindo `.agents/` e `.claude/`, para a
    raiz do projeto de destino. Em um repositório dedicado, clone-o e copie ou faça
@@ -143,6 +160,7 @@ docs/
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.5 | 2026-09-23 | Explicita quando e como adaptar identidade, referências e remoto ao adotar o harness. |
 | 1.4 | 2026-09-13 | Mapeia os scripts migrados como extensão condicional, sem declarar automação portátil ativa. |
 | 1.3 | 2026-09-13 | Inclui a capacidade opt-in `git-delivery` sem transportar scripts nem permissões do projeto de origem. |
 | 1.2 | 2026-09-11 | Inclui AgentOrchestrator como único agente inicial e a biblioteca portátil de standards com ativação condicional. |
