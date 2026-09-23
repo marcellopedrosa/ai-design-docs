@@ -22,7 +22,7 @@ principal_statement: Esta coleção é a fonte canônica da biblioteca portátil
 - Conteúdo aceito: regra técnica reutilizável, verificável e com aplicabilidade
   explícita.
 - Nomes: assunto-standard.md, salvo nomes estáveis do baseline.
-- Estados do documento: Draft, Active, Deprecated.
+- Estados permitidos: Draft, Active, Deprecated.
 - Critério de granularidade: separar quando regra, owner, consumidores ou ciclo de
   revisão forem independentes.
 - Cada arquivo listado abaixo é a referência canônica dentro deste harness. Após a

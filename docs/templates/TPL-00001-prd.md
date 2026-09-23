@@ -17,6 +17,9 @@ principal_statement: Um PRD so recebe Validated quando problema, outcomes, metri
 
 # Template — PRD
 
+Ao criar ou alterar um PRD, atualize o índice `docs/product_requirements/README.md`
+na mesma mudança.
+
 Copie o bloco abaixo para `docs/product_requirements/PRD-NNNNN-short-title.md`.
 
 ```markdown

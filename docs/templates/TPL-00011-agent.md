@@ -17,6 +17,9 @@ principal_statement: Agente especializado existe somente quando responsabilidade
 
 # Template — Agent
 
+Crie em `docs/agents/<AGENT_FILE_STEM>.md` e atualize o `README.md` de agentes na
+mesma mudança.
+
 ```markdown
 ---
 document_id: AGENT-{{NAME}}

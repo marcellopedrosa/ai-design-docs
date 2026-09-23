@@ -17,6 +17,9 @@ principal_statement: ADR registra uma escolha material e somente se torna normat
 
 # Template — ADR
 
+Crie em `docs/adrs/ADR-NNNN-short-title.md` e atualize `docs/adrs/README.md` na
+mesma mudança.
+
 ```markdown
 ---
 document_id: ADR-NNNN

@@ -17,6 +17,20 @@ principal_statement: Operacoes seguem menor privilegio; a politica local governa
 
 # Política do ambiente e do assistente
 
+## Ordem de autoridade
+
+1. Políticas organizacionais gerenciadas de segurança e compliance.
+2. ADRs aceitos, incluindo o ADR-0000.
+3. Standards e configurações globais versionadas do repositório.
+4. Adaptadores globais de runtime.
+5. Instruções e configurações específicas do pacote.
+6. Plano e critérios de aceite da tarefa.
+7. Preferências locais do usuário.
+
+Uma fonte inferior pode especializar seu escopo, mas não enfraquecer uma fonte
+superior. Em caso de conflito não resolvido, prevalece temporariamente o limite mais
+restritivo e o owner da decisão deve ser acionado.
+
 ## Matriz de autonomia baseline
 
 | Categoria | Política inicial |
@@ -27,7 +41,7 @@ principal_statement: Operacoes seguem menor privilegio; a politica local governa
 | Git de leitura e diagnóstico | `allow`, sem ler credenciais |
 | Criar/trocar branch, adicionar e commitar | `allow` em branches de trabalho, conforme a política local |
 | Push, PR, merge, rebase, tag e alteração de remote | `allow` conforme `git-delivery.md` e os gates aplicáveis |
-| Escrita direta ou force-push na branch principal | `deny` |
+| Escrita direta ou force-push na branch principal `main` | `deny` |
 | Instalação, download, rede ou sistema externo | `ask`, com escopo explícito |
 | Produção ou dados reais | `deny` |
 | Segredos e credenciais | `deny`; não ler, registrar, transmitir ou versionar |

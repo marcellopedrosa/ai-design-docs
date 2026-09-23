@@ -17,6 +17,21 @@ todos os participantes e mantenha a `main` protegida contra escrita direta e
 force-push. A tarefa define o escopo; não exija uma lista fechada de paths para
 aceitar artefatos novos necessários ao resultado.
 
+## Gatilhos e não-gatilhos
+
+- Gatilhos: commit, publicação ou integração Git solicitados em tarefa aprovada.
+- Não-gatilhos: inspeção de histórico, acesso a credenciais ou escrita direta na `main`.
+
+## Escopo e não-objetivos
+
+- Escopo: branches de trabalho, publicação, revisão e integração de mudanças.
+- Não-objetivos: decidir conteúdo funcional ou contornar proteções do servidor.
+
+## Entradas e pré-condições
+
+Branch atual, paths do escopo, gates aplicáveis, política Git local e proteções
+efetivas do repositório.
+
 ## Procedimento
 
 1. Confirme o escopo aprovado e os gates aplicáveis.
@@ -38,7 +53,12 @@ aceitar artefatos novos necessários ao resultado.
 - Uma falha de gate deve ser corrigida ou registrada com seu impacto; não remova
   conteúdo ou cobertura apenas para obter aprovação.
 - Não leia nem exponha credenciais. Respeite as proteções do servidor e as
-  permissões efetivas do ambiente.
+permissões efetivas do ambiente.
+
+## Limites de segurança
+
+Não escreva diretamente ou faça force-push na `main`; não leia segredos ou
+credenciais; não descarte trabalho válido de outra branch.
 
 ## Evidência e portabilidade
 
@@ -46,6 +66,11 @@ Registre a política aplicada, branches, paths, comandos, SHA, gates, conflitos,
 método de integração e resultado `PASS` ou `BLOCKED`. Para criar enforcement em
 outro projeto, consulte o [scaffold portátil](references/portable-commit-enforcement.md)
 e adapte-o à política local antes de habilitar a skill.
+
+## Saídas
+
+Commit ou integração na branch de trabalho com SHA, branches, paths e gates
+registrados; falhas permanecem explícitas e mudanças pendentes são preservadas.
 
 ## Critério de conclusão
 

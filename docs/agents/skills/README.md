@@ -19,6 +19,11 @@ principal_statement: Cada skill catalogada resolve para um descritor nativo e se
 
 ## Contrato da coleção
 
+- Nomes: `<skill-name>/SKILL.md` nos diretórios nativos documentados.
+- Estados: `Draft`, `Active`, `Deprecated`; `opt-in` descreve ativação, não um estado.
+- Critério de granularidade: separar capacidades com gatilhos, owner ou handoff
+  independentes.
+
 Este diretório contém somente o catálogo. Skills instaláveis residem nos caminhos
 nativos do runtime. Nome do diretório, `name` do frontmatter e nome do catálogo
 devem coincidir.
@@ -30,7 +35,7 @@ devem coincidir.
 | governanca-documental | Mudança ou revisão documental | Arquitetura e Documentação | Active | [SKILL.md](../../../.agents/skills/governanca-documental/SKILL.md) | [SKILL.md](../../../.claude/skills/governanca-documental/SKILL.md) |
 | implementation-readiness | Antes de handoff ou edição executável | Arquitetura, Produto e Qualidade | Active | [SKILL.md](../../../.agents/skills/implementation-readiness/SKILL.md) | [SKILL.md](../../../.claude/skills/implementation-readiness/SKILL.md) |
 | quality-gate | Mudança de software, PR ou release | Arquitetura e Qualidade | Active | [SKILL.md](../../../.agents/skills/quality-gate/SKILL.md) | [SKILL.md](../../../.claude/skills/quality-gate/SKILL.md) |
-| git-delivery | Commit ou publicação solicitados, após adoção explícita | Arquitetura e Qualidade | Active, opt-in | [SKILL.md](../../../.agents/skills/git-delivery/SKILL.md) | [SKILL.md](../../../.claude/skills/git-delivery/SKILL.md) |
+| git-delivery | Commit, publicação ou integração solicitados conforme política local | Arquitetura e Qualidade | Active | [SKILL.md](../../../.agents/skills/git-delivery/SKILL.md) | [SKILL.md](../../../.claude/skills/git-delivery/SKILL.md) |
 
 Skills adicionais exigem procedimento reutilizável real, owner, descrição
 discriminante, limites de segurança e entrada neste catálogo.
@@ -41,9 +46,10 @@ Antigravity. Não crie `.gemini/skills/` com o mesmo conteúdo.
 O [AgentOrchestrator](../AgentOrchestrator.md) seleciona e aciona essas skills; a
 skill executa um procedimento e não cria um novo papel de agente.
 
-`git-delivery` é distribuída para facilitar uma política local verificável, mas não
-altera o bloqueio Git do baseline. Ela só é acionável depois que o projeto adotante
-registrar sua convenção, enforcement e autoridade no ADR-0000 e nos adaptadores.
+`git-delivery` segue a política local registrada em
+[`settings/git-delivery.md`](../../settings/git-delivery.md). Cada projeto define
+suas convenções e proteções; branches de trabalho podem ser integradas sem escrita
+direta ou force-push na branch principal.
 
 ## Change log
 

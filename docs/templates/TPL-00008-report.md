@@ -17,6 +17,9 @@ principal_statement: Relatorio registra o que foi observado em um recorte tempor
 
 # Template — Report
 
+Crie em `docs/reports/RPT-NNNNN-short-title.md` e atualize o `README.md` da coleção
+na mesma mudança.
+
 ```markdown
 ---
 document_id: RPT-NNNNN

@@ -17,6 +17,9 @@ principal_statement: Task Plan coordena unidades semanticas; cada unidade tem re
 
 # Template — Task Plan
 
+Crie em `docs/task_plans/TP-NNNNN-short-title.md` e atualize o `README.md` da
+coleção na mesma mudança.
+
 ```markdown
 ---
 document_id: TP-NNNNN

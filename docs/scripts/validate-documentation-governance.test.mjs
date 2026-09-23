@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
 import {
@@ -10,7 +11,6 @@ import {
   validateCodeReferences,
   validateDocumentContract,
   validateGeneratedArtifactPath,
-  validateGovernanceEntrypoint,
   validateGovernanceSkill,
   validateLegacyPromptBridge,
   validateImplementationReadinessGovernance,
@@ -21,7 +21,6 @@ import {
   validateRawTemplate,
   validateRepository,
   validateRelativeLinks,
-  validateQualityGateScaffold,
   validateQualityGateSkill,
   validateSkillFile,
   validateStandardConsumerParity
@@ -127,48 +126,22 @@ test('rejeita skill sem contrato operacional', () => {
   assert.match(validateSkillFile(skill, 'demo', 'SKILL.md').join('\n'), /contrato operacional/);
 });
 
-test('exige ADR-0000 e wrapper agregado na skill de governança', () => {
-  const valid = '# Governança\nADR-0000\nSection 10.11.1\n`./infra/scripts/validate-docs.sh`\n';
+test('exige ADR-0000 e validador disponível na skill de governança', () => {
+  const valid = '# Governança\nADR-0000\nSection 10.11.1\nnode docs/scripts/validate-documentation-governance.mjs --root .\nAutomação não configurada';
   assert.deepEqual(validateGovernanceSkill(valid, 'SKILL.md'), []);
   assert.match(
-    validateGovernanceSkill(valid.replace('./infra/scripts/validate-docs.sh', 'node docs/scripts/validate-documentation-governance.mjs'), 'SKILL.md').join('\n'),
-    /validate-docs\.sh/
+    validateGovernanceSkill(valid.replace('node docs/scripts/validate-documentation-governance.mjs --root .', ''), 'SKILL.md').join('\n'),
+    /validador documental/
   );
-});
-
-test('exige o wrapper como entrypoint agregado do ADR-0000', () => {
-  const adr = [
-    '`infra/scripts/validate-docs.sh`',
-    '`./infra/scripts/validate-docs.sh`',
-    '### 10.11.1 Bootstrap tecnico portatil do wrapper',
-    'criar `infra/scripts/`',
-    'chmod +x infra/scripts/validate-docs.sh',
-    '#!/usr/bin/env bash',
-    'set -uo pipefail',
-    'governance_validator="$repo_root/docs/scripts/validate-documentation-governance.mjs"',
-    'node "$governance_validator" --root "$repo_root" || exit 1'
-  ].join('\n');
-  const wrapper = [
-    '#!/usr/bin/env bash',
-    'set -uo pipefail',
-    'governance_validator="$repo_root/docs/scripts/validate-documentation-governance.mjs"',
-    'node --test "$governance_validator_test"',
-    'node "$governance_validator" --root "$repo_root"',
-    'validate-documentation-governance.test.mjs',
-    'validate-documentation-governance.mjs'
-  ].join('\n');
-  assert.deepEqual(validateGovernanceEntrypoint(adr, wrapper), []);
-  assert.match(validateGovernanceEntrypoint(adr, wrapper.replace('validate-documentation-governance.test.mjs', '')).join('\n'), /test\.mjs/);
-  assert.match(validateGovernanceEntrypoint(adr.replace('#!/usr/bin/env bash', ''), wrapper).join('\n'), /bootstrap portatil/);
 });
 
 test('exige fontes e executor sem duplicar limiares na skill de Quality Gate', () => {
   const valid = [
     'ADR-0000', 'Section 10.12', 'software-quality-standard.md',
     'implementation-readiness-standard.md',
-    './infra/scripts/validate-quality-gates.sh', 'focused', 'pr', 'release',
+    'node docs/scripts/validate-documentation-governance.mjs --root .', 'focused', 'pr', 'release',
     'PASS', 'FAIL', 'BLOCKED', 'implementation-readiness', 'READY',
-    'task ID', 'Phase 7', 'não decomponha retrospectivamente'
+    'task ID', 'não decompõe retrospectivamente'
   ].join('\n');
   assert.deepEqual(validateQualityGateSkill(valid, 'SKILL.md'), []);
   assert.match(
@@ -176,55 +149,6 @@ test('exige fontes e executor sem duplicar limiares na skill de Quality Gate', (
     /software-quality-standard\.md/
   );
   assert.match(validateQualityGateSkill(`${valid}\n80%`, 'SKILL.md').join('\n'), /limiar numerico/);
-});
-
-test('protege o scaffold portatil do Quality Gate no ADR e no wrapper', () => {
-  const contractTest = [
-    '#!/usr/bin/env bash', 'set -uo pipefail', '--scope', '--level', '--dry-run',
-    '--root', 'QUALITY_GATE_RESULT=BLOCKED',
-    'fixture_root="$(mktemp -d /tmp/quality-gate-test.XXXXXX)"',
-    'trap cleanup EXIT', "assert_exit 0 'all PR dry-run'",
-    "assert_exit 1 'missing backend coverage blocks'",
-    'local env blocks build', '7 scenarios'
-  ].join('\n');
-  const adr = [
-    '## 10.12 Gate executavel Teste x QA do C.L.E.A.R.',
-    '### 10.12.1 Ordem obrigatoria do scaffold',
-    '### 10.12.2 Interface e modo de uso',
-    '### 10.12.3 Bootstrap tecnico portatil do Quality Gate',
-    'docs/agents/standards/software-quality-standard.md',
-    '.agents/skills/quality-gate/SKILL.md',
-    '.claude/skills/quality-gate/SKILL.md',
-    'infra/scripts/validate-quality-gates.sh',
-    'infra/scripts/tests/validate-quality-gates-test.sh',
-    'implementation-readiness', 'Phase 7',
-    '#### 10.12.3.1 Teste de contrato portatil integral',
-    '```bash', contractTest, '```'
-  ].join('\n');
-  const executor = [
-    '#!/usr/bin/env bash', 'set -uo pipefail', '--scope', '--level', '--focus',
-    '--dry-run', '--root', 'focused', 'pr', 'release', 'QUALITY_GATE_RESULT=PASS',
-    'QUALITY_GATE_RESULT=FAIL', 'QUALITY_GATE_RESULT=BLOCKED', '.env.local'
-  ].join('\n');
-  const wrapper = 'validate-quality-gates-test.sh';
-  const standard = 'A1 — Test Gate\nA2 — Quality Gate\nA3 — Security & Compliance Gate\nPASS\nFAIL\nBLOCKED\nimplementation-readiness\nREADY\nescopo atômico\nPhase 7\nnão decompõe retrospectivamente';
-  assert.deepEqual(validateQualityGateScaffold(adr, executor, contractTest, wrapper, standard), []);
-  assert.match(
-    validateQualityGateScaffold(adr.replace('### 10.12.3 Bootstrap tecnico portatil do Quality Gate', ''), executor, contractTest, wrapper, standard).join('\n'),
-    /Bootstrap tecnico portatil/
-  );
-  assert.match(
-    validateQualityGateScaffold(adr.replace('#### 10.12.3.1 Teste de contrato portatil integral', ''), executor, contractTest, wrapper, standard).join('\n'),
-    /Teste de contrato portatil integral/
-  );
-  assert.match(
-    validateQualityGateScaffold(adr, `${executor}\ngit diff`, contractTest, wrapper, standard).join('\n'),
-    /Git e proibida/
-  );
-  assert.match(
-    validateQualityGateScaffold(adr, executor, `${contractTest}\nextra`, wrapper, standard).join('\n'),
-    /corpo integral do teste portatil diverge/
-  );
 });
 
 test('exige hard gate e ordem operacional na skill de implementation readiness', () => {
@@ -318,10 +242,10 @@ Na mesma alteração, atualize o README.md.`;
   );
   assert.deepEqual(validateGeneratedArtifactPath(
     'Create docs/agents/<AGENT_FILE_STEM>.md.',
-    'TPL-00001',
-    'TPL-00001.md'
+    'TPL-00011',
+    'TPL-00011.md'
   ), []);
-  assert.match(validateGeneratedArtifactPath('Create in docs/agents/.', 'TPL-00001', 'TPL-00001.md').join('\n'), /omite caminho/);
+  assert.match(validateGeneratedArtifactPath('Create in docs/agents/.', 'TPL-00011', 'TPL-00011.md').join('\n'), /omite caminho/);
 });
 
 test('protege nome, natureza e lifecycle da coleção de PRDs', () => {
@@ -349,29 +273,24 @@ test('protege nome, natureza e lifecycle da coleção de PRDs', () => {
 test('protege o esqueleto e o fechamento do Product Definition Gate', () => {
   const index = `PRD-NNNNN-short-title.md Draft In Review Validated Deprecated
 Product Definition Gate TPL-00001-prd.md
-não copia seus acceptance criteria; referencia casos de uso sem recontar fluxos;
-referencia ADRs sem decidir arquitetura; F-<CONTEXTO>-NNN;
-referência a IDs/seção de aceite`;
-  const sections = `## 2. Problem and evidence
-## 3. Audience and value
-## 4. Objectives and outcomes
-## 5. Product scope and limits
-## 6. Product validation criteria
-## 7. Success metrics
-## 8. Product hypotheses
-## 9. Requirement map
-### 9.1 Feature inventory and acceptance coverage
-## 10. Use cases and decisions by reference
-## 11. Current phase assessment
-## 13. Open questions and decisions
-## 14. Approval and readiness
+não copia o texto; use case e decisão arquitetural por referência; F-01;
+referência a IDs/seção de aceite; Nenhum PRD ativo`;
+  const sections = `## Problema e evidência
+## Público e contexto
+## Outcomes e não-objetivos
+## Métricas
+## Product Hypotheses
+## Features e mapa de requirements
+## Assumptions e Open Questions
+## Approval
+## Product Definition Gate
 **Product Definition Gate:** \`BLOCKED\``;
-  const template = `docs/product_requirements/PRD-NNNNN-<short-title>.md
+  const template = `docs/product_requirements/PRD-NNNNN-short-title.md
 ${sections}
-vários \`REQ-NNNNN\`; não copie acceptance criteria; não redefine decisões arquiteturais;
+REQ-NNNNN; não copie ou parafraseie acceptance criteria; arquitetura;
 O agente não promove seu próprio documento a \`Validated\`;
-F-<CONTEXTO>-NNN; IDs ausentes — lacuna documental`;
-  const featureRow = '| `F-DEMO-001` | Resultado para o público. | [REQ-00001](../requirements/REQ-00001-demo.md) | [AC-001](../requirements/REQ-00001-demo.md#7-acceptance-criteria) | Approved. |';
+F-01; IDs ausentes — lacuna documental`;
+  const featureRow = '| `F-01` | Resultado para o público. | [REQ-00001](../requirements/REQ-00001-demo.md) | [AC-001](../requirements/REQ-00001-demo.md#criterios-de-aceite) | Approved. |';
   const prd = `---
 document_id: PRD-00001
 primary_nature: Requisito
@@ -399,7 +318,7 @@ REQ-00001 REQ-00002`;
   assert.match(
     validateProductRequirementsGovernance({
       ...artifacts,
-      prds: [{ ...artifacts.prds[0], content: prd.replace('F-DEMO-001', 'feature-without-id') }]
+      prds: [{ ...artifacts.prds[0], content: prd.replace('F-01', 'feature-without-id') }]
     }).join('\n'),
     /nao possui feature ID/
   );
@@ -413,21 +332,21 @@ REQ-00001 REQ-00002`;
   assert.match(
     validateProductRequirementsGovernance({
       ...artifacts,
-      prds: [{ ...artifacts.prds[0], content: prd.replace('[AC-001](../requirements/REQ-00001-demo.md#7-acceptance-criteria)', 'aceite pendente') }]
+      prds: [{ ...artifacts.prds[0], content: prd.replace('[AC-001](../requirements/REQ-00001-demo.md#criterios-de-aceite)', 'aceite pendente') }]
     }).join('\n'),
     /nao referencia IDs ou secao canonica de aceite/
   );
   assert.match(
     validateProductRequirementsGovernance({
       ...artifacts,
-      prds: [{ ...artifacts.prds[0], content: prd.replace('[AC-001](../requirements/REQ-00001-demo.md#7-acceptance-criteria)', '[AC-001](../requirements/REQ-00001-demo.md#7-acceptance-criteria) Given X When Y Then Z') }]
+      prds: [{ ...artifacts.prds[0], content: prd.replace('[AC-001](../requirements/REQ-00001-demo.md#criterios-de-aceite)', '[AC-001](../requirements/REQ-00001-demo.md#criterios-de-aceite) Given X When Y Then Z') }]
     }).join('\n'),
     /duplica texto de acceptance criteria/
   );
   assert.deepEqual(validateGeneratedArtifactPath(
-    'Create docs/product_requirements/PRD-NNNNN-<short-title>.md.',
-    'TPL-00012',
-    'TPL-00012.md'
+    'Create docs/product_requirements/PRD-NNNNN-short-title.md.',
+    'TPL-00001',
+    'TPL-00001.md'
   ), []);
 });
 
@@ -493,32 +412,24 @@ test('exige relação reversa para cada consumidor de standard', () => {
   assert.match(errors, /README\.md: DemoAgent omite relacionamento reverso/);
 });
 
-test('rejeita rota incompleta, excesso e recapitulação no manifesto de módulos', () => {
-  const header = '| Domínio | Pacote físico | Owner | Entry points | Dependências | Documentação |';
-  const modulePath = 'backend/src/main/java/br/com/duoset/saas_service/contexts/demo/';
+test('rejeita rota incompleta e excesso no manifesto de módulos', () => {
+  const header = '| Fronteira | Path | Responsabilidade | Owner | Estado | Comandos |';
   const registry = `---
-code_references: "backend/, frontend/, website/, infra/, docs/"
+code_references: "backend/"
 ---
+## Scaffolds base
 ${header}
 | --- | --- | --- | --- | --- | --- |
-| Backend | \`backend/\` | Owner | Entry | Deps | Docs |
-| Frontend | \`frontend/\` | Owner | Entry | Deps | Docs |
-| Website | \`website/\` | Owner | Entry | Deps | Docs |
-| Infra | \`infra/\` | Owner | Entry | Deps | Docs |
-| Docs | \`docs/\` | Owner | Entry | Deps | Docs |
-${header}
-| --- | --- | --- | --- | --- | --- |
-| Demo | \`${modulePath}\` | Owner | Entry | Deps | Docs |
+| Backend | [backend/](../../backend/README.md) | APIs | Team | Scaffold | N/A |
 `;
-  assert.deepEqual(validateModuleRegistryStructure(registry, [modulePath]), []);
-  const incomplete = registry.replace('| Demo |', '| |');
-  assert.match(validateModuleRegistryStructure(incomplete, [modulePath]).join('\n'), /rota incompleta/);
+  assert.deepEqual(validateModuleRegistryStructure(registry, []), []);
+  assert.match(validateModuleRegistryStructure(registry.replace('| Backend |', '| |'), []).join('\n'), /rota incompleta/);
   const oversized = `${registry}${'\n'.repeat(221)}`;
-  assert.match(validateModuleRegistryStructure(oversized, [modulePath]).join('\n'), /orçamento seletivo/);
-  assert.match(validateModuleRegistryStructure(`${registry}\n### Target aceito`, [modulePath]).join('\n'), /duplicar lifecycle/);
+  assert.match(validateModuleRegistryStructure(oversized, []).join('\n'), /orçamento seletivo/);
+  assert.match(validateModuleRegistryStructure(registry.replace('## Scaffolds base', '## Scaffolds'), []).join('\n'), /scaffolds base/i);
 });
 
 test('repositório satisfaz o contrato integrado', () => {
-  const repositoryRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..');
+  const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
   assert.deepEqual(validateRepository(repositoryRoot).errors, []);
 });

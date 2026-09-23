@@ -1,6 +1,6 @@
 ---
 name: git-delivery
-description: Prepara commit e publicacao Git governados quando o projeto adotou essa politica. Use para criar ou trocar branch, commitar ou publicar uma entrega; nao use para PR, merge, rebase, historico ou integracao.
+description: Prepara e integra entregas Git governadas em branches de trabalho, preservando a protecao da branch principal.
 ---
 
 # Git Delivery
@@ -10,43 +10,70 @@ description: Prepara commit e publicacao Git governados quando o projeto adotou 
 
 ## Objetivo e ativação
 
-Aplicar a política local de entrega Git sem ampliar permissões. Use somente quando
-o ADR-0000, os adaptadores e a automação do projeto registrarem explicitamente a
-convenção de branch e mensagem, paths autorizados, gates, hook e publicação.
+Aplicar a política local de entrega Git sem ampliar permissões. Para este projeto,
+siga [`docs/settings/git-delivery.md`](../../../docs/settings/git-delivery.md):
+trabalhe em branches separadas, integre mudanças aprovadas preservando o trabalho de
+todos os participantes e mantenha a `main` protegida contra escrita direta e
+force-push. A tarefa define o escopo; não exija uma lista fechada de paths para
+aceitar artefatos novos necessários ao resultado.
 
-Sem essa adoção verificável, Git de escrita permanece `BLOCKED`.
+## Gatilhos e não-gatilhos
+
+- Gatilhos: commit, publicação ou integração Git solicitados em tarefa aprovada.
+- Não-gatilhos: inspeção de histórico, acesso a credenciais ou escrita direta na `main`.
+
+## Escopo e não-objetivos
+
+- Escopo: branches de trabalho, publicação, revisão e integração de mudanças.
+- Não-objetivos: decidir conteúdo funcional ou contornar proteções do servidor.
+
+## Entradas e pré-condições
+
+Branch atual, paths do escopo, gates aplicáveis, política Git local e proteções
+efetivas do repositório.
 
 ## Procedimento
 
-1. Confirme o `READY` vigente, paths autorizados e gates aplicáveis em `PASS`.
-2. Confirme a branch, a mensagem e o hook conforme a política local; crie ou troque
-   branch somente se isso estiver autorizado pela mesma política.
-3. Instale ou verifique o hook versionado antes do commit.
-4. Adicione somente os paths autorizados e execute o commit sem bypass de hook.
-5. Antes da publicação, repita os gates definidos para entrega com branch, paths e
-   referência ao `READY` explícitos.
-6. Publique somente pelo comando e remote autorizados. Registre branch, mensagem,
-   paths, SHA, comandos e resultados.
+1. Confirme o escopo aprovado e os gates aplicáveis.
+2. Crie ou use uma branch de trabalho separada da `main`.
+3. Inclua todos os paths necessários ao resultado aprovado, inclusive artefatos
+   novos, sem descartar mudanças de outros participantes.
+4. Execute os gates aplicáveis antes de publicar ou integrar.
+5. Publique a branch e use PR, merge, rebase ou o fluxo de integração do repositório.
+6. Resolva conflitos considerando as intenções de todos os trabalhos; repita gates
+   afetados e registre branch, paths, SHA, comandos e resultados.
+7. Confirme que nenhuma operação escreveu diretamente na `main` ou fez force-push
+   nela.
 
 ## Limites
 
-- Não infira convenção, coordenada, remote, paths, gates ou autorização ausentes.
-- Detached HEAD, hook ausente, convenção inválida, gate não aprovado ou autorização
-  incompleta resultam em `BLOCKED`.
-- Não abra PR, faça merge, rebase, reset, force-push, tag, alteração de remote,
-  integração, release ou leitura de credenciais.
-- O hook local não substitui proteção de servidor; rede e push ainda obedecem à
-  política de autorização efetiva do ambiente.
+- Não escreva diretamente na `main` nem faça force-push nela.
+- Não descarte silenciosamente commits, arquivos ou mudanças válidas de branches
+  envolvidas na integração.
+- Uma falha de gate deve ser corrigida ou registrada com seu impacto; não remova
+  conteúdo ou cobertura apenas para obter aprovação.
+- Não leia nem exponha credenciais. Respeite as proteções do servidor e as
+permissões efetivas do ambiente.
+
+## Limites de segurança
+
+Não escreva diretamente ou faça force-push na `main`; não leia segredos ou
+credenciais; não descarte trabalho válido de outra branch.
 
 ## Evidência e portabilidade
 
-Registre a política aplicada, branch, mensagem, paths, hook, comandos, SHA, gates e
-resultado `PASS` ou `BLOCKED`. Para criar enforcement no destino, consulte o
-[scaffold portátil](references/portable-commit-enforcement.md) e adapte-o à decisão
-local antes de habilitar a skill.
+Registre a política aplicada, branches, paths, comandos, SHA, gates, conflitos,
+método de integração e resultado `PASS` ou `BLOCKED`. Para criar enforcement em
+outro projeto, consulte o [scaffold portátil](references/portable-commit-enforcement.md)
+e adapte-o à política local antes de habilitar a skill.
+
+## Saídas
+
+Commit ou integração na branch de trabalho com SHA, branches, paths e gates
+registrados; falhas permanecem explícitas e mudanças pendentes são preservadas.
 
 ## Critério de conclusão
 
-Conclua somente com commit ou publicação autorizados, enforcement verificado, gates
-exigidos em `PASS` e evidência reproduzível. Caso contrário, reporte `BLOCKED` sem
-contornar controles.
+Conclua com gates exigidos em `PASS`, integração compatível com as proteções da
+branch principal e evidência reproduzível. Caso contrário, reporte `BLOCKED` com a
+causa e preserve as mudanças pendentes.

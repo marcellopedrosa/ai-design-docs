@@ -17,6 +17,8 @@ principal_statement: Toda colecao ativa declara fronteira, convencao, estados e 
 
 # Template — Collection README
 
+Crie como `README.md` da coleção e atualize o índice da coleção pai na mesma mudança.
+
 ```markdown
 ---
 document_id: {{ID-INDEX}}

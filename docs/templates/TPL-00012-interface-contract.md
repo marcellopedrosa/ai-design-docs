@@ -17,6 +17,9 @@ principal_statement: Toda interface compartilhada tem uma fonte canonica complet
 
 # Template — Interface Contract
 
+Crie o artefato canônico em `docs/contracts/` e atualize o `README.md` da coleção
+na mesma mudança.
+
 Use esta ficha ao criar o contrato no formato adequado ao projeto, como OpenAPI,
 AsyncAPI, JSON Schema ou protobuf.
 

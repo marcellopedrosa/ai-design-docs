@@ -7,8 +7,8 @@ non_objectives: Nao definir política por código, conter runtime do produto, mi
 owner: Arquitetura e Qualidade
 status: Active
 date: 2026-08-26
-version: 1.20
-last_reviewed: 2026-09-13
+version: 1.21
+last_reviewed: 2026-09-23
 keywords: validacao-documental, governanca, ADR-0000, testes, quality-metrics, cobertura, node, portabilidade
 related_files: ../README.md, ../adrs/ADR-0000-governanca-do-harness-documental.md, ../automation/README.md, ../agents/skills/README.md, ../agents/standards/software-quality-standard.md, ../agents/standards/implementation-readiness-standard.md
 code_references: validate-documentation-governance.mjs, validate-documentation-governance.test.mjs, validate-google-runtime-governance.mjs, validate-google-runtime-governance.test.mjs, validate-api-contract-coverage.mjs, validate-api-contract-coverage.test.mjs, validate-quality-metrics.mjs, validate-quality-metrics.test.mjs, validate-plan-granularity.mjs, validate-plan-granularity.test.mjs, validate-quality-policy.mjs, validate-quality-policy.test.mjs; wrappers, hooks e thresholds pertencem ao projeto adotante.
@@ -47,8 +47,8 @@ como `Automação não configurada`.
   de código resolvíveis, templates e variantes raw, skills, adaptadores, settings,
   catálogos semânticos bidirecionais, status e data original no catálogo de ADRs,
   ponteiros legados sem fonte concorrente, natureza e paths gerados por templates,
-  regras de ignore, rastreabilidade compacta do manifesto de módulos, o contrato
-  dos PRDs e o scaffold do Implementation Readiness Gate. A validação de PRD
+  regras de ignore, rastreabilidade compacta do manifesto de módulos e o contrato
+  dos PRDs e do Implementation Readiness Gate. A validação de PRD
   protege nome, identidade, lifecycle, seções, agrupamento de requisitos, IDs de
   feature, referências canônicas de aceite e coerência do Product Definition Gate.
   O scaffold protege a decisão de User Story,
@@ -58,8 +58,7 @@ como `Automação não configurada`.
   segredos, dependências, builds e gerados.
 - [Teste hermético do validador](validate-documentation-governance.test.mjs): cobre
   helpers com fixtures temporárias e executa também a validação integrada do
-  repositório, inclusive presença, paridade e scaffolds portáteis de Quality Gate
-  e Implementation Readiness.
+  repositório, inclusive presença, paridade e contratos de Implementation Readiness.
 - [Validador dos runtimes Google](validate-google-runtime-governance.mjs): protege
   adapters `GEMINI.md`, regra Antigravity, skills interoperáveis, fontes oficiais,
   settings e ativação documentada sem ampliar o validador geral legado.
@@ -85,49 +84,25 @@ como `Automação não configurada`.
 - [Teste hermético de granularidade](validate-plan-granularity.test.mjs): cobre os
   dois limiares, revisão ausente, indivisibilidade, decomposição, filhos e targets
   inválidos sem rede ou Git.
-- [Validador da política de qualidade](validate-quality-policy.mjs): impede que
-  ADR, standards, adapters, templates, skills, executores e wrappers percam os
-  contratos de métricas, loop corretivo e entrega Git mínima.
+- [Validador da política de qualidade](validate-quality-policy.mjs): verifica a
+  paridade das skills, os gates independentes e a referência à política Git local,
+  sem impor convenção de branch, wrapper ou ferramenta específica.
 - [Teste hermético da política](validate-quality-policy.test.mjs): cobre política
   completa, certificação ausente, divergência de skills, hook de commit, branch
   governada e descoberta Git proibida.
 
-## Execução canônica
+## Execução disponível
 
 ```bash
-./infra/scripts/validate-docs.sh
+node --test "docs/scripts/*.test.mjs"
+node docs/scripts/validate-documentation-governance.mjs --root .
 ```
 
-O wrapper é o entrypoint canônico agregado definido pelo ADR-0000. Ele executa os
-testes e a implementação da governança geral, os testes e a reconciliação de
-contratos HTTP e então os gates documentais legados ainda aplicáveis. Os workflows
-de backend e segurança usam o mesmo wrapper para manter paridade entre execução
-local e CI. O gate é hermético: não instala dependências, não acessa rede e não lê
-`.env*`.
-
-Quando o ADR for portado para um repositório sem o wrapper, sua Section 10.11.1
-define o código mínimo, o path, a permissão executável e as verificações de
-bootstrap. O arquivo local é uma extensão desse núcleo portátil e acrescenta os
-controles específicos deste monorepo sem criar outro entrypoint.
-
-O reconhecimento de Implementation Plans no wrapper cobre `IP-BE`, `IP-FE` e
-`IP-INFRA`. Para a coleção Infra, o ID canônico pode ser publicado pelo
-frontmatter `document_id`, conforme o template da própria coleção, e o validador
-especializado continua responsável pelo lifecycle e pelas evidências de gate.
-
-O wrapper também executa o teste hermético
-`infra/scripts/tests/validate-quality-gates-test.sh`. O executor funcional
-`infra/scripts/validate-quality-gates.sh` pertence a `infra/`, enquanto este
-catálogo documenta a regressão que impede o contrato do ADR-0000 de divergir.
-O corpo portátil integral do teste está na Section 10.12.3.1 do ADR-0000, e o
-validador exige seus marcadores, compara o corpo integral com o arquivo versionado,
-preserva a interface hermética `--root` e os dez cenários mínimos para que o
-scaffold possa ser reconstruído sem inferência.
-
-O corpo das ferramentas métricas e de granularidade reside deliberadamente nesta
-coleção: copiar as especificações do ADR inclui implementações e testes. Os
-entrypoints homônimos em `infra/scripts/` são apenas wrappers importáveis; assim,
-não há duas fontes de código nem necessidade de reconstruir a lógica por prosa.
+Há testes e validadores executáveis nesta coleção, mas não há wrapper agregado
+obrigatório nem contrato de CI. Execute apenas os comandos aplicáveis ao trabalho;
+a ausência de ativação em um projeto adotante permanece `Automação não configurada`.
+Os scripts não impõem convenção de branch nem condicionam contribuições à adoção
+de um runtime, harness, hook, wrapper ou serviço externo.
 
 Não existe `validate-implementation-readiness.sh`: a prontidão depende de decisão
 semântica e, quando necessário, de resposta humana. O validador documental garante
@@ -143,6 +118,7 @@ aceitas como caminho canônico; use caminho, sufixo, basename ou glob explícito
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.21 | 2026-09-23 | Remove dependência de wrappers opcionais de infra e documenta os entrypoints portáveis disponíveis sem torná-los obrigatórios. |
 | 1.20 | 2026-09-13 | Alinha o catalogo portavel ao hook de commit e a entrega Git governada adotavel. |
 | 1.19 | 2026-09-13 | Reclassifica os scripts migrados como extensão condicional a ser adaptada e validada no destino. |
 | 1.18 | 2026-09-11 | Separa a governança Google em validador e teste pequenos para preservar o limite de manutenção dos targets. |
