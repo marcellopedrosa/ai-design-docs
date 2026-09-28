@@ -91,4 +91,3 @@ owner e condição de retomada.
 
 Conclua com auditoria reproduzível: `READY` autoriza somente o recorte registrado;
 `BLOCKED` interrompe a implementação até que a causa seja resolvida e o gate repetido.
-

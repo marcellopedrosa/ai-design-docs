@@ -1,0 +1,66 @@
+schema_version: 1
+
+tools:
+  harness-doctor:
+    status: active
+    implementation: "tooling/harness-doctor/index.mjs"
+    description: "Diagnóstico estrutural unificado do harness (registry, contracts, skills, adapters, evals, drift)"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: false
+
+  sync-adapters:
+    status: active
+    implementation: "tooling/adapters/sync-adapters.mjs"
+    description: "Sincronizador e validador de paridade entre a fonte canônica skills/ e os diretórios de runtime .agents/ e .claude/"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: false
+
+  documentation-governance:
+    status: active
+    implementation: "docs/scripts/validate-documentation-governance.mjs"
+    contract: "docs/automation/README.md#validador-documental"
+    description: "Validador determinístico do ADR-0000, links relativos, referências de código e integridade da árvore docs/"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: false
+
+  quality-metrics:
+    status: active
+    implementation: "docs/scripts/validate-quality-metrics.mjs"
+    description: "Validador de métricas de código, densidade de comentários e cobertura"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: true
+
+  plan-granularity:
+    status: active
+    implementation: "docs/scripts/validate-plan-granularity.mjs"
+    description: "Validador de granularidade atômica e decomposição semântica de Task Plans e Implementation Plans"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: false
+
+  google-runtime-governance:
+    status: active
+    implementation: "docs/scripts/validate-google-runtime-governance.mjs"
+    description: "Validador de conformidade para adaptadores e configurações do Google Gemini CLI e Antigravity"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: false
+
+  api-contract-coverage:
+    status: active
+    implementation: "docs/scripts/validate-api-contract-coverage.mjs"
+    description: "Validador de cobertura de contratos de API e endpoints"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: true

@@ -1,0 +1,43 @@
+name: "security-gate"
+contract_version: 1
+
+input:
+  schema: "../../contracts/capability-request.schema.json"
+  required_context:
+    - "task_id"
+    - "readiness_ref"
+    - "scope"
+    - "execution_level"
+
+output:
+  schema: "../../contracts/gate-result.schema.json"
+  gate: "A3"
+  states:
+    - "PASS"
+    - "FAIL"
+    - "BLOCKED"
+
+handoff:
+  success: "quality-gate"
+  failure: "quality-gate"
+  blocked: "quality-gate"
+
+permissions:
+  filesystem_read: allow
+  filesystem_write: deny
+  local_exec: approved-tools-only
+  network: deny
+  secrets: deny
+  git_write: deny
+  production: deny
+  destructive: deny
+
+side_effects:
+  allowed:
+    - "execute-approved-local-security-validation"
+  forbidden:
+    - "weaken-security-policy"
+    - "access-production"
+    - "access-real-secrets"
+    - "authorize-release"
+    - "aggregate-a1-a2"

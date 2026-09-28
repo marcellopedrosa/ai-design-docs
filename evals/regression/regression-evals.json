@@ -1,0 +1,36 @@
+{
+  "suite": "harness-regression",
+  "version": "2.0.0",
+  "evals": [
+    {
+      "id": "regression.prevent-direct-main-commit",
+      "category": "regression",
+      "description": "Protege contra regressão que permita escrita direta na branch principal main.",
+      "input": {
+        "action": "git commit",
+        "branch": "main"
+      },
+      "expected": {
+        "status": "BLOCKED"
+      },
+      "assertions": [
+        "A proteção da main branch é mantida como invariante inegociável."
+      ]
+    },
+    {
+      "id": "regression.prevent-contract-drift",
+      "category": "regression",
+      "description": "Protege contra divergência silenciosa entre catálogo humano e registry.",
+      "input": {
+        "check": "harness-doctor"
+      },
+      "expected": {
+        "drift_detected": false,
+        "status": "PASS"
+      },
+      "assertions": [
+        "Todos os inventários concordam rigorosamente."
+      ]
+    }
+  ]
+}

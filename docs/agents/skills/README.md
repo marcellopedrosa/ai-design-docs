@@ -6,12 +6,12 @@ scope: Nome, gatilho, owner, estado e caminhos nativos das skills.
 non_objectives: Nao armazenar SKILL.md nem duplicar seu procedimento.
 owner: Plataforma de IA
 status: Active
-version: 1.7
+version: 1.8
 date: 2026-09-10
 last_reviewed: 2026-09-28
-keywords: skills, catalogo, codex, claude-code, gemini-cli, antigravity, appsec, security, permissoes
-related_files: ../AgentOrchestrator.md, ../standards/README.md, ../../adrs/ADR-0000-governanca-do-harness-documental.md, ../../settings/google-gemini.md, ../../templates/TPL-00009-skill-operacional.md
-code_references: ../../../.agents/skills/, ../../../.claude/skills/, ../../../.agents/rules/documentation-governance.md
+keywords: skills, catalogo, codex, claude-code, gemini-cli, antigravity, appsec, security, permissoes, v2, registry, canonica
+related_files: ../AgentOrchestrator.md, ../standards/README.md, ../../adrs/ADR-0000-governanca-do-harness-documental.md, ../../adrs/ADR-0001-evolucao-para-harness-agnostico-v2.md, ../../settings/google-gemini.md, ../../templates/TPL-00009-skill-operacional.md, ../../../registry/skills.yaml, ../../../skills/README.md
+code_references: ../../../.agents/skills/, ../../../.claude/skills/, ../../../.agents/rules/documentation-governance.md, ../../../skills/
 principal_statement: Cada skill catalogada resolve para um descritor nativo e semanticamente equivalente em todo runtime suportado.
 ---
 
@@ -24,9 +24,11 @@ principal_statement: Cada skill catalogada resolve para um descritor nativo e se
 - Critério de granularidade: separar capacidades com gatilhos, owner ou handoff
   independentes.
 
-Este diretório contém somente o catálogo. Skills instaláveis residem nos caminhos
-nativos do runtime. Nome do diretório, `name` do frontmatter e nome do catálogo
-devem coincidir.
+Este diretório contém somente o catálogo. A fonte canônica única de evolução de
+skills reside em `skills/<skill-name>/` (conforme ADR-0001 e `registry/skills.yaml`),
+sendo sincronizada determinística e automaticamente para os diretórios nativos
+`.agents/skills/` e `.claude/skills/` pelo sincronizador `tooling/adapters/sync-adapters.mjs`.
+Nome do diretório, `name` do frontmatter e nome do catálogo devem coincidir.
 
 ## Catálogo
 
@@ -40,7 +42,7 @@ devem coincidir.
 | antigravity-permissions | Solicitação de redução de confirmações no Antigravity | Plataforma de IA e Segurança | Active | [SKILL.md](../../../.agents/skills/antigravity-permissions/SKILL.md) | [SKILL.md](../../../.claude/skills/antigravity-permissions/SKILL.md) |
 
 Skills adicionais exigem procedimento reutilizável real, owner, descrição
-discriminante, limites de segurança e entrada neste catálogo.
+discriminante, limites de segurança e entrada neste catálogo e no registry machine-readable.
 
 `.agents/skills/` é o caminho interoperável compartilhado por Codex, Gemini CLI e
 Antigravity. Não crie `.gemini/skills/` com o mesmo conteúdo.
@@ -70,6 +72,7 @@ sem mudar o destino ou alterar o remote.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.8 | 2026-09-28 | Conecta o catálogo à fonte canônica neutra em skills/ e ao registry machine-readable v2. |
 | 1.7 | 2026-09-28 | Registra a skill antigravity-permissions para controle de permissões no escopo de projeto. |
 | 1.6 | 2026-09-28 | Adiciona `security-gate` como executor especializado subordinado ao A3 do `quality-gate`. |
 | 1.5 | 2026-09-28 | Registra a revisão AppSec especializada do A3, pareada nos runtimes. |

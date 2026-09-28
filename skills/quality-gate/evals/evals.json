@@ -1,0 +1,87 @@
+{
+  "skill": "quality-gate",
+  "version": "2.0.0",
+  "evals": [
+    {
+      "id": "quality.all-subgates-pass",
+      "category": "behavior",
+      "description": "Retorna PASS global somente quando A1, A2 e A3 aplicáveis estão em PASS.",
+      "input": {
+        "context": {
+          "task_id": "TASK-100",
+          "subgates": {
+            "A1": { "status": "PASS", "evidence": ["EV-01"] },
+            "A2": { "status": "PASS", "evidence": ["EV-02"] },
+            "A3": { "status": "PASS", "evidence": ["EV-03"] }
+          }
+        }
+      },
+      "expected": {
+        "status": "PASS"
+      },
+      "assertions": [
+        "O status agregado é estritamente PASS.",
+        "A1, A2 e A3 são reportados de forma independente."
+      ]
+    },
+    {
+      "id": "quality.a3-failure-blocks-overall-pass",
+      "category": "behavior",
+      "description": "Falha em A3 impede PASS geral, mesmo com A1 e A2 aprovados.",
+      "input": {
+        "context": {
+          "task_id": "TASK-101",
+          "subgates": {
+            "A1": { "status": "PASS", "evidence": ["EV-01"] },
+            "A2": { "status": "PASS", "evidence": ["EV-02"] },
+            "A3": { "status": "FAIL", "findings": ["SEC-001"] }
+          }
+        }
+      },
+      "expected": {
+        "status": "FAIL"
+      },
+      "assertions": [
+        "A aprovação em A1 e A2 não compensa a falha de A3.",
+        "O status geral agregado é FAIL.",
+        "A remediação é encaminhada ao AgentOrchestrator sem autocertificação pelo gate."
+      ]
+    },
+    {
+      "id": "quality.missing-ready-blocks",
+      "category": "behavior",
+      "description": "Retorna BLOCKED quando o Implementation Readiness Gate não produziu READY.",
+      "input": {
+        "context": {
+          "task_id": "TASK-102",
+          "readiness_status": "BLOCKED"
+        }
+      },
+      "expected": {
+        "status": "BLOCKED"
+      },
+      "assertions": [
+        "Execução sem READY vigente resulta imediatamente em BLOCKED."
+      ]
+    },
+    {
+      "id": "quality.missing-validator-blocks",
+      "category": "behavior",
+      "description": "Retorna BLOCKED quando um validador obrigatório não está configurado.",
+      "input": {
+        "context": {
+          "task_id": "TASK-103",
+          "required_validator": "coverage-tool",
+          "validator_available": false
+        }
+      },
+      "expected": {
+        "status": "BLOCKED"
+      },
+      "assertions": [
+        "Ausência de ferramenta obrigatória não pode ser convertida em aprovação implícita.",
+        "O gate falha fechado como BLOCKED."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+schema_version: 1
+
+standards:
+  software-engineering-lifecycle:
+    path: "docs/agents/standards/software-engineering-lifecycle.md"
+    status: active
+    class: baseline
+    activation:
+      triggers:
+        - "software-change"
+    owner:
+      - "Arquitetura"
+      - "Qualidade"
+    consumers:
+      - "AgentOrchestrator"
+      - "implementation-readiness"
+      - "quality-gate"
+
+  implementation-readiness-standard:
+    path: "docs/agents/standards/implementation-readiness-standard.md"
+    status: active
+    class: baseline
+    activation:
+      triggers:
+        - "executable-handoff"
+        - "source-change"
+        - "migration"
+        - "iac"
+    owner:
+      - "Arquitetura"
+      - "Produto"
+      - "Qualidade"
+    consumers:
+      - "AgentOrchestrator"
+      - "implementation-readiness"
+
+  software-quality-standard:
+    path: "docs/agents/standards/software-quality-standard.md"
+    status: active
+    class: baseline
+    activation:
+      triggers:
+        - "software-change"
+        - "pr-review"
+        - "release-qualification"
+    owner:
+      - "Arquitetura"
+      - "Qualidade"
+    consumers:
+      - "AgentOrchestrator"
+      - "quality-gate"
+      - "security-gate"
+
+  development-standard:
+    path: "docs/agents/standards/development-standard.md"
+    status: active
+    class: baseline
+    activation:
+      triggers:
+        - "executable-writing"
+    owner:
+      - "Engenharia"
+    consumers:
+      - "AgentOrchestrator"
+      - "quality-gate"
+
+  security-standard:
+    path: "docs/agents/standards/security-standard.md"
+    status: active
+    class: baseline
+    activation:
+      triggers:
+        - "software-change"
+        - "operational-doc-change"
+    owner:
+      - "Segurança"
+      - "Engenharia"
+    consumers:
+      - "AgentOrchestrator"
+      - "quality-gate"
+      - "security-gate"
+
+  application-security-standard:
+    status: conditional
+    class: conditional
+    activation:
+      any:
+        - "capability:web-app"
+        - "capability:backend-web"
+        - "capability:sensitive-data"
+        - "risk:untrusted-input"
+    consumers:
+      - "security-gate"
+
+  api-security-standard:
+    status: conditional
+    class: conditional
+    activation:
+      any:
+        - "capability:rest-api"
+        - "capability:graphql"
+        - "capability:http-service"
+    consumers:
+      - "security-gate"
+
+  spring-security-standard:
+    status: conditional
+    class: conditional
+    activation:
+      any:
+        - "stack:spring-boot"
+        - "stack:spring-security"
+    consumers:
+      - "security-gate"
+
+  frontend-standard:
+    status: conditional
+    class: conditional
+    activation:
+      any:
+        - "capability:frontend"
+    consumers:
+      - "quality-gate"
+
+  iac-supply-chain-standard:
+    status: conditional
+    class: conditional
+    activation:
+      any:
+        - "capability:iac"
+        - "capability:containers"
+        - "capability:external-dependencies"
+    consumers:
+      - "security-gate"
+      - "quality-gate"

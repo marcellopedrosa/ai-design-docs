@@ -44,7 +44,7 @@ registrados pelo projeto.
 1. Leia o lifecycle, o Software Quality Standard e os standards ativados pelo
    pacote ou risco.
 2. Classifique a execução como `focused`, `pr` ou `release`.
-3. Crie ou atualize testes relevantes; execute o teste focalizado e depois a suíte
+3. Valide a criação ou atualização dos testes relevantes; execute o teste focalizado e depois a suíte
    impactada.
 4. Execute os comandos e validadores registrados pelo projeto para cada target.
 5. Registre A1 Test, A2 Quality e A3 Security/Compliance separadamente como
@@ -55,8 +55,9 @@ registrados pelo projeto.
    o `security-gate` é subordinado ao A3 e não constitui Assurance Gate paralelo.
 7. Para A3 fora de AppSec, aplique os demais standards de segurança/compliance
    ativados e preserve a mesma semântica `PASS`/`FAIL`/`BLOCKED`.
-8. Em `FAIL`, corrija o escopo e reexecute enquanto houver progresso. Dependência,
-   autorização, ferramenta, contexto ou ambiente obrigatório ausente resulta em
+8. Em `FAIL`, o gate reporta a falha e evidências ao AgentOrchestrator para coordenação
+   da remediação pela capacidade de implementação; a reavaliação ocorre em nova execução do gate.
+   Dependência, autorização, ferramenta, contexto ou ambiente obrigatório ausente resulta em
    `BLOCKED`.
 9. Só conclua quando todos os gates aplicáveis estiverem em `PASS`.
 
@@ -83,4 +84,3 @@ A saída registra A1, A2 e A3 separadamente. Conclua somente quando todos os gat
 aplicáveis passarem; falha ou dependência ausente deve ser registrada como `FAIL`
 ou `BLOCKED` com sua causa. `security-gate` retorna ao `quality-gate`; não agrega
 A1/A2 e não autoriza release, merge ou deploy.
-

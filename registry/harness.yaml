@@ -1,0 +1,37 @@
+schema_version: 1
+harness_version: "2.0.0"
+name: "ai-design-docs"
+description: "AI Engineering Harness agnóstico, testável, mensurável, versionável e portável entre runtimes de agentes."
+
+lifecycle:
+  name: "C.L.E.A.R."
+  phases:
+    - id: "C"
+      name: "Context"
+      description: "Problema, público, outcomes, não-objetivos e requisitos definidos e aprovados."
+    - id: "L"
+      name: "Logic & Layout"
+      description: "Decisões arquiteturais, fluxos e plano atômico; encerra com Implementation Readiness Gate em READY."
+    - id: "E"
+      name: "Execution"
+      description: "Implementação restrita ao escopo, versões e caminhos explicitamente auditados."
+    - id: "A"
+      name: "Assurance"
+      description: "Verificações independentes de A1 Test, A2 Quality e A3 Security/Compliance."
+    - id: "R"
+      name: "Release"
+      description: "Entrega e integração governadas conforme autorização explícita e política do projeto."
+
+orchestration:
+  initial_agent: "AgentOrchestrator"
+  fail_closed: true
+  uncertainty_policy: "blocked-no-inference"
+
+principles:
+  - "Uma fonte canônica por conceito."
+  - "Markdown como linguagem normativa humana; YAML/JSON para dados operáveis por máquina."
+  - "Distinção rígida entre Available, Activated e Executed."
+  - "Comportamento fail-closed: falta de evidência obrigatória é BLOCKED."
+  - "O agente não é a fonte de verdade do próprio sucesso: exige evidência determinística."
+  - "Portabilidade por contrato estruturado e invariantes preservadas, não por cópia solta."
+  - "Separação estrita entre avaliação e remediação."

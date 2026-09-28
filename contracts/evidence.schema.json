@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ai-design-docs.internal/contracts/evidence.schema.json",
+  "title": "Evidence",
+  "description": "Contrato formal para evidências determinísticas de execução de testes, validações e inspeções.",
+  "type": "object",
+  "required": [
+    "evidence_id",
+    "kind",
+    "scope",
+    "source",
+    "observed_at",
+    "freshness"
+  ],
+  "properties": {
+    "evidence_id": {
+      "type": "string",
+      "description": "Identificador único da evidência (ex: EV-001)."
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["command-result", "file-inspection", "test-report", "static-analysis", "security-scan"],
+      "description": "Tipo de evidência observada."
+    },
+    "scope": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "Caminhos avaliados pela verificação."
+    },
+    "source": {
+      "type": "string",
+      "description": "Origem da evidência (ex: local-tool, surefire, lcov, dependency-check)."
+    },
+    "observed_at": {
+      "type": "string",
+      "description": "Timestamp ISO-8601 da observação."
+    },
+    "command": {
+      "type": "string",
+      "description": "Comando exato executado, quando aplicável."
+    },
+    "working_directory": {
+      "type": "string",
+      "description": "Diretório de execução do comando."
+    },
+    "exit_code": {
+      "type": "integer",
+      "description": "Código de saída do processo (0 para sucesso)."
+    },
+    "artifact": {
+      "type": "string",
+      "description": "Caminho do relatório ou arquivo de evidência gerado."
+    },
+    "freshness": {
+      "type": "object",
+      "required": ["task_id", "scope_fingerprint"],
+      "properties": {
+        "task_id": { "type": "string" },
+        "scope_fingerprint": { "type": "string" }
+      },
+      "additionalProperties": false,
+      "description": "Vínculo de rastreabilidade temporal e escopo para prevenir uso de relatórios obsoletos."
+    },
+    "limitations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Limitações ou premissas da evidência."
+    }
+  },
+  "additionalProperties": false
+}

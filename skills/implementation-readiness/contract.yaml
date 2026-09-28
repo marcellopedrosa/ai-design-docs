@@ -1,0 +1,37 @@
+name: "implementation-readiness"
+contract_version: 1
+
+input:
+  schema: "../../contracts/capability-request.schema.json"
+  required_context:
+    - "task_id"
+    - "scope"
+    - "sources"
+
+output:
+  schema: "../../contracts/readiness-result.schema.json"
+  gate: "readiness"
+  states:
+    - "READY"
+    - "BLOCKED"
+
+handoff:
+  ready: "AgentOrchestrator"
+  blocked: "AgentOrchestrator"
+
+permissions:
+  filesystem_read: allow
+  filesystem_write: deny
+  local_exec: deny
+  network: deny
+  secrets: deny
+  git_write: deny
+  production: deny
+  destructive: deny
+
+side_effects:
+  allowed: []
+  forbidden:
+    - "modify-code"
+    - "infer-missing-decisions"
+    - "grant-waivers"

@@ -1,0 +1,15 @@
+{
+  "task_id": "TP-00102",
+  "title": "Implementar fluxo de checkout",
+  "prd": { "id": "PRD-00002", "version": "0.9", "status": "Proposed" },
+  "requirements": [{ "id": "REQ-00002", "status": "Draft" }],
+  "adrs": [],
+  "open_questions": [],
+  "assumptions": [],
+  "scope": {
+    "paths": ["backend/src/main/java/CheckoutService.java"],
+    "fingerprint": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "dependencies": [],
+  "dod": "Checkout implementado."
+}

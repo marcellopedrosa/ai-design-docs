@@ -11,7 +11,7 @@ description: Prepara e integra entregas Git governadas em branches de trabalho, 
 ## Objetivo e ativação
 
 Aplicar a política local de entrega Git sem ampliar permissões. Para este projeto,
-siga [`docs/settings/git-delivery.md`](../../../docs/settings/git-delivery.md):
+siga [`docs/settings/git-delivery.md`](../../docs/settings/git-delivery.md):
 trabalhe em branches separadas, integre mudanças aprovadas preservando o trabalho de
 todos os participantes e mantenha a `main` protegida contra escrita direta e
 force-push. A tarefa define o escopo; não exija uma lista fechada de paths para
@@ -57,7 +57,7 @@ efetivas do repositório.
 - Uma falha de gate deve ser corrigida ou registrada com seu impacto; não remova
   conteúdo ou cobertura apenas para obter aprovação.
 - Não leia nem exponha credenciais. Respeite as proteções do servidor e as
-permissões efetivas do ambiente.
+  permissões efetivas do ambiente.
 
 ## Limites de segurança
 

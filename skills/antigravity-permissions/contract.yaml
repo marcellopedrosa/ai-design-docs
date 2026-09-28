@@ -1,0 +1,35 @@
+name: "antigravity-permissions"
+contract_version: 1
+
+input:
+  schema: "../../contracts/capability-request.schema.json"
+  required_context:
+    - "task_id"
+
+output:
+  schema: "../../contracts/gate-result.schema.json"
+  gate: "antigravity-permissions"
+  states:
+    - "PASS"
+    - "BLOCKED"
+
+handoff:
+  success: "AgentOrchestrator"
+  blocked: "AgentOrchestrator"
+
+permissions:
+  filesystem_read: allow
+  filesystem_write: scoped
+  local_exec: deny
+  network: deny
+  secrets: deny
+  git_write: deny
+  production: deny
+  destructive: deny
+
+side_effects:
+  allowed:
+    - "configure-project-settings-json"
+  forbidden:
+    - "auto-approve-deletion-or-destructive-commands"
+    - "bypass-global-user-profile"

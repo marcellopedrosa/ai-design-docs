@@ -1,0 +1,39 @@
+schema_version: 1
+
+runtimes:
+  codex:
+    status: supported
+    description: "OpenAI Codex CLI e agentes compatíveis"
+    global_adapter: "AGENTS.md"
+    skill_target: ".agents/skills"
+    supports_import: false
+    sandbox_required: false
+
+  claude-code:
+    status: supported
+    description: "Anthropic Claude Code"
+    global_adapter: "CLAUDE.md"
+    skill_target: ".claude/skills"
+    supports_import: false
+    sandbox_required: false
+
+  gemini-cli:
+    status: supported
+    description: "Google Gemini CLI"
+    global_adapter: "GEMINI.md"
+    skill_target: ".agents/skills"
+    supports_import: true
+    imports:
+      - "AGENTS.md"
+    sandbox_required: false
+
+  antigravity:
+    status: supported
+    description: "Google Antigravity IDE / VS Code extension"
+    rules_target: ".agents/rules"
+    skill_target: ".agents/skills"
+    supports_import: true
+    imports:
+      - "AGENTS.md"
+    runtime_verification_required: true
+    sandbox_required: true

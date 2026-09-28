@@ -6,11 +6,11 @@ scope: Governanca documental, readiness verificavel, quality gates e evidencias.
 non_objectives: Nao fornecer scripts, escolher stack, executar comandos ou simular automacao ausente.
 owner: Plataforma, Arquitetura e Qualidade
 status: Active
-version: 1.4
+version: 1.5
 date: 2026-09-10
-last_reviewed: 2026-09-13
-keywords: automacao, validadores, contratos, quality-gate, agentes, standards, gemini, antigravity
-related_files: ../adrs/ADR-0000-governanca-do-harness-documental.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/standards/software-quality-standard.md, ../scripts/README.md, ../settings/google-gemini.md
+last_reviewed: 2026-09-28
+keywords: automacao, validadores, contratos, quality-gate, agentes, standards, gemini, antigravity, tooling, doctor
+related_files: ../adrs/ADR-0000-governanca-do-harness-documental.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/standards/software-quality-standard.md, ../scripts/README.md, ../settings/google-gemini.md, ../../contracts/README.md, ../../registry/README.md, ../../tooling/README.md
 code_references: ../scripts/ - extensao migrada, ainda sem ativacao portatil.
 principal_statement: Automacao deve falhar de forma fechada e publicar evidencia estruturada; ausencia nunca equivale a PASS.
 ---
@@ -31,6 +31,10 @@ Quando o projeto escolher versionar o código dos validadores, ele deve residir 
 [`docs/scripts/`](../scripts/README.md). O contrato permanece nesta coleção; scripts
 não podem introduzir exigências, paths ou stacks que não estejam aprovados nas fontes
 canônicas locais.
+
+Para o ferramental determinístico do próprio harness v2 (como `harness doctor` e sincronizador
+de adaptadores), consulte [`tooling/`](../../tooling/README.md), [`registry/tooling.yaml`](../../registry/tooling.yaml)
+e os esquemas formais em [`contracts/`](../../contracts/README.md).
 
 ## Validador documental
 
@@ -112,6 +116,7 @@ comprovar os arquivos versionados e deve reportar essa fronteira.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.5 | 2026-09-28 | Conecta o contrato de automação ao tooling determinístico, registry e contracts do harness v2. |
 | 1.4 | 2026-09-13 | Vincula a implementação opcional de validadores a `docs/scripts/` sem ativá-la por presença. |
 | 1.3 | 2026-09-13 | Acrescenta o contrato opt-in e fail-closed para entrega Git governada. |
 | 1.2 | 2026-09-11 | Acrescenta validação do agente inicial e do catálogo portátil de standards. |

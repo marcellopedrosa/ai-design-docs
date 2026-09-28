@@ -6,50 +6,54 @@ scope: Governanca documental, descoberta progressiva, planejamento, readiness, a
 non_objectives: Nao fornecer codigo, scripts executaveis, stack, dominio, credenciais ou decisoes do projeto de origem.
 owner: Mantenedores do harness
 status: Active
-version: 1.7
+version: 2.0.0
 date: 2026-09-10
 last_reviewed: 2026-09-28
-keywords: harness, documentacao, agentes, orquestrador, standards, clear, readiness, quality-gate, security-gate, security, appsec, entrega-git, gemini, antigravity
-related_files: AGENTS.md, CLAUDE.md, GEMINI.md, backend/README.md, frontend/README.md, website/README.md, infra/README.md, docs/README.md, docs/scripts/README.md, docs/agents/AgentOrchestrator.md, docs/agents/standards/README.md, docs/agents/skills/README.md, docs/settings/settings.md, docs/settings/google-gemini.md, docs/adrs/ADR-0000-governanca-do-harness-documental.md
-code_references: .agents/rules/documentation-governance.md, .agents/skills/, .claude/skills/; pacote exclusivamente documental, sem hooks ou scripts executáveis.
+keywords: harness, documentacao, agentes, orquestrador, standards, clear, readiness, quality-gate, security-gate, security, appsec, entrega-git, gemini, antigravity, v2, registry, contracts, evals, tooling
+related_files: AGENTS.md, CLAUDE.md, GEMINI.md, backend/README.md, frontend/README.md, website/README.md, infra/README.md, docs/README.md, docs/scripts/README.md, docs/agents/AgentOrchestrator.md, docs/agents/standards/README.md, docs/agents/skills/README.md, docs/settings/settings.md, docs/settings/google-gemini.md, docs/adrs/ADR-0000-governanca-do-harness-documental.md, docs/adrs/ADR-0001-evolucao-para-harness-agnostico-v2.md, registry/README.md, contracts/README.md, skills/README.md, evals/README.md, tooling/README.md, adapters/README.md
+code_references: .agents/rules/documentation-governance.md, .agents/skills/, .claude/skills/, registry/, contracts/, skills/, evals/, tooling/, adapters/; pacote agnóstico com control plane documental e tooling determinístico opcional.
 principal_statement: O pacote fornece as fontes e os contratos necessarios para adotar a mesma governanca sem transportar contexto de produto ou de stack.
 ---
 
-# Harness documental agnóstico
+# Harness de engenharia de IA agnóstico v2
 
 Este diretório é um pacote independente, pronto para se tornar um repositório Git
-próprio. Ele preserva a lógica documental do harness: fontes de verdade tipadas,
-descoberta progressiva, gates antes e depois da implementação, instruções enxutas
-para agentes e rastreabilidade do problema até a evidência final.
+próprio. Ele preserva a lógica documental e de governança do harness: fontes de
+verdade tipadas, descoberta progressiva, gates antes e depois da implementação,
+instruções enxutas para agentes e rastreabilidade do problema até a evidência final.
 
-Todo o conteúdo é Markdown. Não há aplicação, dependência, segredo, configuração
-de produção, script executável ou decisão pertencente ao projeto de origem.
+O harness é agnóstico de stack e de provedor de IA, combinando governança documental
+normativa com tooling determinístico opcional em `tooling/` e `docs/scripts/` para
+prevenção de drift, validação de contratos e evals de confiabilidade.
 
 ## O que está incluído
 
 - adaptadores globais para Codex, Claude Code e Gemini CLI, mais regra de
   workspace para Google Antigravity;
-- skills operacionais documentais pareadas;
+- registry machine-readable (`registry/`) como fonte única de verdade para inventário,
+  ativação, metadados e ferramentas;
+- contratos formais JSON Schema (`contracts/`) para requisições, readiness, evidências,
+  gates e findings;
+- fonte canônica única de skills (`skills/`) estruturada em capability packages,
+  com sincronização determinística para os caminhos de runtime `.agents/` e `.claude/`;
 - `security-gate` como subgate/executor especializado de segurança de aplicação para
   A3, subordinado ao `quality-gate` e sem criar um Assurance Gate paralelo;
-- skill `git-delivery` opt-in, com scaffold de enforcement adaptável ao projeto de
-  destino;
-- ADR de governança e mapa de precedência;
+- skill `git-delivery` opt-in com side effects explicitamente governados;
+- skill `antigravity-permissions` para controle de permissões no escopo de projeto;
+- suíte de evals do harness completo (`evals/`) cobrindo lifecycle, orquestração,
+  permissões, portabilidade cross-runtime e regressão;
+- tooling determinístico portátil (`tooling/`) com `harness doctor` para diagnóstico
+  unificado;
+- ADR-0000 e ADR-0001 de governança estrutural e mapa de precedência;
 - `AgentOrchestrator` como único agente inicial do bootstrap;
 - biblioteca portátil de standards transversais e catálogo de exemplos condicionais
   por capacidade ou stack;
-- exemplos de standards especializados que podem ser criados pelo projeto adotante
-  quando sua aplicação, API ou stack de segurança exigir;
 - lifecycle C.L.E.A.R.;
-- Implementation Readiness Gate;
-- Test, Quality e Security/Compliance Gates;
+- Implementation Readiness Gate e Test, Quality e Security/Compliance Gates;
 - estrutura base de coleções e índices;
-- pastas base de backend, frontend, website, infraestrutura e documentação, cada
-  uma com seu próprio `README.md`;
+- pastas base de backend, frontend, website, infraestrutura e documentação;
 - templates para os artefatos recorrentes;
-- contrato para conectar validadores específicos do projeto de destino.
-- extensão `docs/scripts/` migrada como material de adaptação, desativada até que
-  seus pressupostos sejam reconciliados com o projeto adotante.
+- extensão `docs/scripts/` com validadores determinísticos de conformidade.
 
 ## Adoção em outro projeto
 
@@ -101,8 +105,8 @@ primeiro commit de adoção:
    sandbox e confira permissões conforme
    [`docs/settings/google-gemini.md`](docs/settings/google-gemini.md). Se usar
    Gemini CLI, confirme contexto e skills com `/memory` e `/skills`.
-12. Execute a checklist de bootstrap do ADR-0000 e repita o inventário. A segunda
-   execução deve produzir delta vazio.
+12. Execute `node tooling/harness-doctor/index.mjs` para validar a integridade estrutural
+   do bootstrap. A execução deve produzir diagnóstico verde sem erros.
 13. Se adotar entrega Git governada, aceite a política local, implemente e teste o
    hook/validador, atualize os adaptadores e só então habilite `git-delivery`.
 
@@ -122,9 +126,15 @@ primeiro commit de adoção:
 AGENTS.md
 CLAUDE.md
 GEMINI.md
+registry/{README.md,harness.yaml,skills.yaml,standards.yaml,runtimes.yaml,tooling.yaml}
+contracts/{README.md,*.schema.json}
+skills/{governanca-documental,implementation-readiness,quality-gate,security-gate,git-delivery,antigravity-permissions}/
+evals/{README.md,schema/,lifecycle/,orchestration/,permissions/,portability/,regression/}
+tooling/{README.md,harness-doctor/,adapters/}
+adapters/{README.md,core-policy.md}
 .agents/rules/documentation-governance.md
-.agents/skills/{governanca-documental,implementation-readiness,quality-gate,security-gate,git-delivery}/SKILL.md
-.claude/skills/{governanca-documental,implementation-readiness,quality-gate,security-gate,git-delivery}/SKILL.md
+.agents/skills/{governanca-documental,implementation-readiness,quality-gate,security-gate,git-delivery,antigravity-permissions}/SKILL.md
+.claude/skills/{governanca-documental,implementation-readiness,quality-gate,security-gate,git-delivery,antigravity-permissions}/SKILL.md
 backend/README.md
 frontend/README.md
 website/README.md
@@ -133,7 +143,7 @@ docs/
   README.md
   scripts/{README.md,validate-*.mjs,validate-*.test.mjs}
   ai/README.md
-  adrs/{README.md,ADR-0000-governanca-do-harness-documental.md}
+  adrs/{README.md,ADR-0000-*,ADR-0001-*}
   architecture/{README.md,module-registry.md}
   settings/{README.md,settings.md}
   agents/{README.md,AgentOrchestrator.md,skills/README.md,standards/...}
@@ -165,6 +175,7 @@ docs/
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 2.0.0 | 2026-09-28 | Evolução estrutural para o AI Engineering Harness Agnóstico v2 (registry, contracts, canonical skills, evals e harness doctor). |
 | 1.7 | 2026-09-28 | Adiciona `security-gate` como executor especializado subordinado ao A3 do `quality-gate` e atualiza a árvore do harness. |
 | 1.6 | 2026-09-28 | Adiciona revisão especializada e standards de Application, API e Spring Security integrados ao A3 do quality-gate. |
 | 1.5 | 2026-09-23 | Explicita quando e como adaptar identidade, referências e remoto ao adotar o harness. |

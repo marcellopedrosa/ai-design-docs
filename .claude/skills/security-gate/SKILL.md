@@ -39,139 +39,60 @@ paths é `BLOCKED` processual.
 Plano vigente, resultado `READY`, task ID, nível de execução, paths, critérios de
 aceite, ambiente e comandos de validação registrados pelo projeto.
 
-## Fontes canônicas
+## Fontes canônicas e referências
 
 Ler sempre:
 
 - `docs/agents/standards/security-standard.md`;
 - `docs/agents/standards/software-quality-standard.md`;
-- `docs/agents/standards/application-security-standard.md` somente quando o projeto
-  adotante tiver criado e ativado esse standard para aplicação web, backend web ou
-  superfície exposta a entrada não confiável.
+- `references/false-positive-controls.md` para heurísticas contra falsos positivos;
+- `references/finding-evidence.md` para regras de comprovação de findings;
+- `references/threat-review-model.md` para delimitação de trust boundaries.
 
-Selecionar adicionalmente apenas quando o arquivo existir no projeto adotante e
-estiver ativado pelo manifesto, ADR, contrato, escopo ou risco:
-
-- `docs/agents/standards/api-security-standard.md` para APIs;
-- `docs/agents/standards/spring-security-standard.md` para Spring Boot/Spring Security;
-- `docs/agents/standards/java-standard.md` para Java;
-- `docs/agents/standards/frontend-standard.md` para frontend;
-- `docs/agents/standards/nextjs-standard.md` para Next.js/React correspondente;
-- `docs/agents/standards/keycloak-frontend-standard.md` para Keycloak no frontend;
-- `docs/agents/standards/rbac-frontend-standard.md` para UI com acesso diferenciado;
-- `docs/agents/standards/iac-supply-chain-standard.md` para dependências, containers,
-  IaC ou supply chain;
-- demais standards criados e catalogados pelo projeto adotante que o escopo
-  realmente ativar.
-
-Não duplicar regras desses documentos dentro desta skill. Se um standard requerido
-não existir ou estiver materialmente inconsistente, retornar `BLOCKED` e apontar o
-path ausente ou conflitante.
+Selecionar adicionalmente os standards especializados ativados conforme o
+manifesto do projeto e `registry/standards.yaml` (ex: `application-security-standard.md`,
+`api-security-standard.md`, `spring-security-standard.md`, `iac-supply-chain-standard.md`).
+Não duplicar regras desses documentos dentro desta skill.
 
 ## Procedimento
 
 1. Confirmar o `READY`, os targets e o nível `focused`, `pr` ou `release` recebido
    do `quality-gate` ou do `AgentOrchestrator`.
-2. Selecionar somente os standards aplicáveis e registrar seus paths e versões.
+2. Identificar no registry e no manifesto os standards aplicáveis e registrar paths e versões.
 3. Delimitar trust boundaries, entradas controláveis, identidades, recursos
-   protegidos, dados sensíveis, operações privilegiadas, chamadas externas,
-   uploads, persistência e dependências afetadas.
-4. Revisar primeiro o delta aprovado. Seguir código ou configuração adjacente apenas
-   quando necessário para provar autenticação, autorização, validação ou outro
-   controle no caminho executado.
+   protegidos, dados sensíveis, operações privilegiadas, chamadas externas e dependências.
+4. Revisar o delta aprovado, inspecionando código e configuração adjacentes para
+   provar controles no caminho executado.
 5. Para cada candidato a finding, traçar:
-   `source controlável -> transformação/validação -> controle -> sink/ação -> impacto`.
-6. Antes de confirmar um finding, demonstrar evidência, reachability, ausência ou
-   falha do controle e impacto plausível. Padrão suspeito sem prova suficiente deve
-   virar pendência de validação, nunca vulnerabilidade inventada.
-7. Executar ou solicitar os testes e validadores já registrados pelo projeto.
-   Não inventar scanner, comando, credencial, endpoint, ambiente ou acesso de rede.
-8. Classificar cada finding por severidade e confiança sem derivar severidade apenas
-   da categoria OWASP. Usar CWE/ASVS somente quando o identificador estiver
-   verificado; não fabricar IDs.
-9. Aplicar o contrato do A3:
-   - violação confirmada de requisito aplicável: `FAIL`;
-   - evidência, ferramenta, ambiente, autorização ou contexto obrigatório ausente:
-     `BLOCKED`;
-   - nenhum finding confirmado e toda evidência obrigatória disponível: `PASS`.
-10. Devolver o resultado ao `quality-gate`. Não agregar A1/A2, não transformar
-    waiver em `PASS` e não autorizar release.
+   `source controlável -> validação -> controle -> sink/ação -> impacto`.
+6. Exigir comprovação quádrupla (Evidência + Reachability + Control Gap + Impacto)
+   conforme `references/finding-evidence.md`. Aplicar os controles contra falsos positivos
+   de `references/false-positive-controls.md` antes de reportar vulnerabilidades.
+7. Executar os testes e validadores de segurança aprovados e registrados no projeto.
+8. Classificar cada finding por severidade e confiança sem fabricar identificadores.
+9. Aplicar a semântica do subgate A3:
+   - violação confirmada sem mitigação: `FAIL`;
+   - evidência, validador, autorização ou contexto obrigatório ausente: `BLOCKED`;
+   - controles aprovados e sem findings confirmados: `PASS`.
+10. Devolver o resultado estruturado ao `quality-gate`.
 
-## Controles contra falso positivo
+## Limites
 
-- React escapa interpolação textual por padrão; não reportar XSS sem bypass ou sink
-  inseguro demonstrado.
-- CORS é política de compartilhamento do browser, não autorização.
-- UI, route guard, botão oculto e claim decodificada não substituem autorização no
-  backend.
-- Uso de JPA/Spring Data não prova SQL injection; demonstrar construção dinâmica
-  insegura e influência da entrada.
-- CSRF desabilitado não é finding isolado em API comprovadamente stateless com
-  bearer token e sem credencial ambiente do browser.
-- Dependência antiga não é vulnerabilidade confirmada sem política violada ou
-  vulnerabilidade aplicável verificada.
-- Endpoint autenticado pode continuar vulnerável a autorização; verificar recurso,
-  função, tenant e propriedade separadamente.
-
-## Evidência mínima do A3
-
-Registrar:
-
-- task ID, nível, paths e referência ao `READY`;
-- standards ativados com path e versão;
-- superfícies e trust boundaries revisadas;
-- comandos/validadores executados, diretório, exit code e limitações;
-- findings confirmados com evidência mínima necessária;
-- testes positivos e negativos relevantes;
-- skips, N/A, waivers e risco residual;
-- status final `PASS`, `FAIL` ou `BLOCKED` e sua causa.
-
-## Formato de saída
-
-Usar esta estrutura:
-
-```text
-A3 — Security/Compliance
-Executor: security-gate
-Status: PASS | FAIL | BLOCKED
-Task: <id>
-Level: focused | pr | release
-Scope: <paths/targets>
-
-Standards aplicados:
-- <path> @ <version>
-
-Findings:
-- <id> | <severity> | <confidence> | <title>
-  Evidence: <arquivo/linha/configuração>
-  Control gap: <controle ausente ou falho>
-  Impact: <impacto plausível>
-  Reference: <CWE/ASVS/OWASP verificado ou "não verificado">
-  Remediation: <correção da causa raiz>
-  Validation: <teste que demonstra fechamento>
-
-Evidence:
-- <comando/resultado/artefato>
-
-Residual risk / waivers:
-- <item ou none>
-
-Handoff:
-- quality-gate
-```
-
-Quando `BLOCKED`, incluir owner da pendência e condição objetiva de retomada.
-
-## Saídas e critério de conclusão
-
-A saída é o relatório A3 no formato acima, com status `PASS`, `FAIL` ou `BLOCKED`,
-findings, evidências e handoff ao `quality-gate`. Concluir somente quando todos os
-controles A3 aplicáveis tiverem evidência atual; ausência de evidência obrigatória
-permanece `BLOCKED`.
+Não alterar limiares, não fabricar evidência ou scanner, não acessar produção,
+rede externa, segredos ou dados reais e não autorizar release.
 
 ## Limites de segurança
 
-Não acessar produção, dados reais, segredos, credenciais ou rede sem autorização
-específica. Não ampliar o escopo, desabilitar controle, reduzir limiar, fabricar
-evidência, executar exploração destrutiva ou manter dado sensível no relatório.
-Usar valores sintéticos nos testes sempre que possível.
+Não acesse produção, dados reais, segredos, credenciais ou rede sem autorização
+específica. Não execute exploração destrutiva e use valores sintéticos nos testes.
+
+## Saídas e evidências
+
+A saída é o relatório técnico A3 estruturado conforme `contracts/gate-result.schema.json`,
+contendo status (`PASS`, `FAIL`, `BLOCKED`), findings comprovados, comandos executados,
+referências a standards ativados e handoff explícito ao `quality-gate`.
+
+## Critério de conclusão
+
+Concluir com a entrega da evidência A3 completa ao `quality-gate`. O `security-gate`
+não decide release, não fecha A1 ou A2 e não bypassa ausência de evidência obrigatória.

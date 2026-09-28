@@ -73,4 +73,3 @@ controles disponíveis tiverem resultado satisfatório.
 Execute `node docs/scripts/validate-documentation-governance.mjs --root .` como
 diagnóstico. Enquanto `docs/scripts/README.md` indicar estado `Partial`, registre
 `Automação não configurada` para o gate canônico e complemente com validação manual.
-
