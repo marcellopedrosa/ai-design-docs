@@ -1,4 +1,4 @@
-# Adaptadores de Runtime do Harness v2
+# Adaptadores de Runtime do Harness
 
 Este diretório gerencia a governança e alinhamento dos adaptadores de runtime de agentes (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`).
 

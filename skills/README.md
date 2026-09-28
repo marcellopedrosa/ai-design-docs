@@ -1,13 +1,17 @@
-# Fonte Canônica das Skills do Harness v2
+# Fonte Canônica das Skills do Harness
 
 Este diretório é a **fonte canônica única** de todas as skills operacionais do AI Engineering Harness.
 
-Anteriormente, as skills eram mantidas em caminhos de runtime paralelos (`.agents/skills/` e `.claude/skills/`), o que gerava risco de duplicação, drift e incompatibilidade entre runtimes.
+## Arquitetura de Skills
 
-Na arquitetura v2:
-1. Toda edição e evolução ocorre aqui em `skills/<skill-name>/`.
-2. Os diretórios `.agents/skills/` e `.claude/skills/` são **artefatos de distribuição derivados**, sincronizados pela ferramenta determinística `tooling/adapters/sync-adapters.mjs`.
-3. Cada skill é um **capability package** que inclui seu descritor (`SKILL.md`), declaração de contrato e permissões (`contract.yaml`), referências sob demanda (`references/`), fixtures (`fixtures/`) e conjunto de evals (`evals/`).
+1. Toda definição e evolução de capacidade reside em `skills/<skill-name>/`.
+2. Os diretórios nativos de runtime (`.agents/skills/` e `.claude/skills/`) são **artefatos de distribuição derivados**, sincronizados pela ferramenta determinística `tooling/adapters/sync-adapters.mjs`.
+3. Cada skill é um **capability package** completo que inclui:
+   - Descritor operacional (`SKILL.md`);
+   - Declaração de contrato e permissões (`contract.yaml`);
+   - Referências técnicas sob demanda (`references/`);
+   - Fixtures de teste (`fixtures/`);
+   - Conjunto de avaliação de comportamento (`evals/`).
 
 ## Skills Catalogadas
 

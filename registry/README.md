@@ -1,8 +1,8 @@
 # Registry Machine-Readable do Harness
 
-Este diretório contém os registros estruturados do harness agnóstico v2 em formato YAML.
+Este diretório contém os registros estruturados do harness agnóstico em formato YAML.
 
-O objetivo do registry é servir como **fonte única de verdade (SSOT)** para inventários, relacionamentos, ativação e metadados que anteriormente dependiam de manutenção manual dispersa em múltiplos documentos Markdown.
+O objetivo do registry é servir como **fonte única de verdade (SSOT)** para inventários, relacionamentos, ativação e metadados estruturados do harness.
 
 ## Conteúdo
 

@@ -9,8 +9,8 @@ status: Active
 version: 1.6
 date: 2026-09-10
 last_reviewed: 2026-09-28
-keywords: documentacao, indice, descoberta-progressiva, governanca, orquestrador, standards, skills, entrega-git, codex, claude-code, gemini, antigravity, v2, registry, contracts, tooling
-related_files: ai/README.md, adrs/ADR-0000-governanca-do-harness-documental.md, adrs/ADR-0001-evolucao-para-harness-agnostico-v2.md, agents/AgentOrchestrator.md, agents/standards/README.md, agents/skills/README.md, automation/README.md, scripts/README.md, settings/settings.md, settings/codex.md, settings/claude-code.md, settings/google-gemini.md
+keywords: documentacao, indice, descoberta-progressiva, governanca, orquestrador, standards, skills, entrega-git, codex, claude-code, gemini, antigravity, registry, contracts, tooling
+related_files: ai/README.md, adrs/ADR-0000-governanca-do-harness-documental.md, agents/AgentOrchestrator.md, agents/standards/README.md, agents/skills/README.md, automation/README.md, scripts/README.md, settings/settings.md, settings/codex.md, settings/claude-code.md, settings/google-gemini.md
 code_references: ../AGENTS.md, ../CLAUDE.md, ../GEMINI.md, ../.agents/rules/documentation-governance.md; a topologia do projeto de destino deve ser registrada no manifesto.
 principal_statement: Cada tipo de informacao possui uma fonte canonica e deve ser carregado somente quando relevante.
 ---
@@ -72,7 +72,7 @@ aplicável; o plano registra quais regras foram ativadas.
 | Configuração específica do Claude Code | `.claude/settings.json` | Not applicable no baseline; permissões seguem a configuração efetiva do ambiente |
 | Configuração específica do Gemini | `.gemini/settings.json` | Not applicable no baseline; configuração segue settings/google-gemini.md |
 | Skills de governança | `governanca-documental`, `implementation-readiness`, `quality-gate`, `security-gate` | Conformant quando os descritores e o catálogo concordam |
-| Camada v2 (Registry, Contracts, Tooling) | `registry/`, `contracts/`, `skills/`, `evals/`, `tooling/` | Conformant gerenciado pelo harness doctor |
+| Camada determinística (Registry, Contracts, Tooling) | `registry/`, `contracts/`, `skills/`, `evals/`, `tooling/` | Conformant gerenciado pelo harness doctor |
 
 `Conformant`, `Partial`, `Planned` e `Not applicable` descrevem o estado de adoção
 local. A presença de um path ou skill não ativa permissões fora da política e dos
@@ -93,7 +93,7 @@ adaptadores vigentes.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
-| 1.6 | 2026-09-28 | Atualiza o mapa para refletir o harness v2, ADR-0001 e a camada determinística. |
+| 1.6 | 2026-09-28 | Atualiza o mapa para refletir a arquitetura agnóstica e a camada determinística. |
 | 1.5 | 2026-09-13 | Indexa os mapeamentos portateis de Codex e Claude Code em settings. |
 | 1.4 | 2026-09-13 | Mapeia `scripts/` como extensão executável condicional, separada do contrato documental. |
 | 1.3 | 2026-09-13 | Registra a capacidade opt-in de entrega Git nos pontos de descoberta do harness. |

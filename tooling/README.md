@@ -1,4 +1,4 @@
-# Tooling Determinístico do Harness v2
+# Tooling Determinístico do Harness
 
 Este diretório contém ferramentas determinísticas portáteis, entrypoints de validação estrutural e sincronizadores do harness agnóstico.
 

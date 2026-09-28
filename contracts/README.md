@@ -1,14 +1,14 @@
-# Contratos Estruturados do Harness v2
+# Contratos Estruturados do Harness
 
 Este diretório contém os schemas JSON formais que governam a troca de mensagens, evidências, resultados de gates e handoffs entre agentes, capacidades e ferramentas do harness agnóstico.
 
-## Por que Schemas Formais?
+## Finalidade dos Schemas
 
-O harness v1 definia contratos operacionais apenas em texto Markdown. Isso era adequado para consumo humano, mas insuficiente para garantir que:
-1. Um resultado de gate esteja amarrado ao `READY` e ao escopo exato que o originou (prevenção de evidência stale).
-2. Resultados `BLOCKED` contenham obrigatoriamente a causa raiz, o owner responsável e a condição objetiva de retomada.
-3. Findings de segurança exijam comprovação simultânea de evidência, alcance (reachability), lacuna de controle e impacto plausível antes de confirmação.
-4. Handoffs entre agentes e orquestrador sejam estruturados e auditáveis por máquinas.
+Os schemas formais estabelecem garantias estruturais para a operação de agentes e ferramentas:
+1. **Vinculação de Escopo e Frescor**: Todo resultado de gate referencia o identificador da tarefa e o fingerprint exato do escopo auditado, prevenindo o uso de evidências obsoletas (*stale evidence*).
+2. **Fechamento Rígido de Bloqueios**: Qualquer resultado `BLOCKED` exige a especificação da causa raiz, do owner responsável e da condição objetiva para retomada do fluxo.
+3. **Comprovação Quádrupla de Segurança**: Findings de segurança exigem demonstração inequívoca de Evidência, Alcance (*Reachability*), Lacuna de Controle e Impacto Plausível antes de qualquer confirmação.
+4. **Handoffs Auditáveis por Máquina**: A transição de responsabilidade entre orquestrador, capacidades e gates é estruturada em dados serializáveis, permitindo verificação determinística por ferramentas e pipelines.
 
 ## Schemas Disponíveis
 

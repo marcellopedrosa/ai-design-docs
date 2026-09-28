@@ -9,8 +9,8 @@ status: Active
 version: 1.8
 date: 2026-09-10
 last_reviewed: 2026-09-28
-keywords: skills, catalogo, codex, claude-code, gemini-cli, antigravity, appsec, security, permissoes, v2, registry, canonica
-related_files: ../AgentOrchestrator.md, ../standards/README.md, ../../adrs/ADR-0000-governanca-do-harness-documental.md, ../../adrs/ADR-0001-evolucao-para-harness-agnostico-v2.md, ../../settings/google-gemini.md, ../../templates/TPL-00009-skill-operacional.md, ../../../registry/skills.yaml, ../../../skills/README.md
+keywords: skills, catalogo, codex, claude-code, gemini-cli, antigravity, appsec, security, permissoes, registry, canonica
+related_files: ../AgentOrchestrator.md, ../standards/README.md, ../../adrs/ADR-0000-governanca-do-harness-documental.md, ../../settings/google-gemini.md, ../../templates/TPL-00009-skill-operacional.md, ../../../registry/skills.yaml, ../../../skills/README.md
 code_references: ../../../.agents/skills/, ../../../.claude/skills/, ../../../.agents/rules/documentation-governance.md, ../../../skills/
 principal_statement: Cada skill catalogada resolve para um descritor nativo e semanticamente equivalente em todo runtime suportado.
 ---
@@ -25,7 +25,7 @@ principal_statement: Cada skill catalogada resolve para um descritor nativo e se
   independentes.
 
 Este diretório contém somente o catálogo. A fonte canônica única de evolução de
-skills reside em `skills/<skill-name>/` (conforme ADR-0001 e `registry/skills.yaml`),
+skills reside em `skills/<skill-name>/` (conforme ADR-0000 e `registry/skills.yaml`),
 sendo sincronizada determinística e automaticamente para os diretórios nativos
 `.agents/skills/` e `.claude/skills/` pelo sincronizador `tooling/adapters/sync-adapters.mjs`.
 Nome do diretório, `name` do frontmatter e nome do catálogo devem coincidir.
@@ -72,7 +72,7 @@ sem mudar o destino ou alterar o remote.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
-| 1.8 | 2026-09-28 | Conecta o catálogo à fonte canônica neutra em skills/ e ao registry machine-readable v2. |
+| 1.8 | 2026-09-28 | Conecta o catálogo à fonte canônica neutra em skills/ e ao registry machine-readable. |
 | 1.7 | 2026-09-28 | Registra a skill antigravity-permissions para controle de permissões no escopo de projeto. |
 | 1.6 | 2026-09-28 | Adiciona `security-gate` como executor especializado subordinado ao A3 do `quality-gate`. |
 | 1.5 | 2026-09-28 | Registra a revisão AppSec especializada do A3, pareada nos runtimes. |

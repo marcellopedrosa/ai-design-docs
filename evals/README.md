@@ -1,4 +1,4 @@
-# Suíte de Avaliações (Evals) do Harness v2
+# Suíte de Avaliações (Evals) do Harness
 
 Este diretório contém os conjuntos de avaliação do harness como um sistema integrado (Orchestrator + Skills + Standards + Gates + Adapters).
 
