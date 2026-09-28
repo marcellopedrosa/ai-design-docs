@@ -6,10 +6,10 @@ scope: Nome, gatilho, owner, estado e caminhos nativos das skills.
 non_objectives: Nao armazenar SKILL.md nem duplicar seu procedimento.
 owner: Plataforma de IA
 status: Active
-version: 1.6
+version: 1.7
 date: 2026-09-10
-last_reviewed: 2026-09-23
-keywords: skills, catalogo, codex, claude-code, gemini-cli, antigravity, appsec, security
+last_reviewed: 2026-09-28
+keywords: skills, catalogo, codex, claude-code, gemini-cli, antigravity, appsec, security, permissoes
 related_files: ../AgentOrchestrator.md, ../standards/README.md, ../../adrs/ADR-0000-governanca-do-harness-documental.md, ../../settings/google-gemini.md, ../../templates/TPL-00009-skill-operacional.md
 code_references: ../../../.agents/skills/, ../../../.claude/skills/, ../../../.agents/rules/documentation-governance.md
 principal_statement: Cada skill catalogada resolve para um descritor nativo e semanticamente equivalente em todo runtime suportado.
@@ -37,6 +37,7 @@ devem coincidir.
 | quality-gate | Mudança de software, PR ou release; agrega A1/A2/A3 | Arquitetura e Qualidade | Active | [SKILL.md](../../../.agents/skills/quality-gate/SKILL.md) | [SKILL.md](../../../.claude/skills/quality-gate/SKILL.md) |
 | security-gate | A3 de aplicação web, API, auth/authz, dado sensível, Spring Security ou risco AppSec | Segurança e Engenharia | Active | [SKILL.md](../../../.agents/skills/security-gate/SKILL.md) | [SKILL.md](../../../.claude/skills/security-gate/SKILL.md) |
 | git-delivery | Commit, publicação ou integração solicitados conforme política local | Arquitetura e Qualidade | Active | [SKILL.md](../../../.agents/skills/git-delivery/SKILL.md) | [SKILL.md](../../../.claude/skills/git-delivery/SKILL.md) |
+| antigravity-permissions | Solicitação de redução de confirmações no Antigravity | Plataforma de IA e Segurança | Active | [SKILL.md](../../../.agents/skills/antigravity-permissions/SKILL.md) | [SKILL.md](../../../.claude/skills/antigravity-permissions/SKILL.md) |
 
 Skills adicionais exigem procedimento reutilizável real, owner, descrição
 discriminante, limites de segurança e entrada neste catálogo.
@@ -51,6 +52,11 @@ skill executa um procedimento e não cria um novo papel de agente.
 resultado retorna ao `quality-gate`; apesar do nome, ele não é um Assurance Gate
 paralelo e não agrega A1/A2.
 
+`antigravity-permissions` orienta a configuração de bypass de operações de rotina
+(`read_file`, `list_directory`, `command`) no escopo exclusivo `Project` do
+Antigravity no VS Code, preservando confirmação obrigatória (`Ask`) para remoção e
+comandos destrutivos conforme `settings/google-gemini.md`.
+
 `git-delivery` segue a política local registrada em
 [`settings/git-delivery.md`](../../settings/git-delivery.md). Cada projeto define
 suas convenções e proteções; branches de trabalho podem ser integradas sem escrita
@@ -64,6 +70,7 @@ sem mudar o destino ou alterar o remote.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.7 | 2026-09-28 | Registra a skill antigravity-permissions para controle de permissões no escopo de projeto. |
 | 1.6 | 2026-09-28 | Adiciona `security-gate` como executor especializado subordinado ao A3 do `quality-gate`. |
 | 1.5 | 2026-09-28 | Registra a revisão AppSec especializada do A3, pareada nos runtimes. |
 | 1.4 | 2026-09-23 | Esclarece que commit solicitado exige push da branch de trabalho definida. |
