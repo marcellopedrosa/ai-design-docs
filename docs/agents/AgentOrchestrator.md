@@ -10,7 +10,7 @@ version: 1.1
 date: 2026-09-11
 last_reviewed: 2026-09-13
 keywords: orquestrador, agente-inicial, handoff, readiness, assurance, clear
-related_files: README.md, standards/README.md, standards/software-engineering-lifecycle.md, standards/implementation-readiness-standard.md, standards/software-quality-standard.md, standards/project-reporting-standard.md, skills/README.md, ../templates/TPL-00005-task-plan.md, ../templates/TPL-00006-implementation-plan.md
+related_files: README.md, standards/README.md, standards/software-engineering-lifecycle.md, standards/implementation-readiness-standard.md, standards/software-quality-standard.md, standards/security-standard.md, skills/README.md, ../templates/TPL-00005-task-plan.md, ../templates/TPL-00006-implementation-plan.md
 code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md, ../../.agents/skills/, ../../.claude/skills/
 principal_statement: O AgentOrchestrator é o único agente inicial do harness e coordena trabalho verificável sem presumir stack, domínio ou papéis ainda não ativados.
 ---
@@ -58,7 +58,8 @@ executável. O orquestrador identifica o owner da decisão e não inventa respos
    criado apenas por conveniência ou por nome de tecnologia.
 8. Aplicar A1 Test, A2 Quality e A3 Security/Compliance conforme o
    [Software Quality Standard](standards/software-quality-standard.md), mantendo
-   cada resultado independente.
+   cada resultado independente; para A3 de aplicação, acionar a skill
+   `security-gate` conforme o catálogo de skills.
 9. Corrigir e reexecutar falhas enquanto houver progresso; registrar impasse real,
    owner e condição de retomada quando BLOCKED.
 10. Quando o projeto tiver adotado entrega Git governada e o usuário solicitar

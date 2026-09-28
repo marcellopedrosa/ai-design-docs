@@ -17,6 +17,12 @@ principal_statement: Somente uma task atomica, decidida, aprovada e verificavel 
 
 # Implementation Readiness Standard
 
+## Ativação
+
+Baseline agnóstico para qualquer handoff que produza código, configuração
+executável, migration ou IaC. Alterações exclusivamente documentais não exigem
+`READY` executável, mas devem manter seus critérios e referências documentais.
+
 ## Resultados permitidos
 
 | Resultado | Significado | Efeito |
@@ -104,4 +110,5 @@ registra no plano quais standards condicionais foram ativados.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.2 | 2026-09-28 | Explicita a aplicação transversal e a não ativação para alterações exclusivamente documentais. |
 | 1.1 | 2026-09-11 | Integra o gate ao orquestrador inicial e ao catálogo portátil. |

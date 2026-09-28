@@ -6,10 +6,10 @@ scope: Governanca documental, descoberta progressiva, planejamento, readiness, a
 non_objectives: Nao fornecer codigo, scripts executaveis, stack, dominio, credenciais ou decisoes do projeto de origem.
 owner: Mantenedores do harness
 status: Active
-version: 1.5
+version: 1.7
 date: 2026-09-10
-last_reviewed: 2026-09-23
-keywords: harness, documentacao, agentes, orquestrador, standards, clear, readiness, quality-gate, entrega-git, gemini, antigravity
+last_reviewed: 2026-09-28
+keywords: harness, documentacao, agentes, orquestrador, standards, clear, readiness, quality-gate, security-gate, security, appsec, entrega-git, gemini, antigravity
 related_files: AGENTS.md, CLAUDE.md, GEMINI.md, backend/README.md, frontend/README.md, website/README.md, infra/README.md, docs/README.md, docs/scripts/README.md, docs/agents/AgentOrchestrator.md, docs/agents/standards/README.md, docs/agents/skills/README.md, docs/settings/settings.md, docs/settings/google-gemini.md, docs/adrs/ADR-0000-governanca-do-harness-documental.md
 code_references: .agents/rules/documentation-governance.md, .agents/skills/, .claude/skills/; pacote exclusivamente documental, sem hooks ou scripts executáveis.
 principal_statement: O pacote fornece as fontes e os contratos necessarios para adotar a mesma governanca sem transportar contexto de produto ou de stack.
@@ -30,12 +30,16 @@ de produção, script executável ou decisão pertencente ao projeto de origem.
 - adaptadores globais para Codex, Claude Code e Gemini CLI, mais regra de
   workspace para Google Antigravity;
 - skills operacionais documentais pareadas;
+- `security-gate` como subgate/executor especializado de segurança de aplicação para
+  A3, subordinado ao `quality-gate` e sem criar um Assurance Gate paralelo;
 - skill `git-delivery` opt-in, com scaffold de enforcement adaptável ao projeto de
   destino;
 - ADR de governança e mapa de precedência;
 - `AgentOrchestrator` como único agente inicial do bootstrap;
-- biblioteca portátil de standards transversais e condicionais por capacidade ou
-  stack, cada um com ativação explícita;
+- biblioteca portátil de standards transversais e catálogo de exemplos condicionais
+  por capacidade ou stack;
+- exemplos de standards especializados que podem ser criados pelo projeto adotante
+  quando sua aplicação, API ou stack de segurança exigir;
 - lifecycle C.L.E.A.R.;
 - Implementation Readiness Gate;
 - Test, Quality e Security/Compliance Gates;
@@ -83,8 +87,9 @@ primeiro commit de adoção:
    autoridade e handoff independentes.
 6. Ative somente as coleções necessárias. Cada coleção ativa precisa de `README.md`,
    owner, convenção de nomes, estados e inventário completo.
-7. Selecione no [catálogo portátil](docs/agents/standards/README.md) o baseline e
-   apenas os standards condicionais compatíveis com a stack e o risco registrados.
+7. Selecione no [catálogo portátil](docs/agents/standards/README.md) o núcleo
+   agnóstico e apenas os standards condicionais compatíveis com a stack e o risco
+   registrados; não copie capacidades sem correspondente no projeto adotante.
 8. Crie os primeiros artefatos pelos templates de [`docs/templates/`](docs/templates/README.md).
 9. Configure no projeto de destino os validadores e comandos descritos em
    [`docs/automation/README.md`](docs/automation/README.md). Enquanto eles não
@@ -108,7 +113,7 @@ primeiro commit de adoção:
 | **C — Context** | Problema, público, resultado e comportamento estão definidos e aprovados. |
 | **L — Logic & Layout** | Decisões, arquitetura, fluxos e plano atômico estão prontos; o IRG termina em `READY`. |
 | **E — Execution** | A implementação ocorre somente no escopo, versão e paths auditados. |
-| **A — Assurance** | A1 Test, A2 Quality e A3 Security/Compliance têm resultados independentes. |
+| **A — Assurance** | A1 Test, A2 Quality e A3 Security/Compliance têm resultados independentes; `security-gate` executa a verificação especializada que compõe a evidência de A3. |
 | **R — Release** | Entrega e verificação seguem autorização e procedimentos próprios do projeto. |
 
 ## Árvore distribuída
@@ -118,8 +123,8 @@ AGENTS.md
 CLAUDE.md
 GEMINI.md
 .agents/rules/documentation-governance.md
-.agents/skills/{governanca-documental,implementation-readiness,quality-gate,git-delivery}/SKILL.md
-.claude/skills/{governanca-documental,implementation-readiness,quality-gate,git-delivery}/SKILL.md
+.agents/skills/{governanca-documental,implementation-readiness,quality-gate,security-gate,git-delivery}/SKILL.md
+.claude/skills/{governanca-documental,implementation-readiness,quality-gate,security-gate,git-delivery}/SKILL.md
 backend/README.md
 frontend/README.md
 website/README.md
@@ -160,6 +165,8 @@ docs/
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.7 | 2026-09-28 | Adiciona `security-gate` como executor especializado subordinado ao A3 do `quality-gate` e atualiza a árvore do harness. |
+| 1.6 | 2026-09-28 | Adiciona revisão especializada e standards de Application, API e Spring Security integrados ao A3 do quality-gate. |
 | 1.5 | 2026-09-23 | Explicita quando e como adaptar identidade, referências e remoto ao adotar o harness. |
 | 1.4 | 2026-09-13 | Mapeia os scripts migrados como extensão condicional, sem declarar automação portátil ativa. |
 | 1.3 | 2026-09-13 | Inclui a capacidade opt-in `git-delivery` sem transportar scripts nem permissões do projeto de origem. |

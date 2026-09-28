@@ -6,16 +6,23 @@ scope: A1 Test, A2 Quality, A3 Security/Compliance, niveis de execucao, metricas
 non_objectives: Nao fixar framework, comando de stack, limiar de cobertura ou autorizar ambiente externo.
 owner: Arquitetura e Qualidade
 status: Active
-version: 1.2
+version: 1.3
 date: 2026-09-10
-last_reviewed: 2026-09-13
-keywords: quality-gate, testes, cobertura, seguranca, metricas, assurance
-related_files: ../AgentOrchestrator.md, README.md, software-engineering-lifecycle.md, implementation-readiness-standard.md, development-standard.md, security-standard.md, backend-testing-standard.md, frontend-testing-standard.md, ../../automation/README.md
+last_reviewed: 2026-09-28
+keywords: quality-gate, testes, cobertura, seguranca, appsec, metricas, assurance
+related_files: ../AgentOrchestrator.md, README.md, software-engineering-lifecycle.md, implementation-readiness-standard.md, development-standard.md, security-standard.md, ../skills/README.md, ../../automation/README.md
 code_references: N/A - executores pertencem ao projeto de destino.
 principal_statement: Testes demonstram comportamento; qualidade e seguranca exigem gates proprios, evidencia atual e correspondencia com o READY.
 ---
 
 # Software Quality Standard
+
+## Ativação
+
+Baseline agnóstico para mudanças de software, revisão de PR e qualificação de
+release. Alterações exclusivamente documentais não acionam este standard como
+quality gate executável; aplicam as validações documentais e de governança do
+projeto.
 
 ## Gates independentes
 
@@ -26,6 +33,8 @@ principal_statement: Testes demonstram comportamento; qualidade e seguranca exig
 | A3 — Security/Compliance | A mudança respeita segurança, privacidade e obrigações aplicáveis? | Revisões e testes proporcionais ao risco |
 
 Cada gate publica `PASS`, `FAIL` ou `BLOCKED`. Um subgate verde não aprova outro.
+O `quality-gate` agrega A1, A2 e A3; o `security-gate`, quando aplicável, produz
+evidência especializada para A3 e não cria um agregador paralelo.
 
 ## Precondição
 
@@ -111,5 +120,6 @@ dos subgates; os standards de stack acrescentam evidência somente quando ativad
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.3 | 2026-09-28 | Explicita o baseline agnóstico, a não ativação para documentação exclusiva e a integração do `security-gate` no A3. |
 | 1.2 | 2026-09-13 | Define a evidência de gates para entrega Git opcional sem equipará-la a release. |
 | 1.1 | 2026-09-11 | Relaciona Assurance ao orquestrador e aos standards condicionais de teste e segurança. |
