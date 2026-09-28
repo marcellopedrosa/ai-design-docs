@@ -8,7 +8,7 @@ owner: Arquitetura
 status: Active
 version: 1.5
 date: 2026-09-10
-last_reviewed: 2026-09-13
+last_reviewed: 2026-09-28
 keywords: adr, decisoes, arquitetura, indice, orquestrador, standards, entrega-git, gemini, antigravity
 related_files: ADR-0000-governanca-do-harness-documental.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/skills/README.md, ../settings/settings.md, ../settings/google-gemini.md, ../templates/TPL-00004-adr.md
 code_references: N/A - indice documental.

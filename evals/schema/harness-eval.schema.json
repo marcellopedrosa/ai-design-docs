@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ai-design-docs.internal/evals/schema/harness-eval.schema.json",
+  "title": "HarnessEvalDataset",
+  "description": "Schema agnóstico de caso de avaliação (eval) de skill ou harness.",
+  "type": "object",
+  "required": ["evals"],
+  "properties": {
+    "skill": { "type": "string" },
+    "suite": { "type": "string" },
+    "version": { "type": "string" },
+    "evals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "category",
+          "description",
+          "input",
+          "expected",
+          "assertions"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador único do caso de eval."
+          },
+          "category": {
+            "type": "string",
+            "enum": ["trigger", "behavior", "negative", "boundary", "safety", "handoff", "regression", "portability"]
+          },
+          "description": {
+            "type": "string"
+          },
+          "input": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "assertions": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1
+          },
+          "grading": {
+            "type": "object",
+            "properties": {
+              "schema": { "type": "boolean" },
+              "deterministic": { "type": "boolean" },
+              "semantic": { "type": "boolean" }
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

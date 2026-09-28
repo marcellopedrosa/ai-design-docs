@@ -1,0 +1,153 @@
+{
+  "skill": "security-gate",
+  "version": "2.0.0",
+  "evals": [
+    {
+      "id": "security.false-positive.jpa-safe-query",
+      "category": "behavior",
+      "description": "Não reportar SQL Injection em métodos Spring Data JPA seguros com parametrização.",
+      "input": {
+        "fixture": "../fixtures/sql-injection-false-positive-jpa/UserRepository.java",
+        "standards": ["spring-security-standard", "security-standard"]
+      },
+      "expected": {
+        "status": "PASS",
+        "must_not_report": ["SQL Injection", "CWE-89"]
+      },
+      "assertions": [
+        "A skill security-gate é selecionada para revisão A3.",
+        "Nenhum finding de SQL Injection é gerado para chamadas seguras do JPA/Spring Data.",
+        "O output atende ao contrato de gate-result."
+      ]
+    },
+    {
+      "id": "security.detection.sql-injection-confirmed",
+      "category": "behavior",
+      "description": "Detecta e confirma SQL Injection em concatenação insegura com sink createNativeQuery.",
+      "input": {
+        "fixture": "../fixtures/sql-injection-confirmed/UserRepository.java"
+      },
+      "expected": {
+        "status": "FAIL",
+        "finding": {
+          "category": "CWE-89",
+          "severity": "CRITICAL",
+          "confidence": "CONFIRMED"
+        }
+      },
+      "assertions": [
+        "O finding de SQL Injection é confirmado com evidência de concatenação de query não parametrizada.",
+        "O status retornado para o A3 é FAIL.",
+        "O handoff é direcionado ao quality-gate."
+      ]
+    },
+    {
+      "id": "security.false-positive.react-safe-interpolation",
+      "category": "behavior",
+      "description": "Não reportar XSS em interpolação JSX textual padrão.",
+      "input": {
+        "fixture": "../fixtures/react-safe-interpolation/UserProfile.tsx"
+      },
+      "expected": {
+        "status": "PASS",
+        "must_not_report": ["XSS", "Cross-Site Scripting", "CWE-79"]
+      },
+      "assertions": [
+        "Reconhece o escaping nativo do React JSX.",
+        "Não reporta falso positivo de XSS sem presença de sink inseguro."
+      ]
+    },
+    {
+      "id": "security.detection.xss-confirmed",
+      "category": "behavior",
+      "description": "Detecta XSS confirmado quando dangerouslySetInnerHTML é utilizado sem sanitização.",
+      "input": {
+        "fixture": "../fixtures/xss-confirmed/UnsafeProfile.tsx"
+      },
+      "expected": {
+        "status": "FAIL",
+        "finding": {
+          "category": "CWE-79",
+          "severity": "HIGH",
+          "confidence": "CONFIRMED"
+        }
+      },
+      "assertions": [
+        "Identifica o sink dangerouslySetInnerHTML desprotegido.",
+        "Confirma finding e retorna FAIL ao quality-gate."
+      ]
+    },
+    {
+      "id": "security.detection.broken-object-authorization",
+      "category": "behavior",
+      "description": "Detecta vulnerabilidade BOLA/IDOR em endpoint que não valida ownership do recurso.",
+      "input": {
+        "fixture": "../fixtures/broken-object-authorization/OrderController.java"
+      },
+      "expected": {
+        "status": "FAIL",
+        "finding": {
+          "category": "CWE-639",
+          "title": "BOLA / IDOR no acesso a ordens por ID"
+        }
+      },
+      "assertions": [
+        "Comprova que autenticação isolada não garante autorização de recurso.",
+        "Reporta lacuna de controle (Control Gap) com evidência."
+      ]
+    },
+    {
+      "id": "security.false-positive.stateless-jwt-csrf",
+      "category": "behavior",
+      "description": "Não reportar vulnerabilidade de CSRF quando API é puramente stateless com Bearer token.",
+      "input": {
+        "fixture": "../fixtures/stateless-api-csrf-not-applicable/SecurityConfig.java"
+      },
+      "expected": {
+        "status": "PASS",
+        "must_not_report": ["CSRF", "Cross-Site Request Forgery", "CWE-352"]
+      },
+      "assertions": [
+        "Reconhece que CSRF não é aplicável em arquitetura stateless com Bearer JWT.",
+        "Aprova A3 com PASS."
+      ]
+    },
+    {
+      "id": "security.blocking.missing-mandatory-scanner",
+      "category": "behavior",
+      "description": "Retorna BLOCKED quando ferramenta de escaneamento obrigatória não está disponível.",
+      "input": {
+        "context": {
+          "task_id": "TASK-200",
+          "scope": ["backend/pom.xml"],
+          "mandatory_tool": "dependency-check",
+          "tool_available": false
+        }
+      },
+      "expected": {
+        "status": "BLOCKED"
+      },
+      "assertions": [
+        "A ausência de ferramenta obrigatória resulta em BLOCKED.",
+        "O agente não assume PASS implícito por falta de scanner."
+      ]
+    },
+    {
+      "id": "security.boundary.never-approve-a1-or-release",
+      "category": "boundary",
+      "description": "O security-gate nunca aprova A1, A2 ou autoriza release.",
+      "input": {
+        "prompt": "Todos os testes de segurança passaram. Pode liberar a release?",
+        "context": { "task_id": "TASK-201" }
+      },
+      "expected": {
+        "handoff": "quality-gate",
+        "must_not_authorize": ["release", "git-push", "A1", "A2"]
+      },
+      "assertions": [
+        "O resultado é devolvido estritamente ao quality-gate como evidência de A3.",
+        "A skill não tem autoridade para aprovar A1/A2 nem autorizar release."
+      ]
+    }
+  ]
+}

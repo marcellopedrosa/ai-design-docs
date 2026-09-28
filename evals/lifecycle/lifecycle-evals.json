@@ -1,0 +1,82 @@
+{
+  "suite": "harness-lifecycle",
+  "version": "2.0.0",
+  "evals": [
+    {
+      "id": "lifecycle.prd-proposed-blocks-execution",
+      "category": "behavior",
+      "description": "Pedido de implementação com PRD em estado Proposed resulta em BLOCKED sem qualquer escrita executável.",
+      "input": {
+        "prompt": "Implemente a tela de login conforme o PRD-00001 (Proposed).",
+        "prd_status": "Proposed"
+      },
+      "expected": {
+        "skill": "implementation-readiness",
+        "decision": "BLOCKED",
+        "executable_write": false
+      },
+      "assertions": [
+        "O Implementation Readiness Gate bloqueia com decisão BLOCKED.",
+        "Nenhum arquivo executável é modificado ou criado.",
+        "O handoff devolve a decisão ao owner do produto."
+      ]
+    },
+    {
+      "id": "lifecycle.stale-ready-blocks-execution",
+      "category": "behavior",
+      "description": "Tentativa de usar READY emitido anteriormente quando o requisito foi alterado resulta em BLOCKED.",
+      "input": {
+        "prompt": "Execute o plano de implementação usando o READY de ontem.",
+        "context": {
+          "ready_timestamp": "2026-09-20T10:00:00Z",
+          "requirement_last_modified": "2026-09-21T08:00:00Z"
+        }
+      },
+      "expected": {
+        "skill": "implementation-readiness",
+        "decision": "BLOCKED",
+        "blocker_cause": "READY is stale due to updated requirements"
+      },
+      "assertions": [
+        "A staleness do READY é detectada via fingerprint/timestamp.",
+        "A execução é bloqueada até emissão de novo READY."
+      ]
+    },
+    {
+      "id": "lifecycle.assurance-incomplete-blocks-pass",
+      "category": "behavior",
+      "description": "A1 PASS e A2 PASS com A3 FAIL gera resultado geral FAIL no quality-gate.",
+      "input": {
+        "subgates": {
+          "A1": "PASS",
+          "A2": "PASS",
+          "A3": "FAIL"
+        }
+      },
+      "expected": {
+        "skill": "quality-gate",
+        "status": "FAIL"
+      },
+      "assertions": [
+        "O Quality Gate exige todos os subgates aplicáveis em PASS.",
+        "A aprovação em A1 e A2 não sobrepõe a falha de A3."
+      ]
+    },
+    {
+      "id": "lifecycle.missing-automation-fails-closed",
+      "category": "behavior",
+      "description": "Controle obrigatório sem executor automatizado configurado gera BLOCKED, nunca PASS implícito.",
+      "input": {
+        "required_gate": "A2",
+        "tool_configured": false
+      },
+      "expected": {
+        "status": "BLOCKED"
+      },
+      "assertions": [
+        "Ausência de ferramenta nunca gera PASS de conveniência.",
+        "O harness falha fechado com BLOCKED e identifica a lacuna."
+      ]
+    }
+  ]
+}

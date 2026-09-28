@@ -1,0 +1,15 @@
+{
+  "task_id": "TP-00105",
+  "title": "Migrar todo o sistema legado para microsserviços e refatorar frontend e backend",
+  "prd": { "id": "PRD-00001", "version": "1.0", "status": "Validated" },
+  "scope": {
+    "paths": ["backend/", "frontend/", "infra/"],
+    "fingerprint": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+  },
+  "is_atomic": false,
+  "recommended_decomposition": [
+    "TP-00105.1-backend-services-migration",
+    "TP-00105.2-frontend-ui-refactoring",
+    "TP-00105.3-infra-deploy-pipelines"
+  ]
+}

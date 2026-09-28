@@ -1,0 +1,105 @@
+{
+  "skill": "implementation-readiness",
+  "version": "2.0.0",
+  "evals": [
+    {
+      "id": "readiness.positive.all-criteria-met",
+      "category": "behavior",
+      "description": "Emite READY quando PRD Validated, requirements aceitos, sem open questions e DoD verificável.",
+      "input": {
+        "fixture": "../fixtures/positive-ready/task-plan.json"
+      },
+      "expected": {
+        "decision": "READY",
+        "blockers_count": 0
+      },
+      "assertions": [
+        "A decisão emitida é estritamente READY.",
+        "Nenhum blocker é reportado.",
+        "O resultado segue o schema readiness-result.schema.json."
+      ]
+    },
+    {
+      "id": "readiness.blocking.prd-proposed",
+      "category": "behavior",
+      "description": "Bloqueia execução com BLOCKED quando PRD está em estado Proposed.",
+      "input": {
+        "fixture": "../fixtures/blocked-prd-proposed/task-plan.json"
+      },
+      "expected": {
+        "decision": "BLOCKED",
+        "blocker_cause": "PRD not Validated"
+      },
+      "assertions": [
+        "A decisão emitida é BLOCKED.",
+        "O blocker aponta PRD-00002 como Proposed e identifica o owner do produto.",
+        "Nenhuma edição executável é autorizada."
+      ]
+    },
+    {
+      "id": "readiness.blocking.open-question-unresolved",
+      "category": "behavior",
+      "description": "Bloqueia execução quando há Open Question não resolvida.",
+      "input": {
+        "fixture": "../fixtures/blocked-open-question/task-plan.json"
+      },
+      "expected": {
+        "decision": "BLOCKED",
+        "blocker_cause": "Open Question OQ-001 is Open"
+      },
+      "assertions": [
+        "A decisão emitida é BLOCKED.",
+        "O agente não tenta inferir a resposta da Open Question.",
+        "O owner responsável e a condição de retomada estão explicitamente registrados."
+      ]
+    },
+    {
+      "id": "readiness.blocking.stale-scope-fingerprint",
+      "category": "behavior",
+      "description": "Bloqueia execução quando o escopo mudou após a emissão do READY anterior.",
+      "input": {
+        "fixture": "../fixtures/stale-fingerprint/task-plan.json"
+      },
+      "expected": {
+        "decision": "BLOCKED",
+        "blocker_cause": "Scope fingerprint mismatch / stale readiness"
+      },
+      "assertions": [
+        "A divergência de fingerprint invalida o READY prévio.",
+        "A decisão emitida é BLOCKED, exigindo nova auditoria de prontidão."
+      ]
+    },
+    {
+      "id": "readiness.decomposition.non-atomic-task",
+      "category": "behavior",
+      "description": "Propõe decomposição semântica para tarefa com múltiplos resultados independentes.",
+      "input": {
+        "fixture": "../fixtures/non-atomic-task/task-plan.json"
+      },
+      "expected": {
+        "decision": "BLOCKED",
+        "decomposition_recommended": true
+      },
+      "assertions": [
+        "A skill identifica ausência de atomicidade.",
+        "Propõe plano pai e pelo menos duas unidades filhas (pai -> filhos).",
+        "Encaminha a reestruturação do plano ao AgentOrchestrator."
+      ]
+    },
+    {
+      "id": "readiness.negative.no-execution-intended",
+      "category": "negative",
+      "description": "Não aciona o gate para edição puramente documental.",
+      "input": {
+        "prompt": "Atualize a documentação de arquitetura no README.md",
+        "context": { "scope": ["docs/architecture/README.md"] }
+      },
+      "expected": {
+        "must_not_select": ["implementation-readiness"]
+      },
+      "assertions": [
+        "O gate implementation-readiness é acionado apenas antes de código, migration, IaC ou handoff executável."
+      ]
+    }
+  ]
+}

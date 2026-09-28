@@ -1,0 +1,47 @@
+name: "quality-gate"
+contract_version: 1
+
+input:
+  schema: "../../contracts/capability-request.schema.json"
+  required_context:
+    - "task_id"
+    - "readiness_ref"
+    - "scope"
+    - "execution_level"
+
+output:
+  schema: "../../contracts/gate-result.schema.json"
+  gate: "quality-gate"
+  aggregates:
+    - "A1"
+    - "A2"
+    - "A3"
+  states:
+    - "PASS"
+    - "FAIL"
+    - "BLOCKED"
+
+handoff:
+  pass: "AgentOrchestrator"
+  fail: "AgentOrchestrator"
+  blocked: "AgentOrchestrator"
+
+permissions:
+  filesystem_read: allow
+  filesystem_write: deny
+  local_exec: approved-tools-only
+  network: explicit-authorization
+  secrets: deny
+  git_write: deny
+  production: deny
+  destructive: deny
+
+side_effects:
+  allowed:
+    - "execute-approved-local-validation"
+    - "aggregate-subgate-evidence"
+  forbidden:
+    - "direct-implementation-fix"
+    - "weaken-thresholds"
+    - "authorize-release"
+    - "authorize-git"

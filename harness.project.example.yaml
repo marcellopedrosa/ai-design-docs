@@ -1,0 +1,46 @@
+schema_version: 1
+harness_version: "2.0.0"
+
+project:
+  id: "example-service"
+  name: "Exemplo de Serviço Adotante"
+  description: "Exemplo de manifesto de projeto adotante do AI Engineering Harness"
+
+runtimes:
+  - codex
+  - claude-code
+  - gemini-cli
+  - antigravity
+
+capabilities:
+  git_delivery: true
+
+standards:
+  baseline:
+    - software-engineering-lifecycle
+    - implementation-readiness-standard
+    - software-quality-standard
+    - development-standard
+    - security-standard
+  activated:
+    - java-standard
+    - spring-security-standard
+    - api-security-standard
+
+quality:
+  commands:
+    backend_test: "mvn test"
+    backend_build: "mvn verify"
+    frontend_test: "npm test"
+
+security:
+  validators:
+    - "mvn org.owasp:dependency-check-maven:check"
+
+paths:
+  backend:
+    - "backend/"
+  frontend:
+    - "frontend/"
+  docs:
+    - "docs/"

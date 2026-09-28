@@ -1,0 +1,35 @@
+name: "governanca-documental"
+contract_version: 1
+
+input:
+  schema: "../../contracts/capability-request.schema.json"
+  required_context:
+    - "task_id"
+    - "scope"
+
+output:
+  schema: "../../contracts/gate-result.schema.json"
+  gate: "governanca-documental"
+
+handoff:
+  success: "AgentOrchestrator"
+  failure: "AgentOrchestrator"
+  blocked: "AgentOrchestrator"
+
+permissions:
+  filesystem_read: allow
+  filesystem_write: scoped
+  local_exec: approved-tools-only
+  network: deny
+  secrets: deny
+  git_write: deny
+  production: deny
+  destructive: deny
+
+side_effects:
+  allowed:
+    - "update-immediate-collection-readme"
+    - "execute-documentation-governance-validator"
+  forbidden:
+    - "weaken-adr-contract"
+    - "modify-code-outside-docs"

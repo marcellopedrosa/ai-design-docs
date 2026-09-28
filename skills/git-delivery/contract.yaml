@@ -1,0 +1,40 @@
+name: "git-delivery"
+contract_version: 1
+
+input:
+  schema: "../../contracts/capability-request.schema.json"
+  required_context:
+    - "task_id"
+    - "scope"
+    - "applicable_gates_status"
+
+output:
+  schema: "../../contracts/gate-result.schema.json"
+  gate: "git-delivery"
+  states:
+    - "PASS"
+    - "BLOCKED"
+
+handoff:
+  success: "AgentOrchestrator"
+  blocked: "AgentOrchestrator"
+
+permissions:
+  filesystem_read: allow
+  filesystem_write: scoped
+  local_exec: approved-tools-only
+  git_write: allow-work-branch-only
+  network: allow-git-remote
+  secrets: deny
+  production: deny
+  destructive: deny
+
+side_effects:
+  allowed:
+    - "git-commit"
+    - "git-push-work-branch"
+  forbidden:
+    - "direct-main-write"
+    - "force-push-main"
+    - "change-remote-to-bypass"
+    - "discard-other-work"
