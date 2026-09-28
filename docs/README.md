@@ -37,7 +37,7 @@ de verdade.
 | ADRs | Decisão | Active | [adrs/README.md](adrs/README.md) |
 | Arquitetura | Contexto | Active | [architecture/README.md](architecture/README.md) |
 | Agentes | Regra | AgentOrchestrator active | [agents/README.md](agents/README.md) |
-| Standards | Regra | Núcleo agnóstico ativo; biblioteca condicional selecionada por aplicabilidade | [agents/standards/README.md](agents/standards/README.md) |
+| Standards | Regra | Núcleo agnóstico ativo; exemplos condicionais criados por aplicabilidade | [agents/standards/README.md](agents/standards/README.md) |
 | Skills operacionais | Contexto | Active | [agents/skills/README.md](agents/skills/README.md) |
 | Templates | Template | Active | [templates/README.md](templates/README.md) |
 | Automação documental | Contexto | Active | [automation/README.md](automation/README.md) |

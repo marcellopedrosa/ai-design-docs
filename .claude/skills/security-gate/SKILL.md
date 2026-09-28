@@ -45,11 +45,12 @@ Ler sempre:
 
 - `docs/agents/standards/security-standard.md`;
 - `docs/agents/standards/software-quality-standard.md`;
-- `docs/agents/standards/application-security-standard.md` quando houver aplicação
-  web, backend web ou superfície exposta a entrada não confiável.
+- `docs/agents/standards/application-security-standard.md` somente quando o projeto
+  adotante tiver criado e ativado esse standard para aplicação web, backend web ou
+  superfície exposta a entrada não confiável.
 
-Selecionar adicionalmente apenas quando ativados pelo manifesto, ADR, contrato,
-escopo ou risco:
+Selecionar adicionalmente apenas quando o arquivo existir no projeto adotante e
+estiver ativado pelo manifesto, ADR, contrato, escopo ou risco:
 
 - `docs/agents/standards/api-security-standard.md` para APIs;
 - `docs/agents/standards/spring-security-standard.md` para Spring Boot/Spring Security;
@@ -60,7 +61,8 @@ escopo ou risco:
 - `docs/agents/standards/rbac-frontend-standard.md` para UI com acesso diferenciado;
 - `docs/agents/standards/iac-supply-chain-standard.md` para dependências, containers,
   IaC ou supply chain;
-- demais standards catalogados que o escopo realmente ativar.
+- demais standards criados e catalogados pelo projeto adotante que o escopo
+  realmente ativar.
 
 Não duplicar regras desses documentos dentro desta skill. Se um standard requerido
 não existir ou estiver materialmente inconsistente, retornar `BLOCKED` e apontar o

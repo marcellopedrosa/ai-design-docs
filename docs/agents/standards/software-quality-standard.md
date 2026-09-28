@@ -10,7 +10,7 @@ version: 1.3
 date: 2026-09-10
 last_reviewed: 2026-09-28
 keywords: quality-gate, testes, cobertura, seguranca, appsec, metricas, assurance
-related_files: ../AgentOrchestrator.md, README.md, software-engineering-lifecycle.md, implementation-readiness-standard.md, development-standard.md, security-standard.md, application-security-standard.md, api-security-standard.md, spring-security-standard.md, backend-testing-standard.md, frontend-testing-standard.md, ../skills/README.md, ../../automation/README.md
+related_files: ../AgentOrchestrator.md, README.md, software-engineering-lifecycle.md, implementation-readiness-standard.md, development-standard.md, security-standard.md, ../skills/README.md, ../../automation/README.md
 code_references: N/A - executores pertencem ao projeto de destino.
 principal_statement: Testes demonstram comportamento; qualidade e seguranca exigem gates proprios, evidencia atual e correspondencia com o READY.
 ---

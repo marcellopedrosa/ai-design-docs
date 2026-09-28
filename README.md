@@ -36,9 +36,10 @@ de produção, script executável ou decisão pertencente ao projeto de origem.
   destino;
 - ADR de governança e mapa de precedência;
 - `AgentOrchestrator` como único agente inicial do bootstrap;
-- biblioteca portátil de standards transversais e condicionais por capacidade ou
-  stack, cada um com ativação explícita;
-- standards especializados de segurança de aplicação, API e Spring Security;
+- biblioteca portátil de standards transversais e catálogo de exemplos condicionais
+  por capacidade ou stack;
+- exemplos de standards especializados que podem ser criados pelo projeto adotante
+  quando sua aplicação, API ou stack de segurança exigir;
 - lifecycle C.L.E.A.R.;
 - Implementation Readiness Gate;
 - Test, Quality e Security/Compliance Gates;

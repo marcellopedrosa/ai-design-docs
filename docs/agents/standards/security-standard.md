@@ -10,7 +10,7 @@ version: 1.1
 date: 2026-09-11
 last_reviewed: 2026-09-28
 keywords: seguranca, menor-privilegio, segredos, autenticacao, autorizacao, dados, a3
-related_files: README.md, development-standard.md, software-quality-standard.md, application-security-standard.md, api-security-standard.md, spring-security-standard.md, iac-supply-chain-standard.md, ../skills/README.md
+related_files: README.md, development-standard.md, software-quality-standard.md, ../skills/README.md
 code_references: N/A - controles executáveis pertencem ao projeto adotante.
 principal_statement: Toda mudança aplica menor privilégio, negação por padrão e proteção de dados proporcionais ao risco, com evidência atual.
 ---
