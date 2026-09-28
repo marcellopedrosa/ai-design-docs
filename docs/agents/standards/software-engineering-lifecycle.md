@@ -17,6 +17,12 @@ principal_statement: Nenhuma fase executavel inicia sem seus gates anteriores, e
 
 # Software Engineering Lifecycle
 
+## Ativação
+
+Baseline agnóstico para mudanças de software. Fases de produto, contrato, use case
+ou release podem ser marcadas como N/A quando o escopo não as exigir, desde que a
+justificativa e os gates aplicáveis permaneçam registradas.
+
 ## Macrofluxo C.L.E.A.R.
 
 ```text
@@ -80,5 +86,6 @@ capacidade não exige criar outro agente.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.3 | 2026-09-28 | Explicita a ativação agnóstica e o tratamento de fases condicionais. |
 | 1.2 | 2026-09-13 | Separa entrega Git governada do release e de sua autorização própria. |
 | 1.1 | 2026-09-11 | Liga o lifecycle ao orquestrador inicial e à biblioteca portátil de standards. |

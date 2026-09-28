@@ -37,7 +37,7 @@ de verdade.
 | ADRs | Decisão | Active | [adrs/README.md](adrs/README.md) |
 | Arquitetura | Contexto | Active | [architecture/README.md](architecture/README.md) |
 | Agentes | Regra | AgentOrchestrator active | [agents/README.md](agents/README.md) |
-| Standards | Regra | Biblioteca active; seleção por aplicabilidade | [agents/standards/README.md](agents/standards/README.md) |
+| Standards | Regra | Núcleo agnóstico ativo; biblioteca condicional selecionada por aplicabilidade | [agents/standards/README.md](agents/standards/README.md) |
 | Skills operacionais | Contexto | Active | [agents/skills/README.md](agents/skills/README.md) |
 | Templates | Template | Active | [templates/README.md](templates/README.md) |
 | Automação documental | Contexto | Active | [automation/README.md](automation/README.md) |
@@ -70,7 +70,7 @@ aplicável; o plano registra quais regras foram ativadas.
 | Skills compartilhadas | `.agents/skills/` | Conformant quando indexadas e pareadas com o runtime suportado |
 | Skills Claude Code | `.claude/skills/` | Conformant quando espelham o núcleo compartilhado |
 | Configuração específica do Claude Code | `.claude/settings.json` | Not applicable no baseline; permissões seguem a configuração efetiva do ambiente |
-| Skills de governança | `governanca-documental`, `implementation-readiness`, `quality-gate` | Conformant quando os descritores e o catálogo concordam |
+| Skills de governança | `governanca-documental`, `implementation-readiness`, `quality-gate`, `security-gate` | Conformant quando os descritores e o catálogo concordam |
 
 `Conformant`, `Partial`, `Planned` e `Not applicable` descrevem o estado de adoção
 local. A presença de um path ou skill não ativa permissões fora da política e dos

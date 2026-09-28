@@ -6,11 +6,11 @@ scope: Segredos, identidade, autorização, dados, dependências, logs, rede e e
 non_objectives: Não substituir threat model, política corporativa, revisão jurídica ou configuração específica da stack.
 owner: Segurança e Engenharia
 status: Active
-version: 1.0
+version: 1.1
 date: 2026-09-11
-last_reviewed: 2026-09-11
-keywords: seguranca, menor-privilegio, segredos, autenticacao, autorizacao, dados
-related_files: README.md, development-standard.md, software-quality-standard.md, iac-supply-chain-standard.md
+last_reviewed: 2026-09-28
+keywords: seguranca, menor-privilegio, segredos, autenticacao, autorizacao, dados, a3
+related_files: README.md, development-standard.md, software-quality-standard.md, application-security-standard.md, api-security-standard.md, spring-security-standard.md, iac-supply-chain-standard.md, ../skills/README.md
 code_references: N/A - controles executáveis pertencem ao projeto adotante.
 principal_statement: Toda mudança aplica menor privilégio, negação por padrão e proteção de dados proporcionais ao risco, com evidência atual.
 ---
@@ -19,8 +19,10 @@ principal_statement: Toda mudança aplica menor privilégio, negação por padr�
 
 ## Ativação
 
-Baseline para toda mudança. A profundidade do A3 Security/Compliance varia com
-exposição, dados e ameaça, mas o gate nunca é omitido sem justificativa.
+Baseline agnóstico para mudanças de software e documentação operacional. A
+profundidade do A3 Security/Compliance varia com exposição, dados e ameaça; uma
+alteração exclusivamente documental sem impacto de segurança pode ser N/A com
+justificativa verificável.
 
 ## Regras
 
@@ -50,4 +52,5 @@ autorizados. Um waiver precisa de owner, prazo, compensação e plano de remoç�
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.1 | 2026-09-28 | Explicita o baseline agnóstico, a ativação proporcional ao risco e as referências aos standards especializados. |
 | 1.0 | 2026-09-11 | Cria baseline portátil de segurança. |

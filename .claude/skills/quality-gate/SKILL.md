@@ -1,6 +1,6 @@
 ---
 name: quality-gate
-description: Seleciona, executa e registra os gates de Teste e QA do ciclo C.L.E.A.R. Use em mudancas de software, revisao de PR ou qualificacao de release; nao use para alteracao exclusivamente documental.
+description: Seleciona, executa e registra A1 Test, A2 Quality e A3 Security/Compliance do ciclo C.L.E.A.R. Use em mudanças de software, revisão de PR ou qualificação de release; acione security-gate como subgate/executor especializado de A3 quando segurança de aplicação for aplicável. Não use para alteração exclusivamente documental.
 ---
 
 # Quality Gate C.L.E.A.R.
@@ -11,7 +11,8 @@ description: Seleciona, executa e registra os gates de Teste e QA do ciclo C.L.E
 ## Objetivo
 
 Aplicar Assurance proporcional ao risco e produzir evidência reproduzível sem
-inventar aprovação.
+inventar aprovação. O `quality-gate` é o único agregador de A1, A2 e A3; skills
+especializadas produzem evidência para seus subgates e não criam gates paralelos.
 
 O ADR-0000, Section 10.12, o `software-quality-standard.md` e o
 `implementation-readiness-standard.md` definem o contrato aplicável. O gate retorna
@@ -24,7 +25,8 @@ ao planejamento quando precisar de nova decomposição; não decompõe retrospec
 
 ## Escopo e não-objetivos
 
-- Escopo: seleção, execução e registro de testes e QA para os targets aprovados.
+- Escopo: seleção, execução e registro de A1 Test, A2 Quality e A3
+  Security/Compliance para os targets aprovados.
 - Não-objetivos: autorizar Git, release, produção ou ampliar permissões.
 
 ## Pré-condições
@@ -47,9 +49,16 @@ registrados pelo projeto.
 4. Execute os comandos e validadores registrados pelo projeto para cada target.
 5. Registre A1 Test, A2 Quality e A3 Security/Compliance separadamente como
    `PASS`, `FAIL` ou `BLOCKED`.
-6. Em `FAIL`, corrija o escopo e reexecute enquanto houver progresso. Dependência,
-   autorização, ferramenta ou ambiente ausente resulta em `BLOCKED`.
-7. Só conclua quando todos os gates aplicáveis estiverem em `PASS`.
+6. Para A3, quando houver aplicação web, API, autenticação, autorização, dado
+   sensível, Spring Security, superfície exposta ou risco AppSec material, acione
+   `security-gate` e consuma seu resultado como evidência do A3. Apesar do nome,
+   o `security-gate` é subordinado ao A3 e não constitui Assurance Gate paralelo.
+7. Para A3 fora de AppSec, aplique os demais standards de segurança/compliance
+   ativados e preserve a mesma semântica `PASS`/`FAIL`/`BLOCKED`.
+8. Em `FAIL`, corrija o escopo e reexecute enquanto houver progresso. Dependência,
+   autorização, ferramenta, contexto ou ambiente obrigatório ausente resulta em
+   `BLOCKED`.
+9. Só conclua quando todos os gates aplicáveis estiverem em `PASS`.
 
 ## Limites
 
@@ -65,11 +74,13 @@ específica. Não fabrique evidência nem use resultados históricos como aprova
 ## Evidência
 
 Registre comando, diretório, código de saída, contagens, cobertura, skips, ambiente,
-targets, iterações, limitações e correspondência com o `READY`.
+targets, iterações, limitações, correspondência com o `READY` e, em A3, standards
+aplicados, findings e testes negativos relevantes retornados pelo `security-gate`.
 
 ## Saídas e critério de conclusão
 
 A saída registra A1, A2 e A3 separadamente. Conclua somente quando todos os gates
 aplicáveis passarem; falha ou dependência ausente deve ser registrada como `FAIL`
-ou `BLOCKED` com sua causa.
+ou `BLOCKED` com sua causa. `security-gate` retorna ao `quality-gate`; não agrega
+A1/A2 e não autoriza release, merge ou deploy.
 
