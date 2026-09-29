@@ -3,7 +3,15 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import fs from 'node:fs';
 import os from 'node:os';
-import { checkRegistry, checkContracts, checkSkills, checkAdapters, checkEvals } from './index.mjs';
+import {
+  checkRegistry,
+  checkContracts,
+  checkSkills,
+  checkAdapters,
+  checkEvals,
+  checkFixtureReferences,
+  checkDrift
+} from './index.mjs';
 
 test('checkRegistry passes on repository root', () => {
   const root = path.resolve('.');
@@ -63,5 +71,54 @@ test('description of 501 characters is rejected', () => {
   const { errors } = checkSkills(tmp);
   const descErrors = errors.filter(e => e.includes('description'));
   assert.ok(descErrors.length > 0, '501-char description should be rejected');
+  fs.rmSync(tmp, { recursive: true, force: true });
+});
+
+test('checkFixtureReferences passes on repository root', () => {
+  const root = path.resolve('.');
+  const { errors } = checkFixtureReferences(root);
+  assert.equal(errors.length, 0, `Fixture reference errors: ${errors.join(', ')}`);
+});
+
+test('checkFixtureReferences detects orphan fixture', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hd-fix-'));
+  const fixtureDir = path.join(tmp, 'skills', 'test-skill', 'fixtures', 'orphan-case');
+  fs.mkdirSync(fixtureDir, { recursive: true });
+  fs.writeFileSync(path.join(fixtureDir, 'test.txt'), 'orphan');
+  const evalDir = path.join(tmp, 'skills', 'test-skill', 'evals');
+  fs.mkdirSync(evalDir, { recursive: true });
+  fs.writeFileSync(path.join(evalDir, 'evals.json'), JSON.stringify({
+    evals: [{ id: 't1', category: 'c', description: 'd', input: {}, expected: 'e', assertions: 'a' }]
+  }));
+  fs.mkdirSync(path.join(tmp, 'evals'), { recursive: true });
+  const { errors } = checkFixtureReferences(tmp);
+  const orphanErrors = errors.filter(e => e.includes('órfão'));
+  assert.ok(orphanErrors.length > 0, 'Should detect orphan fixture');
+  fs.rmSync(tmp, { recursive: true, force: true });
+});
+
+test('checkFixtureReferences detects missing fixture', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hd-fix-'));
+  const evalDir = path.join(tmp, 'skills', 'test-skill', 'evals');
+  fs.mkdirSync(evalDir, { recursive: true });
+  fs.writeFileSync(path.join(evalDir, 'evals.json'), JSON.stringify({
+    evals: [{ id: 't1', category: 'c', description: 'd', input: { fixture: '../fixtures/nonexistent/file.txt' }, expected: 'e', assertions: 'a' }]
+  }));
+  fs.mkdirSync(path.join(tmp, 'evals'), { recursive: true });
+  const { errors } = checkFixtureReferences(tmp);
+  const missingErrors = errors.filter(e => e.includes('inexistente'));
+  assert.ok(missingErrors.length > 0, 'Should detect missing fixture');
+  fs.rmSync(tmp, { recursive: true, force: true });
+});
+
+test('checkDrift rejects substring match for skill names', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hd-drift-'));
+  fs.mkdirSync(path.join(tmp, 'registry'), { recursive: true });
+  fs.writeFileSync(path.join(tmp, 'registry', 'skills.yaml'), 'skills:\n  quality-gate:\n    status: active\n');
+  fs.mkdirSync(path.join(tmp, 'docs', 'agents', 'skills'), { recursive: true });
+  fs.writeFileSync(path.join(tmp, 'docs', 'agents', 'skills', 'README.md'), '| quality-gate-extra | description |\n');
+  fs.writeFileSync(path.join(tmp, 'README.md'), 'quality-gate-extra is great\n');
+  const { errors } = checkDrift(tmp);
+  assert.ok(errors.length > 0, `Should detect that "quality-gate" is not matched by "quality-gate-extra": ${errors.join(', ')}`);
   fs.rmSync(tmp, { recursive: true, force: true });
 });

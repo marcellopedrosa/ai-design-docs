@@ -303,6 +303,75 @@ export function checkEvals(root) {
   return { errors, count: evalIds.size };
 }
 
+export function checkFixtureReferences(root) {
+  const errors = [];
+  const referencedFixtures = new Set();
+  const searchDirs = [path.join(root, "evals"), path.join(root, "skills")];
+
+  function walkEvals(dir) {
+    if (!fs.existsSync(dir)) return;
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) { walkEvals(fullPath); }
+      else if (entry.isFile() && entry.name.endsWith(".json") && !entry.name.endsWith(".schema.json")) {
+        try {
+          const data = JSON.parse(fs.readFileSync(fullPath, "utf8"));
+          if (Array.isArray(data.evals)) {
+            for (const item of data.evals) {
+              if (item.input && item.input.fixture) {
+                // Try relative to eval file first, then relative to root
+                const relToFile = path.resolve(path.dirname(fullPath), item.input.fixture);
+                const relToRoot = path.resolve(root, item.input.fixture);
+                const fixturePath = fs.existsSync(relToFile) ? relToFile : (fs.existsSync(relToRoot) ? relToRoot : relToFile);
+                // Track both possible resolutions for orphan detection
+                referencedFixtures.add(relToFile);
+                referencedFixtures.add(relToRoot);
+                if (!fs.existsSync(fixturePath)) {
+                  errors.push(`${path.relative(root, fullPath)}: fixture inexistente: ${item.input.fixture}`);
+                }
+              }
+            }
+          }
+        } catch { /* JSON parse errors are caught by checkEvals */ }
+      }
+    }
+  }
+
+  for (const d of searchDirs) walkEvals(d);
+
+  function walkFixtures(dir) {
+    if (!fs.existsSync(dir)) return;
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (entry.name === "fixtures") { scanFixtureDir(fullPath); }
+        else { walkFixtures(fullPath); }
+      }
+    }
+  }
+
+  function scanFixtureDir(fixturesDir) {
+    for (const entry of fs.readdirSync(fixturesDir, { withFileTypes: true })) {
+      const fullPath = path.join(fixturesDir, entry.name);
+      if (entry.isDirectory()) {
+        for (const fEntry of fs.readdirSync(fullPath, { withFileTypes: true })) {
+          if (fEntry.isFile()) {
+            const filePath = path.join(fullPath, fEntry.name);
+            if (!referencedFixtures.has(filePath)) {
+              errors.push(`${path.relative(root, filePath)}: fixture órfão (nenhum eval o referencia).`);
+            }
+          }
+        }
+      } else if (entry.isFile() && !referencedFixtures.has(fullPath)) {
+        errors.push(`${path.relative(root, fullPath)}: fixture órfão (nenhum eval o referencia).`);
+      }
+    }
+  }
+
+  for (const d of [path.join(root, "skills"), path.join(root, "evals")]) walkFixtures(d);
+  return { errors };
+}
+
 export function checkDrift(root) {
   const errors = [];
   const skillsYamlPath = path.join(root, 'registry', 'skills.yaml');
@@ -316,7 +385,7 @@ export function checkDrift(root) {
   if (fs.existsSync(skillsCatalogPath)) {
     const catalog = fs.readFileSync(skillsCatalogPath, 'utf8');
     for (const skill of registeredSkills) {
-      if (!catalog.includes(skill)) {
+      if (!new RegExp(`(?<![\\w-])${skill}(?![\\w-])`).test(catalog)) {
         errors.push(`docs/agents/skills/README.md: skill '${skill}' do registry não está catalogada.`);
       }
     }
@@ -327,7 +396,7 @@ export function checkDrift(root) {
   if (fs.existsSync(rootReadmePath)) {
     const readme = fs.readFileSync(rootReadmePath, 'utf8');
     for (const skill of registeredSkills) {
-      if (!readme.includes(skill)) {
+      if (!new RegExp(`(?<![\\w-])${skill}(?![\\w-])`).test(readme)) {
         errors.push(`README.md: skill '${skill}' do registry ausente da árvore distribuída.`);
       }
     }
@@ -344,6 +413,7 @@ export function runDoctor(repositoryRoot) {
     skills: checkSkills(root),
     adapters: checkAdapters(root),
     evals: checkEvals(root),
+    fixtureRefs: checkFixtureReferences(root),
     drift: checkDrift(root)
   };
 
@@ -353,6 +423,7 @@ export function runDoctor(repositoryRoot) {
     ...results.skills.errors,
     ...results.adapters.errors,
     ...results.evals.errors,
+    ...results.fixtureRefs.errors,
     ...results.drift.errors
   ];
 
@@ -381,6 +452,7 @@ function main() {
   printCheck('Skills', results.skills.errors, 'capability packages em skills/');
   printCheck('Adapters', results.adapters.errors, 'paridade entre skills/, .agents/ e .claude/');
   printCheck('Evals', results.evals.errors, `${results.evals.count} casos validados estruturalmente — nível H0`);
+  printCheck('Fixtures', results.fixtureRefs.errors, 'integridade referencial de fixtures');
   printCheck('Drift', results.drift.errors, 'paridade entre registry e documentação');
 
   process.stdout.write('\n');
