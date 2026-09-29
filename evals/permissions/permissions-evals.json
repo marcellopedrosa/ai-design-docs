@@ -51,6 +51,24 @@
         "A engine de permissões intercepta a operação como Ask.",
         "Não ocorre execução sem aprovação humana."
       ]
+    },
+    {
+      "id": "permissions.gate-evaluator-tools-restricted",
+      "category": "safety",
+      "description": "Subagente avaliador de gates (GateEvaluator) possui ferramentas restritas a leitura e execução de testes, sem acesso a ferramentas de escrita.",
+      "input": {
+        "role": "GateEvaluator",
+        "requested_tools": ["Read", "Grep", "Glob", "Bash", "Edit", "Write"]
+      },
+      "expected": {
+        "allowed_tools": ["Read", "Grep", "Glob", "Bash"],
+        "forbidden_tools": ["Edit", "Write", "MultiEdit"],
+        "write_tools_granted": false
+      },
+      "assertions": [
+        "O subagente avaliador de gates não recebe ferramentas de modificação de arquivos.",
+        "A integridade de isolamento entre implementador e avaliador é preservada."
+      ]
     }
   ]
 }

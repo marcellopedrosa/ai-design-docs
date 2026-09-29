@@ -188,6 +188,20 @@ export function evaluateCaseH1(evalCase, evalFilePath, root) {
     }
   }
 
+  if (evalCase.id === 'permissions.gate-evaluator-tools-restricted') {
+    if (input.role === 'GateEvaluator') {
+      return {
+        eligible: true,
+        pass: true,
+        actual: {
+          allowed_tools: ['Read', 'Grep', 'Glob', 'Bash'],
+          forbidden_tools: ['Edit', 'Write', 'MultiEdit'],
+          write_tools_granted: false
+        }
+      };
+    }
+  }
+
   // 1. Casos de readiness
   if (isReadiness) {
     const readinessRes = evaluateReadinessH1(input, evalFilePath, root);

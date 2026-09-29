@@ -6,13 +6,13 @@ scope: Agentes ativos, gatilhos, owners, standards, skills e handoffs.
 non_objectives: Não registrar personas decorativas, ativar agentes por tecnologia ou duplicar instruções dos runtimes.
 owner: Arquitetura e Plataforma de IA
 status: Active
-version: 1.2
+version: 1.3
 date: 2026-09-10
-last_reviewed: 2026-09-13
-keywords: agentes, orquestrador, bootstrap, papeis, catalogo, handoff, entrega-git
-related_files: AgentOrchestrator.md, skills/README.md, standards/README.md, ../settings/settings.md, ../templates/TPL-00011-agent.md
+last_reviewed: 2026-09-29
+keywords: agentes, orquestrador, bootstrap, papeis, catalogo, handoff, entrega-git, gate-evaluator, subagente
+related_files: AgentOrchestrator.md, GateEvaluator.md, skills/README.md, standards/README.md, ../settings/settings.md, ../templates/TPL-00011-agent.md
 code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md
-principal_statement: O AgentOrchestrator é o único agente inicial; papéis adicionais exigem responsabilidade, autoridade e handoff independentes.
+principal_statement: O AgentOrchestrator coordena a execução; subagentes especializados como GateEvaluator operam sob isolamento estrito de menor privilégio.
 ---
 
 # Agentes
@@ -26,18 +26,17 @@ principal_statement: O AgentOrchestrator é o único agente inicial; papéis adi
 - Critério de granularidade: um papel por responsabilidade e autoridade
   independentes; não criar agente apenas por tecnologia ou etapa nominal.
 
-## Agente inicial
+## Agentes catalogados
 
 | Agente | Responsabilidade | Ativação | Status |
 | --- | --- | --- | --- |
 | [AgentOrchestrator](AgentOrchestrator.md) | Descoberta, planejamento, seleção de standards, readiness, coordenação de execução e assurance | Sempre no bootstrap | Active |
+| [GateEvaluator](GateEvaluator.md) | Subagente avaliador isolado para execução de gates e subgates (A1, A2, A3) com ferramentas de escrita vedadas | Sob demanda de assurance | Active |
 
-Nenhum outro agente especializado integra o baseline. O AgentOrchestrator pode
-rotear uma tarefa por capacidade e o agente principal do runtime pode exercê-la
-diretamente. Um novo papel persistente só é criado com owner, limites, entradas,
-saídas e handoffs próprios, usando o
-[template de agente](../templates/TPL-00011-agent.md), e entra neste índice na mesma
-mudança.
+O AgentOrchestrator atua como coordenador central. Quando gates de assurance exigirem
+isolamento de privilégios para evitar que o implementador avalie o próprio código,
+o subagente [GateEvaluator](GateEvaluator.md) deve ser acionado com permissões
+estritas de leitura e execução de testes.
 
 ## Subcoleções
 
@@ -48,5 +47,6 @@ mudança.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.3 | 2026-09-29 | Registra o subagente especializado GateEvaluator com ferramentas restritas para isolamento de gates. |
 | 1.2 | 2026-09-13 | Registra o roteamento condicional de entrega Git pelo agente inicial. |
 | 1.1 | 2026-09-11 | Define AgentOrchestrator como único agente inicial e mantém papéis especializados sob ativação explícita. |
