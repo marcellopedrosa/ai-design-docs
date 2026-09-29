@@ -60,8 +60,9 @@ executável. O orquestrador identifica o owner da decisão e não inventa respos
    [Software Quality Standard](standards/software-quality-standard.md), mantendo
    cada resultado independente; para A3 de aplicação, acionar a skill
    `security-gate` conforme o catálogo de skills.
-9. Corrigir e reexecutar falhas enquanto houver progresso; registrar impasse real,
-   owner e condição de retomada quando BLOCKED.
+9. Corrigir e reexecutar falhas enquanto houver progresso (máximo de 3 iterações
+   sem progresso ou 5 totais); registrar impasse real, owner e condição de
+   retomada quando BLOCKED.
 10. Quando o projeto tiver adotado entrega Git governada e o usuário solicitar
     commit ou publicação, acionar `git-delivery` somente após os gates exigidos.
     A ausência dessa adoção mantém Git de escrita bloqueado.

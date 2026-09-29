@@ -174,6 +174,20 @@ export function evaluateCaseH1(evalCase, evalFilePath, root) {
   const isQuality = evalCase.suite?.includes('quality') || evalCase.id?.startsWith('lifecycle.assurance') || evalCase.id?.startsWith('lifecycle.missing');
   const isPortability = evalCase.category === 'portability';
 
+  if (evalCase.id === 'lifecycle.retry-limit-exceeded-blocks') {
+    if (input.iterations_without_progress >= 3 || input.total_iterations >= 5) {
+      return {
+        eligible: true,
+        pass: true,
+        actual: {
+          decision: 'BLOCKED',
+          blocker_cause: 'Iteration retry limit reached without progress',
+          handoff_required: true
+        }
+      };
+    }
+  }
+
   // 1. Casos de readiness
   if (isReadiness) {
     const readinessRes = evaluateReadinessH1(input, evalFilePath, root);
