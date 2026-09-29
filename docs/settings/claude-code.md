@@ -10,7 +10,7 @@ date: 2026-09-13
 version: 1.0
 keywords: claude-code, CLAUDE.md, imports, settings, skills, quality-metrics, git, push
 related_files: settings.md, ../ai/README.md, ../agents/skills/README.md
-code_references: ../../CLAUDE.md, ../../.claude/skills/governanca-documental/SKILL.md, ../../.claude/skills/implementation-readiness/SKILL.md, ../../.claude/skills/quality-gate/SKILL.md
+code_references: ../../CLAUDE.md, ../../.claude/settings.json, ../../.claude/skills/governanca-documental/SKILL.md, ../../.claude/skills/implementation-readiness/SKILL.md, ../../.claude/skills/quality-gate/SKILL.md, ../../tooling/hooks/
 principal_statement: O Claude Code usa adaptadores equivalentes aos do harness e so entrega Git depois de certificacao integral quando essa capacidade estiver adotada.
 ---
 
@@ -18,10 +18,11 @@ principal_statement: O Claude Code usa adaptadores equivalentes aos do harness e
 
 ## Configuracao efetiva
 
-- O adaptador global versionado e `CLAUDE.md` na raiz.
+- O adaptador global versionado e `CLAUDE.md` na raiz (importando `@AGENTS.md`).
+- A configuracao compartilhada versionada reside em `.claude/settings.json`, impondo politicas conservadoras de permissao (`deny` para segredos `.env*` e escritas destrutivas na `main`) e hooks deterministicos em `tooling/hooks/` (`guard-paths`, `require-handoff`).
 - Adaptadores locais devem existir apenas quando houver especializacao de pacote e
   devem permanecer semanticamente equivalentes ao respectivo `AGENTS.md`.
-- `CLAUDE.local.md` e settings locais sao pessoais e devem ficar fora do Git.
+- `CLAUDE.local.md` e settings locais (`.claude/settings.local.json`) sao pessoais e devem ficar fora do Git.
 - Skills compartilhadas do Claude Code usam `.claude/skills/<nome>/SKILL.md` e
   espelham as capacidades adotadas em `.agents/skills/`.
 
@@ -41,4 +42,5 @@ acessadas.
 
 | Versao | Data | Mudanca |
 | --- | --- | --- |
+| 1.1 | 2026-09-29 | Materializa .claude/settings.json com permissoes conservadoras e hooks deterministicos. |
 | 1.0 | 2026-09-13 | Adiciona mapeamento portavel do Claude Code para o harness agnostico. |

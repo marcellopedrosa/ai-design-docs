@@ -181,3 +181,37 @@ nested:
   assert.deepEqual(result.tags, ['first', 'second']);
   assert.deepEqual(result.nested, { key: 'value' });
 });
+
+test('checkSkills rejects skill with filesystem_write: deny when allowed-tools includes Edit or Write', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hd-skill-perm-'));
+  fs.mkdirSync(path.join(tmp, 'registry'), { recursive: true });
+  fs.writeFileSync(path.join(tmp, 'registry', 'skills.yaml'), `
+skills:
+  strict-skill:
+    status: active
+    permissions:
+      filesystem_write: deny
+`);
+  const skillDir = path.join(tmp, 'skills', 'strict-skill');
+  fs.mkdirSync(skillDir, { recursive: true });
+  fs.writeFileSync(path.join(skillDir, 'contract.yaml'), 'name: strict-skill\n');
+  fs.mkdirSync(path.join(skillDir, 'evals'), { recursive: true });
+  fs.writeFileSync(path.join(skillDir, 'evals', 'evals.json'), '{"evals":[{"id":"t1","category":"c","description":"d","input":"i","expected":"e","assertions":"a"}]}');
+
+  // Case 1: allowed-tools missing
+  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: strict-skill\ndescription: test\n---\n');
+  const res1 = checkSkills(tmp);
+  assert.ok(res1.errors.some(e => e.includes('allowed-tools ausente')));
+
+  // Case 2: allowed-tools includes Edit while filesystem_write is deny
+  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: strict-skill\ndescription: test\nallowed-tools: Read, Edit\n---\n');
+  const res2 = checkSkills(tmp);
+  assert.ok(res2.errors.some(e => e.includes('ferramentas de escrita')));
+
+  // Case 3: allowed-tools read-only passes
+  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: strict-skill\ndescription: test\nallowed-tools: Read, Grep, Glob\n---\n');
+  const res3 = checkSkills(tmp);
+  assert.equal(res3.errors.length, 0, `Read-only tools should pass: ${res3.errors.join(', ')}`);
+
+  fs.rmSync(tmp, { recursive: true, force: true });
+});

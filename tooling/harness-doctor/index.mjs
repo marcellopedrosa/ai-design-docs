@@ -257,6 +257,15 @@ export function checkContracts(root) {
 export function checkSkills(root) {
   const errors = [];
   const skillsDir = path.join(root, 'skills');
+  const skillsYamlPath = path.join(root, 'registry', 'skills.yaml');
+
+  let registrySkills = {};
+  if (fs.existsSync(skillsYamlPath)) {
+    try {
+      const parsed = parseSimpleYaml(fs.readFileSync(skillsYamlPath, 'utf8'), 'registry/skills.yaml');
+      registrySkills = parsed.skills || {};
+    } catch { /* handled in checkRegistry */ }
+  }
 
   if (!fs.existsSync(skillsDir)) {
     return { errors: ['Diretório skills/ não encontrado.'] };
@@ -283,12 +292,38 @@ export function checkSkills(root) {
     } else {
       const nameMatch = frontmatter[1].match(/^name:\s*(.+)$/m);
       const descMatch = frontmatter[1].match(/^description:\s*(.+)$/m);
+      const allowedToolsMatch = frontmatter[1].match(/^allowed-tools:\s*(.+)$/m);
+      const disableModelMatch = frontmatter[1].match(/^disable-model-invocation:\s*(.+)$/m);
 
       if (!nameMatch) errors.push(`skills/${skill}/SKILL.md: campo name ausente.`);
       else if (nameMatch[1].trim() !== skill) errors.push(`skills/${skill}/SKILL.md: name '${nameMatch[1].trim()}' difere do diretório '${skill}'.`);
 
       if (!descMatch) errors.push(`skills/${skill}/SKILL.md: campo description ausente.`);
       else if (descMatch[1].trim().length > 500) errors.push(`skills/${skill}/SKILL.md: description excede 500 caracteres.`);
+
+      if (!allowedToolsMatch) {
+        errors.push(`skills/${skill}/SKILL.md: campo allowed-tools ausente no frontmatter.`);
+      } else {
+        const allowedTools = allowedToolsMatch[1].split(',').map(t => t.trim());
+        const regConfig = registrySkills[skill];
+        if (regConfig?.permissions) {
+          if (regConfig.permissions.filesystem_write === 'deny') {
+            if (allowedTools.includes('Edit') || allowedTools.includes('Write')) {
+              errors.push(`skills/${skill}/SKILL.md: allowed-tools inclui ferramentas de escrita, mas registry define filesystem_write: deny.`);
+            }
+          }
+          if (regConfig.permissions.local_exec === 'deny') {
+            if (allowedTools.includes('Bash')) {
+              errors.push(`skills/${skill}/SKILL.md: allowed-tools inclui Bash, mas registry define local_exec: deny.`);
+            }
+          }
+        }
+        if (regConfig?.activation?.mode === 'explicit-opt-in' || regConfig?.risk_class === 'R3') {
+          if (!disableModelMatch || disableModelMatch[1].trim() !== 'true') {
+            errors.push(`skills/${skill}/SKILL.md: skill de risco R3 / explicit-opt-in deve definir disable-model-invocation: true.`);
+          }
+        }
+      }
     }
 
     if (!fs.existsSync(contractPath)) {
