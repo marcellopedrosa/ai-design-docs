@@ -30,6 +30,9 @@ principal_statement: Interface compartilhada possui uma fonte canonica versionad
 Requirement, ADR e plano registram a versão e as operações/mensagens exatas. Contrato
 ausente ou incompleto mantém a implementação de produtores e consumidores bloqueada.
 
+> [!NOTE] Distinção entre `docs/contracts/` e `contracts/`
+> `docs/contracts/` cataloga as interfaces canônicas e versionadas do produto final desenvolvido (APIs, OpenAPI, eventos). Os schemas formais que regem o próprio harness de IA (gates, evidências, handoffs) residem na raiz em `contracts/`.
+
 ## Índice
 
 Nenhum contrato ativo.

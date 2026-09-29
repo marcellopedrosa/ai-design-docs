@@ -55,6 +55,12 @@ prevenção de drift, validação de contratos e evals de confiabilidade.
 - templates para os artefatos recorrentes;
 - extensão `docs/scripts/` com validadores determinísticos de conformidade.
 
+### Distinção entre contratos de harness e contratos de produto
+
+Para evitar ambiguidades estruturais:
+- `contracts/` (raiz): schemas JSON formais que regem a engenharia do harness (mensagens, gates, evidências, handoffs e manifestos de projeto);
+- `docs/contracts/`: coleção documental para catalogar interfaces de negócio/técnicas do produto final (especificações OpenAPI, eventos AsyncAPI).
+
 ## Adoção em outro projeto
 
 ### Identidade do projeto adotante

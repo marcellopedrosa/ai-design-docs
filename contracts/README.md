@@ -2,6 +2,9 @@
 
 Este diretório contém os schemas JSON formais que governam a troca de mensagens, evidências, resultados de gates e handoffs entre agentes, capacidades e ferramentas do harness agnóstico.
 
+> [!NOTE] Distinção entre `contracts/` e `docs/contracts/`
+> `contracts/` (na raiz) armazena exclusivamente os schemas formais e estruturados da infraestrutura e governança do próprio harness (formatos de mensagens, gates, evidências, handoffs e manifestos). Já `docs/contracts/` é a coleção documental destinada a catalogar as interfaces públicas do produto ou sistema desenvolvido pelo projeto adotante (como especificações OpenAPI, contratos de mensageria AsyncAPI e schemas de dados de negócio).
+
 ## Finalidade dos Schemas
 
 Os schemas formais estabelecem garantias estruturais para a operação de agentes e ferramentas:
