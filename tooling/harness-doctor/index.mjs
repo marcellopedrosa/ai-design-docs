@@ -285,6 +285,26 @@ export function checkContracts(root) {
         errors.push(`harness.project.yaml: erro ao ler/processar: ${err.message}`);
       }
     }
+
+    // Validação de perfis em examples/profiles/ (se existirem)
+    const profilesDir = path.join(root, 'examples', 'profiles');
+    if (fs.existsSync(profilesDir)) {
+      for (const entry of fs.readdirSync(profilesDir, { withFileTypes: true })) {
+        if (entry.isFile() && (entry.name.endsWith('.yaml') || entry.name.endsWith('.yml'))) {
+          const profilePath = path.join(profilesDir, entry.name);
+          try {
+            const profileYaml = fs.readFileSync(profilePath, 'utf8');
+            const profileData = parseSimpleYaml(profileYaml, `examples/profiles/${entry.name}`);
+            const valRes = projectSchemaCompiled.validator(profileData);
+            if (!valRes.valid) {
+              errors.push(`examples/profiles/${entry.name}: falha na validação de contrato: ${valRes.errors.join(', ')}`);
+            }
+          } catch (err) {
+            errors.push(`examples/profiles/${entry.name}: erro ao processar: ${err.message}`);
+          }
+        }
+      }
+    }
   }
 
   return { errors };

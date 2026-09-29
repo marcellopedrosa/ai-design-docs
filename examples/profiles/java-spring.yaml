@@ -1,0 +1,47 @@
+schema_version: 1
+harness_version: "2.0.0"
+
+project:
+  id: "java-spring-service"
+  name: "Serviço Java Spring Boot"
+  description: "Perfil de referência para serviços Java 21 com Spring Boot 3 e Spring Modulith (exemplo a validar no projeto real)"
+
+runtimes:
+  - codex
+  - claude-code
+  - gemini-cli
+  - antigravity
+
+capabilities:
+  git_delivery: true
+
+standards:
+  baseline:
+    - software-engineering-lifecycle
+    - implementation-readiness-standard
+    - software-quality-standard
+    - development-standard
+    - security-standard
+  activated:
+    - java-standard
+    - spring-security-standard
+    - api-security-standard
+
+quality:
+  commands:
+    # Comandos de exemplo para validação no projeto real
+    backend_test: "./mvnw test"
+    backend_build: "./mvnw clean verify"
+    backend_coverage: "./mvnw test jacoco:report"
+
+security:
+  validators:
+    # Validadores de exemplo para validação no projeto real
+    - "./mvnw org.owasp:dependency-check-maven:check"
+    - "./mvnw spotbugs:check"
+
+paths:
+  backend:
+    - "backend/"
+  docs:
+    - "docs/"

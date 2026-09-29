@@ -242,5 +242,18 @@ test('checkContracts validates harness.project.yaml and harness.project.example.
   const res3 = checkContracts(tmp);
   assert.ok(res3.errors.some(e => e.includes('harness.project.yaml: falha na validação de contrato')));
 
+  // Valid profile under examples/profiles/ passes
+  fs.unlinkSync(path.join(tmp, 'harness.project.yaml'));
+  const profilesDir = path.join(tmp, 'examples', 'profiles');
+  fs.mkdirSync(profilesDir, { recursive: true });
+  fs.copyFileSync(path.join(root, 'examples', 'profiles', 'java-spring.yaml'), path.join(profilesDir, 'java-spring.yaml'));
+  const res4 = checkContracts(tmp);
+  assert.equal(res4.errors.length, 0, `Valid profile should pass: ${res4.errors.join(', ')}`);
+
+  // Invalid profile under examples/profiles/ fails
+  fs.writeFileSync(path.join(profilesDir, 'broken.yaml'), 'schema_version: 1\nharness_version: "2.0.0"\nproject:\n  invalid: true\n');
+  const res5 = checkContracts(tmp);
+  assert.ok(res5.errors.some(e => e.includes('examples/profiles/broken.yaml: falha na validação de contrato')));
+
   fs.rmSync(tmp, { recursive: true, force: true });
 });
