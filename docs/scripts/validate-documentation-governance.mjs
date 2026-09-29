@@ -719,11 +719,14 @@ export function validateImplementationReadinessGovernance(artifacts) {
     'READINESS EVIDENCE', 'blocking process', 'AgentOrchestrator',
     'Divergent Atomic Scope', 'return to Phase 7', 'Do not'
   ]);
-  for (const [relativePath, content] of [
-    ['AGENTS.md', artifacts.agentsAdapter],
-    ['CLAUDE.md', artifacts.claudeAdapter]
-  ]) {
-    required(content, relativePath, [
+  required(artifacts.agentsAdapter, 'AGENTS.md', [
+    'implementation-readiness', 'READY', 'Open Question', 'humano/owner',
+    'PRD not applicable', 'Validated', 'Falha de granularidade',
+    'pai → filhos', 'Quality Gate'
+  ]);
+  const claudeContent = artifacts.claudeAdapter ?? '';
+  if (!claudeContent.includes('@AGENTS.md') && !claudeContent.includes('@./AGENTS.md')) {
+    required(artifacts.claudeAdapter, 'CLAUDE.md', [
       'implementation-readiness', 'READY', 'Open Question', 'humano/owner',
       'PRD not applicable', 'Validated', 'Falha de granularidade',
       'pai → filhos', 'Quality Gate'
@@ -957,6 +960,9 @@ function validateRuntimeAdapters(repositoryRoot) {
   ];
   for (const adapter of ['AGENTS.md', 'CLAUDE.md']) {
     const content = fs.readFileSync(path.join(repositoryRoot, adapter), 'utf8');
+    if (adapter === 'CLAUDE.md' && (content.includes('@AGENTS.md') || content.includes('@./AGENTS.md'))) {
+      continue;
+    }
     const normalizedContent = normalize(content).replace(/\s+/g, ' ');
     for (const invariant of invariants) {
       if (!content.includes(invariant)) errors.push(`${adapter}: invariante global ausente: ${invariant}`);

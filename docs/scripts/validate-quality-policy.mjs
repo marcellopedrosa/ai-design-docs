@@ -28,8 +28,11 @@ export function validateQualityPolicy(artifacts) {
   if (!has(artifacts.adr, /ADR-0000/) || !has(artifacts.adr, /software-quality-standard\.md/)) {
     errors.push('ADR-0000: quality policy must identify its decision and governing standard');
   }
+  const claudeEffective = (artifacts.claude?.includes('@AGENTS.md') || artifacts.claude?.includes('@./AGENTS.md'))
+    ? artifacts.agents
+    : artifacts.claude;
   for (const [label, content] of [
-    ['settings', artifacts.settings], ['AGENTS.md', artifacts.agents], ['CLAUDE.md', artifacts.claude]
+    ['settings', artifacts.settings], ['AGENTS.md', artifacts.agents], ['CLAUDE.md', claudeEffective]
   ]) {
     if (!has(content, /git-delivery\.md/) || !has(content, /main/i)) {
       errors.push(`${label}: must point to local Git delivery policy and main-branch protection`);

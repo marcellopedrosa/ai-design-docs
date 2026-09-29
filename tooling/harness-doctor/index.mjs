@@ -258,6 +258,13 @@ export function checkAdapters(root) {
       errors.push('GEMINI.md: import do AGENTS.md ausente.');
     }
   }
+  const claudePath = path.join(root, 'CLAUDE.md');
+  if (fs.existsSync(claudePath)) {
+    const claudeContent = fs.readFileSync(claudePath, 'utf8');
+    if (!claudeContent.includes('@AGENTS.md') && !claudeContent.includes('@./AGENTS.md')) {
+      errors.push('CLAUDE.md: import do AGENTS.md ausente.');
+    }
+  }
   return { errors };
 }
 

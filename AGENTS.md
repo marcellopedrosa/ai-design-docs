@@ -1,4 +1,4 @@
-# Instruções globais do projeto para Codex
+# Instruções globais do projeto para agentes de IA
 
 ## Entrada documental
 
