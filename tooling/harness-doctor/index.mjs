@@ -5,6 +5,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { syncAdapters } from '../adapters/sync-adapters.mjs';
+import { compileSchema, validateSchemaSyntax, validateInstance } from '../contracts/validator.mjs';
 
 function parseSimpleYaml(content) {
   // Parser leve e robusto para subconjunto de YAML usado no registry
@@ -154,6 +155,8 @@ export function checkContracts(root) {
     return { errors: ['Diretório contracts/ não encontrado.'] };
   }
 
+  const compiledSchemas = new Map();
+
   for (const schemaFile of requiredSchemas) {
     const schemaPath = path.join(contractsDir, schemaFile);
     if (!fs.existsSync(schemaPath)) {
@@ -164,11 +167,45 @@ export function checkContracts(root) {
     try {
       const content = fs.readFileSync(schemaPath, 'utf8');
       const parsed = JSON.parse(content);
-      if (!parsed.$schema || !parsed.title || parsed.type !== 'object') {
-        errors.push(`contracts/${schemaFile}: formato de JSON Schema inválido ou incompleto.`);
+      const syntax = validateSchemaSyntax(parsed, `contracts/${schemaFile}`);
+      if (!syntax.valid) {
+        errors.push(...syntax.errors);
+      } else {
+        const validator = compileSchema(parsed, `contracts/${schemaFile}`);
+        compiledSchemas.set(schemaFile, { schema: parsed, validator });
       }
     } catch (err) {
-      errors.push(`contracts/${schemaFile}: JSON inválido: ${err.message}`);
+      errors.push(`contracts/${schemaFile}: erro ao compilar schema: ${err.message}`);
+    }
+  }
+
+  const examplesDir = path.join(contractsDir, 'examples');
+  if (fs.existsSync(examplesDir)) {
+    for (const entry of fs.readdirSync(examplesDir, { withFileTypes: true })) {
+      if (entry.isFile() && entry.name.endsWith('.json')) {
+        const examplePath = path.join(examplesDir, entry.name);
+        const match = entry.name.match(/^(.+?)\.(valid|invalid)\.json$/);
+        if (match) {
+          const [, schemaBase, kind] = match;
+          const targetSchemaFile = `${schemaBase}.schema.json`;
+          const compiled = compiledSchemas.get(targetSchemaFile);
+          if (!compiled) {
+            errors.push(`contracts/examples/${entry.name}: schema correspondente '${targetSchemaFile}' não encontrado.`);
+            continue;
+          }
+          try {
+            const data = JSON.parse(fs.readFileSync(examplePath, 'utf8'));
+            const res = compiled.validator(data);
+            if (kind === 'valid' && !res.valid) {
+              errors.push(`contracts/examples/${entry.name}: exemplo válido falhou na validação: ${res.errors.join(', ')}`);
+            } else if (kind === 'invalid' && res.valid) {
+              errors.push(`contracts/examples/${entry.name}: exemplo inválido passou na validação indevidamente.`);
+            }
+          } catch (err) {
+            errors.push(`contracts/examples/${entry.name}: JSON inválido: ${err.message}`);
+          }
+        }
+      }
     }
   }
 

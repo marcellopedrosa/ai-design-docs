@@ -19,6 +19,10 @@ Os schemas formais estabelecem garantias estruturais para a operação de agente
 - [`security-finding.schema.json`](security-finding.schema.json): Registro de vulnerabilidade ou finding de segurança com exigência de comprovação quádrupla.
 - [`handoff.schema.json`](handoff.schema.json): Registro de transição de responsabilidade entre agentes e capacidades.
 
-## Validação
+## Validação e Exemplos
 
-Todos os schemas seguem a especificação JSON Schema Draft-07 / 2020-12 e são verificados deterministicamente pelo `harness doctor`.
+Todos os schemas seguem a especificação JSON Schema Draft-07 / 2020-12 e são compilados e verificados deterministicamente pelo `harness doctor` através do validador determinístico próprio em `tooling/contracts/validator.mjs` (suportando validação estrita de `type`, `required`, `additionalProperties: false`, `enum`, `items` e objetos aninhados, sem dependências externas).
+
+Exemplos de conformidade e contraexemplos residem em [`examples/`](examples/):
+- Instâncias válidas (`*.valid.json`) comprovam conformidade estrutural.
+- Instâncias inválidas (`*.invalid.json`) garantem que desvios de contrato são rejeitados fail-closed.

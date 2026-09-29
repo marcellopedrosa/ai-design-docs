@@ -19,7 +19,7 @@ jobs:
       - name: Adapters em paridade
         run: node tooling/adapters/sync-adapters.mjs --check
       - name: Testes tooling
-        run: node --test tooling/harness-doctor/harness-doctor.test.mjs tooling/adapters/sync-adapters.test.mjs
+        run: node --test tooling/harness-doctor/harness-doctor.test.mjs tooling/adapters/sync-adapters.test.mjs tooling/contracts/validator.test.mjs
       - name: Testes docs/scripts
         run: node --test docs/scripts/*.test.mjs
       - name: Governança documental
