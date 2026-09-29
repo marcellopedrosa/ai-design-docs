@@ -7,8 +7,34 @@ import { fileURLToPath } from 'node:url';
 import { syncAdapters } from '../adapters/sync-adapters.mjs';
 import { compileSchema, validateSchemaSyntax, validateInstance } from '../contracts/validator.mjs';
 
-function parseSimpleYaml(content) {
-  // Parser leve e robusto para subconjunto de YAML usado no registry
+function checkForUnsupportedYaml(rawLine, lineNumber, filename) {
+  const trimmed = rawLine.trim();
+  if (!trimmed || trimmed.startsWith('#')) return;
+
+  if (/:\s*[|>][+-]?\s*(?:#.*)?$/.test(trimmed)) {
+    throw new Error(`${filename}:${lineNumber}: sintaxe YAML não suportada: strings multilinha com '|' ou '>' não são permitidas.`);
+  }
+
+  if (/:\s*\[[^\]]+\]\s*(?:#.*)?$/.test(trimmed)) {
+    throw new Error(`${filename}:${lineNumber}: sintaxe YAML não suportada: listas inline '[...]' não são permitidas.`);
+  }
+
+  if (/:\s*\{[^}]*\}\s*(?:#.*)?$/.test(trimmed)) {
+    throw new Error(`${filename}:${lineNumber}: sintaxe YAML não suportada: objetos inline '{...}' não são permitidas.`);
+  }
+
+  const unquoted = trimmed.replace(/"[^"]*"|'[^']*'/g, '');
+  if (/(?:^|\s)&[A-Za-z0-9_-]+/.test(unquoted)) {
+    throw new Error(`${filename}:${lineNumber}: sintaxe YAML não suportada: âncoras '&' não são permitidas.`);
+  }
+
+  if (/(?:^|\s)\*[A-Za-z0-9_-]+/.test(unquoted)) {
+    throw new Error(`${filename}:${lineNumber}: sintaxe YAML não suportada: aliases '*' não são permitidos.`);
+  }
+}
+
+export function parseSimpleYaml(content, filename = 'yaml') {
+  // Parser leve e determinístico com fail-loud para subconjunto de YAML usado no registry
   const lines = content.split(/\r?\n/);
   const result = {};
   const stack = [{ indent: -1, obj: result }];
@@ -16,6 +42,8 @@ function parseSimpleYaml(content) {
   for (let i = 0; i < lines.length; i++) {
     const rawLine = lines[i];
     if (!rawLine.trim() || rawLine.trim().startsWith('#')) continue;
+
+    checkForUnsupportedYaml(rawLine, i + 1, filename);
 
     const indent = rawLine.search(/\S/);
     const line = rawLine.trim();
@@ -42,7 +70,6 @@ function parseSimpleYaml(content) {
 
       if (!rawValue) {
         // Objeto ou lista aninhada
-        // Verificar se a próxima linha não comentada é lista ou dicionário
         let isList = false;
         for (let j = i + 1; j < lines.length; j++) {
           const nextTrimmed = lines[j].trim();
@@ -96,7 +123,7 @@ export function checkRegistry(root) {
 
     try {
       const content = fs.readFileSync(filePath, 'utf8');
-      const parsed = parseSimpleYaml(content);
+      const parsed = parseSimpleYaml(content, file);
       if (!parsed || typeof parsed !== 'object') {
         errors.push(`registry/${file}: estrutura inválida.`);
       }
@@ -421,7 +448,7 @@ export function checkDrift(root) {
   const skillsYamlPath = path.join(root, 'registry', 'skills.yaml');
   if (!fs.existsSync(skillsYamlPath)) return { errors: [] };
 
-  const skillsYaml = parseSimpleYaml(fs.readFileSync(skillsYamlPath, 'utf8'));
+  const skillsYaml = parseSimpleYaml(fs.readFileSync(skillsYamlPath, 'utf8'), 'registry/skills.yaml');
   const registeredSkills = Object.keys(skillsYaml.skills || {});
 
   // Verificar docs/agents/skills/README.md

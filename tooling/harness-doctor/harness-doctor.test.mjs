@@ -10,7 +10,8 @@ import {
   checkAdapters,
   checkEvals,
   checkFixtureReferences,
-  checkDrift
+  checkDrift,
+  parseSimpleYaml
 } from './index.mjs';
 
 test('checkRegistry passes on repository root', () => {
@@ -121,4 +122,62 @@ test('checkDrift rejects substring match for skill names', () => {
   const { errors } = checkDrift(tmp);
   assert.ok(errors.length > 0, `Should detect that "quality-gate" is not matched by "quality-gate-extra": ${errors.join(', ')}`);
   fs.rmSync(tmp, { recursive: true, force: true });
+});
+
+test('parseSimpleYaml fails loud on inline arrays with content', () => {
+  assert.throws(
+    () => parseSimpleYaml('items: [a, b]', 'test.yaml'),
+    /test\.yaml:1: sintaxe YAML não suportada: listas inline/
+  );
+});
+
+test('parseSimpleYaml fails loud on multiline strings with | or >', () => {
+  assert.throws(
+    () => parseSimpleYaml('desc: |\n  line1\n  line2', 'test.yaml'),
+    /test\.yaml:1: sintaxe YAML não suportada: strings multilinha com '\|' ou '>'/
+  );
+  assert.throws(
+    () => parseSimpleYaml('desc: >\n  line1\n  line2', 'test.yaml'),
+    /test\.yaml:1: sintaxe YAML não suportada: strings multilinha com '\|' ou '>'/
+  );
+});
+
+test('parseSimpleYaml fails loud on anchors and aliases', () => {
+  assert.throws(
+    () => parseSimpleYaml('val: &anchor 123', 'test.yaml'),
+    /test\.yaml:1: sintaxe YAML não suportada: âncoras '&'/
+  );
+  assert.throws(
+    () => parseSimpleYaml('ref: *anchor', 'test.yaml'),
+    /test\.yaml:1: sintaxe YAML não suportada: aliases '\*'/
+  );
+});
+
+test('parseSimpleYaml fails loud on inline objects', () => {
+  assert.throws(
+    () => parseSimpleYaml('obj: { a: 1 }', 'test.yaml'),
+    /test\.yaml:1: sintaxe YAML não suportada: objetos inline/
+  );
+});
+
+test('parseSimpleYaml parses standard indented YAML correctly and allows quoted special chars', () => {
+  const yaml = `
+# Comment
+title: "Logic & Layout"
+count: 42
+active: true
+disabled: false
+tags:
+  - first
+  - second
+nested:
+  key: value
+`;
+  const result = parseSimpleYaml(yaml, 'valid.yaml');
+  assert.equal(result.title, 'Logic & Layout');
+  assert.equal(result.count, 42);
+  assert.equal(result.active, true);
+  assert.equal(result.disabled, false);
+  assert.deepEqual(result.tags, ['first', 'second']);
+  assert.deepEqual(result.nested, { key: 'value' });
 });
