@@ -224,7 +224,7 @@ export function checkSkills(root) {
       else if (nameMatch[1].trim() !== skill) errors.push(`skills/${skill}/SKILL.md: name '${nameMatch[1].trim()}' difere do diretório '${skill}'.`);
 
       if (!descMatch) errors.push(`skills/${skill}/SKILL.md: campo description ausente.`);
-      else if (descMatch[1].trim().length >= 500) errors.push(`skills/${skill}/SKILL.md: description excede 500 caracteres.`);
+      else if (descMatch[1].trim().length > 500) errors.push(`skills/${skill}/SKILL.md: description excede 500 caracteres.`);
     }
 
     if (!fs.existsSync(contractPath)) {
@@ -254,7 +254,7 @@ export function checkAdapters(root) {
   const geminiPath = path.join(root, 'GEMINI.md');
   if (fs.existsSync(geminiPath)) {
     const geminiContent = fs.readFileSync(geminiPath, 'utf8');
-    if (!geminiContent.includes('@./AGENTS.md') && !geminiContent.includes('@c:\\GITLAB\\ai-design-docs\\AGENTS.md')) {
+    if (!geminiContent.includes('@./AGENTS.md')) {
       errors.push('GEMINI.md: import do AGENTS.md ausente.');
     }
   }
@@ -380,7 +380,7 @@ function main() {
   printCheck('Contracts', results.contracts.errors, 'schemas formais em contracts/');
   printCheck('Skills', results.skills.errors, 'capability packages em skills/');
   printCheck('Adapters', results.adapters.errors, 'paridade entre skills/, .agents/ e .claude/');
-  printCheck('Evals', results.evals.errors, `${results.evals.count} casos avaliados`);
+  printCheck('Evals', results.evals.errors, `${results.evals.count} casos validados estruturalmente — nível H0`);
   printCheck('Drift', results.drift.errors, 'paridade entre registry e documentação');
 
   process.stdout.write('\n');
