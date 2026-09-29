@@ -6,6 +6,7 @@ import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { syncAdapters } from '../adapters/sync-adapters.mjs';
 import { compileSchema, validateSchemaSyntax, validateInstance } from '../contracts/validator.mjs';
+import { runEvalsH1 } from '../eval-runner/index.mjs';
 
 function checkForUnsupportedYaml(rawLine, lineNumber, filename) {
   const trimmed = rawLine.trim();
@@ -519,6 +520,7 @@ export function runDoctor(repositoryRoot) {
     skills: checkSkills(root),
     adapters: checkAdapters(root),
     evals: checkEvals(root),
+    evalsH1: runEvalsH1(root),
     fixtureRefs: checkFixtureReferences(root),
     drift: checkDrift(root)
   };
@@ -529,6 +531,7 @@ export function runDoctor(repositoryRoot) {
     ...results.skills.errors,
     ...results.adapters.errors,
     ...results.evals.errors,
+    ...results.evalsH1.failures.map(f => `eval ${f.id} falhou no nível H1`),
     ...results.fixtureRefs.errors,
     ...results.drift.errors
   ];
@@ -557,7 +560,8 @@ function main() {
   printCheck('Contracts', results.contracts.errors, 'schemas formais em contracts/');
   printCheck('Skills', results.skills.errors, 'capability packages em skills/');
   printCheck('Adapters', results.adapters.errors, 'paridade entre skills/, .agents/ e .claude/');
-  printCheck('Evals', results.evals.errors, `${results.evals.count} casos validados estruturalmente — nível H0`);
+  const evalH1Errors = results.evalsH1.failures.map(f => `${f.id}: falhou em H1`);
+  printCheck('Evals', [...results.evals.errors, ...evalH1Errors], `H0 ${results.evals.count}/${results.evals.count} PASS, H1 ${results.evalsH1.h1Passed}/${results.evalsH1.h1Executed} PASS`);
   printCheck('Fixtures', results.fixtureRefs.errors, 'integridade referencial de fixtures');
   printCheck('Drift', results.drift.errors, 'paridade entre registry e documentação');
 
