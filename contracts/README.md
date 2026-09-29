@@ -21,6 +21,7 @@ Os schemas formais estabelecem garantias estruturais para a operação de agente
 - [`evidence.schema.json`](evidence.schema.json): Registro formal de evidência de execução de comando, teste ou inspeção.
 - [`security-finding.schema.json`](security-finding.schema.json): Registro de vulnerabilidade ou finding de segurança com exigência de comprovação quádrupla.
 - [`handoff.schema.json`](handoff.schema.json): Registro de transição de responsabilidade entre agentes e capacidades.
+- [`harness-project.schema.json`](harness-project.schema.json): Manifesto estruturado de configuração do projeto adotante (`harness.project.yaml`).
 
 ## Validação e Exemplos
 

@@ -89,12 +89,22 @@ export function validateInstance(schema, instance, instancePath = '$') {
       }
     }
 
-    // additionalProperties: false
+    // additionalProperties: false ou schema
     if (schema.additionalProperties === false && schema.properties) {
       const allowedProps = new Set(Object.keys(schema.properties));
       for (const key of Object.keys(instance)) {
         if (!allowedProps.has(key)) {
           errors.push(`${instancePath}: propriedade não permitida '${key}' (additionalProperties: false).`);
+        }
+      }
+    } else if (typeof schema.additionalProperties === 'object' && schema.additionalProperties !== null) {
+      const declaredProps = new Set(Object.keys(schema.properties || {}));
+      for (const [key, val] of Object.entries(instance)) {
+        if (!declaredProps.has(key)) {
+          const subResult = validateInstance(schema.additionalProperties, val, `${instancePath}.${key}`);
+          if (!subResult.valid) {
+            errors.push(...subResult.errors);
+          }
         }
       }
     }

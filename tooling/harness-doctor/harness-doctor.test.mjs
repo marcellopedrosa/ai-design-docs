@@ -215,3 +215,32 @@ skills:
 
   fs.rmSync(tmp, { recursive: true, force: true });
 });
+
+test('checkContracts validates harness.project.yaml and harness.project.example.yaml', () => {
+  const root = path.resolve('.');
+  const tmp = fs.mkdtempSync(path.join(root, 'scratch-contracts-test-'));
+
+  // Copy contracts and evals/schema into tmp
+  fs.cpSync(path.join(root, 'contracts'), path.join(tmp, 'contracts'), { recursive: true });
+  fs.mkdirSync(path.join(tmp, 'evals', 'schema'), { recursive: true });
+  fs.copyFileSync(
+    path.join(root, 'evals', 'schema', 'harness-eval.schema.json'),
+    path.join(tmp, 'evals', 'schema', 'harness-eval.schema.json')
+  );
+
+  // Missing example manifest should fail
+  const res1 = checkContracts(tmp);
+  assert.ok(res1.errors.some(e => e.includes('harness.project.example.yaml: manifesto de exemplo ausente')));
+
+  // Valid example manifest should pass
+  fs.copyFileSync(path.join(root, 'harness.project.example.yaml'), path.join(tmp, 'harness.project.example.yaml'));
+  const res2 = checkContracts(tmp);
+  assert.equal(res2.errors.length, 0, `Valid example should pass: ${res2.errors.join(', ')}`);
+
+  // Invalid actual manifest should fail
+  fs.writeFileSync(path.join(tmp, 'harness.project.yaml'), 'schema_version: 1\nharness_version: "2.0.0"\nproject:\n  id: "missing-fields"\n');
+  const res3 = checkContracts(tmp);
+  assert.ok(res3.errors.some(e => e.includes('harness.project.yaml: falha na validação de contrato')));
+
+  fs.rmSync(tmp, { recursive: true, force: true });
+});

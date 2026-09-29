@@ -176,7 +176,8 @@ export function checkContracts(root) {
     'gate-result.schema.json',
     'evidence.schema.json',
     'security-finding.schema.json',
-    'handoff.schema.json'
+    'handoff.schema.json',
+    'harness-project.schema.json'
   ];
 
   if (!fs.existsSync(contractsDir)) {
@@ -250,6 +251,40 @@ export function checkContracts(root) {
     }
   } else {
     errors.push('evals/schema/harness-eval.schema.json: schema ausente.');
+  }
+
+  // Validação do manifesto de exemplo e do manifesto ativo (se existir)
+  const projectSchemaCompiled = compiledSchemas.get('harness-project.schema.json');
+  if (projectSchemaCompiled) {
+    const examplePath = path.join(root, 'harness.project.example.yaml');
+    if (!fs.existsSync(examplePath)) {
+      errors.push('harness.project.example.yaml: manifesto de exemplo ausente.');
+    } else {
+      try {
+        const exampleYaml = fs.readFileSync(examplePath, 'utf8');
+        const exampleData = parseSimpleYaml(exampleYaml, 'harness.project.example.yaml');
+        const valRes = projectSchemaCompiled.validator(exampleData);
+        if (!valRes.valid) {
+          errors.push(`harness.project.example.yaml: falha na validação de contrato: ${valRes.errors.join(', ')}`);
+        }
+      } catch (err) {
+        errors.push(`harness.project.example.yaml: erro ao ler/processar: ${err.message}`);
+      }
+    }
+
+    const actualManifestPath = path.join(root, 'harness.project.yaml');
+    if (fs.existsSync(actualManifestPath)) {
+      try {
+        const manifestYaml = fs.readFileSync(actualManifestPath, 'utf8');
+        const manifestData = parseSimpleYaml(manifestYaml, 'harness.project.yaml');
+        const valRes = projectSchemaCompiled.validator(manifestData);
+        if (!valRes.valid) {
+          errors.push(`harness.project.yaml: falha na validação de contrato: ${valRes.errors.join(', ')}`);
+        }
+      } catch (err) {
+        errors.push(`harness.project.yaml: erro ao ler/processar: ${err.message}`);
+      }
+    }
   }
 
   return { errors };

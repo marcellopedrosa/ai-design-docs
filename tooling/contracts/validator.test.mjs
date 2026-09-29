@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { compileSchema, validateSchemaSyntax, validateInstance } from './validator.mjs';
 
-test('compileSchema compiles all 6 repository contracts successfully', () => {
+test('compileSchema compiles all repository contracts successfully', () => {
   const root = path.resolve('.');
   const contractsDir = path.join(root, 'contracts');
   const requiredSchemas = [
@@ -13,7 +13,8 @@ test('compileSchema compiles all 6 repository contracts successfully', () => {
     'gate-result.schema.json',
     'evidence.schema.json',
     'security-finding.schema.json',
-    'handoff.schema.json'
+    'handoff.schema.json',
+    'harness-project.schema.json'
   ];
 
   for (const file of requiredSchemas) {
