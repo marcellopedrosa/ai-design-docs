@@ -2,7 +2,7 @@
 
 ## Command
 
-`node harness/tooling/harness.mjs onboard --source "C:\projects\portal-v1"`
+`node harness/tooling/harness.mjs onboard --source "C:\projects\portal-legacy"`
 
 ## Flow
 

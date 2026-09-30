@@ -2,7 +2,7 @@
 document_id: HARNESS-SCAFFOLD
 document_scope: harness
 primary_nature: Contexto
-objective: Explicar o scaffold V6 seguro e seus modos de execução.
+objective: Explicar o scaffold  seguro e seus modos de execução.
 scope: Manifesto, profiles, routes, templates e relatório de artefatos.
 non_objectives: Preencher conteúdo técnico, sobrescrever arquivos ou migrar paths legados automaticamente.
 owner: Mantenedores do harness
@@ -10,13 +10,13 @@ status: Active
 version: 1.0
 date: 2026-09-30
 last_reviewed: 2026-09-30
-keywords: v6, scaffold, inspect, create, check
+keywords: , scaffold, inspect, create, check
 related_files: ../README.md, ../../registry/README.md, ../../templates/README.md, ../../governance/policies/artifact-placement-policy.md
 code_references: index.mjs, engine.mjs, yaml.mjs, scaffold.test.mjs
-principal_statement: O scaffold valida a cadeia V6, cria somente arquivos ausentes e devolve migração legada para revisão humana.
+principal_statement: O scaffold valida a cadeia , cria somente arquivos ausentes e devolve migração legada para revisão humana.
 ---
 
-# Scaffold V6
+# Scaffold
 
 ```bash
 node harness/tooling/harness.mjs scaffold --inspect
@@ -41,6 +41,6 @@ existentes, para respeitar a regra de não sobrescrita.
 Um standard exigido por profile também deve estar catalogado em
 `harness/registry/standards.yaml`; o profile não substitui esse inventário.
 
-O manifesto V6 é opcional para projetos legados: o Doctor emite `WARN` quando
-ausente. `harness.project.yaml` continua sendo o contrato V2 separado para
+O manifesto  é opcional para projetos legados: o Doctor emite `WARN` quando
+ausente. `harness.project.yaml` continua sendo o contrato  separado para
 configuração do harness; não substitui `docs/project-manifest.yaml`.

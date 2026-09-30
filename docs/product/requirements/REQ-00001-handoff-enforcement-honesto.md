@@ -19,7 +19,7 @@ principal_statement: O harness não deve executar nem declarar como controle ati
 
 ## Origem e rastreabilidade
 
-- Origem: FIX-001 do plano V4 fornecido pelo usuário.
+- Origem: FIX-001 do plano fornecido pelo usuário.
 - PRD: não aplicável; correção da integridade operacional do harness, sem outcome de produto.
 - Decisão superior: ADR-0000, governança e evidência verificável.
 
@@ -57,7 +57,7 @@ Nenhuma assumption ou pergunta aberta para este recorte: o hook e a configuraç�
 
 | Approver | Decisão | Data | Evidência |
 | --- | --- | --- | --- |
-| Mantenedor humano | Approved | 2026-09-30 | Solicitação explícita “aplique o v4” após apresentação deste requisito e do bloqueio de aprovação; o recorte corresponde ao FIX-001 do plano fornecido. |
+| Mantenedor humano | Approved | 2026-09-30 | Solicitação explícita “aplicação ” após apresentação deste requisito e do bloqueio de aprovação; o recorte corresponde ao FIX-001 do plano fornecido. |
 
 ## Readiness documental
 

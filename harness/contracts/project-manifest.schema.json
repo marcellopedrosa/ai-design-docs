@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "ProjectManifestV6",
+  "title": "ProjectManifest",
   "description": "Contexto do projeto para resolução de profiles; não contém decisões técnicas locais.",
   "type": "object",
   "required": ["version", "project", "profiles", "agents"],

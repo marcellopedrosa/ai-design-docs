@@ -19,7 +19,7 @@ principal_statement: O Doctor deve falhar quando uma ferramenta ativa declarada 
 
 ## Origem
 
-FIX-003 do plano V4 fornecido pelo usuário; PRD não aplicável por ser integridade do harness. ADR-0000 Accepted.
+FIX-003 do plano fornecido pelo usuário; PRD não aplicável por ser integridade do harness. ADR-0000 Accepted.
 
 ## User Story View
 
@@ -38,4 +38,4 @@ Ferramenta `active` requer entrypoint local existente, arquivo sintaticamente v�
 
 ## Contrato, incertezas e aprovação
 
-Contrato consumido: `harness/registry/tooling.yaml` v1; nenhum schema novo. Nenhuma assumption ou pergunta aberta. Aprovado pelo mantenedor em 2026-09-30 ao solicitar explicitamente “aplique o v4”, que inclui FIX-003; o aceite acima não amplia o plano.
+Contrato consumido: `harness/registry/tooling.yaml` ; nenhum schema novo. Nenhuma assumption ou pergunta aberta. Aprovado pelo mantenedor em 2026-09-30 ao solicitar explicitamente “aplicação ”, que inclui FIX-003; o aceite acima não amplia o plano.

@@ -2,7 +2,7 @@
 document_id: REQUIREMENT-SCAFFOLD-TEMPLATES-INDEX
 document_scope: harness
 primary_nature: Contexto
-objective: Indexar template de requisito V6.
+objective: Indexar template de requisito .
 scope: Forma inicial de requisito local.
 non_objectives: Inventar comportamento ou critério de aceite.
 owner: Mantenedores do harness

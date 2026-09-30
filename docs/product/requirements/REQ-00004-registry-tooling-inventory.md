@@ -19,7 +19,7 @@ principal_statement: Toda ferramenta operacional ativa relevante deve ser descob
 
 ## Origem
 
-FIX-004 do plano V4 fornecido pelo usuário; PRD não aplicável por tratar da descoberta de tooling do harness. ADR-0000 Accepted.
+FIX-004 do plano fornecido pelo usuário; PRD não aplicável por tratar da descoberta de tooling do harness. ADR-0000 Accepted.
 
 ## User Story View
 
@@ -34,4 +34,4 @@ Como operador, quero descobrir as ferramentas ativas pelo Registry para não dep
 
 ## Contrato, incertezas e aprovação
 
-Contrato consumido: `harness/registry/tooling.yaml` v1; sem schema novo. Nenhuma assumption ou pergunta aberta. Aprovado pelo mantenedor em 2026-09-30 ao solicitar explicitamente “aplique o v4”, incluindo FIX-004.
+Contrato consumido: `harness/registry/tooling.yaml` ; sem schema novo. Nenhuma assumption ou pergunta aberta. Aprovado pelo mantenedor em 2026-09-30 ao solicitar explicitamente “aplicação ”, incluindo FIX-004.

@@ -10,7 +10,7 @@ status: Active
 version: 2.0.0
 date: 2026-09-30
 last_reviewed: 2026-09-30
-keywords: repositório, harness, v5, documentação
+keywords: repositório, harness, , documentação
 related_files: AGENTS.md, CLAUDE.md, GEMINI.md, harness/README.md, docs/README.md
 code_references: harness/tooling/harness.mjs, .github/workflows/harness.yml
 principal_statement: Este repositório desenvolve o harness; o control plane está em harness/ e a documentação do projeto está em docs/.

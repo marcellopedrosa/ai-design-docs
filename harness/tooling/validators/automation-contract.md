@@ -33,7 +33,7 @@ Quando o projeto escolher versionar validadores adicionais, eles devem residir e
 não podem introduzir exigências, paths ou stacks que não estejam aprovados nas fontes
 canônicas locais.
 
-Para o ferramental determinístico do próprio harness v2 (como `node harness/tooling/harness.mjs doctor` e sincronizador
+Para o ferramental determinístico do próprio harness  (como `node harness/tooling/harness.mjs doctor` e sincronizador
 de adaptadores), consulte [`harness/tooling/`](../README.md), [`harness/registry/tooling.yaml`](../../registry/tooling.yaml)
 e os esquemas formais em [`harness/contracts/`](../../contracts/README.md).
 
@@ -117,7 +117,7 @@ comprovar os arquivos versionados e deve reportar essa fronteira.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
-| 1.5 | 2026-09-28 | Conecta o contrato de automação ao tooling determinístico, registry e contracts do harness v2. |
+| 1.5 | 2026-09-28 | Conecta o contrato de automação ao tooling determinístico, registry e contracts do harness . |
 | 1.4 | 2026-09-13 | Vincula a implementação opcional de validadores a `harness/tooling/validators/` sem ativá-la por presença. |
 | 1.3 | 2026-09-13 | Acrescenta o contrato opt-in e fail-closed para entrega Git governada. |
 | 1.2 | 2026-09-11 | Acrescenta validação do agente inicial e do catálogo portátil de standards. |

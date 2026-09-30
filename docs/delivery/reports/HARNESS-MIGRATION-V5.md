@@ -2,25 +2,25 @@
 document_id: HARNESS-MIGRATION-V5
 document_scope: project
 primary_nature: Historico
-objective: Registrar a migração do repositório mantenedor para o boundary V5.
-scope: Estrutura, fontes canônicas, adapters e validações da migração V5.
+objective: Registrar a migração do repositório mantenedor para o boundary .
+scope: Estrutura, fontes canônicas, adapters e validações da migração .
 non_objectives: Estabelecer política vigente ou transportar histórico para projetos adotantes.
 owner: Mantenedores do harness
 status: Final
 version: 1.0
 date: 2026-09-30
 last_reviewed: 2026-09-30
-keywords: harness, migração, v5, evidência
+keywords: harness, migração, , evidência
 related_files: ../../../harness/governance/decisions/ADR-0001-boundary-harness-v5.md, ../../../harness/UPGRADING.md
 code_references: ../../../harness/tooling/harness.mjs, ../../../harness/registry/
 principal_statement: A fonte canônica do control plane reside em harness/; docs/ contém a documentação do projeto mantenedor.
 ---
 
-# Migração V5 do repositório mantenedor
+# Migração  do repositório mantenedor
 
 ## Decision trace
 
-| Origem V4 | Destino V5 | Classificação | Decisão |
+| Origem  | Destino  | Classificação | Decisão |
 | --- | --- | --- | --- |
 | `contracts/`, `registry/`, `skills/`, `evals/`, `tooling/`, `examples/` | `harness/` | Harness-owned | Fonte canônica movida, com importações, CLI e CI atualizados. |
 | `docs/agents/`, `docs/adrs/`, `docs/settings/`, `docs/templates/` | `harness/governance/`, `harness/adapters/`, `harness/templates/` | Harness-owned | Governança, políticas e templates passam a compor o control plane. |

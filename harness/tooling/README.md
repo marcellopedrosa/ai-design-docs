@@ -26,7 +26,7 @@ Este diretório contém ferramentas determinísticas portáteis, entrypoints de 
 
 Ponto de entrada único: `node harness/tooling/harness.mjs <doctor|check|eval|sync|scaffold>`.
 
-O [scaffold V6](scaffold/README.md) consome manifesto, profiles, routes e
+O [scaffold ](scaffold/README.md) consome manifesto, profiles, routes e
 templates; oferece `--inspect`, `--check` e `--create` sem sobrescrita.
 `check` executa a governança documental; `eval` executa somente H1; `sync`
 verifica paridade sem escrever. Para sincronização com escrita, use diretamente

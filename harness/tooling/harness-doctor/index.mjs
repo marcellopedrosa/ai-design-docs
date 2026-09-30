@@ -606,11 +606,11 @@ export function checkDrift(root) {
     }
   }
 
-  // O README raiz é apenas um shim para o catálogo canônico V5.
+  // O README raiz é apenas um shim para o catálogo canônico .
   const rootReadmePath = path.join(root, 'README.md');
   if (fs.existsSync(rootReadmePath)) {
     const readme = fs.readFileSync(rootReadmePath, 'utf8');
-    if (!readme.includes('(harness/README.md)')) errors.push('README.md: entrada do harness V5 ausente.');
+    if (!readme.includes('(harness/README.md)')) errors.push('README.md: entrada do harness  ausente.');
   }
 
   return { errors };
@@ -665,7 +665,7 @@ export function runDoctor(repositoryRoot) {
       ]
     };
   } catch (error) {
-    scaffold = { errors: [`V6 scaffold: ${error.message}`], warnings: [] };
+    scaffold = { errors: [` scaffold: ${error.message}`], warnings: [] };
   }
   const results = {
     registry: checkRegistry(root),
@@ -700,7 +700,7 @@ export function runDoctor(repositoryRoot) {
 
 function main() {
   const root = path.resolve('.');
-  process.stdout.write('==> Executando Harness Doctor (Diagnóstico Estrutural v2)...\n\n');
+  process.stdout.write('==> Executando Harness Doctor (Diagnóstico Estrutural )...\n\n');
 
   const { results, errors } = runDoctor(root);
 
@@ -723,14 +723,14 @@ function main() {
   printCheck('Evals', [...results.evals.errors, ...evalH1Errors], `H0 ${results.evals.count}/${results.evals.count} PASS, H1 ${results.evalsH1.h1Passed}/${results.evalsH1.h1Executed} PASS`);
   printCheck('Fixtures', results.fixtureRefs.errors, 'integridade referencial de fixtures');
   printCheck('Drift', results.drift.errors, 'paridade entre registry e documentação');
-  printCheck('Governance V7', results.governance.errors, 'policies e restrictions canônicas');
-  printCheck('Onboarding V8', results.onboarding.errors, 'onboard, bootstrap e fontes declarativas');
+  printCheck('Governance ', results.governance.errors, 'policies e restrictions canônicas');
+  printCheck('Onboarding ', results.onboarding.errors, 'onboard, bootstrap e fontes declarativas');
   if (results.scaffold.errors.length) {
-    printCheck('Scaffold V6', results.scaffold.errors);
+    printCheck('Scaffold ', results.scaffold.errors);
   } else if (results.scaffold.warnings.length) {
-    for (const warning of results.scaffold.warnings) process.stdout.write(`[WARN] Scaffold V6: ${warning}\n`);
+    for (const warning of results.scaffold.warnings) process.stdout.write(`[WARN] Scaffold : ${warning}\n`);
   } else {
-    printCheck('Scaffold V6', [], 'manifest, profiles, routes, templates e artifacts');
+    printCheck('Scaffold ', [], 'manifest, profiles, routes, templates e artifacts');
   }
 
   process.stdout.write('\n');
@@ -739,7 +739,7 @@ function main() {
     process.exitCode = 1;
   } else {
     process.stdout.write(results.scaffold.warnings.length
-      ? 'Diagnóstico concluído sem falhas, com avisos de adoção V6.\n'
+      ? 'Diagnóstico concluído sem falhas, com avisos de adoção .\n'
       : 'Diagnóstico concluído com sucesso: todos os componentes conformes!\n');
     process.exitCode = 0;
   }

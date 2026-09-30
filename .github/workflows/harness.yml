@@ -10,13 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@
+      - uses: actions/setup-node@
         with:
           node-version: '20'
       - name: Harness doctor
         run: node harness/tooling/harness-doctor/index.mjs
-      - name: Scaffold V6 em modo leitura
+      - name: Scaffold  em modo leitura
         run: node harness/tooling/scaffold/index.mjs --check
       - name: Adapters em paridade
         run: node harness/tooling/adapters/sync-adapters.mjs --check

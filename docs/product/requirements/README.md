@@ -28,10 +28,10 @@ principal_statement: Requirement aprovado e a fonte canonica de comportamento e 
 
 ## Índice
 
-- [REQ-00001 — Enforcement honesto de handoff](REQ-00001-handoff-enforcement-honesto.md) — Approved; FIX-001 do plano V4.
-- [REQ-00002 — Nível de eval honesto](REQ-00002-eval-level-honesto.md) — Approved; FIX-002 do plano V4.
-- [REQ-00003 — Integridade de tooling ativo](REQ-00003-doctor-tooling-integrity.md) — Approved; FIX-003 do plano V4.
-- [REQ-00004 — Inventário de tooling operacional](REQ-00004-registry-tooling-inventory.md) — Approved; FIX-004 do plano V4.
-- [REQ-00005 — Quality Policy por profile](REQ-00005-quality-profile-policy.md) — Approved; FIX-005/006 do plano V4.
-- [REQ-00006 — Spring MVC condicional](REQ-00006-spring-mvc-conditional.md) — Approved; FIX-007 do plano V4.
-- [REQ-00007 — Google Runtime condicional](REQ-00007-google-runtime-conditional.md) — Approved; FIX-008 do plano V4.
+- [REQ-00001 — Enforcement honesto de handoff](REQ-00001-handoff-enforcement-honesto.md) — Approved; FIX-001 do plano .
+- [REQ-00002 — Nível de eval honesto](REQ-00002-eval-level-honesto.md) — Approved; FIX-002 do plano .
+- [REQ-00003 — Integridade de tooling ativo](REQ-00003-doctor-tooling-integrity.md) — Approved; FIX-003 do plano .
+- [REQ-00004 — Inventário de tooling operacional](REQ-00004-registry-tooling-inventory.md) — Approved; FIX-004 do plano .
+- [REQ-00005 — Quality Policy por profile](REQ-00005-quality-profile-policy.md) — Approved; FIX-005/006 do plano .
+- [REQ-00006 — Spring MVC condicional](REQ-00006-spring-mvc-conditional.md) — Approved; FIX-007 do plano .
+- [REQ-00007 — Google Runtime condicional](REQ-00007-google-runtime-conditional.md) — Approved; FIX-008 do plano .

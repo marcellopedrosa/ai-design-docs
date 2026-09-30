@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "ProfileRegistryV6",
+  "title": "ProfileRegistry",
   "description": "Artefatos exigidos por contexto sem definir seu conteúdo final.",
   "type": "object",
   "required": ["version", "profiles"],
