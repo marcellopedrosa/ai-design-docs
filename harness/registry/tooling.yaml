@@ -1,0 +1,122 @@
+schema_version: 1
+
+tools:
+  harness:
+    status: active
+    implementation: "harness/tooling/harness.mjs"
+    description: "Fachada operacional mínima para doctor, check, eval H1 e sync em modo check"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: false
+
+  harness-doctor:
+    status: active
+    implementation: "harness/tooling/harness-doctor/index.mjs"
+    description: "Diagnóstico estrutural unificado do harness (registry, contracts, skills, adapters, evals, drift)"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: false
+
+  sync-adapters:
+    status: active
+    implementation: "harness/tooling/adapters/sync-adapters.mjs"
+    description: "Sincronizador e validador de paridade entre a fonte canônica harness/skills/ e os diretórios de runtime .agents/ e .claude/"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: false
+
+  eval-runner:
+    status: active
+    implementation: "harness/tooling/eval-runner/index.mjs"
+    description: "Executor determinístico dos casos elegíveis de eval H1"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: false
+
+  contract-validator:
+    status: active
+    implementation: "harness/tooling/contracts/validator.mjs"
+    description: "Validador de schemas e instâncias consumido pelo Doctor"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: false
+
+  trace-validator:
+    status: active
+    implementation: "harness/tooling/contracts/trace.mjs"
+    description: "Valida vínculo entre evidência executada, gate e handoff sem persistência"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: false
+
+  guard-paths:
+    status: active
+    implementation: "harness/tooling/hooks/guard-paths.mjs"
+    description: "Hook ativo de pré-edição do Claude para paths sensíveis"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: false
+
+  documentation-governance:
+    status: active
+    implementation: "harness/tooling/validators/validate-documentation-governance.mjs"
+    contract: "harness/tooling/validators/automation-contract.md#validador-documental"
+    description: "Validador determinístico do ADR-0000, links relativos, referências de código e integridade da árvore docs/"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: false
+
+  quality-metrics:
+    status: active
+    implementation: "harness/tooling/validators/validate-quality-metrics.mjs"
+    description: "Validador de métricas de código, densidade de comentários e cobertura"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: true
+
+  quality-policy:
+    status: active
+    implementation: "harness/tooling/validators/validate-quality-policy.mjs"
+    description: "Validador da política de quality gates e evidência"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: true
+
+  plan-granularity:
+    status: active
+    implementation: "harness/tooling/validators/validate-plan-granularity.mjs"
+    description: "Validador de granularidade atômica e decomposição semântica de Task Plans e Implementation Plans"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: false
+
+  google-runtime-governance:
+    status: active
+    profile: google-runtime
+    implementation: "harness/tooling/validators/validate-google-runtime-governance.mjs"
+    description: "Validador de conformidade para adaptadores e configurações do Google Gemini CLI e Antigravity"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: true
+
+  api-contract-coverage:
+    status: active
+    profile: java-spring
+    implementation: "harness/tooling/validators/validate-api-contract-coverage.mjs"
+    description: "Validador de cobertura de contratos de API e endpoints"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: true

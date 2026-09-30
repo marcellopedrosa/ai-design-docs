@@ -44,14 +44,14 @@ aceite, ambiente e comandos de validação registrados pelo projeto.
 
 Ler sempre:
 
-- `docs/agents/standards/security-standard.md`;
-- `docs/agents/standards/software-quality-standard.md`;
+- `docs/agents/standards/global/security-standard.md`;
+- `docs/agents/standards/global/software-quality-standard.md`;
 - `references/false-positive-controls.md` para heurísticas contra falsos positivos;
 - `references/finding-evidence.md` para regras de comprovação de findings;
 - `references/threat-review-model.md` para delimitação de trust boundaries.
 
 Selecionar adicionalmente os standards especializados ativados conforme o
-manifesto do projeto e `registry/standards.yaml` (ex: `application-security-standard.md`,
+manifesto do projeto e `harness/registry/standards.yaml` (ex: `application-security-standard.md`,
 `api-security-standard.md`, `spring-security-standard.md`, `iac-supply-chain-standard.md`).
 Não duplicar regras desses documentos dentro desta skill.
 
@@ -89,7 +89,7 @@ específica. Não execute exploração destrutiva e use valores sintéticos nos 
 
 ## Saídas e evidências
 
-A saída é o relatório técnico A3 estruturado conforme `contracts/gate-result.schema.json`,
+A saída é o relatório técnico A3 estruturado conforme `harness/contracts/gate-result.schema.json`,
 contendo status (`PASS`, `FAIL`, `BLOCKED`), findings comprovados, comandos executados,
 referências a standards ativados e handoff explícito ao `quality-gate`.
 

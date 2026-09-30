@@ -1,0 +1,7 @@
+{
+  "coverage": {
+    "format": "lcov",
+    "reports": ["frontend/coverage/lcov.info"],
+    "thresholds": { "lines": 70, "branches": 70, "functions": 70 }
+  }
+}

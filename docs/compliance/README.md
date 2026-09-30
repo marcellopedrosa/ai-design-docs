@@ -10,7 +10,7 @@ version: 1.0
 date: 2026-09-10
 last_reviewed: 2026-09-10
 keywords: compliance, privacidade, controles, evidencia
-related_files: ../agents/standards/software-quality-standard.md
+related_files: ../agents/standards/global/software-quality-standard.md
 code_references: N/A - nenhum controle catalogado no baseline.
 principal_statement: Obrigacao de compliance deve ter fonte, owner, escopo, controle e evidencia identificaveis.
 ---

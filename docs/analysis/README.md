@@ -10,7 +10,7 @@ version: 1.0
 date: 2026-09-10
 last_reviewed: 2026-09-10
 keywords: analise, diagnostico, evidencia
-related_files: ../adrs/README.md, ../requirements/README.md
+related_files: ../../harness/governance/decisions/README.md, ../product/requirements/README.md
 code_references: N/A - nenhuma analise ativa no baseline.
 principal_statement: Analise registra evidencia e recomendacao, mas a decisao final pertence a fonte canonica adequada.
 ---

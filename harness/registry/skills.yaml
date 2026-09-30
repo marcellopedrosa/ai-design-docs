@@ -1,0 +1,305 @@
+schema_version: 1
+
+skills:
+  governanca-documental:
+    version: "2.0.0"
+    status: active
+    kind: governance
+    phase: transversal
+    risk_class: R1
+    owner:
+      - "Arquitetura e Documentação"
+    activation:
+      mode: automatic
+      triggers:
+        - "document-change"
+        - "document-review"
+        - "catalog-update"
+      non_triggers:
+        - "code-only-change"
+        - "pipeline-execution"
+    inputs:
+      contract: "harness/contracts/capability-request.schema.json"
+    outputs:
+      contract: "harness/contracts/gate-result.schema.json"
+      states:
+        - PASS
+        - FAIL
+        - BLOCKED
+    permissions:
+      filesystem_read: allow
+      filesystem_write: scoped
+      local_exec: approved-tools-only
+      network: deny
+      secrets: deny
+      git_write: deny
+      production: deny
+    side_effects:
+      allowed:
+        - "update-immediate-collection-readme"
+        - "execute-documentation-governance-validator"
+      forbidden:
+        - "weaken-adr-contract"
+        - "modify-code-outside-docs"
+    calls: []
+    returns_to:
+      - "AgentOrchestrator"
+    canonical_path: "harness/skills/governanca-documental/SKILL.md"
+    native_paths:
+      - ".agents/skills/governanca-documental/SKILL.md"
+      - ".claude/skills/governanca-documental/SKILL.md"
+
+  implementation-readiness:
+    version: "2.0.0"
+    status: active
+    kind: gate
+    phase: readiness
+    risk_class: R0
+    owner:
+      - "Arquitetura"
+      - "Produto"
+      - "Qualidade"
+    activation:
+      mode: automatic
+      triggers:
+        - "executable-handoff"
+        - "source-change"
+        - "migration"
+        - "iac"
+      non_triggers:
+        - "code-audit-after-implementation"
+        - "documentation-only-change"
+    inputs:
+      contract: "harness/contracts/capability-request.schema.json"
+    outputs:
+      contract: "harness/contracts/readiness-result.schema.json"
+      states:
+        - READY
+        - BLOCKED
+    permissions:
+      filesystem_read: allow
+      filesystem_write: deny
+      local_exec: deny
+      network: deny
+      secrets: deny
+      git_write: deny
+      production: deny
+    side_effects:
+      allowed: []
+      forbidden:
+        - "infer-missing-decisions"
+        - "modify-code"
+        - "grant-waivers"
+    calls: []
+    returns_to:
+      - "AgentOrchestrator"
+    canonical_path: "harness/skills/implementation-readiness/SKILL.md"
+    native_paths:
+      - ".agents/skills/implementation-readiness/SKILL.md"
+      - ".claude/skills/implementation-readiness/SKILL.md"
+
+  quality-gate:
+    version: "2.0.0"
+    status: active
+    kind: gate-aggregator
+    phase: assurance
+    risk_class: R2
+    owner:
+      - "Arquitetura"
+      - "Qualidade"
+    activation:
+      mode: automatic
+      triggers:
+        - "software-change"
+        - "pr-review"
+        - "release-qualification"
+      non_triggers:
+        - "documentation-only-change"
+    requires:
+      - "implementation-readiness:READY"
+    aggregates:
+      - A1
+      - A2
+      - A3
+    inputs:
+      contract: "harness/contracts/capability-request.schema.json"
+    outputs:
+      contract: "harness/contracts/gate-result.schema.json"
+      states:
+        - PASS
+        - FAIL
+        - BLOCKED
+    permissions:
+      filesystem_read: allow
+      filesystem_write: deny
+      local_exec: approved-tools-only
+      network: explicit-authorization
+      secrets: deny
+      git_write: deny
+      production: deny
+    side_effects:
+      allowed:
+        - "execute-approved-local-validation"
+        - "aggregate-subgate-evidence"
+      forbidden:
+        - "direct-implementation-fix"
+        - "weaken-thresholds"
+        - "authorize-release"
+        - "authorize-git"
+    calls:
+      - "security-gate"
+    returns_to:
+      - "AgentOrchestrator"
+    canonical_path: "harness/skills/quality-gate/SKILL.md"
+    native_paths:
+      - ".agents/skills/quality-gate/SKILL.md"
+      - ".claude/skills/quality-gate/SKILL.md"
+
+  security-gate:
+    version: "2.0.0"
+    status: active
+    kind: subgate
+    phase: assurance-a3
+    risk_class: R2
+    owner:
+      - "Segurança"
+      - "Engenharia"
+    activation:
+      mode: automatic
+      triggers:
+        - "web-app-change"
+        - "api-change"
+        - "auth-authz-change"
+        - "sensitive-data-handling"
+        - "appsec-surface-change"
+      non_triggers:
+        - "documentation-only-change"
+        - "release-authorization"
+    requires:
+      - "implementation-readiness:READY"
+    inputs:
+      contract: "harness/contracts/capability-request.schema.json"
+    outputs:
+      contract: "harness/contracts/gate-result.schema.json"
+      states:
+        - PASS
+        - FAIL
+        - BLOCKED
+    permissions:
+      filesystem_read: allow
+      filesystem_write: deny
+      local_exec: approved-tools-only
+      network: deny
+      secrets: deny
+      git_write: deny
+      production: deny
+    side_effects:
+      allowed:
+        - "execute-approved-local-security-validation"
+      forbidden:
+        - "weaken-security-policy"
+        - "access-production"
+        - "access-real-secrets"
+        - "authorize-release"
+        - "aggregate-a1-a2"
+    calls: []
+    returns_to:
+      - "quality-gate"
+    canonical_path: "harness/skills/security-gate/SKILL.md"
+    native_paths:
+      - ".agents/skills/security-gate/SKILL.md"
+      - ".claude/skills/security-gate/SKILL.md"
+
+  git-delivery:
+    version: "2.0.0"
+    status: active
+    kind: action
+    phase: delivery
+    risk_class: R3
+    owner:
+      - "Arquitetura"
+      - "Qualidade"
+    activation:
+      mode: explicit-opt-in
+      triggers:
+        - "explicit-user-commit-or-push-request"
+      non_triggers:
+        - "automatic-pipeline-completion"
+        - "routine-quality-pass"
+    requires:
+      - "applicable-gates:PASS"
+    inputs:
+      contract: "harness/contracts/capability-request.schema.json"
+    outputs:
+      contract: "harness/contracts/gate-result.schema.json"
+      states:
+        - PASS
+        - BLOCKED
+    permissions:
+      filesystem_read: allow
+      filesystem_write: scoped
+      local_exec: approved-tools-only
+      git_write: allow-work-branch-only
+      network: allow-git-remote
+      secrets: deny
+      production: deny
+    side_effects:
+      allowed:
+        - "git-commit"
+        - "git-push-work-branch"
+      forbidden:
+        - "direct-main-write"
+        - "force-push-main"
+        - "change-remote-to-bypass"
+        - "discard-other-work"
+    calls: []
+    returns_to:
+      - "AgentOrchestrator"
+    canonical_path: "harness/skills/git-delivery/SKILL.md"
+    native_paths:
+      - ".agents/skills/git-delivery/SKILL.md"
+      - ".claude/skills/git-delivery/SKILL.md"
+
+  antigravity-permissions:
+    version: "2.0.0"
+    status: active
+    kind: governance
+    phase: operation
+    risk_class: R1
+    owner:
+      - "Plataforma de IA"
+      - "Segurança"
+    activation:
+      mode: explicit-request
+      triggers:
+        - "antigravity-permission-reduction-request"
+      non_triggers:
+        - "global-user-settings-change"
+    inputs:
+      contract: "harness/contracts/capability-request.schema.json"
+    outputs:
+      contract: "harness/contracts/gate-result.schema.json"
+      states:
+        - PASS
+        - BLOCKED
+    permissions:
+      filesystem_read: allow
+      filesystem_write: scoped
+      local_exec: deny
+      network: deny
+      secrets: deny
+      git_write: deny
+      production: deny
+    side_effects:
+      allowed:
+        - "configure-project-settings-json"
+      forbidden:
+        - "auto-approve-deletion-or-destructive-commands"
+        - "bypass-global-user-profile"
+    calls: []
+    returns_to:
+      - "AgentOrchestrator"
+    canonical_path: "harness/skills/antigravity-permissions/SKILL.md"
+    native_paths:
+      - ".agents/skills/antigravity-permissions/SKILL.md"
+      - ".claude/skills/antigravity-permissions/SKILL.md"

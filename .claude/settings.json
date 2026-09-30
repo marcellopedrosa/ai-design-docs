@@ -21,12 +21,7 @@
     "PreToolUse": [
       {
         "matcher": "Edit|Write|MultiEdit",
-        "command": "node tooling/hooks/guard-paths.mjs"
-      }
-    ],
-    "Stop": [
-      {
-        "command": "node tooling/hooks/require-handoff.mjs"
+        "command": "node harness/tooling/hooks/guard-paths.mjs"
       }
     ]
   }

@@ -17,7 +17,7 @@ estrutura, dos metadados, dos links e dos índices afetados.
 ## Pré-condições
 
 1. Trabalhe a partir da raiz do repositório.
-2. Leia `docs/ai/README.md`, o índice imediato e somente as seções aplicáveis do
+2. Leia `harness/governance/README.md`, o índice imediato e somente as seções aplicáveis do
    ADR-0000.
 3. Confirme o escopo e preserve mudanças e documentos alheios.
 
@@ -44,7 +44,7 @@ estrutura, dos metadados, dos links e dos índices afetados.
 3. Aplique a correção mínima. Mudança em artefato atualiza seu índice imediato.
 4. Execute o validador documental canônico configurado no projeto.
 5. Se não houver automação, valide manualmente metadados, nomes, links, paridade de
-   adapters/skills e inventário; registre `Automação não configurada`.
+   harness/adapters/skills e inventário; registre `Automação não configurada`.
 6. Corrija causas no escopo e repita. Achado fora do escopo permanece pendente com
    path, evidência e owner.
 
@@ -71,6 +71,6 @@ controles disponíveis tiverem resultado satisfatório.
 
 ## Automação disponível
 
-Execute `node docs/scripts/validate-documentation-governance.mjs --root .` como
-diagnóstico. Enquanto `docs/scripts/README.md` indicar estado `Partial`, registre
+Execute `node harness/tooling/validators/validate-documentation-governance.mjs --root .` como
+diagnóstico. Enquanto `harness/tooling/validators/README.md` indicar estado `Partial`, registre
 `Automação não configurada` para o gate canônico e complemente com validação manual.

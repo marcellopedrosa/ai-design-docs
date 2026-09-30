@@ -1,5 +1,6 @@
 ---
 document_id: STANDARDS-INDEX
+document_scope: project
 primary_nature: Contexto
 objective: Catalogar a biblioteca portátil e permitir seleção semântica sem carregar todos os standards.
 scope: Regras reutilizáveis de lifecycle, engenharia, arquitetura, interfaces, testes, segurança e supply chain.
@@ -10,12 +11,16 @@ version: 2.6
 date: 2026-09-10
 last_reviewed: 2026-09-28
 keywords: standards, catalogo, nucleo-agnostico, lifecycle, readiness, qualidade, seguranca, appsec, entrega-git, branch, hook, stack, ativacao-condicional
-related_files: ../AgentOrchestrator.md, ../skills/README.md, software-engineering-lifecycle.md, implementation-readiness-standard.md, software-quality-standard.md, development-standard.md, security-standard.md, ../../settings/settings.md, ../../adrs/ADR-0000-governanca-do-harness-documental.md
+related_files: ../../../harness/governance/agents/AgentOrchestrator.md, ../../../harness/skills/README.md, ./global/software-engineering-lifecycle.md, ./global/implementation-readiness-standard.md, ./global/software-quality-standard.md, ./global/development-standard.md, ./global/security-standard.md, ../../../harness/governance/policies/ai-environment-policy.md, ../../../harness/governance/decisions/ADR-0000-governanca-do-harness-documental.md
 code_references: N/A - standards documentais; ativação executável pertence ao projeto adotante.
-principal_statement: Esta coleção é a fonte canônica do núcleo agnóstico; exemplos condicionais orientam a criação de especializações no projeto adotante.
+principal_statement: Esta coleção pertence ao projeto e indexa os standards locais; o harness fornece metamodelo e gates sem assumir seu conteúdo final.
 ---
 
 # Standards
+
+Os [standards globais](global/README.md) são conteúdo deste projeto. O harness
+descobre sua localização pelo Registry, mas o projeto responde por sua vigência,
+especialização e critérios locais.
 
 ## Contrato e canonicidade
 
@@ -28,29 +33,27 @@ principal_statement: Esta coleção é a fonte canônica do núcleo agnóstico; 
 - Estados permitidos: Draft, Active, Deprecated.
 - Critério de granularidade: separar quando regra, owner, consumidores ou ciclo de
   revisão forem independentes.
-- Cada arquivo listado abaixo é a referência canônica dentro deste harness. Após a
-  adoção, a cópia versionada no projeto de destino torna-se sua referência local e
-  deve ser especializada ali, sem links normativos para o repositório de origem.
+- Cada arquivo listado abaixo é a referência canônica deste projeto. Se outro
+  projeto copiar um standard, a cópia versionada passa a ser sua fonte local,
+  sem dependência normativa deste repositório.
 
 Status Active informa que a regra da biblioteca está vigente; não significa que a
 tecnologia ou capacidade esteja ativa no projeto. O campo Ativação controla a
 aplicabilidade.
 
-Esta biblioteca possui dois níveis. O núcleo agnóstico pode ser levado para
-qualquer projeto de software compatível com o harness. A biblioteca condicional
-permanece disponível no harness-fonte, mas só deve ser ativada ou copiada quando a
-capacidade, a stack, o risco ou a decisão arquitetural correspondente existir no
-projeto adotante.
+Este catálogo distingue os standards globais existentes de exemplos condicionais.
+Estes últimos não são arquivos ativos: a squad só os cria quando uma capacidade,
+stack, risco ou decisão arquitetural correspondente existir no seu projeto.
 
 ## Núcleo obrigatório e agnóstico
 
 | Standard | Escopo | Ativação | Status |
 | --- | --- | --- | --- |
-| [Software Engineering Lifecycle](software-engineering-lifecycle.md) | Sequência C.L.E.A.R. e gates | Mudança de software; fases condicionais podem ser N/A com justificativa | Active |
-| [Implementation Readiness](implementation-readiness-standard.md) | Gate anterior à escrita executável | Todo handoff executável; N/A para alteração sem execução | Active |
-| [Software Quality](software-quality-standard.md) | A1 Test, A2 Quality e A3 Security/Compliance | Mudança de software; alteração exclusivamente documental segue seu gate próprio | Active |
-| [Development](development-standard.md) | Práticas de implementação e manutenção | Toda escrita executável | Active |
-| [Security](security-standard.md) | Menor privilégio, dados e evidência A3 | Mudança de software e documentação operacional; profundidade por risco | Active |
+| [Software Engineering Lifecycle](./global/software-engineering-lifecycle.md) | Sequência C.L.E.A.R. e gates | Mudança de software; fases condicionais podem ser N/A com justificativa | Active |
+| [Implementation Readiness](./global/implementation-readiness-standard.md) | Gate anterior à escrita executável | Todo handoff executável; N/A para alteração sem execução | Active |
+| [Software Quality](./global/software-quality-standard.md) | A1 Test, A2 Quality e A3 Security/Compliance | Mudança de software; alteração exclusivamente documental segue seu gate próprio | Active |
+| [Development](./global/development-standard.md) | Práticas de implementação e manutenção | Toda escrita executável | Active |
+| [Security](./global/security-standard.md) | Menor privilégio, dados e evidência A3 | Mudança de software e documentação operacional; profundidade por risco | Active |
 
 O núcleo é agnóstico de linguagem, framework, banco, provedor, protocolo e
 topologia. `security-standard` é o baseline de segurança; `security-gate` aprofunda
@@ -58,8 +61,8 @@ A3 quando o projeto tiver uma superfície de aplicação compatível.
 
 ## Exemplos condicionais para projetos adotantes
 
-Os arquivos abaixo não fazem parte do baseline deste harness. Ao adotar o projeto,
-crie somente os standards correspondentes à capacidade real, especializando-os com
+Os arquivos abaixo são exemplos, não parte dos standards ativos. Crie somente os
+correspondentes à capacidade real do projeto, especializando-os com
 versão, ferramentas, owners, paths e comandos locais.
 
 | Arquivo de exemplo | Criar quando o projeto adotar |
@@ -91,20 +94,20 @@ versão, ferramentas, owners, paths e comandos locais.
 
 ## Seleção e especialização
 
-1. O [AgentOrchestrator](../AgentOrchestrator.md) classifica a mudança e aplica o
+1. O [AgentOrchestrator](../../../harness/governance/agents/AgentOrchestrator.md) classifica a mudança e aplica o
    baseline transversal pertinente.
 2. ADRs aceitos, requirements, contratos, riscos e o manifesto determinam quais
    exemplos condicionais devem ser criados e ativados.
 3. O plano registra cada standard aplicável com path e versão; N/A exige motivo.
 4. O projeto completa versões, ferramentas, comandos, thresholds, owners e paths
    que o arquivo portátil deliberadamente não presume.
-5. Um exemplo condicional não aplicável não deve ser criado no projeto adotante.
+5. Um exemplo condicional não aplicável não deve ser criado no projeto.
 6. Regra local pode elevar ou especializar o baseline, mas não o enfraquecer sem
    decisão arquitetural explícita.
 7. Para A3 de aplicação, o `quality-gate` pode acionar `security-gate`; a skill
    executa standards selecionados e devolve evidência, sem criar gate autônomo.
-8. Toda criação de exemplo condicional atualiza este catálogo e o README imediato
-   do projeto adotante; a ausência da capacidade não exige arquivo vazio ou alias.
+8. Toda criação de exemplo condicional atualiza este catálogo e o README imediato;
+   a ausência da capacidade não exige arquivo vazio ou alias.
 
 Entrega Git não é um standard adicional nem uma ativação implícita deste catálogo:
 quando adotada, é uma capacidade operacional sujeita à política, aos gates, ao hook

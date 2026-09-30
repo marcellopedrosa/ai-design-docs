@@ -1,105 +1,38 @@
 ---
 document_id: DOCS-INDEX
+document_scope: project
 primary_nature: Contexto
-objective: Mapear as colecoes documentais e fornecer a rota inicial de descoberta.
-scope: Documentacao versionada sob docs/.
-non_objectives: Nao duplicar requisitos, decisoes, standards ou configuracao operacional.
-owner: Arquitetura e owners das colecoes
+objective: Mapear somente a documentação do projeto mantida em docs/.
+scope: Produto, arquitetura, domínios reais, contratos, compliance, análise, delivery e onboarding.
+non_objectives: Duplicar as regras, skills, adapters, templates ou tooling do harness.
+owner: Arquitetura e owners das coleções
 status: Active
-version: 1.6
-date: 2026-09-10
-last_reviewed: 2026-09-28
-keywords: documentacao, indice, descoberta-progressiva, governanca, orquestrador, standards, skills, entrega-git, codex, claude-code, gemini, antigravity, registry, contracts, tooling
-related_files: ai/README.md, adrs/ADR-0000-governanca-do-harness-documental.md, agents/AgentOrchestrator.md, agents/standards/README.md, agents/skills/README.md, automation/README.md, scripts/README.md, settings/settings.md, settings/codex.md, settings/claude-code.md, settings/google-gemini.md, UPGRADING.md
-code_references: ../AGENTS.md, ../CLAUDE.md, ../GEMINI.md, ../.agents/rules/documentation-governance.md; a topologia do projeto de destino deve ser registrada no manifesto.
-principal_statement: Cada tipo de informacao possui uma fonte canonica e deve ser carregado somente quando relevante.
+version: 2.0
+date: 2026-09-30
+last_reviewed: 2026-09-30
+keywords: projeto, produto, documentação, v5, índice
+related_files: ../harness/README.md, agents/README.md, product/README.md, architecture/README.md, domains/README.md, contracts/README.md, compliance/README.md, analysis/README.md, delivery/README.md, onboarding/README.md
+code_references: ../AGENTS.md, ../harness/tooling/validators/validate-documentation-governance.mjs
+principal_statement: docs/ pertence à documentação do projeto; a governança e o tooling do harness pertencem a harness/.
 ---
 
-# Mapa documental
+# Documentação do projeto
 
-## Três camadas
+Esta árvore contém a documentação do projeto-fonte, inclusive seus standards.
+O metamodelo, as políticas e as ferramentas de engenharia assistida estão no
+[harness](../harness/README.md).
 
-| Camada | Fonte | Finalidade |
-| --- | --- | --- |
-| Regras de ambiente e do assistente | [`settings/`](settings/README.md) | Segurança, permissões, limites e invariantes globais. |
-| Documentação funcional e técnica | Coleções tipadas abaixo | Produto, requisitos, decisões, arquitetura, planos e histórico. |
-| Operação do runtime | `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.agents/rules/` e adaptadores locais | Descoberta, comandos essenciais e diferenças por pacote. |
+| Coleção | Finalidade |
+| --- | --- |
+| [Agentes e standards](agents/README.md) | Definições e regras sob responsabilidade do projeto |
+| [Produto](product/README.md) | Negócio, PRDs, requisitos, use cases e capabilities de negócio |
+| [Arquitetura](architecture/README.md) | Módulos, owners e decisões do projeto |
+| [Domínios](domains/README.md) | Apenas domínios realmente implementados |
+| [Contratos](contracts/README.md) | Interfaces do produto; schemas do harness ficam em `harness/contracts/` |
+| [Compliance](compliance/README.md) | Obrigações específicas do projeto |
+| [Análises](analysis/README.md) | Análises atuais quando houver |
+| [Delivery](delivery/README.md) | Planos ativos, relatórios e lições do projeto |
+| [Onboarding](onboarding/README.md) | Entrada de pessoas no projeto |
 
-[`ai/README.md`](ai/README.md) é navegação entre as camadas, não uma quarta fonte
-de verdade.
-
-## Coleções
-
-| Coleção | Natureza | Estado inicial | Índice |
-| --- | --- | --- | --- |
-| Navegação de IA | Contexto | Active | [ai/README.md](ai/README.md) |
-| Settings | Regra | Active; mapeia Codex, Claude Code, Gemini CLI e Antigravity quando suportados | [settings/README.md](settings/README.md) |
-| ADRs | Decisão | Active | [adrs/README.md](adrs/README.md) |
-| Arquitetura | Contexto | Active | [architecture/README.md](architecture/README.md) |
-| Agentes | Regra | AgentOrchestrator active | [agents/README.md](agents/README.md) |
-| Standards | Regra | Núcleo agnóstico ativo; exemplos condicionais criados por aplicabilidade | [agents/standards/README.md](agents/standards/README.md) |
-| Skills operacionais | Contexto | Active | [agents/skills/README.md](agents/skills/README.md) |
-| Templates | Template | Active | [templates/README.md](templates/README.md) |
-| Automação documental | Contexto | Active | [automation/README.md](automation/README.md) |
-| Scripts de governança | Contexto | Partial; requer adaptação ao destino | [scripts/README.md](scripts/README.md) |
-| Negócio | Contexto | Empty baseline | [business/README.md](business/README.md) |
-| Skills de negócio | Contexto | Empty baseline | [business/skills/README.md](business/skills/README.md) |
-| Product requirements | Requisito | Empty baseline | [product_requirements/README.md](product_requirements/README.md) |
-| Requirements | Requisito | Empty baseline | [requirements/README.md](requirements/README.md) |
-| Use cases | Requisito | Empty baseline | [use_cases/README.md](use_cases/README.md) |
-| Contratos | Contexto | Empty baseline | [contracts/README.md](contracts/README.md) |
-| Task plans | Plano | Empty baseline | [task_plans/README.md](task_plans/README.md) |
-| Análises | Contexto | Empty baseline | [analysis/README.md](analysis/README.md) |
-| Lições aprendidas | Histórico | Empty baseline | [lessons_learned/README.md](lessons_learned/README.md) |
-| Relatórios | Histórico | Empty baseline | [reports/README.md](reports/README.md) |
-| Compliance | Contexto | Empty baseline | [compliance/README.md](compliance/README.md) |
-| Onboarding | Contexto | Empty baseline | [onboard/README.md](onboard/README.md) |
-| Provas de conceito | Histórico | Empty baseline | [pocs/README.md](pocs/README.md) |
-
-`Empty baseline` significa que somente o contrato da coleção existe. O primeiro
-artefato real ativa o inventário e exige owner e estado próprios.
-
-## Guias e Migração
-
-- [UPGRADING.md](UPGRADING.md): Guia de migração e evolução estrutural para a versão 2.0.0 do harness.
-
-O [AgentOrchestrator](agents/AgentOrchestrator.md) é o único agente inicial. A
-presença de um standard no catálogo o torna disponível, não automaticamente
-aplicável; o plano registra quais regras foram ativadas.
-
-## Matriz de ativação
-
-| Capacidade | Descoberta | Estado de referência |
-| --- | --- | --- |
-| Skills compartilhadas | `.agents/skills/` | Conformant quando indexadas e pareadas com o runtime suportado |
-| Skills Claude Code | `.claude/skills/` | Conformant quando espelham o núcleo compartilhado |
-| Configuração específica do Claude Code | `.claude/settings.json` | Not applicable no baseline; permissões seguem a configuração efetiva do ambiente |
-| Configuração específica do Gemini | `.gemini/settings.json` | Not applicable no baseline; configuração segue settings/google-gemini.md |
-| Skills de governança | `governanca-documental`, `implementation-readiness`, `quality-gate`, `security-gate` | Conformant quando os descritores e o catálogo concordam |
-| Camada determinística (Registry, Contracts, Tooling) | `registry/`, `contracts/`, `skills/`, `evals/`, `tooling/` | Conformant gerenciado pelo harness doctor |
-
-`Conformant`, `Partial`, `Planned` e `Not applicable` descrevem o estado de adoção
-local. A presença de um path ou skill não ativa permissões fora da política e dos
-adaptadores vigentes.
-
-## Regra de leitura
-
-1. Comece em [ai/README.md](ai/README.md).
-2. Selecione PRD aplicável ou justifique `PRD not applicable` para trabalho sem
-   impacto de produto.
-3. Abra o requirement diretamente relacionado.
-4. Consulte [adrs/README.md](adrs/README.md) e apenas as decisões selecionadas.
-5. Consulte [architecture/module-registry.md](architecture/module-registry.md).
-6. Abra contratos, casos de uso, planos e standards somente quando referenciados
-   pelas fontes anteriores ou necessários para resolver uma lacuna.
-
-## Change log
-
-| Versão | Data | Mudança |
-| --- | --- | --- |
-| 1.6 | 2026-09-28 | Atualiza o mapa para refletir a arquitetura agnóstica e a camada determinística. |
-| 1.5 | 2026-09-13 | Indexa os mapeamentos portateis de Codex e Claude Code em settings. |
-| 1.4 | 2026-09-13 | Mapeia `scripts/` como extensão executável condicional, separada do contrato documental. |
-| 1.3 | 2026-09-13 | Registra a capacidade opt-in de entrega Git nos pontos de descoberta do harness. |
-| 1.2 | 2026-09-11 | Registra o orquestrador inicial e a biblioteca portátil de standards condicionais. |
-| 1.1 | 2026-09-11 | Inclui Gemini CLI e Antigravity na camada operacional do harness. |
+Cada coleção indexa seus próprios artefatos. Nenhum módulo de aplicação é
+presumido pelo baseline; veja o [manifesto de módulos](architecture/module-registry.md).
