@@ -14,11 +14,59 @@
 
 const VALID_TYPES = new Set(['object', 'array', 'string', 'number', 'integer', 'boolean', 'null']);
 
+export const ANNOTATION_KEYWORDS = new Set([
+  '$schema',
+  '$id',
+  '$comment',
+  'title',
+  'description',
+  'examples',
+  'default'
+]);
+
+export const SUPPORTED_VALIDATION_KEYWORDS = new Set([
+  'type',
+  'required',
+  'properties',
+  'additionalProperties',
+  'enum',
+  'items',
+  'minItems'
+]);
+
+function checkUnsupportedKeywords(subSchema, schemaName, errors = []) {
+  if (!subSchema || typeof subSchema !== 'object' || Array.isArray(subSchema)) return errors;
+
+  for (const key of Object.keys(subSchema)) {
+    if (!ANNOTATION_KEYWORDS.has(key) && !SUPPORTED_VALIDATION_KEYWORDS.has(key)) {
+      errors.push(`${schemaName}: palavra-chave '${key}' não suportada pelo validador.`);
+    }
+  }
+
+  if (subSchema.properties && typeof subSchema.properties === 'object' && !Array.isArray(subSchema.properties)) {
+    for (const propDef of Object.values(subSchema.properties)) {
+      checkUnsupportedKeywords(propDef, schemaName, errors);
+    }
+  }
+
+  if (subSchema.items && typeof subSchema.items === 'object') {
+    checkUnsupportedKeywords(subSchema.items, schemaName, errors);
+  }
+
+  if (subSchema.additionalProperties && typeof subSchema.additionalProperties === 'object') {
+    checkUnsupportedKeywords(subSchema.additionalProperties, schemaName, errors);
+  }
+
+  return errors;
+}
+
 export function validateSchemaSyntax(schema, schemaName = 'schema') {
   const errors = [];
   if (!schema || typeof schema !== 'object' || Array.isArray(schema)) {
     return { valid: false, errors: [`${schemaName}: schema deve ser um objeto JSON.`] };
   }
+
+  checkUnsupportedKeywords(schema, schemaName, errors);
 
   if (!schema.$schema || typeof schema.$schema !== 'string') {
     errors.push(`${schemaName}: campo '$schema' obrigatório ausente ou inválido.`);

@@ -30,3 +30,25 @@ Todos os schemas seguem a especificação JSON Schema Draft-07 / 2020-12 e são 
 Exemplos de conformidade e contraexemplos residem em [`examples/`](examples/):
 - Instâncias válidas (`*.valid.json`) comprovam conformidade estrutural.
 - Instâncias inválidas (`*.invalid.json`) garantem que desvios de contrato são rejeitados fail-closed.
+
+## Subconjunto de JSON Schema Suportado
+
+O validador nativo (`tooling/contracts/validator.mjs`) opera em regime fail-closed sem dependências externas, rejeitando qualquer palavra-chave de validação não implementada:
+
+| Palavra-chave | Categoria | Suporte | Comportamento |
+|---|---|---|---|
+| `$schema`, `$id`, `$comment` | Metadados | Suportada | Identificação do schema (Draft-07) |
+| `title`, `description`, `examples`, `default` | Anotações | Suportada | Documentação estruturada |
+| `type` | Validação | Suportada | Tipagem estrita (`object`, `array`, `string`, `number`, `integer`, `boolean`, `null`) |
+| `required` | Validação | Suportada | Lista obrigatória de propriedades de objeto |
+| `properties` | Validação | Suportada | Definições estruturais de campos e aninhamentos |
+| `additionalProperties` | Validação | Suportada | `false` ou schema de validação para propriedades dinâmicas |
+| `enum` | Validação | Suportada | Restrição exata de valores literais |
+| `items` | Validação | Suportada | Schema dos elementos de array |
+| `minItems` | Validação | Suportada | Quantidade mínima de itens em array |
+| `oneOf`, `anyOf`, `allOf`, `not` | Composição | Não suportada | Rejeitada fail-closed (`palavra-chave não suportada`) |
+| `if`, `then`, `else` | Condicional | Não suportada | Rejeitada fail-closed (`palavra-chave não suportada`) |
+| `pattern`, `format` | Expressões | Não suportada | Rejeitada fail-closed (`palavra-chave não suportada`) |
+| `minimum`, `maximum` | Numérica | Não suportada | Rejeitada fail-closed (`palavra-chave não suportada`) |
+| `minLength`, `maxLength` | Strings | Não suportada | Rejeitada fail-closed (`palavra-chave não suportada`) |
+

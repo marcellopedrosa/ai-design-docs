@@ -93,3 +93,41 @@ test('validateInstance enforces additionalProperties: false and enum restriction
   const resExtra = validateInstance(schema, extraField);
   assert.ok(!resExtra.valid, 'Should reject extra field when additionalProperties is false');
 });
+
+test('T-10: validateSchemaSyntax rejects unsupported validation keywords like oneOf or if', () => {
+  const schemaWithOneOf = {
+    $schema: 'http://json-schema.org/draft-07/schema#',
+    title: 'OneOfTest',
+    type: 'object',
+    oneOf: [{ type: 'object' }]
+  };
+  const resOneOf = validateSchemaSyntax(schemaWithOneOf, 'schemaWithOneOf');
+  assert.ok(!resOneOf.valid);
+  assert.ok(resOneOf.errors.some(e => e.includes("palavra-chave 'oneOf' não suportada")));
+
+  const schemaWithIf = {
+    $schema: 'http://json-schema.org/draft-07/schema#',
+    title: 'IfTest',
+    type: 'object',
+    if: { properties: { foo: { type: 'string' } } }
+  };
+  const resIf = validateSchemaSyntax(schemaWithIf, 'schemaWithIf');
+  assert.ok(!resIf.valid);
+  assert.ok(resIf.errors.some(e => e.includes("palavra-chave 'if' não suportada")));
+
+  const schemaWithNestedUnsupported = {
+    $schema: 'http://json-schema.org/draft-07/schema#',
+    title: 'NestedTest',
+    type: 'object',
+    properties: {
+      field: {
+        type: 'string',
+        pattern: '^[a-z]+$'
+      }
+    }
+  };
+  const resNested = validateSchemaSyntax(schemaWithNestedUnsupported, 'schemaWithNested');
+  assert.ok(!resNested.valid);
+  assert.ok(resNested.errors.some(e => e.includes("palavra-chave 'pattern' não suportada")));
+});
+
