@@ -6,12 +6,12 @@ scope: Governanca documental, readiness verificavel, quality gates e evidencias.
 non_objectives: Nao fornecer scripts, escolher stack, executar comandos ou simular automacao ausente.
 owner: Plataforma, Arquitetura e Qualidade
 status: Active
-version: 1.6
+version: 1.7
 date: 2026-09-10
 last_reviewed: 2026-09-30
 keywords: automacao, validadores, contratos, quality-gate, agentes, standards, gemini, antigravity, tooling, doctor
 related_files: ../adrs/ADR-0000-governanca-do-harness-documental.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/standards/software-quality-standard.md, ../scripts/README.md, ../settings/google-gemini.md, ../../contracts/README.md, ../../registry/README.md, ../../tooling/README.md
-code_references: ../scripts/ - extensao migrada, ainda sem ativacao portatil.
+code_references: ../../tooling/, ../scripts/ - ferramentas determinísticas do harness e validadores documentais.
 principal_statement: Automacao deve falhar de forma fechada e publicar evidencia estruturada; ausencia nunca equivale a PASS.
 ---
 
@@ -24,17 +24,19 @@ principal_statement: Automacao deve falhar de forma fechada e publicar evidencia
 - Critério de granularidade: separar contratos quando owner, interface ou lifecycle
   de adoção forem independentes.
 
-Este pacote é exclusivamente documental. O projeto adotante deve implementar os
-entrypoints abaixo na linguagem e no local compatíveis com sua stack.
+Os contratos que o **projeto adotante** deve implementar continuam sendo
+responsabilidade dele; esta coleção define a interface, não a implementação.
 
-Quando o projeto escolher versionar o código dos validadores, ele deve residir em
-[`docs/scripts/`](../scripts/README.md). O contrato permanece nesta coleção; scripts
-não podem introduzir exigências, paths ou stacks que não estejam aprovados nas fontes
-canônicas locais.
-
-Para o ferramental determinístico do próprio harness v2 (como `harness doctor` e sincronizador
-de adaptadores), consulte [`tooling/`](../../tooling/README.md), [`registry/tooling.yaml`](../../registry/tooling.yaml)
+O **próprio harness** traz `tooling/` (ativo: `harness-doctor`, `sync-adapters`,
+`eval-runner`, `hooks`, `contracts/validator`) e `docs/scripts/` (validadores
+documentais determinísticos). Para detalhes, consulte
+[`tooling/`](../../tooling/README.md), [`registry/tooling.yaml`](../../registry/tooling.yaml)
 e os esquemas formais em [`contracts/`](../../contracts/README.md).
+
+Quando o projeto escolher versionar o código dos validadores do projeto adotante,
+ele deve residir em [`docs/scripts/`](../scripts/README.md). O contrato permanece
+nesta coleção; scripts não podem introduzir exigências, paths ou stacks que não
+estejam aprovados nas fontes canônicas locais.
 
 ## Validador documental
 
@@ -103,10 +105,10 @@ de remote e leitura de credenciais permanecem fora desse contrato.
 
 ## Estado deste pacote
 
-`Automação não configurada`. Isso é deliberado: somente documentação agnóstica foi
-transportada. O bootstrap no projeto de destino deve registrar paths, comandos,
-dependências, testes do validador e integração com CI antes de declarar automação
-ativa.
+Automação do harness: **ativa** (`tooling/` e `docs/scripts/`). Automação do
+projeto adotante: **não configurada** até o adotante implementar os entrypoints.
+O bootstrap no projeto de destino deve registrar paths, comandos, dependências,
+testes do validador e integração com CI antes de declarar automação ativa.
 
 Ativação `Always On`, Project folders, Agent Settings e Permissions do
 Antigravity exigem verificação no runtime. O validador do repositório só pode
@@ -116,6 +118,7 @@ comprovar os arquivos versionados e deve reportar essa fronteira.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.7 | 2026-09-30 | Diferencia automação determinística ativa do harness da automação adotante não configurada. |
 | 1.6 | 2026-09-30 | Atualiza requisito de adaptadores para import explícito de `AGENTS.md` verificado pelo doctor. |
 | 1.5 | 2026-09-28 | Conecta o contrato de automação ao tooling determinístico, registry e contracts do harness v2. |
 | 1.4 | 2026-09-13 | Vincula a implementação opcional de validadores a `docs/scripts/` sem ativá-la por presença. |

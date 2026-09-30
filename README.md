@@ -3,7 +3,7 @@ document_id: HARNESS-README
 primary_nature: Contexto
 objective: Disponibilizar um harness documental agnostico, clonavel e adaptavel a projetos de software.
 scope: Governanca documental, descoberta progressiva, planejamento, readiness, assurance e adaptadores de agentes.
-non_objectives: Nao fornecer codigo, scripts executaveis, stack, dominio, credenciais ou decisoes do projeto de origem.
+non_objectives: Nao fornecer codigo de produto, stack, dominio, credenciais ou decisoes do projeto de origem. O tooling deterministico do proprio harness (tooling/) e a unica excecao executavel.
 owner: Mantenedores do harness
 status: Active
 version: 2.0.0
