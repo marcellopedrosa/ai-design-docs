@@ -10,7 +10,7 @@ version: 2.0.0
 date: 2026-09-10
 last_reviewed: 2026-09-28
 keywords: harness, documentacao, agentes, orquestrador, standards, clear, readiness, quality-gate, security-gate, security, appsec, entrega-git, gemini, antigravity, registry, contracts, evals, tooling
-related_files: AGENTS.md, CLAUDE.md, GEMINI.md, backend/README.md, frontend/README.md, website/README.md, infra/README.md, docs/README.md, docs/scripts/README.md, docs/agents/AgentOrchestrator.md, docs/agents/standards/README.md, docs/agents/skills/README.md, docs/settings/settings.md, docs/settings/google-gemini.md, docs/adrs/ADR-0000-governanca-do-harness-documental.md, registry/README.md, contracts/README.md, skills/README.md, evals/README.md, tooling/README.md, adapters/README.md, examples/profiles/java-spring.yaml
+related_files: AGENTS.md, CLAUDE.md, GEMINI.md, backend/README.md, frontend/README.md, website/README.md, infra/README.md, docs/README.md, docs/scripts/README.md, docs/agents/AgentOrchestrator.md, docs/agents/standards/README.md, docs/agents/skills/README.md, docs/settings/settings.md, docs/settings/google-gemini.md, docs/adrs/ADR-0000-governanca-do-harness-documental.md, registry/README.md, contracts/README.md, skills/README.md, evals/README.md, tooling/README.md, adapters/README.md, examples/profiles/java-spring.yaml, examples/profiles/node-web.yaml, examples/profiles/python-service.yaml
 code_references: .agents/rules/documentation-governance.md, .agents/skills/, .claude/skills/, registry/, contracts/, skills/, evals/, tooling/, adapters/, examples/; pacote agnóstico com control plane documental e tooling determinístico opcional.
 principal_statement: O pacote fornece as fontes e os contratos necessarios para adotar a mesma governanca sem transportar contexto de produto ou de stack.
 ---
@@ -55,7 +55,7 @@ prevenção de drift, validação de contratos e evals de confiabilidade.
 - pastas base de backend, frontend, website, infraestrutura e documentação;
 - templates para os artefatos recorrentes;
 - extensão `docs/scripts/` com validadores determinísticos de conformidade;
-- perfis de exemplo de projeto adotante em [`examples/profiles/`](examples/profiles/java-spring.yaml) (ex.: Java/Spring).
+- perfis de exemplo de projeto adotante em [`examples/profiles/`](examples/profiles/java-spring.yaml) (Java/Spring, Node.js e Python).
 
 ### Distinção entre contratos de harness e contratos de produto
 
@@ -140,7 +140,7 @@ skills/{governanca-documental,implementation-readiness,quality-gate,security-gat
 evals/{README.md,schema/,lifecycle/,orchestration/,permissions/,portability/,regression/}
 tooling/{README.md,harness-doctor/,adapters/,contracts/,eval-runner/,hooks/}
 adapters/{README.md,core-policy.md}
-examples/profiles/java-spring.yaml
+examples/profiles/{java-spring.yaml,node-web.yaml,python-service.yaml}
 .agents/rules/documentation-governance.md
 .agents/skills/{governanca-documental,implementation-readiness,quality-gate,security-gate,git-delivery,antigravity-permissions}/SKILL.md
 .claude/agents/GateEvaluator.md

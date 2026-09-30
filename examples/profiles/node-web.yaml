@@ -1,0 +1,45 @@
+schema_version: 1
+harness_version: "2.0.0"
+
+project:
+  id: "node-web-service"
+  name: "Serviço Web Node.js"
+  description: "Perfil de referência para aplicações web e APIs Node.js/TypeScript"
+
+runtimes:
+  - codex
+  - claude-code
+  - gemini-cli
+  - antigravity
+
+capabilities:
+  git_delivery: false
+
+standards:
+  baseline:
+    - software-engineering-lifecycle
+    - implementation-readiness-standard
+    - software-quality-standard
+    - development-standard
+    - security-standard
+  activated:
+    - application-security-standard
+    - api-security-standard
+    - frontend-standard
+
+quality:
+  commands:
+    test: "npm test"
+    build: "npm run build"
+    lint: "npm run lint"
+    coverage: "npm run test:coverage"
+
+security:
+  validators:
+    - "npm audit"
+
+paths:
+  frontend:
+    - "frontend/"
+  docs:
+    - "docs/"
