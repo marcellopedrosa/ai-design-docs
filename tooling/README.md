@@ -22,6 +22,12 @@ Este diretório contém ferramentas determinísticas portáteis, entrypoints de 
 # Diagnóstico estrutural completo
 node tooling/harness-doctor/index.mjs
 
+# Diagnóstico com saída estruturada JSON (validada contra doctor-result.schema.json)
+node tooling/harness-doctor/index.mjs --json
+
+# Diagnóstico especificando explicitamente a raiz do repositório
+node tooling/harness-doctor/index.mjs --root /caminho/do/repo
+
 # Verificar paridade de adapters
 node tooling/adapters/sync-adapters.mjs --check
 

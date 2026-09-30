@@ -3,18 +3,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const IGNORED_TOP_LEVEL = new Set(['contract.yaml', 'evals', 'fixtures', '.DS_Store']);
 
 function normalizeText(content) {
   return content.replace(/\r\n/g, '\n').trim();
-}
-
-function getFileHash(filePath) {
-  const content = fs.readFileSync(filePath);
-  return crypto.createHash('sha256').update(content).digest('hex');
 }
 
 function isContentEqual(srcPath, destPath) {

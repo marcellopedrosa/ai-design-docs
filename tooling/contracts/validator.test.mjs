@@ -14,7 +14,8 @@ test('compileSchema compiles all repository contracts successfully', () => {
     'evidence.schema.json',
     'security-finding.schema.json',
     'handoff.schema.json',
-    'harness-project.schema.json'
+    'harness-project.schema.json',
+    'doctor-result.schema.json'
   ];
 
   for (const file of requiredSchemas) {

@@ -231,7 +231,8 @@ export function checkContracts(root) {
     'evidence.schema.json',
     'security-finding.schema.json',
     'handoff.schema.json',
-    'harness-project.schema.json'
+    'harness-project.schema.json',
+    'doctor-result.schema.json'
   ];
 
   if (!fs.existsSync(contractsDir)) {
@@ -364,6 +365,22 @@ export function checkContracts(root) {
   return { errors };
 }
 
+export function splitAllowedTools(raw) {
+  const out = []; let depth = 0, cur = '';
+  for (const ch of raw) {
+    if (ch === '(') depth++;
+    if (ch === ')') depth = Math.max(0, depth - 1);
+    if (ch === ',' && depth === 0) { out.push(cur.trim()); cur = ''; continue; }
+    cur += ch;
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out.filter(Boolean);
+}
+
+export const toolName = (t) => t.replace(/\(.*$/s, '').trim();
+
+export const WRITE_TOOLS = new Set(['Edit', 'Write', 'MultiEdit', 'NotebookEdit']);
+
 export function checkSkills(root) {
   const errors = [];
   const skillsDir = path.join(root, 'skills');
@@ -402,7 +419,7 @@ export function checkSkills(root) {
     } else {
       const nameMatch = frontmatter[1].match(/^name:\s*(.+)$/m);
       const descMatch = frontmatter[1].match(/^description:\s*(.+)$/m);
-      const allowedToolsMatch = frontmatter[1].match(/^allowed-tools:\s*(.+)$/m);
+      const allowedToolsLineMatch = frontmatter[1].match(/^allowed-tools:\s*(.*)$/m);
       const disableModelMatch = frontmatter[1].match(/^disable-model-invocation:\s*(.+)$/m);
 
       if (!nameMatch) errors.push(`skills/${skill}/SKILL.md: campo name ausente.`);
@@ -411,26 +428,37 @@ export function checkSkills(root) {
       if (!descMatch) errors.push(`skills/${skill}/SKILL.md: campo description ausente.`);
       else if (descMatch[1].trim().length > 500) errors.push(`skills/${skill}/SKILL.md: description excede 500 caracteres.`);
 
-      if (!allowedToolsMatch) {
+      if (!allowedToolsLineMatch) {
         errors.push(`skills/${skill}/SKILL.md: campo allowed-tools ausente no frontmatter.`);
       } else {
-        const allowedTools = allowedToolsMatch[1].split(',').map(t => t.trim());
-        const regConfig = registrySkills[skill];
-        if (regConfig?.permissions) {
-          if (regConfig.permissions.filesystem_write === 'deny') {
-            if (allowedTools.includes('Edit') || allowedTools.includes('Write')) {
-              errors.push(`skills/${skill}/SKILL.md: allowed-tools inclui ferramentas de escrita, mas registry define filesystem_write: deny.`);
+        const rawLine = allowedToolsLineMatch[1].trim();
+        if (!rawLine) {
+          const multilineListMatch = frontmatter[1].match(/^allowed-tools:\s*\r?\n((\s*-[^\r\n]+\r?\n?)+)/m);
+          if (multilineListMatch) {
+            errors.push(`skills/${skill}/SKILL.md: formato de lista não suportado em allowed-tools; use lista separada por vírgula em uma linha.`);
+          } else {
+            errors.push(`skills/${skill}/SKILL.md: campo allowed-tools ausente ou vazio no frontmatter.`);
+          }
+        } else {
+          const rawTools = splitAllowedTools(rawLine);
+          const allowedTools = rawTools.map(toolName);
+          const regConfig = registrySkills[skill];
+          if (regConfig?.permissions) {
+            if (regConfig.permissions.filesystem_write === 'deny') {
+              if (allowedTools.some(t => WRITE_TOOLS.has(t))) {
+                errors.push(`skills/${skill}/SKILL.md: allowed-tools inclui ferramentas de escrita, mas registry define filesystem_write: deny.`);
+              }
+            }
+            if (regConfig.permissions.local_exec === 'deny') {
+              if (allowedTools.includes('Bash')) {
+                errors.push(`skills/${skill}/SKILL.md: allowed-tools inclui Bash, mas registry define local_exec: deny.`);
+              }
             }
           }
-          if (regConfig.permissions.local_exec === 'deny') {
-            if (allowedTools.includes('Bash')) {
-              errors.push(`skills/${skill}/SKILL.md: allowed-tools inclui Bash, mas registry define local_exec: deny.`);
+          if (regConfig?.activation?.mode === 'explicit-opt-in' || regConfig?.risk_class === 'R3') {
+            if (!disableModelMatch || disableModelMatch[1].trim() !== 'true') {
+              errors.push(`skills/${skill}/SKILL.md: skill de risco R3 / explicit-opt-in deve definir disable-model-invocation: true.`);
             }
-          }
-        }
-        if (regConfig?.activation?.mode === 'explicit-opt-in' || regConfig?.risk_class === 'R3') {
-          if (!disableModelMatch || disableModelMatch[1].trim() !== 'true') {
-            errors.push(`skills/${skill}/SKILL.md: skill de risco R3 / explicit-opt-in deve definir disable-model-invocation: true.`);
           }
         }
       }
@@ -648,31 +676,90 @@ export function runDoctor(repositoryRoot) {
   return { results, errors: allErrors };
 }
 
+export function findRoot(start = process.cwd()) {
+  let d = path.resolve(start);
+  for (;;) {
+    if (fs.existsSync(path.join(d, 'registry', 'harness.yaml'))) return d;
+    const p = path.dirname(d);
+    if (p === d) return null;
+    d = p;
+  }
+}
+
 function main() {
-  const root = path.resolve('.');
-  process.stdout.write('==> Executando Harness Doctor (Diagnóstico Estrutural v2)...\n\n');
+  let rootDir = null;
+  let jsonOutput = false;
+
+  for (let i = 2; i < process.argv.length; i++) {
+    if (process.argv[i] === '--root') {
+      rootDir = process.argv[i + 1];
+      i++;
+    } else if (process.argv[i] === '--json') {
+      jsonOutput = true;
+    }
+  }
+
+  const root = rootDir ? path.resolve(rootDir) : findRoot(process.cwd());
+  if (!root || !fs.existsSync(root)) {
+    const msg = 'Diretório raiz do harness não encontrado (registry/harness.yaml ausente).';
+    if (jsonOutput) {
+      process.stdout.write(JSON.stringify({ status: 'FAIL', checks: [], errors: [msg] }, null, 2) + '\n');
+    } else {
+      process.stderr.write(`Erro: ${msg}\n`);
+    }
+    process.exitCode = 1;
+    return;
+  }
+
+  if (!jsonOutput) {
+    process.stdout.write('==> Executando Harness Doctor (Diagnóstico Estrutural v2)...\n\n');
+  }
 
   const { results, errors } = runDoctor(root);
 
+  const evalH1Errors = results.evalsH1.failures.map(f => `${f.id}: falhou em H1`);
+  const evalsDetail = `estrutura: ${results.evals.count} evals válidos; H1 executados: ${results.evalsH1.h1Passed}/${results.evalsH1.h1Executed}`;
+
+  const checkItems = [
+    { name: 'Registry', errors: results.registry.errors, detail: 'harness, skills, standards, runtimes, tooling' },
+    { name: 'Contracts', errors: results.contracts.errors, detail: 'schemas formais em contracts/' },
+    { name: 'Skills', errors: results.skills.errors, detail: 'capability packages em skills/' },
+    { name: 'Adapters', errors: results.adapters.errors, detail: 'paridade entre skills/, .agents/ e .claude/' },
+    { name: 'Evals', errors: [...results.evals.errors, ...evalH1Errors], detail: evalsDetail },
+    { name: 'Fixtures', errors: results.fixtureRefs.errors, detail: 'integridade referencial de fixtures' },
+    { name: 'Drift', errors: results.drift.errors, detail: 'paridade entre registry e documentação' }
+  ];
+
+  if (jsonOutput) {
+    const jsonResult = {
+      status: errors.length === 0 ? 'PASS' : 'FAIL',
+      checks: checkItems.map(c => ({
+        name: c.name,
+        status: c.errors.length === 0 ? 'PASS' : 'FAIL',
+        detail: c.detail,
+        errors: c.errors
+      }))
+    };
+    process.stdout.write(JSON.stringify(jsonResult, null, 2) + '\n');
+    process.exitCode = errors.length > 0 ? 1 : 0;
+    return;
+  }
+
   function printCheck(name, errs, detail = '') {
+    const detailSuffix = detail ? ` (${detail})` : '';
     if (errs.length === 0) {
-      process.stdout.write(`[PASS] ${name}${detail ? ` (${detail})` : ''}\n`);
+      process.stdout.write(`[PASS] ${name}${detailSuffix}\n`);
     } else {
-      process.stdout.write(`[FAIL] ${name} - ${errs.length} erro(s):\n`);
+      process.stdout.write(`[FAIL] ${name}${detailSuffix} - ${errs.length} erro(s):\n`);
       for (const e of errs) {
         process.stdout.write(`       - ${e}\n`);
       }
     }
   }
 
-  printCheck('Registry', results.registry.errors, 'harness, skills, standards, runtimes, tooling');
-  printCheck('Contracts', results.contracts.errors, 'schemas formais em contracts/');
-  printCheck('Skills', results.skills.errors, 'capability packages em skills/');
-  printCheck('Adapters', results.adapters.errors, 'paridade entre skills/, .agents/ e .claude/');
-  const evalH1Errors = results.evalsH1.failures.map(f => `${f.id}: falhou em H1`);
-  printCheck('Evals', [...results.evals.errors, ...evalH1Errors], `H0 ${results.evals.count}/${results.evals.count} PASS, H1 ${results.evalsH1.h1Passed}/${results.evalsH1.h1Executed} PASS`);
-  printCheck('Fixtures', results.fixtureRefs.errors, 'integridade referencial de fixtures');
-  printCheck('Drift', results.drift.errors, 'paridade entre registry e documentação');
+  for (const c of checkItems) {
+    printCheck(c.name, c.errors, c.detail);
+  }
 
   process.stdout.write('\n');
   if (errors.length > 0) {

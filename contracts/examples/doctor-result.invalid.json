@@ -1,0 +1,9 @@
+{
+  "status": "UNKNOWN_STATUS",
+  "checks": [
+    {
+      "name": "Registry",
+      "errors": []
+    }
+  ]
+}

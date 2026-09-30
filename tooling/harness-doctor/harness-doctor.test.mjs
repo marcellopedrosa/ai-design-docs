@@ -11,7 +11,10 @@ import {
   checkEvals,
   checkFixtureReferences,
   checkDrift,
-  parseSimpleYaml
+  parseSimpleYaml,
+  splitAllowedTools,
+  toolName,
+  findRoot
 } from './index.mjs';
 
 test('checkRegistry passes on repository root', () => {
@@ -257,3 +260,54 @@ test('checkContracts validates harness.project.yaml and harness.project.example.
 
   fs.rmSync(tmp, { recursive: true, force: true });
 });
+
+test('T-06: splitAllowedTools handles scoped tools and nested commas correctly', () => {
+  const tools = splitAllowedTools('Bash(git add:*, git commit:*), Read, Edit(foo:*)');
+  assert.deepStrictEqual(tools, [
+    'Bash(git add:*, git commit:*)',
+    'Read',
+    'Edit(foo:*)'
+  ]);
+  const names = tools.map(toolName);
+  assert.deepStrictEqual(names, ['Bash', 'Read', 'Edit']);
+});
+
+test('T-06: checkSkills rejects scoped Bash with local_exec: deny and MultiEdit with filesystem_write: deny', () => {
+  const root = path.resolve('.');
+  const tmp = fs.mkdtempSync(path.join(root, 'scratch-skills-scope-'));
+  fs.mkdirSync(path.join(tmp, 'registry'), { recursive: true });
+  fs.writeFileSync(path.join(tmp, 'registry', 'skills.yaml'), `
+schema_version: 1
+skills:
+  scope-skill:
+    status: active
+    permissions:
+      filesystem_write: deny
+      local_exec: deny
+`);
+  const skillDir = path.join(tmp, 'skills', 'scope-skill');
+  fs.mkdirSync(skillDir, { recursive: true });
+  fs.writeFileSync(path.join(skillDir, 'contract.yaml'), 'name: scope-skill\n');
+  fs.mkdirSync(path.join(skillDir, 'evals'), { recursive: true });
+  fs.writeFileSync(path.join(skillDir, 'evals', 'evals.json'), '{"evals":[{"id":"t1","category":"c","description":"d","input":"i","expected":"e","assertions":"a"}]}');
+
+  // Case 1: scoped Bash(rm:*) triggers local_exec: deny
+  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: scope-skill\ndescription: test\nallowed-tools: Bash(rm:*), Read\n---\n');
+  const res1 = checkSkills(tmp);
+  assert.ok(res1.errors.some(e => e.includes('allowed-tools inclui Bash')));
+
+  // Case 2: MultiEdit triggers filesystem_write: deny
+  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: scope-skill\ndescription: test\nallowed-tools: MultiEdit, Read\n---\n');
+  const res2 = checkSkills(tmp);
+  assert.ok(res2.errors.some(e => e.includes('ferramentas de escrita')));
+
+  fs.rmSync(tmp, { recursive: true, force: true });
+});
+
+test('T-11: findRoot locates repository root from nested subdirectory', () => {
+  const root = path.resolve('.');
+  const sub = path.join(root, 'tooling', 'harness-doctor');
+  const found = findRoot(sub);
+  assert.equal(found, root);
+});
+
