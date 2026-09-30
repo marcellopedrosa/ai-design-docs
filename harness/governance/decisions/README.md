@@ -31,8 +31,8 @@ principal_statement: Consulte este indice e abra somente os ADRs relacionados a 
 | ADR | Título | Status | Tema |
 | --- | --- | --- | --- |
 | [ADR-0000](ADR-0000-governanca-do-harness-documental.md) | `v1.4`: governança, adapters, standards, entrega Git e scripts opt-in | Accepted | Governança |
-| [ADR-0001](ADR-0001-boundary-harness-v5.md) | Boundary `harness/` V5 e ownership | Accepted | Migração estrutural |
-| [ADR-0002](ADR-0002-project-standards-boundary-v6.md) | Standards do projeto e metamodelo do harness | Accepted | Boundary V6 |
+| [ADR-0001](ADR-0001-boundary-harness-v5.md) | Boundary `harness/`  e ownership | Accepted | Migração estrutural |
+| [ADR-0002](ADR-0002-project-standards-boundary-v6.md) | Standards do projeto e metamodelo do harness | Accepted | Boundary  |
 
 ## Rotas temáticas
 
@@ -41,7 +41,7 @@ principal_statement: Consulte este indice e abra somente os ADRs relacionados a 
 | Taxonomia documental e bootstrap | [ADR-0000](ADR-0000-governanca-do-harness-documental.md) |
 | Readiness e assurance | [ADR-0000](ADR-0000-governanca-do-harness-documental.md) |
 | Adapters, skills e integração Git | [ADR-0000](ADR-0000-governanca-do-harness-documental.md) |
-| Boundary e migração V5 | [ADR-0001](ADR-0001-boundary-harness-v5.md) |
+| Boundary e migração  | [ADR-0001](ADR-0001-boundary-harness-v5.md) |
 | Ownership de standards do projeto | [ADR-0002](ADR-0002-project-standards-boundary-v6.md) |
 
 ## Change log

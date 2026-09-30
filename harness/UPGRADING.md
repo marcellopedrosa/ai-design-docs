@@ -2,7 +2,7 @@
 document_id: HARNESS-UPGRADING
 document_scope: harness
 primary_nature: Contexto
-objective: Orientar a adoção e a migração de layouts V4 para o boundary V5.
+objective: Orientar a adoção e a migração de layouts  para o boundary .
 scope: Ownership, paths canônicos, adapters, Registry, validação e rollback.
 non_objectives: Sobrescrever conteúdo project-owned, alterar semântica dos gates ou executar rede.
 owner: Mantenedores do harness
@@ -10,13 +10,13 @@ status: Active
 version: 1.0
 date: 2026-09-30
 last_reviewed: 2026-09-30
-keywords: upgrade, v5, migração, compatibilidade, rollback
+keywords: upgrade, , migração, compatibilidade, rollback
 related_files: README.md, governance/decisions/ADR-0001-boundary-harness-v5.md, ../docs/README.md, ../docs/architecture/module-registry.md
 code_references: tooling/harness.mjs, tooling/harness-doctor/index.mjs, tooling/adapters/sync-adapters.mjs
-principal_statement: Migre fonte canônica e consumidores juntos; só remova paths V4 após Doctor, testes, links e adapters passarem.
+principal_statement: Migre fonte canônica e consumidores juntos; só remova paths  após Doctor, testes, links e adapters passarem.
 ---
 
-# Atualização para o boundary V5
+# Atualização para o boundary
 
 ## Classificação e ownership
 
@@ -30,11 +30,11 @@ e só então remova a duplicata. Ambiguidade material bloqueia a movimentação.
 
 ## Mapeamento principal
 
-| V4 | V5 |
+|  |  |
 | --- | --- |
 | `registry/`, `contracts/`, `skills/`, `evals/`, `tooling/`, `adapters/` | `harness/<mesmo-nome>/` |
 | `docs/scripts/` | `harness/tooling/validators/` |
-| `docs/agents/standards/` | `docs/agents/standards/` (V6: conteúdo do projeto, não da governança do harness) |
+| `docs/agents/standards/` | `docs/agents/standards/` (: conteúdo do projeto, não da governança do harness) |
 | `docs/agents/` e `docs/settings/` | `harness/governance/agents/`, `harness/governance/policies/` e `harness/adapters/` conforme ownership |
 | `docs/adrs/` de governança do harness | `harness/governance/decisions/` |
 | `docs/templates/` | `harness/templates/` |
@@ -65,13 +65,13 @@ fica em [examples/](examples/harness.project.example.yaml).
 
 Se um lote falhar, preserve o trabalho local e volte o lote inteiro para os
 paths anteriores usando o inventário e a branch de trabalho. Não deixe Registry
-V5 apontando para tooling V4 nem adapters de versões diferentes. Reexecute os
+ apontando para tooling  nem adapters de versões diferentes. Reexecute os
 mesmos checks e registre causa, owner e condição de retomada. A migração não
 autoriza force-push, produção, dados reais ou bypass de segurança.
 
-## Adoção V6 — manifesto, profiles e routes
+## Adoção  — manifesto, profiles e routes
 
-O V6 acrescenta uma cadeia independente de `harness.project.yaml`:
+O  acrescenta uma cadeia independente de `harness.project.yaml`:
 
 ```text
 docs/project-manifest.yaml
@@ -94,11 +94,11 @@ inventário e aprovar profiles, crie o manifesto; `LEGACY_LOCATION` requer uma
 migração manual documentada. Não faça `--create` como substituto de revisão.
 
 Atualização do harness: preserve os seis registries existentes e acrescente
-`profiles.yaml` e `artifact-routes.yaml`. Valide os três schemas V6, execute os
+`profiles.yaml` e `artifact-routes.yaml`. Valide os três schemas , execute os
 testes, Doctor e scaffold check. Não copie os standards do projeto-fonte como
 decisões universais: o projeto adotante responde por seu conteúdo. A route de
 `requirement` neste repositório é `docs/product/requirements/`, preservando a
-coleção V5; o exemplo `docs/requirements/` do plano V6 não cria uma segunda fonte.
+coleção ; o exemplo `docs/requirements/` do plano  não cria uma segunda fonte.
 
 Um piloto hermético é executado pelos testes do scaffold com manifestos
 frontend, backend e fullstack. A adoção por uma squad real ainda exige seu

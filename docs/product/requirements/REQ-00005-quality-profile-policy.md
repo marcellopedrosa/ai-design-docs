@@ -19,7 +19,7 @@ principal_statement: O core deve validar metricas somente com politica explicita
 
 ## Origem
 
-FIX-005 e FIX-006 do plano V4; PRD não aplicável por ser portabilidade do harness. ADR-0000 Accepted.
+FIX-005 e FIX-006 do plano ; PRD não aplicável por ser portabilidade do harness. ADR-0000 Accepted.
 
 ## User Story View
 
@@ -35,4 +35,4 @@ Como projeto adotante, quero escolher relatórios e thresholds de cobertura por 
 
 ## Contrato e aprovação
 
-Política local JSON mínima com `coverage.format`, `coverage.reports`, `coverage.thresholds` opcionais e `delivery.protectedBranches` obrigatório apenas em modo delivery; `delivery.branchPattern` é opcional. Sem perguntas abertas; profile ausente significa coverage não ativada, não PASS de cobertura. Aprovado pelo mantenedor em 2026-09-30 com “aplique o v4”, que inclui FIX-005/006.
+Política local JSON mínima com `coverage.format`, `coverage.reports`, `coverage.thresholds` opcionais e `delivery.protectedBranches` obrigatório apenas em modo delivery; `delivery.branchPattern` é opcional. Sem perguntas abertas; profile ausente significa coverage não ativada, não PASS de cobertura. Aprovado pelo mantenedor em 2026-09-30 com “aplicação ”, que inclui FIX-005/006.

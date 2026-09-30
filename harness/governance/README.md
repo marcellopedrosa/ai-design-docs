@@ -36,7 +36,7 @@ Fonte inferior especializa seu escopo, mas não reduz segurança ou gates.
 - [Standards do projeto](../../docs/agents/standards/README.md): conteúdo local,
   descoberto pelo Registry e ativado por escopo e risco.
 - [Policies](policies/README.md): ambiente, permissões, documentação e Git.
-- [Decisões](decisions/README.md): ADR-0000, boundary V5 e ownership V6.
+- [Decisões](decisions/README.md): ADR-0000, boundary  e ownership .
 
 Para produto, consulte [docs/](../../docs/README.md). Para capabilities executáveis,
 consulte [skills/](../skills/README.md) e

@@ -2,7 +2,7 @@
 document_id: HARNESS-VALIDATORS
 document_scope: harness
 primary_nature: Contexto
-objective: Catalogar os validadores determinísticos do control plane V5.
+objective: Catalogar os validadores determinísticos do control plane .
 scope: Validadores e testes em harness/tooling/validators/.
 non_objectives: Ativar comandos de projeto adotante sem configuração própria.
 owner: Arquitetura e Qualidade
@@ -10,7 +10,7 @@ status: Active
 version: 0.1
 date: 2026-09-30
 last_reviewed: 2026-09-30
-keywords: harness, tooling, validators, v5
+keywords: harness, tooling, validators,
 related_files: ../README.md, automation-contract.md
 code_references: validate-documentation-governance.mjs, validate-quality-policy.mjs, validate-quality-metrics.mjs, validate-plan-granularity.mjs, validate-api-contract-coverage.mjs, validate-google-runtime-governance.mjs
 principal_statement: Os validadores do harness residem no control plane e somente verificações aplicáveis ao projeto são ativadas.

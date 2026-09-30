@@ -1,4 +1,4 @@
-// Deliberately small YAML subset for the V6 manifest and registries. Unsupported
+// Deliberately small YAML subset for the  manifest and registries. Unsupported
 // syntax fails closed instead of being silently reinterpreted.
 export function parseYamlSubset(source, label = '<yaml>') {
   const lines = source.split(/\r?\n/).map((raw, index) => ({ raw, number: index + 1 }))

@@ -2,7 +2,7 @@
 document_id: ARCHITECTURE-SCAFFOLD-TEMPLATES-INDEX
 document_scope: harness
 primary_nature: Contexto
-objective: Indexar template arquitetural V6.
+objective: Indexar template arquitetural .
 scope: Forma inicial de documento arquitetural do projeto.
 non_objectives: Decidir topologia ou tecnologia do projeto.
 owner: Mantenedores do harness

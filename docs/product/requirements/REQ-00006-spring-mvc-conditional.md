@@ -19,7 +19,7 @@ principal_statement: O validador Spring MVC deve executar somente quando o profi
 
 ## Origem e User Story View
 
-FIX-007 do plano V4; PRD não aplicável, por ser portabilidade do harness. Como projeto adotante não-Spring, quero que o validador especializado seja pulado explicitamente, sem falso PASS nem erro de framework ausente.
+FIX-007 do plano ; PRD não aplicável, por ser portabilidade do harness. Como projeto adotante não-Spring, quero que o validador especializado seja pulado explicitamente, sem falso PASS nem erro de framework ausente.
 
 ## Acceptance Criteria
 
@@ -30,4 +30,4 @@ FIX-007 do plano V4; PRD não aplicável, por ser portabilidade do harness. Como
 
 ## Contrato e aprovação
 
-Ativação por `--profile java-spring` explícito; sem pergunta ou assumption aberta. Aprovado pelo mantenedor em 2026-09-30 ao pedir “aplique o v4”, incluindo FIX-007.
+Ativação por `--profile java-spring` explícito; sem pergunta ou assumption aberta. Aprovado pelo mantenedor em 2026-09-30 ao pedir “aplicação ”, incluindo FIX-007.

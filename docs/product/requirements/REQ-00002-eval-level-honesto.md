@@ -19,7 +19,7 @@ principal_statement: O runner deve rejeitar com erro e exit code nao zero todo n
 
 ## Origem e rastreabilidade
 
-- Origem: FIX-002 do plano V4 fornecido pelo usuário e ordem explícita “aplique o v4”.
+- Origem: FIX-002 do plano fornecido pelo usuário e ordem explícita “aplicação ”.
 - PRD: não aplicável; correção de integridade do tooling do harness.
 - Decisões superiores: ADR-0000 e ADR-0001 Accepted.
 
@@ -57,4 +57,4 @@ Nenhuma aberta. H1 é o único executor real verificado no código atual.
 
 | Approver | Decisão | Data | Evidência |
 | --- | --- | --- | --- |
-| Mantenedor humano | Approved | 2026-09-30 | Pedido explícito “aplique o v4”, que inclui FIX-002 e seu critério de não retornar PASS por H1. |
+| Mantenedor humano | Approved | 2026-09-30 | Pedido explícito “aplicação ”, que inclui FIX-002 e seu critério de não retornar PASS por H1. |

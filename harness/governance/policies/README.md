@@ -63,7 +63,7 @@ do agente especializa responsabilidades sem contrariar as camadas superiores.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
-| 1.7 | 2026-09-30 | Adiciona a policy de comportamento do agente e as restrictions universais V7. |
+| 1.7 | 2026-09-30 | Adiciona a policy de comportamento do agente e as restrictions universais . |
 | 1.6 | 2026-09-29 | Registra o mapeamento de .claude/settings.json e hooks determinísticos de enforcement. |
 | 1.5 | 2026-09-23 | Torna obrigatório publicar na branch de trabalho definida todo commit solicitado. |
 | 1.4 | 2026-09-23 | Indexa a política local de integração Git e proteção da `main`. |

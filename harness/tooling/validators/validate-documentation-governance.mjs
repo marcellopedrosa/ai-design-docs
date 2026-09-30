@@ -1384,7 +1384,7 @@ export function validateRepository(repositoryRoot) {
     }
   }
 
-  // V5: harness/ is a separate canonical documentation tree, not a docs/ subcollection.
+  // : harness/ is a separate canonical documentation tree, not a docs/ subcollection.
   const harnessMarkdown = walkFiles(path.join(root, 'harness')).filter((file) => file.endsWith('.md')).sort();
   for (const file of harnessMarkdown) {
     const content = fs.readFileSync(file, 'utf8');

@@ -19,7 +19,7 @@ principal_statement: O validador Google deve ser opt-in e exigir adapters de pac
 
 ## Origem e User Story View
 
-FIX-008 do plano V4; PRD não aplicável por ser portabilidade do harness. Como projeto sem módulos Google ativos, quero evitar falha por adapters de scaffolds, mantendo validação quando ativada.
+FIX-008 do plano ; PRD não aplicável por ser portabilidade do harness. Como projeto sem módulos Google ativos, quero evitar falha por adapters de scaffolds, mantendo validação quando ativada.
 
 ## Acceptance Criteria
 
@@ -31,4 +31,4 @@ FIX-008 do plano V4; PRD não aplicável por ser portabilidade do harness. Como 
 
 ## Contrato e aprovação
 
-Ativação por `--profile google-runtime` e `--package <nome>` repetível para cada módulo ativo; o invocador deve usar o manifesto de módulos como fonte dos nomes. Sem pergunta aberta: o usuário escolheu exigir adapters apenas de módulos ativados. Aprovado em 2026-09-30 ao pedir “aplique o v4”.
+Ativação por `--profile google-runtime` e `--package <nome>` repetível para cada módulo ativo; o invocador deve usar o manifesto de módulos como fonte dos nomes. Sem pergunta aberta: o usuário escolheu exigir adapters apenas de módulos ativados. Aprovado em 2026-09-30 ao pedir “aplicação ”.
