@@ -66,6 +66,12 @@ efetivas do repositório.
 Não escreva diretamente ou faça force-push na `main`; não leia segredos ou
 credenciais; não descarte trabalho válido de outra branch.
 
+## Garantia técnica por runtime
+
+- **Claude Code**: Controle de invocação implícita imposto tecnicamente por `disable-model-invocation: true` e restrição de ferramentas por `allowed-tools`.
+- **Codex / Gemini CLI / Antigravity**: O opt-in e o controle de invocação NÃO são garantidos tecnicamente pelo runtime (marcados como `unsupported` ou `unknown` no registry). O confinamento depende estritamente do cumprimento das instruções da tarefa e das políticas do projeto.
+
+
 ## Evidência e portabilidade
 
 Registre a política aplicada, branches, paths, comandos, SHA, gates, conflitos,

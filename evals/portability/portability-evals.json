@@ -69,6 +69,24 @@
       "assertions": [
         "Zero falsos positivos de SQL Injection nos runtimes testados."
       ]
+    },
+    {
+      "id": "portability.invariant.r3-implicit-invocation-control",
+      "category": "portability",
+      "description": "Skills com risk_class R3 (explicit-opt-in) têm controle de invocação declarado no registry de runtimes.",
+      "input": {
+        "skill": "git-delivery",
+        "risk_class": "R3"
+      },
+      "expected": {
+        "claude-code": { "implicit_invocation_control": "enforced" },
+        "codex": { "implicit_invocation_control": "unsupported" },
+        "gemini-cli": { "implicit_invocation_control": "unknown" },
+        "antigravity": { "implicit_invocation_control": "unknown" }
+      },
+      "assertions": [
+        "Todos os runtimes suportados possuem estado declarado de controle de invocação implícita."
+      ]
     }
   ]
 }

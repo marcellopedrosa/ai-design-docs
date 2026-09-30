@@ -8,6 +8,8 @@ runtimes:
     skill_target: ".agents/skills"
     supports_import: false
     sandbox_required: false
+    tool_restriction: unsupported
+    implicit_invocation_control: unsupported
 
   claude-code:
     status: supported
@@ -16,6 +18,8 @@ runtimes:
     skill_target: ".claude/skills"
     supports_import: true
     sandbox_required: false
+    tool_restriction: enforced
+    implicit_invocation_control: enforced
 
   gemini-cli:
     status: supported
@@ -26,6 +30,8 @@ runtimes:
     imports:
       - "AGENTS.md"
     sandbox_required: false
+    tool_restriction: unsupported
+    implicit_invocation_control: unknown
 
   antigravity:
     status: supported
@@ -37,3 +43,5 @@ runtimes:
       - "AGENTS.md"
     runtime_verification_required: true
     sandbox_required: true
+    tool_restriction: enforced
+    implicit_invocation_control: unknown

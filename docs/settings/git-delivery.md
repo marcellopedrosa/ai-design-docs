@@ -6,9 +6,9 @@ scope: Branches, commits, publicacao, revisao e integracao de mudancas deste pro
 non_objectives: Nao definir fluxo de produto, convencao universal de nomes ou acesso a credenciais.
 owner: Mantenedores do projeto
 status: Active
-version: 1.1
+version: 1.2
 date: 2026-09-23
-last_reviewed: 2026-09-23
+last_reviewed: 2026-09-30
 keywords: git, branches, multiagentes, integracao, main, pull-request
 related_files: settings.md, ../adrs/ADR-0000-governanca-do-harness-documental.md, ../../AGENTS.md, ../../.agents/skills/git-delivery/SKILL.md
 code_references: N/A - politica documental.
@@ -87,9 +87,15 @@ resultado dos gates, metodo e referencia de integracao, conflitos resolvidos e
 pendencias. Operacoes Git seguem ainda as permissoes efetivas do ambiente e as
 protecões configuradas no servidor.
 
+## Garantia técnica de ativação por runtime
+
+- Em runtimes com suporte técnico nativo (ex: Claude Code via `disable-model-invocation: true`), a invocação implícita da skill de entrega Git é bloqueada pelo runtime.
+- Em runtimes onde o controle de invocação é `unsupported` ou `unknown` (ex: OpenAI Codex, Google Gemini CLI, Antigravity), o opt-in **não** é garantido tecnicamente pelo runtime e depende estritamente de controle por instrução e autorização explícita da tarefa antes de qualquer comando de escrita Git.
+
 ## Change log
 
 | Versao | Data | Mudanca |
 | --- | --- | --- |
+| 1.2 | 2026-09-30 | Esclarece garantias tecnicas de opt-in por runtime. |
 | 1.1 | 2026-09-23 | Torna obrigatorio publicar na branch de trabalho todo commit solicitado, mantendo a `main` protegida. |
 | 1.0 | 2026-09-23 | Define integracao multiagente e protecao da branch principal. |

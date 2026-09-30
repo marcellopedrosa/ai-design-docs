@@ -251,6 +251,38 @@ export function evaluateCaseH1(evalCase, evalFilePath, root) {
       const pass = runtimes.every(r => expected[r]?.status === 'FAIL');
       return { eligible: true, pass, actual: { all_runtimes: 'FAIL' } };
     }
+    if (evalCase.id === 'portability.invariant.r3-implicit-invocation-control') {
+      const runtimesPath = path.join(root, 'registry', 'runtimes.yaml');
+      const actual = {};
+      let pass = false;
+      if (fs.existsSync(runtimesPath)) {
+        const content = fs.readFileSync(runtimesPath, 'utf8');
+        const lines = content.split(/\r?\n/);
+        let currentRuntime = null;
+        const rData = {};
+        for (const line of lines) {
+          const rMatch = line.match(/^  ([a-z0-9_-]+):\s*$/);
+          if (rMatch) {
+            currentRuntime = rMatch[1];
+            rData[currentRuntime] = {};
+            continue;
+          }
+          if (currentRuntime) {
+            const propMatch = line.match(/^    ([a-z0-9_-]+):\s*(.+)$/);
+            if (propMatch) {
+              rData[currentRuntime][propMatch[1]] = propMatch[2].trim().replace(/^["']|["']$/g, '');
+            }
+          }
+        }
+        const runtimes = ['claude-code', 'codex', 'gemini-cli', 'antigravity'];
+        pass = runtimes.every(r => {
+          const val = rData[r]?.implicit_invocation_control;
+          actual[r] = { implicit_invocation_control: val };
+          return val === expected[r]?.implicit_invocation_control;
+        });
+      }
+      return { eligible: true, pass, actual };
+    }
   }
 
   // Não elegível para H1 (exige LLM / H2+)
