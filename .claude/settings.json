@@ -22,6 +22,10 @@
       {
         "matcher": "Edit|Write|MultiEdit",
         "command": "node tooling/hooks/guard-paths.mjs"
+      },
+      {
+        "matcher": "Bash",
+        "command": "node tooling/hooks/guard-bash.mjs"
       }
     ],
     "Stop": [

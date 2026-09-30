@@ -6,9 +6,9 @@ scope: Agentes ativos, gatilhos, owners, standards, skills e handoffs.
 non_objectives: Não registrar personas decorativas, ativar agentes por tecnologia ou duplicar instruções dos runtimes.
 owner: Arquitetura e Plataforma de IA
 status: Active
-version: 1.3
+version: 1.4
 date: 2026-09-10
-last_reviewed: 2026-09-29
+last_reviewed: 2026-09-30
 keywords: agentes, orquestrador, bootstrap, papeis, catalogo, handoff, entrega-git, gate-evaluator, subagente
 related_files: AgentOrchestrator.md, GateEvaluator.md, skills/README.md, standards/README.md, ../settings/settings.md, ../templates/TPL-00011-agent.md
 code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md
@@ -47,6 +47,7 @@ estritas de leitura e execução de testes.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.4 | 2026-09-30 | Atualiza referências do subagente executável GateEvaluator para Claude Code. |
 | 1.3 | 2026-09-29 | Registra o subagente especializado GateEvaluator com ferramentas restritas para isolamento de gates. |
 | 1.2 | 2026-09-13 | Registra o roteamento condicional de entrega Git pelo agente inicial. |
 | 1.1 | 2026-09-11 | Define AgentOrchestrator como único agente inicial e mantém papéis especializados sob ativação explícita. |

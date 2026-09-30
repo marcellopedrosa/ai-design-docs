@@ -143,6 +143,7 @@ adapters/{README.md,core-policy.md}
 examples/profiles/java-spring.yaml
 .agents/rules/documentation-governance.md
 .agents/skills/{governanca-documental,implementation-readiness,quality-gate,security-gate,git-delivery,antigravity-permissions}/SKILL.md
+.claude/agents/GateEvaluator.md
 .claude/skills/{governanca-documental,implementation-readiness,quality-gate,security-gate,git-delivery,antigravity-permissions}/SKILL.md
 backend/README.md
 frontend/README.md

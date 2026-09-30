@@ -6,12 +6,12 @@ scope: Execução de suites de verificação, coleta determinística de evidênc
 non_objectives: Não modificar código-fonte, não aplicar fixes diretos, não conceder waivers e não autorizar release.
 owner: Qualidade e Segurança
 status: Active
-version: 1.0
+version: 1.1
 date: 2026-09-29
-last_reviewed: 2026-09-29
+last_reviewed: 2026-09-30
 keywords: subagente, gate-evaluator, avaliador, isolamento, menor-privilegio, quality-gate, security-gate
 related_files: AgentOrchestrator.md, README.md, standards/software-quality-standard.md, ../../contracts/gate-result.schema.json, ../../contracts/evidence.schema.json
-code_references: ../../contracts/gate-result.schema.json, ../../contracts/evidence.schema.json, ../../tooling/hooks/
+code_references: ../../contracts/gate-result.schema.json, ../../contracts/evidence.schema.json, ../../tooling/hooks/, ../../.claude/agents/GateEvaluator.md
 principal_statement: O GateEvaluator é um subagente de auditoria com ferramentas restritas a leitura e execução controlada de testes, vedado de escrita de código.
 ---
 
@@ -70,6 +70,22 @@ principal_statement: O GateEvaluator é um subagente de auditoria com ferramenta
 | GateEvaluator | quality-gate | Conclusão de subgate | GateResult com evidências e findings |
 | GateEvaluator | AgentOrchestrator | Conclusão ou bloqueio | GateResult consolidado e handoff formal |
 
+## Aplicação por runtime
+
+- **Claude Code**: Imposto tecnicamente por subagente dedicado em `.claude/agents/GateEvaluator.md` com ferramentas restritas (`tools: Read, Grep, Glob, Bash` — sem ferramentas de edição) e hook `PreToolUse` em `tooling/hooks/guard-bash.mjs` que intercepta e bloqueia comandos Bash de escrita ou mutação de repositório. A definição executável do subagente reside em `.claude/agents/GateEvaluator.md`, sendo específica para o runtime Claude Code.
+- **Codex / Gemini CLI / Antigravity**: Isolamento NÃO garantido tecnicamente pelo runtime (execução por melhor esforço com base em precedência de instruções normativas).
+
+O `GateResult` emitido deve registrar no campo `isolation`:
+- `enforced`: quando executado com garantias técnicas ativas de isolamento (Claude Code via subagente e hooks).
+- `best-effort`: quando executado sem garantias técnicas do runtime (Codex, Gemini CLI, Antigravity).
+
 ## Critério de conclusão
 
 GateResult emitido e validado contra `contracts/gate-result.schema.json`, com todas as evidências registradas e sem modificação residual no workspace.
+
+## Change log
+
+| Versão | Data | Mudança |
+| --- | --- | --- |
+| 1.1 | 2026-09-30 | Adiciona seção de aplicação por runtime, subagente executável Claude Code e campo isolation. |
+| 1.0 | 2026-09-29 | Criação do papel GateEvaluator como subagente isolado de assurance. |

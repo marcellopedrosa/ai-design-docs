@@ -505,6 +505,42 @@ export function checkAdapters(root) {
   return { errors };
 }
 
+export function checkAgents(root) {
+  const errors = [];
+  const claudeAgentsDir = path.join(root, '.claude', 'agents');
+  if (!fs.existsSync(claudeAgentsDir)) return { errors: [] };
+
+  const entries = fs.readdirSync(claudeAgentsDir, { withFileTypes: true });
+  for (const entry of entries) {
+    if (entry.isFile() && entry.name.endsWith('.md')) {
+      const fullPath = path.join(claudeAgentsDir, entry.name);
+      try {
+        const content = fs.readFileSync(fullPath, 'utf8');
+        const fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+        if (!fmMatch) {
+          errors.push(`.claude/agents/${entry.name}: frontmatter YAML ausente.`);
+          continue;
+        }
+        const fm = fmMatch[1];
+        const toolsMatch = fm.match(/^tools:\s*(.*)$/m);
+        if (toolsMatch) {
+          const rawTools = splitAllowedTools(toolsMatch[1]);
+          const toolNames = rawTools.map(toolName);
+          for (const t of toolNames) {
+            if (WRITE_TOOLS.has(t)) {
+              errors.push(`.claude/agents/${entry.name}: subagente inclui ferramenta de escrita '${t}'.`);
+            }
+          }
+        }
+      } catch (err) {
+        errors.push(`.claude/agents/${entry.name}: erro ao processar: ${err.message}`);
+      }
+    }
+  }
+
+  return { errors };
+}
+
 export function checkEvals(root) {
   const errors = [];
   const evalIds = new Set();
@@ -842,6 +878,7 @@ export function runDoctor(repositoryRoot) {
     contracts: checkContracts(root),
     skills: checkSkills(root),
     adapters: checkAdapters(root),
+    agents: checkAgents(root),
     evals: checkEvals(root),
     evalsH1: runEvalsH1(root),
     fixtureRefs: checkFixtureReferences(root),
@@ -857,6 +894,7 @@ export function runDoctor(repositoryRoot) {
     ...results.contracts.errors,
     ...results.skills.errors,
     ...results.adapters.errors,
+    ...results.agents.errors,
     ...results.evals.errors,
     ...results.evalsH1.failures.map(f => `eval ${f.id} falhou no nível H1`),
     ...results.fixtureRefs.errors,
@@ -919,6 +957,7 @@ function main() {
     { name: 'Contracts', errors: results.contracts.errors, detail: 'schemas formais em contracts/' },
     { name: 'Skills', errors: results.skills.errors, detail: 'capability packages em skills/' },
     { name: 'Adapters', errors: results.adapters.errors, detail: 'paridade entre skills/, .agents/ e .claude/' },
+    { name: 'Agents', errors: results.agents.errors, detail: 'configurações e permissões de subagentes' },
     { name: 'Evals', errors: [...results.evals.errors, ...evalH1Errors], detail: evalsDetail },
     { name: 'Fixtures', errors: results.fixtureRefs.errors, detail: 'integridade referencial de fixtures' },
     { name: 'Links', errors: results.links.errors, detail: 'links relativos em documentos markdown' },

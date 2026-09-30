@@ -45,6 +45,11 @@
       "items": { "type": "string" },
       "description": "Standards verificados."
     },
+    "isolation": {
+      "type": "string",
+      "enum": ["enforced", "best-effort"],
+      "description": "Garantia técnica de isolamento do executor (enforced via subagente/hooks ou best-effort via instrução)."
+    },
     "subgates": {
       "type": "object",
       "properties": {

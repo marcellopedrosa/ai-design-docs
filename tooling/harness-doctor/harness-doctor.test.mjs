@@ -19,7 +19,8 @@ import {
   expandBraces,
   checkDistributedTree,
   checkAgentIndex,
-  checkVersionParity
+  checkVersionParity,
+  checkAgents
 } from './index.mjs';
 
 test('checkRegistry passes on repository root', () => {
@@ -397,4 +398,25 @@ test('T-04: checkVersionParity detects divergent versions', () => {
   assert.ok(errors.some(e => e.includes('divergência entre')));
   fs.rmSync(tmp, { recursive: true, force: true });
 });
+
+test('T-07: checkAgents passes on repository root', () => {
+  const root = path.resolve('.');
+  const { errors } = checkAgents(root);
+  assert.equal(errors.length, 0, `Agent errors: ${errors.join(', ')}`);
+});
+
+test('T-07: checkAgents rejects subagent with write tools', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hd-agents-'));
+  const claudeAgentsDir = path.join(tmp, '.claude', 'agents');
+  fs.mkdirSync(claudeAgentsDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(claudeAgentsDir, 'BadAgent.md'),
+    '---\nname: BadAgent\ntools: Read, Edit, Bash\n---\n# Bad Agent\n'
+  );
+  const { errors } = checkAgents(tmp);
+  assert.equal(errors.length, 1);
+  assert.ok(errors[0].includes("subagente inclui ferramenta de escrita 'Edit'"));
+  fs.rmSync(tmp, { recursive: true, force: true });
+});
+
 
