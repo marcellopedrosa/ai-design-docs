@@ -12,6 +12,9 @@ Este diretório contém ferramentas determinísticas portáteis, entrypoints de 
 
 - [`harness-doctor/index.mjs`](harness-doctor/index.mjs): Diagnóstico estrutural unificado do harness (registry, contracts, skills, adapters, evals e detecção de drift).
 - [`adapters/sync-adapters.mjs`](adapters/sync-adapters.mjs): Sincronizador determinístico e verificador de paridade entre a fonte canônica `skills/` e as distribuições `.agents/` e `.claude/`.
+- [`contracts/validator.mjs`](contracts/validator.mjs): Validador estrutural e sintático fail-closed para JSON Schema (Draft-07) e instâncias.
+- [`eval-runner/index.mjs`](eval-runner/index.mjs): Runner determinístico de evals do harness (H0 e H1).
+- [`hooks/`](hooks/): Hooks de ciclo de vida e guardrails de execução (ex.: `guard-paths.mjs`, `require-handoff.mjs`).
 
 ## Execução
 

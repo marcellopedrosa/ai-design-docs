@@ -138,7 +138,7 @@ registry/{README.md,harness.yaml,skills.yaml,standards.yaml,runtimes.yaml,toolin
 contracts/{README.md,*.schema.json}
 skills/{governanca-documental,implementation-readiness,quality-gate,security-gate,git-delivery,antigravity-permissions}/
 evals/{README.md,schema/,lifecycle/,orchestration/,permissions/,portability/,regression/}
-tooling/{README.md,harness-doctor/,adapters/}
+tooling/{README.md,harness-doctor/,adapters/,contracts/,eval-runner/,hooks/}
 adapters/{README.md,core-policy.md}
 examples/profiles/java-spring.yaml
 .agents/rules/documentation-governance.md
