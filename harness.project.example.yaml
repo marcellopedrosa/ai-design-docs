@@ -13,7 +13,8 @@ runtimes:
   - antigravity
 
 capabilities:
-  git_delivery: true
+  # opt-in: habilite somente apos aceitar a politica local
+  git_delivery: false
 
 standards:
   baseline:

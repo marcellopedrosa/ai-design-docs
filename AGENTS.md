@@ -55,12 +55,12 @@ Este arquivo é a fonte única; `CLAUDE.md` e `GEMINI.md` o importam.
 - Instalação, download, rede, sistema externo, exclusão ampla ou ação irreversível
   exigem autorização explícita.
 - Não acesse produção, dados reais, segredos ou credenciais.
-- Git de escrita e operações de integração são autorizados conforme
-  `docs/settings/git-delivery.md`, preservando a proteção da `main`.
-- Trabalhos devem ocorrer em branches separadas. PR, merge, rebase, push e outras
-  operações Git podem integrar trabalhos quando respeitarem a política local e os
-  gates aplicáveis. É proibido escrever diretamente na `main` ou fazer force-push
-  nela.
+- Git de escrita (commit, push, PR, merge, rebase) está **bloqueado por padrão**.
+  Só é permitido quando o projeto adotou `git-delivery` (capacidade `git_delivery: true`
+  no manifesto **e** `docs/settings/git-delivery.md` aceito **e** hook local ativo) e
+  o usuário solicitou a operação.
+- Mesmo com adoção: trabalho apenas em branch separada; proibido escrever direto na
+  `main` ou fazer force-push nela; gates aplicáveis devem estar `PASS`.
 - A skill `git-delivery` não bloqueia paths, funcionalidades ou artefatos novos ou
   alterados apenas por serem novos; conflitos e falhas de gate devem ser tratados
   sem descartar trabalho válido.
