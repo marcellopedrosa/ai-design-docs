@@ -1,4 +1,6 @@
-# Instruções globais do projeto para agentes de IA
+# Instruções globais do projeto (todos os runtimes)
+
+Este arquivo é a fonte única; `CLAUDE.md` e `GEMINI.md` o importam.
 
 ## Entrada documental
 

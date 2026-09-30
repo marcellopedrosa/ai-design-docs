@@ -106,8 +106,8 @@ primeiro commit de adoção:
    [`docs/automation/README.md`](docs/automation/README.md). Enquanto eles não
    existirem, reporte `Automação não configurada`; não declare um gate automático
    como aprovado por inspeção subjetiva.
-10. Revise `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` e a regra Antigravity para manter
-   equivalência sem inserir regras de stack que pertençam a um pacote específico.
+10. Revise `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` e a regra Antigravity; os
+   adaptadores importam `AGENTS.md` (o doctor verifica o import) — não insira regras de stack que pertençam a um pacote específico.
 11. Se usar Antigravity, configure a regra de workspace como `Always On`, habilite o
    sandbox e confira permissões conforme
    [`docs/settings/google-gemini.md`](docs/settings/google-gemini.md). Se usar

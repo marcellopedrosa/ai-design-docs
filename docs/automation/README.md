@@ -6,9 +6,9 @@ scope: Governanca documental, readiness verificavel, quality gates e evidencias.
 non_objectives: Nao fornecer scripts, escolher stack, executar comandos ou simular automacao ausente.
 owner: Plataforma, Arquitetura e Qualidade
 status: Active
-version: 1.5
+version: 1.6
 date: 2026-09-10
-last_reviewed: 2026-09-28
+last_reviewed: 2026-09-30
 keywords: automacao, validadores, contratos, quality-gate, agentes, standards, gemini, antigravity, tooling, doctor
 related_files: ../adrs/ADR-0000-governanca-do-harness-documental.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/standards/software-quality-standard.md, ../scripts/README.md, ../settings/google-gemini.md, ../../contracts/README.md, ../../registry/README.md, ../../tooling/README.md
 code_references: ../scripts/ - extensao migrada, ainda sem ativacao portatil.
@@ -47,7 +47,7 @@ Deve validar, no mínimo:
 - inventário individual da biblioteca de standards e ativação diferenciada de
   disponibilidade;
 - paridade semântica e nomes das skills pareadas;
-- equivalência dos adaptadores globais, import de `AGENTS.md` por `GEMINI.md` e
+- adaptadores globais importam `AGENTS.md` (o doctor verifica o import) e
   presença/limite da regra Antigravity;
 - ausência de segredos e referências específicas indevidas;
 - manifesto coerente com os módulos ativos;
@@ -116,6 +116,7 @@ comprovar os arquivos versionados e deve reportar essa fronteira.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.6 | 2026-09-30 | Atualiza requisito de adaptadores para import explícito de `AGENTS.md` verificado pelo doctor. |
 | 1.5 | 2026-09-28 | Conecta o contrato de automação ao tooling determinístico, registry e contracts do harness v2. |
 | 1.4 | 2026-09-13 | Vincula a implementação opcional de validadores a `docs/scripts/` sem ativá-la por presença. |
 | 1.3 | 2026-09-13 | Acrescenta o contrato opt-in e fail-closed para entrega Git governada. |
