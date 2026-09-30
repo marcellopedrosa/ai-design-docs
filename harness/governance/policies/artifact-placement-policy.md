@@ -18,6 +18,20 @@ principal_statement: O Registry define paths executáveis; esta política apenas
 
 # Artifact Placement Policy
 
+## Purpose
+
+Definir as regras de localização dos artefatos produzidos ou utilizados pelo harness.
+
+## Canonical Routing Source
+
+A fonte executável de roteamento é:
+
+`harness/registry/artifact-routes.yaml`
+
+Este documento existe para orientação humana e não deve ser utilizado como parser de configuração.
+
+## Placement Rules
+
 | Tipo | Destino padrão |
 | --- | --- |
 | Agent Definition | `docs/agents/{name}-agent.md` |
@@ -25,6 +39,17 @@ principal_statement: O Registry define paths executáveis; esta política apenas
 | Architecture | `docs/architecture/{name}.md` |
 | Requirement | `docs/product/requirements/REQ-NNNNN-{nome}.md` |
 | Harness Governance | `harness/governance/` |
+| Harness Registry | `harness/registry/` |
+| Harness Templates | `harness/templates/` |
+| Harness Tooling | `harness/tooling/` |
+
+## Rules
+
+1. Artefatos de projeto devem permanecer em `docs/`.
+2. Regras do próprio harness devem permanecer em `harness/`.
+3. Nenhum runtime deve inventar paths próprios.
+4. Nenhum runtime deve criar artefatos fora das rotas registradas.
+5. Artefatos existentes não devem ser movidos automaticamente durante scaffold.
 
 O requisito usa a coleção canônica V5 `docs/product/requirements/`, em vez de abrir
 um segundo índice em `docs/requirements/`. A fonte executável destas rotas é

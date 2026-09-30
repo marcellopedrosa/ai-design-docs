@@ -35,11 +35,35 @@ principal_statement: Configuracoes inferiores nao podem enfraquecer politicas or
   [adapters/](../../adapters/README.md).
 - [Artifact Placement](artifact-placement-policy.md) - rota humana dos artefatos;
   fonte executável em `harness/registry/artifact-routes.yaml`.
+- [Agent Behavior](agent-behavior-policy.md) - comportamento operacional mínimo esperado.
+
+## Restrictions
+
+- [Agent Prohibitions](../restrictions/agent-prohibitions.md) - proibições universais.
+- [Security Restrictions](../restrictions/security-restrictions.md) - restrições mínimas de segurança.
+- [Filesystem Restrictions](../restrictions/filesystem-restrictions.md) - controles de filesystem.
+
+## Precedence
+
+```text
+HARNESS RESTRICTIONS
+        ↓
+HARNESS POLICIES
+        ↓
+PROJECT STANDARDS
+        ↓
+AGENT DEFINITION
+```
+
+Restrições do harness não podem ser relaxadas pelo projeto; policies definem
+comportamento operacional comum; standards especializam o projeto; e a definição
+do agente especializa responsabilidades sem contrariar as camadas superiores.
 
 ## Change log
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.7 | 2026-09-30 | Adiciona a policy de comportamento do agente e as restrictions universais V7. |
 | 1.6 | 2026-09-29 | Registra o mapeamento de .claude/settings.json e hooks determinísticos de enforcement. |
 | 1.5 | 2026-09-23 | Torna obrigatório publicar na branch de trabalho definida todo commit solicitado. |
 | 1.4 | 2026-09-23 | Indexa a política local de integração Git e proteção da `main`. |
