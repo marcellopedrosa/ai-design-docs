@@ -43,10 +43,8 @@ Este arquivo é a fonte única; `CLAUDE.md` e `GEMINI.md` o importam.
   versão, escopo ou path retorna ao planejamento.
 - A1 Test, A2 Quality e A3 Security/Compliance são independentes. Um resultado
   verde não aprova os demais.
-- Corrija falhas pertencentes ao escopo e reexecute enquanto houver progresso
-  (redução mensurável de falhas sem introduzir novas falhas), com teto de no
-  máximo 3 iterações consecutivas sem progresso (ou 5 totais por tarefa).
-  Atingido o teto, pare com `BLOCKED` e gere handoff com relatório de bloqueio.
+- Corrija falhas pertencentes ao escopo e reexecute; pare após 3 iterações sem
+  progresso ou 5 no total e registre `BLOCKED` (ver `AgentOrchestrator.md`).
   Não reduza limiar, omita teste ou produza falso verde.
 
 ## Segurança e entrega Git

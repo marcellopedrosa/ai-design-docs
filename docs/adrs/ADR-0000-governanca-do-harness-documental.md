@@ -6,9 +6,9 @@ scope: Topologia documental, precedencia, bootstrap, agente inicial, biblioteca 
 non_objectives: Nao definir dominio, stack, comandos, limiares de cobertura, release, segredos ou configuracoes pessoais.
 owner: Arquitetura e mantenedores do harness
 status: Accepted
-version: 1.4
+version: 1.5
 date: 2026-09-10
-last_reviewed: 2026-09-13
+last_reviewed: 2026-09-30
 keywords: governanca, bootstrap, orquestrador, standards, clear, readiness, assurance, entrega-git, portabilidade, gemini, antigravity
 related_files: ../README.md, ../ai/README.md, ../settings/settings.md, ../settings/google-gemini.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md, ../agents/standards/software-engineering-lifecycle.md, ../agents/standards/implementation-readiness-standard.md, ../agents/standards/software-quality-standard.md, ../agents/skills/README.md, ../automation/README.md, ../scripts/README.md
 code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md, ../../.agents/rules/documentation-governance.md, ../../.agents/skills/, ../../.claude/skills/, ../scripts/; hooks e validadores de entrega pertencem ao projeto adotante.
@@ -235,7 +235,8 @@ ou atualizar teste relevante e executá-lo em ambiente seguro.
 O Quality Gate exige o `READY` vigente para o mesmo task ID, versões, escopo e
 paths. Divergência retorna ao planejamento; Assurance não decompõe retroativamente
 uma implementação. `FAIL` pertencente ao escopo é corrigido e reexecutado enquanto
-houver progresso. Ferramenta, configuração, autorização ou ambiente ausente é
+houver progresso (com teto de 3 iterações consecutivas sem progresso ou 5
+totais por tarefa). Ferramenta, configuração, autorização ou ambiente ausente é
 `BLOCKED`, não aprovação implícita.
 
 ## 11. Adaptadores e skills
@@ -319,6 +320,7 @@ mudança. Reversão da governança exige ADR sucessor e preservação do histór
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.5 | 2026-09-30 | Formaliza o teto de 3 iterações consecutivas sem progresso ou 5 totais por tarefa no ciclo de assurance. |
 | 1.4 | 2026-09-13 | Mapeia `docs/scripts/` como implementação condicional de validadores, sujeita à adaptação e testes no destino. |
 | 1.3 | 2026-09-13 | Disponibiliza entrega Git governada como capacidade opt-in, com enforcement local e sem ampliar o baseline de permissões. |
 | 1.2 | 2026-09-11 | Define AgentOrchestrator como único agente inicial e incorpora a biblioteca canônica de standards com ativação condicional. |
