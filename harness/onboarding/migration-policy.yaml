@@ -1,0 +1,46 @@
+version: 1
+source:
+  mode: read-only
+target:
+  mustUseCurrentHarness: true
+  requireCleanWorkingTree: true
+preserve:
+  - docs/agents/**
+  - docs/agents/standards/**
+  - docs/architecture/**
+  - docs/product/**
+  - docs/requirements/**
+  - docs/decisions/**
+  - docs/**/*.md
+replaceWithCurrent:
+  - harness/**
+  - AGENTS.md
+  - CLAUDE.md
+  - GEMINI.md
+neverCopy:
+  - .git/**
+  - node_modules/**
+  - target/**
+  - build/**
+  - dist/**
+  - coverage/**
+  - .idea/**
+  - .vscode/**
+  - "**/*.log"
+legacyHarnessPatterns:
+  - registry/**
+  - tooling/**
+  - contracts/**
+  - evals/**
+  - skills/**
+  - .agents/**
+  - .claude/**
+conflictPolicy:
+  existingTargetFile: stop
+  ambiguousArtifact: stop
+  unknownRootArtifact: report
+  overwrite: forbidden
+filesystem:
+  allowPathTraversal: false
+  allowSourceMutation: false
+  allowTargetOutsideRepository: false

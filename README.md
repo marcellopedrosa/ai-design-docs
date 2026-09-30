@@ -18,6 +18,22 @@ principal_statement: Este repositório desenvolve o harness; o control plane est
 
 # AI Engineering Harness
 
+## Getting Started
+
+### New Project
+
+`node harness/tooling/harness.mjs onboard`
+
+### Import a Project Using an Older Harness
+
+`node harness/tooling/harness.mjs onboard --source "<path-to-old-project>"`
+
+A origem é somente leitura.
+
+### Existing Configured Project
+
+`node harness/tooling/harness.mjs bootstrap`
+
 Este é o repositório-fonte de um harness portátil de engenharia assistida por
 agentes. O [manual do harness](harness/README.md) descreve governança, skills,
 contratos, adapters e comandos. A [documentação do projeto](docs/README.md)

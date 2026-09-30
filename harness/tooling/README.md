@@ -8,6 +8,14 @@ Este diretório contém ferramentas determinísticas portáteis, entrypoints de 
 - `harness/tooling/`: Contém as **implementações executáveis determinísticas** do próprio harness.
 - Nenhuma ferramenta introduz política nova; toda regra executável implementa um standard ou contrato formal.
 
+## Adoption Lifecycle
+
+- `node harness/tooling/harness.mjs onboard`
+- `node harness/tooling/harness.mjs onboard --source "<path>"`
+- `node harness/tooling/harness.mjs bootstrap`
+- `node harness/tooling/harness.mjs scaffold --check|--create|--inspect`
+- `node harness/tooling/harness.mjs doctor`
+
 ## Ferramentas
 
 - [`harness-doctor/index.mjs`](harness-doctor/index.mjs): Diagnóstico estrutural unificado do harness (registry, contracts, skills, adapters, evals e detecção de drift).

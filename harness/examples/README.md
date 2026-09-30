@@ -17,6 +17,12 @@ principal_statement: Exemplos não configuram o projeto-fonte nem substituem apr
 
 # Exemplos do harness
 
+## Onboarding
+
+- [New Project](onboarding/new-project-example.md)
+- [Legacy Project Import](onboarding/legacy-project-import-example.md)
+- [Clone Bootstrap](onboarding/clone-bootstrap-example.md)
+
 - [Configuração legada do harness](harness.project.example.yaml): exemplo de `harness.project.yaml`; não ativa capabilities neste repositório.
 - [Manifestos V6 de projeto](project-manifests/README.md): exemplos frontend, backend e fullstack para adoção por squads.
 - [Perfis de integração](profiles/java-spring.yaml): exemplos condicionais de stack e quality, não profiles V6 ativos.
