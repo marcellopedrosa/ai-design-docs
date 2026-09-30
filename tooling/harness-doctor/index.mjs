@@ -12,6 +12,14 @@ function checkForUnsupportedYaml(rawLine, lineNumber, filename) {
   const trimmed = rawLine.trim();
   if (!trimmed || trimmed.startsWith('#')) return;
 
+  if (trimmed.startsWith('- ')) {
+    const itemContent = trimmed.slice(2).trim();
+    const unquotedItem = itemContent.replace(/"[^"]*"|'[^']*'/g, '');
+    if (unquotedItem.includes(': ')) {
+      throw new Error(`${filename}:${lineNumber}: sintaxe YAML não suportada: listas de objetos não suportadas; use chaves aninhadas.`);
+    }
+  }
+
   if (/:\s*[|>][+-]?\s*(?:#.*)?$/.test(trimmed)) {
     throw new Error(`${filename}:${lineNumber}: sintaxe YAML não suportada: strings multilinha com '|' ou '>' não são permitidas.`);
   }
@@ -32,6 +40,55 @@ function checkForUnsupportedYaml(rawLine, lineNumber, filename) {
   if (/(?:^|\s)\*[A-Za-z0-9_-]+/.test(unquoted)) {
     throw new Error(`${filename}:${lineNumber}: sintaxe YAML não suportada: aliases '*' não são permitidos.`);
   }
+}
+
+export function stripInlineComment(str) {
+  let inSingle = false;
+  let inDouble = false;
+  for (let idx = 0; idx < str.length; idx++) {
+    const ch = str[idx];
+    if (ch === "'" && !inDouble) {
+      inSingle = !inSingle;
+    } else if (ch === '"' && !inSingle) {
+      inDouble = !inDouble;
+    } else if (ch === '#' && !inSingle && !inDouble) {
+      if (idx === 0 || /\s/.test(str[idx - 1])) {
+        return str.slice(0, idx).trimEnd();
+      }
+    }
+  }
+  return str;
+}
+
+export function parseScalarValue(raw, filename, lineNumber) {
+  const stripped = stripInlineComment(raw).trim();
+  if (!stripped) return '';
+
+  let isQuoted = false;
+  let cleanValue = stripped;
+
+  if (stripped.startsWith('"') || stripped.startsWith("'")) {
+    const quoteChar = stripped[0];
+    if (!stripped.endsWith(quoteChar) || stripped.length === 1) {
+      throw new Error(`${filename}:${lineNumber}: sintaxe YAML não suportada: aspas desbalanceadas.`);
+    }
+    isQuoted = true;
+    cleanValue = stripped.slice(1, -1);
+  } else if (stripped.endsWith('"') || stripped.endsWith("'")) {
+    throw new Error(`${filename}:${lineNumber}: sintaxe YAML não suportada: aspas desbalanceadas.`);
+  }
+
+  if (isQuoted) {
+    return cleanValue;
+  }
+
+  if (cleanValue === 'true') return true;
+  if (cleanValue === 'false') return false;
+  if (cleanValue === 'null' || cleanValue === '~') return null;
+  if (/^-?\d+(\.\d+)?$/.test(cleanValue)) {
+    return Number(cleanValue);
+  }
+  return cleanValue;
 }
 
 export function parseSimpleYaml(content, filename = 'yaml') {
@@ -56,20 +113,21 @@ export function parseSimpleYaml(content, filename = 'yaml') {
     const currentParent = stack[stack.length - 1].obj;
 
     if (line.startsWith('- ')) {
-      // Item de lista
-      const value = line.slice(2).trim().replace(/^["']|["']$/g, '');
-      if (Array.isArray(currentParent)) {
-        currentParent.push(value);
+      if (!Array.isArray(currentParent)) {
+        throw new Error(`${filename}:${i + 1}: sintaxe YAML não suportada: item de lista fora de lista.`);
       }
+      const rawValue = line.slice(2).trim();
+      const parsedValue = parseScalarValue(rawValue, filename, i + 1);
+      currentParent.push(parsedValue);
       continue;
     }
 
     const colonIndex = line.indexOf(':');
     if (colonIndex > 0) {
       const key = line.slice(0, colonIndex).trim().replace(/^["']|["']$/g, '');
-      const rawValue = line.slice(colonIndex + 1).trim();
+      const rawAfterColon = stripInlineComment(line.slice(colonIndex + 1)).trim();
 
-      if (!rawValue) {
+      if (!rawAfterColon) {
         // Objeto ou lista aninhada
         let isList = false;
         for (let j = i + 1; j < lines.length; j++) {
@@ -88,11 +146,7 @@ export function parseSimpleYaml(content, filename = 'yaml') {
         }
         stack.push({ indent, obj: newObj });
       } else {
-        const cleanValue = rawValue.replace(/^["']|["']$/g, '');
-        let parsedValue = cleanValue;
-        if (cleanValue === 'true') parsedValue = true;
-        else if (cleanValue === 'false') parsedValue = false;
-        else if (/^\d+$/.test(cleanValue)) parsedValue = parseInt(cleanValue, 10);
+        const parsedValue = parseScalarValue(line.slice(colonIndex + 1), filename, i + 1);
 
         if (Array.isArray(currentParent)) {
           currentParent.push({ [key]: parsedValue });
