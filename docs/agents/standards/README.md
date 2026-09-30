@@ -73,11 +73,13 @@ versão, ferramentas, owners, paths e comandos locais.
 | `spring-security-standard.md` | Houver Spring Boot/Spring Security. |
 | `api-client-standard.md` | Houver criação ou consumo de clientes de API. |
 | `backend-testing-standard.md` | Houver componente server-side ativo. |
+| `backend-standard.md` | Houver backend ativo e regras próprias do projeto. |
 | `ddd-clean-architecture-standard.md` | Um ADR adotar DDD ou Clean Architecture. |
 | `java-standard.md` | Houver módulo Java. |
 | `modulith-standard.md` | Houver arquitetura modular monolítica ou Spring Modulith. |
 | `websocket-standard.md` | Houver comunicação bidirecional persistente. |
 | `frontend-standard.md` | Houver aplicação frontend ativa. |
+| `frontend-typography-standard.md` | Houver tipografia de produto a ser definida pela squad. |
 | `frontend-testing-standard.md` | Houver testes de frontend, componentes ou E2E. |
 | `nextjs-standard.md` | Houver módulo Next.js/React correspondente. |
 | `state-management-standard.md` | Houver estado cliente não trivial. |

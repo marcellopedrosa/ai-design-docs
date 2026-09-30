@@ -14,7 +14,10 @@ test('compileSchema compiles all repository contracts successfully', () => {
     'evidence.schema.json',
     'security-finding.schema.json',
     'handoff.schema.json',
-    'harness-project.schema.json'
+    'harness-project.schema.json',
+    'project-manifest.schema.json',
+    'profile-registry.schema.json',
+    'artifact-routes.schema.json'
   ];
 
   for (const file of requiredSchemas) {
@@ -92,4 +95,18 @@ test('validateInstance enforces additionalProperties: false and enum restriction
   const extraField = { status: 'READY', unexpected: 123 };
   const resExtra = validateInstance(schema, extraField);
   assert.ok(!resExtra.valid, 'Should reject extra field when additionalProperties is false');
+});
+
+test('validateInstance enforces identifier patterns, minLength and uniqueItems', () => {
+  const schema = {
+    type: 'object',
+    properties: {
+      name: { type: 'string', pattern: '^[a-z-]+$', minLength: 3 },
+      profiles: { type: 'array', uniqueItems: true, items: { type: 'string' } }
+    }
+  };
+  assert.equal(validateInstance(schema, { name: 'frontend', profiles: ['base'] }).valid, true);
+  assert.equal(validateInstance(schema, { name: '../', profiles: ['base'] }).valid, false);
+  assert.equal(validateInstance(schema, { name: 'ab', profiles: ['base'] }).valid, false);
+  assert.equal(validateInstance(schema, { name: 'frontend', profiles: ['base', 'base'] }).valid, false);
 });

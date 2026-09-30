@@ -1,0 +1,13 @@
+version: 1
+project:
+  name: example-fullstack
+  type: application
+profiles:
+  - frontend
+  - backend
+  - security
+agents:
+  - frontend
+  - backend
+metadata:
+  owner: example-squad

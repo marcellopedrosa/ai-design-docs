@@ -16,12 +16,14 @@ jobs:
           node-version: '20'
       - name: Harness doctor
         run: node harness/tooling/harness-doctor/index.mjs
+      - name: Scaffold V6 em modo leitura
+        run: node harness/tooling/scaffold/index.mjs --check
       - name: Adapters em paridade
         run: node harness/tooling/adapters/sync-adapters.mjs --check
       - name: Runner de evals H1
         run: node harness/tooling/eval-runner/index.mjs
       - name: Testes tooling
-        run: node --test harness/tooling/harness-doctor/harness-doctor.test.mjs harness/tooling/adapters/sync-adapters.test.mjs harness/tooling/contracts/validator.test.mjs harness/tooling/hooks/hooks.test.mjs harness/tooling/eval-runner/eval-runner.test.mjs harness/tooling/harness.test.mjs harness/tooling/harness-integrity.test.mjs harness/tooling/contracts/trace.test.mjs
+        run: node --test harness/tooling/harness-doctor/harness-doctor.test.mjs harness/tooling/adapters/sync-adapters.test.mjs harness/tooling/contracts/validator.test.mjs harness/tooling/hooks/hooks.test.mjs harness/tooling/eval-runner/eval-runner.test.mjs harness/tooling/harness.test.mjs harness/tooling/harness-integrity.test.mjs harness/tooling/contracts/trace.test.mjs harness/tooling/scaffold/scaffold.test.mjs
       - name: Testes de validadores
         run: node --test harness/tooling/validators/*.test.mjs
       - name: Governança documental

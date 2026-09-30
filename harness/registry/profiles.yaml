@@ -1,0 +1,45 @@
+version: 1
+profiles:
+  base:
+    artifacts:
+      - type: standard
+        scope: global
+        name: software-engineering-lifecycle
+      - type: standard
+        scope: global
+        name: implementation-readiness-standard
+      - type: standard
+        scope: global
+        name: software-quality-standard
+      - type: standard
+        scope: global
+        name: development-standard
+      - type: standard
+        scope: global
+        name: security-standard
+  frontend:
+    extends:
+      - base
+    artifacts:
+      - type: agent
+        name: frontend
+      - type: standard
+        scope: frontend
+        name: frontend-standard
+      - type: standard
+        scope: frontend
+        name: frontend-typography-standard
+  backend:
+    extends:
+      - base
+    artifacts:
+      - type: agent
+        name: backend
+      - type: standard
+        scope: backend
+        name: backend-standard
+  security:
+    artifacts:
+      - type: standard
+        scope: security
+        name: application-security-standard

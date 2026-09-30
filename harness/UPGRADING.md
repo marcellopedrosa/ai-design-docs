@@ -68,3 +68,39 @@ paths anteriores usando o inventário e a branch de trabalho. Não deixe Registr
 V5 apontando para tooling V4 nem adapters de versões diferentes. Reexecute os
 mesmos checks e registre causa, owner e condição de retomada. A migração não
 autoriza force-push, produção, dados reais ou bypass de segurança.
+
+## Adoção V6 — manifesto, profiles e routes
+
+O V6 acrescenta uma cadeia independente de `harness.project.yaml`:
+
+```text
+docs/project-manifest.yaml
+  → harness/registry/profiles.yaml
+  → harness/registry/artifact-routes.yaml
+  → harness/templates/
+  → docs/ do projeto
+```
+
+Projeto novo: escolha somente os profiles que descrevem sua capacidade real,
+declare owner e agentes exigidos pelos profiles no manifesto, execute
+`node harness/tooling/harness.mjs scaffold --check`, revise a lista de arquivos
+esperados e então execute `scaffold --create`. Preencha cada Draft com conteúdo
+aprovado pela squad e atualize os índices `README.md` imediatos.
+
+Projeto legado: execute `scaffold --inspect` antes de criar manifesto. Esse modo
+aponta artefatos conformes e candidatos em paths legados sem mover nada. A
+ausência de manifesto é `WARN` no Doctor, não uma falha imediata. Após revisar o
+inventário e aprovar profiles, crie o manifesto; `LEGACY_LOCATION` requer uma
+migração manual documentada. Não faça `--create` como substituto de revisão.
+
+Atualização do harness: preserve os seis registries existentes e acrescente
+`profiles.yaml` e `artifact-routes.yaml`. Valide os três schemas V6, execute os
+testes, Doctor e scaffold check. Não copie os standards do projeto-fonte como
+decisões universais: o projeto adotante responde por seu conteúdo. A route de
+`requirement` neste repositório é `docs/product/requirements/`, preservando a
+coleção V5; o exemplo `docs/requirements/` do plano V6 não cria uma segunda fonte.
+
+Um piloto hermético é executado pelos testes do scaffold com manifestos
+frontend, backend e fullstack. A adoção por uma squad real ainda exige seu
+próprio manifesto, revisão de standards e aprovação humana; os exemplos não a
+substituem.

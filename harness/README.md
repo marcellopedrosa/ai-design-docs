@@ -10,9 +10,9 @@ status: Active
 version: 2.0.0
 date: 2026-09-30
 last_reviewed: 2026-09-30
-keywords: harness, v5, governance, registry, skills, tooling, segurança
-related_files: governance/README.md, governance/decisions/README.md, adapters/README.md, registry/README.md, contracts/README.md, skills/README.md, evals/README.md, tooling/README.md, tooling/validators/README.md, templates/README.md, examples/harness.project.example.yaml, UPGRADING.md, ../docs/README.md
-code_references: tooling/harness.mjs, tooling/harness-doctor/index.mjs, tooling/adapters/sync-adapters.mjs, ../.agents/skills/, ../.claude/skills/
+keywords: harness, v6, governance, registry, profiles, routes, scaffold, skills, tooling, segurança
+related_files: governance/README.md, governance/decisions/README.md, adapters/README.md, registry/README.md, contracts/README.md, skills/README.md, evals/README.md, tooling/README.md, tooling/scaffold/README.md, tooling/validators/README.md, templates/README.md, examples/README.md, examples/project-manifests/README.md, examples/harness.project.example.yaml, UPGRADING.md, ../docs/README.md
+code_references: tooling/harness.mjs, tooling/harness-doctor/index.mjs, tooling/scaffold/index.mjs, tooling/adapters/sync-adapters.mjs, ../.agents/skills/, ../.claude/skills/
 principal_statement: harness/ é a única fonte canônica do control plane; docs/ pertence à documentação do projeto e runtimes recebem adapters derivados.
 ---
 
@@ -32,6 +32,9 @@ produção ou release e não substitui decisões humanas.
 2. Se existir `harness.project.yaml` na raiz, use-o como configuração do projeto;
    o [exemplo](examples/harness.project.example.yaml) não ativa capabilities.
 3. Consulte [docs/README.md](../docs/README.md) para produto, módulos e owners.
+   Se houver [manifesto V6](../docs/project-manifest.yaml), o projeto declara
+   seus profiles; o [Registry](registry/README.md) decide quais artefatos são
+   esperados e onde ficam, sem impor conteúdo técnico à squad.
 4. Carregue o [manual de governança](governance/README.md), o
    [ADR aplicável](governance/decisions/README.md), o
    [Registry](registry/README.md) e somente os standards/skills exigidos pelo
@@ -43,13 +46,13 @@ produção ou release e não substitui decisões humanas.
 | --- | --- |
 | [governance/](governance/README.md) | Agentes de controle, policies e decisões do harness; standards locais ficam em `docs/agents/standards/` |
 | [adapters/](adapters/README.md) | Mapeamentos para Codex, Claude Code e Google |
-| [registry/](registry/README.md) | Inventário e paths ativos |
+| [registry/](registry/README.md) | Inventário, profiles e artifact routes ativos |
 | [contracts/](contracts/README.md) | Schemas de mensagens, evidências, gates e handoffs |
 | [skills/](skills/README.md) | Capability packages canônicos |
 | [evals/](evals/README.md) | Casos H0/H1 e níveis futuros explícitos |
-| [tooling/](tooling/README.md) | Doctor, sync, runner, contratos e [validadores](tooling/validators/README.md) |
+| [tooling/](tooling/README.md) | Doctor, sync, runner, contratos, [scaffold](tooling/scaffold/README.md) e [validadores](tooling/validators/README.md) |
 | [templates/](templates/README.md) | Moldes documentais do harness |
-| [examples/](examples/harness.project.example.yaml) | Perfis de exemplo, não configuração ativa |
+| [examples/](examples/README.md) | Manifestos e perfis sintéticos, não configuração ativa |
 
 `docs/` contém apenas a documentação deste projeto. `.agents/skills/` e
 `.claude/skills/` são derivados de `harness/skills/`, não fontes independentes.
@@ -93,6 +96,8 @@ node harness/tooling/harness.mjs doctor
 node harness/tooling/harness.mjs check
 node harness/tooling/harness.mjs eval
 node harness/tooling/harness.mjs sync
+node harness/tooling/harness.mjs scaffold --check
+node harness/tooling/harness.mjs scaffold --inspect
 node --test
 ```
 
@@ -105,7 +110,7 @@ projetos adotantes; sem wrapper local, reporte `Automação não configurada`.
 
 ## Atualização e limites de portabilidade
 
-O [guia de upgrade](UPGRADING.md) descreve a migração V4→V5 e a separação entre
+O [guia de upgrade](UPGRADING.md) descreve a migração V4→V5, a adoção V6 e a separação entre
 arquivos harness-owned e project-owned. Não sobrescreva documentação do projeto,
 não mantenha cópias canônicas nos adapters e não interprete scaffolds como módulos
 implementados. Git segue a [política local](governance/policies/git-delivery-policy.md),

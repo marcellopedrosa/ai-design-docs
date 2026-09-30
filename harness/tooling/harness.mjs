@@ -10,13 +10,14 @@ const commands = {
   doctor: ['harness/tooling/harness-doctor/index.mjs'],
   check: ['harness/tooling/validators/validate-documentation-governance.mjs', '--root', root],
   eval: ['harness/tooling/eval-runner/index.mjs', '--level', 'H1', '--root', root],
-  sync: ['harness/tooling/adapters/sync-adapters.mjs', '--check', '--root', root]
+  sync: ['harness/tooling/adapters/sync-adapters.mjs', '--check', '--root', root],
+  scaffold: ['harness/tooling/scaffold/index.mjs']
 };
 
 export function main(args = process.argv.slice(2), runner = spawnSync) {
   const [command, ...extra] = args;
   if (!Object.hasOwn(commands, command)) {
-    process.stderr.write('Usage: node harness/tooling/harness.mjs <doctor|check|eval|sync> [tool options]\n');
+    process.stderr.write('Usage: node harness/tooling/harness.mjs <doctor|check|eval|sync|scaffold> [tool options]\n');
     return 2;
   }
   const [entrypoint, ...defaults] = commands[command];

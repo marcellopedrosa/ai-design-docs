@@ -1,0 +1,9 @@
+version: 1
+project:
+  name: ai-design-docs
+  type: tooling
+profiles:
+  - base
+agents: []
+metadata:
+  owner: harness-maintainers

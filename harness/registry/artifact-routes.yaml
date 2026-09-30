@@ -1,0 +1,18 @@
+version: 1
+routes:
+  agent:
+    root: docs/agents
+    naming: "{name}-agent.md"
+    template: harness/templates/agents/agent-template.md
+  standard:
+    root: "docs/agents/standards/{scope}"
+    naming: "{name}.md"
+    template: harness/templates/standards/standard-template.md
+  architecture:
+    root: docs/architecture
+    naming: "{name}.md"
+    template: harness/templates/architecture/architecture-template.md
+  requirement:
+    root: docs/product/requirements
+    naming: "{name}.md"
+    template: harness/templates/requirements/requirement-template.md

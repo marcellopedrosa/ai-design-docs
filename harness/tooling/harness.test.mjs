@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { main } from './harness.mjs';
 
-for (const command of ['doctor', 'check', 'eval', 'sync']) {
+for (const command of ['doctor', 'check', 'eval', 'sync', 'scaffold']) {
   test(`${command} delegates and preserves exit code`, () => {
     let call;
     const runner = (binary, args, options) => {

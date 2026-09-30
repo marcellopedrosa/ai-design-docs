@@ -11,6 +11,14 @@ O objetivo do registry é servir como **fonte única de verdade (SSOT)** para in
 - [`standards.yaml`](standards.yaml): Catálogo de standards baseline e condicionais, regras de ativação e consumidores.
 - [`runtimes.yaml`](runtimes.yaml): Runtimes de agentes suportados (Codex, Claude Code, Gemini CLI, Antigravity) e seus caminhos de adaptação.
 - [`tooling.yaml`](tooling.yaml): Ferramentas determinísticas, validadores e entrypoints do harness.
+- [`profiles.yaml`](profiles.yaml): Artefatos requeridos por contexto; não contém conteúdo final dos projetos.
+- [`artifact-routes.yaml`](artifact-routes.yaml): Localização física e template de cada tipo de artefato.
+
+Cada Registry tem responsabilidade única: `harness.yaml` identifica/configura o
+harness; `runtimes.yaml` descreve runtimes; `skills.yaml` inventaria capacidades;
+`standards.yaml` descobre standards conhecidos; `tooling.yaml` inventaria
+executáveis; `profiles.yaml` decide **quais** artefatos um contexto exige;
+`artifact-routes.yaml` decide **onde** materializá-los. Nenhum substitui os demais.
 
 ## Regras de Governança
 

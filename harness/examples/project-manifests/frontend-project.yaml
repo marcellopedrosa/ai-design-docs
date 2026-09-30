@@ -1,0 +1,11 @@
+version: 1
+project:
+  name: example-frontend
+  type: application
+profiles:
+  - frontend
+  - security
+agents:
+  - frontend
+metadata:
+  owner: example-squad

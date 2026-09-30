@@ -11,7 +11,7 @@ version: 1.6
 date: 2026-09-10
 last_reviewed: 2026-09-29
 keywords: settings, seguranca, permissoes, entrega-git, runtime, codex, claude-code, gemini, antigravity
-related_files: ai-environment-policy.md, git-delivery-policy.md, documentation-governance.md, ../../adapters/README.md, ../decisions/ADR-0000-governanca-do-harness-documental.md
+related_files: ai-environment-policy.md, git-delivery-policy.md, documentation-governance.md, artifact-placement-policy.md, ../../adapters/README.md, ../decisions/ADR-0000-governanca-do-harness-documental.md
 code_references: ../../../AGENTS.md, ../../../CLAUDE.md, ../../../GEMINI.md, ../../../.agents/rules/documentation-governance.md
 principal_statement: Configuracoes inferiores nao podem enfraquecer politicas organizacionais ou ADRs aceitos.
 ---
@@ -33,6 +33,8 @@ principal_statement: Configuracoes inferiores nao podem enfraquecer politicas or
 - [Governança documental](documentation-governance.md) - contratos, índices e
   atualização de coleções. Mapeamentos específicos estão em
   [adapters/](../../adapters/README.md).
+- [Artifact Placement](artifact-placement-policy.md) - rota humana dos artefatos;
+  fonte executável em `harness/registry/artifact-routes.yaml`.
 
 ## Change log
 

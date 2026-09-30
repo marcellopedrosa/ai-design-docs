@@ -1,0 +1,11 @@
+version: 1
+project:
+  name: example-backend
+  type: service
+profiles:
+  - backend
+  - security
+agents:
+  - backend
+metadata:
+  owner: example-squad

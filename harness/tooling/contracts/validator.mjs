@@ -10,6 +10,7 @@
  * - enum
  * - items (array element schema)
  * - minItems
+ * - minLength, pattern, uniqueItems
  */
 
 const VALID_TYPES = new Set(['object', 'array', 'string', 'number', 'integer', 'boolean', 'null']);
@@ -78,6 +79,15 @@ export function validateInstance(schema, instance, instancePath = '$') {
     }
   }
 
+  if (schema.type === 'string' && typeof instance === 'string') {
+    if (typeof schema.minLength === 'number' && instance.length < schema.minLength) {
+      errors.push(`${instancePath}: string menor que minLength ${schema.minLength}.`);
+    }
+    if (typeof schema.pattern === 'string' && !new RegExp(schema.pattern).test(instance)) {
+      errors.push(`${instancePath}: valor não corresponde ao pattern ${schema.pattern}.`);
+    }
+  }
+
   // Object checks
   if (schema.type === 'object' && instance && typeof instance === 'object' && !Array.isArray(instance)) {
     // Required fields
@@ -126,6 +136,10 @@ export function validateInstance(schema, instance, instancePath = '$') {
   if (schema.type === 'array' && Array.isArray(instance)) {
     if (typeof schema.minItems === 'number' && instance.length < schema.minItems) {
       errors.push(`${instancePath}: array com ${instance.length} itens; mínimo exigido é ${schema.minItems}.`);
+    }
+
+    if (schema.uniqueItems === true && new Set(instance.map((item) => JSON.stringify(item))).size !== instance.length) {
+      errors.push(`${instancePath}: array contém itens duplicados.`);
     }
 
     if (schema.items) {

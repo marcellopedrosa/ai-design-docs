@@ -120,3 +120,13 @@ tools:
     secrets: false
     destructive: false
     requires_project_configuration: true
+
+  scaffold:
+    status: active
+    implementation: "harness/tooling/scaffold/index.mjs"
+    contract: "harness/contracts/project-manifest.schema.json"
+    description: "Resolve profiles e routes V6; inspect/check são read-only e create só escreve arquivos ausentes"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: true
