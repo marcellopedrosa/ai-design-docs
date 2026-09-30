@@ -11,12 +11,16 @@ version: 2.0
 date: 2026-09-30
 last_reviewed: 2026-09-30
 keywords: projeto, produto, documentação, v5, índice
-related_files: ../harness/README.md, agents/README.md, product/README.md, architecture/README.md, domains/README.md, contracts/README.md, compliance/README.md, analysis/README.md, delivery/README.md, onboarding/README.md
+related_files: ../harness/README.md, project-manifest.yaml, agents/README.md, product/README.md, architecture/README.md, domains/README.md, contracts/README.md, compliance/README.md, analysis/README.md, delivery/README.md, onboarding/README.md
 code_references: ../AGENTS.md, ../harness/tooling/validators/validate-documentation-governance.mjs
 principal_statement: docs/ pertence à documentação do projeto; a governança e o tooling do harness pertencem a harness/.
 ---
 
 # Documentação do projeto
+
+O [manifesto V6](project-manifest.yaml) declara o contexto e os profiles deste
+projeto. Ele não contém regras de stack ou critérios técnicos; esses pertencem
+aos standards e à arquitetura locais.
 
 Esta árvore contém a documentação do projeto-fonte, inclusive seus standards.
 O metamodelo, as políticas e as ferramentas de engenharia assistida estão no

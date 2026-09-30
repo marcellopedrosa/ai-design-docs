@@ -20,7 +20,8 @@ principal_statement: Templates padronizam forma e bloqueiam invencao; cada insta
 ## Contrato da coleção
 
 - Conteúdo aceito: estrutura e instruções de preenchimento de um tipo documental.
-- Nomes: `TPL-NNNNN-short-title.md`.
+- Nomes: `TPL-NNNNN-short-title.md` para templates documentais históricos;
+  templates V6 de scaffold usam `<tipo>-template.md` nos subdiretórios tipados.
 - Estados: `Draft`, `Active`, `Deprecated`.
 - Critério de granularidade: um tipo e contrato de criação por template.
 
@@ -44,4 +45,14 @@ target, aprovação ou decisão para remover marcador.
 | TPL-00010 | [Collection README](TPL-00010-collection-readme.md) | Contrato e índice de coleção |
 | TPL-00011 | [Agent](TPL-00011-agent.md) | Papel especializado |
 | TPL-00012 | [Interface Contract](TPL-00012-interface-contract.md) | Contrato versionado entre boundaries |
+
+## Templates V6 de scaffold
+
+- [Agentes do projeto](agents/README.md)
+- [Standards do projeto](standards/README.md)
+- [Arquitetura](architecture/README.md)
+- [Requisitos](requirements/README.md)
+
+Estes templates definem somente a forma inicial. Campos ainda pendentes não são
+aprovações nem conteúdo final da squad.
 

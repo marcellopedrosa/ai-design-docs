@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { syncAdapters } from '../adapters/sync-adapters.mjs';
 import { compileSchema, validateSchemaSyntax, validateInstance } from '../contracts/validator.mjs';
 import { runEvalsH1 } from '../eval-runner/index.mjs';
+import { auditScaffold } from '../scaffold/engine.mjs';
 
 function checkForUnsupportedYaml(rawLine, lineNumber, filename) {
   const trimmed = rawLine.trim();
@@ -226,7 +227,10 @@ export function checkContracts(root) {
     'evidence.schema.json',
     'security-finding.schema.json',
     'handoff.schema.json',
-    'harness-project.schema.json'
+    'harness-project.schema.json',
+    'project-manifest.schema.json',
+    'profile-registry.schema.json',
+    'artifact-routes.schema.json'
   ];
 
   if (!fs.existsSync(contractsDir)) {
@@ -612,8 +616,41 @@ export function checkDrift(root) {
   return { errors };
 }
 
+export function checkGovernance(root) {
+  const errors = [];
+  const required = [
+    ['harness/governance/policies/agent-behavior-policy.md', ['# Agent Behavior Policy', '## Purpose', '## Before Making Changes', '## During Changes', '## Validation', '## Evidence', '## Handoff']],
+    ['harness/governance/policies/artifact-placement-policy.md', ['# Artifact Placement Policy', '## Purpose', '## Canonical Routing Source', '## Placement Rules', '## Rules']],
+    ['harness/governance/restrictions/agent-prohibitions.md', ['# Agent Prohibitions', '## Purpose', '## Scope', '## The Agent Must Not', '## Exceptions']],
+    ['harness/governance/restrictions/security-restrictions.md', ['# Security Restrictions', '## Purpose', '## Secrets', '## Authentication and Authorization', '## Transport Security', '## Logging', '## Security Controls', '## Enforcement']],
+    ['harness/governance/restrictions/filesystem-restrictions.md', ['# Filesystem Restrictions', '## Purpose', '## Existing Files', '## File Creation', '## Directory Creation', '## Path Safety', '## File Movement', '## Deletion']]
+  ];
+  for (const [relative, headings] of required) {
+    const fullPath = path.join(root, relative);
+    if (!fs.existsSync(fullPath)) { errors.push(`${relative}: arquivo ausente.`); continue; }
+    const content = fs.readFileSync(fullPath, 'utf8');
+    if (!content.trim()) errors.push(`${relative}: arquivo vazio.`);
+    for (const heading of headings) if (!content.includes(heading)) errors.push(`${relative}: seção obrigatória ausente: ${heading}`);
+  }
+  return { errors };
+}
+
 export function runDoctor(repositoryRoot) {
   const root = path.resolve(repositoryRoot);
+  let scaffold;
+  try {
+    const report = auditScaffold(root);
+    scaffold = {
+      errors: [],
+      warnings: [
+        ...report.warnings,
+        ...report.artifacts.filter((item) => item.status === 'CREATE' || item.status === 'LEGACY_LOCATION')
+          .map((item) => `${item.status}: ${item.expected}`)
+      ]
+    };
+  } catch (error) {
+    scaffold = { errors: [`V6 scaffold: ${error.message}`], warnings: [] };
+  }
   const results = {
     registry: checkRegistry(root),
     contracts: checkContracts(root),
@@ -622,7 +659,9 @@ export function runDoctor(repositoryRoot) {
     evals: checkEvals(root),
     evalsH1: runEvalsH1(root),
     fixtureRefs: checkFixtureReferences(root),
-    drift: checkDrift(root)
+    drift: checkDrift(root),
+    governance: checkGovernance(root),
+    scaffold
   };
 
   const allErrors = [
@@ -633,7 +672,9 @@ export function runDoctor(repositoryRoot) {
     ...results.evals.errors,
     ...results.evalsH1.failures.map(f => `eval ${f.id} falhou no nível H1`),
     ...results.fixtureRefs.errors,
-    ...results.drift.errors
+    ...results.drift.errors,
+    ...results.governance.errors,
+    ...results.scaffold.errors
   ];
 
   return { results, errors: allErrors };
@@ -664,13 +705,23 @@ function main() {
   printCheck('Evals', [...results.evals.errors, ...evalH1Errors], `H0 ${results.evals.count}/${results.evals.count} PASS, H1 ${results.evalsH1.h1Passed}/${results.evalsH1.h1Executed} PASS`);
   printCheck('Fixtures', results.fixtureRefs.errors, 'integridade referencial de fixtures');
   printCheck('Drift', results.drift.errors, 'paridade entre registry e documentação');
+  printCheck('Governance V7', results.governance.errors, 'policies e restrictions canônicas');
+  if (results.scaffold.errors.length) {
+    printCheck('Scaffold V6', results.scaffold.errors);
+  } else if (results.scaffold.warnings.length) {
+    for (const warning of results.scaffold.warnings) process.stdout.write(`[WARN] Scaffold V6: ${warning}\n`);
+  } else {
+    printCheck('Scaffold V6', [], 'manifest, profiles, routes, templates e artifacts');
+  }
 
   process.stdout.write('\n');
   if (errors.length > 0) {
     process.stderr.write(`Diagnóstico concluído com ${errors.length} erro(s).\n`);
     process.exitCode = 1;
   } else {
-    process.stdout.write('Diagnóstico concluído com sucesso: todos os componentes v2 conformes!\n');
+    process.stdout.write(results.scaffold.warnings.length
+      ? 'Diagnóstico concluído sem falhas, com avisos de adoção V6.\n'
+      : 'Diagnóstico concluído com sucesso: todos os componentes conformes!\n');
     process.exitCode = 0;
   }
 }

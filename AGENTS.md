@@ -3,8 +3,12 @@
 Este repositório usa o control plane canônico em [`harness/`](harness/README.md).
 Leia primeiro `harness/README.md`, depois
 `harness/governance/README.md` e [`docs/README.md`](docs/README.md).
+Antes de executar alterações, carregue as fontes canônicas de [governança comportamental](harness/governance/policies/agent-behavior-policy.md), [proibições](harness/governance/restrictions/agent-prohibitions.md), [segurança](harness/governance/restrictions/security-restrictions.md) e [filesystem](harness/governance/restrictions/filesystem-restrictions.md); não duplique essas regras neste bootstrap.
 Consulte `harness.project.yaml` somente se existir; o exemplo em
 `harness/examples/` não ativa capabilities.
+Quando existir `docs/project-manifest.yaml`, resolva profiles e artefatos pelo
+`harness/registry/profiles.yaml` e `artifact-routes.yaml`, usando o scaffold;
+nenhum runtime inventa paths ou conteúdo técnico fora dessa cadeia.
 Para módulos, owners e comandos reais, consulte
 `docs/architecture/module-registry.md`.
 

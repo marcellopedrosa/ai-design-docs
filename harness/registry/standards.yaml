@@ -122,6 +122,25 @@ standards:
     consumers:
       - "quality-gate"
 
+  frontend-typography-standard:
+    status: conditional
+    class: conditional
+    activation:
+      any:
+        - "capability:frontend"
+        - "capability:typography"
+    consumers:
+      - "quality-gate"
+
+  backend-standard:
+    status: conditional
+    class: conditional
+    activation:
+      any:
+        - "capability:backend"
+    consumers:
+      - "quality-gate"
+
   iac-supply-chain-standard:
     status: conditional
     class: conditional
