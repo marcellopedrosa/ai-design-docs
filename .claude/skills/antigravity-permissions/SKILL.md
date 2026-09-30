@@ -1,6 +1,7 @@
 ---
 name: antigravity-permissions
 description: Configura politicas de auto-aprovacao para operacoes rotineiras e exige confirmacao para comandos destrutivos no Antigravity/VS Code; nao use fora do escopo do projeto.
+allowed-tools: Read, Edit, Write, Glob, Grep
 ---
 
 # Antigravity Permissions

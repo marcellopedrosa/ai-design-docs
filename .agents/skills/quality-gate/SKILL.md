@@ -1,6 +1,7 @@
 ---
 name: quality-gate
 description: Seleciona, executa e registra A1 Test, A2 Quality e A3 Security/Compliance do ciclo C.L.E.A.R. Use em mudanças de software, revisão de PR ou qualificação de release; acione security-gate como subgate/executor especializado de A3 quando segurança de aplicação for aplicável. Não use para alteração exclusivamente documental.
+allowed-tools: Read, Grep, Glob, Bash
 ---
 
 # Quality Gate C.L.E.A.R.

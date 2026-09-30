@@ -1,6 +1,7 @@
 ---
 name: security-gate
 description: Executar a verificação especializada do A3 Security/Compliance em aplicações web, APIs, autenticação, autorização, dados, Spring Security, frontend, dependências ou superfícies expostas. Retornar evidência e PASS, FAIL ou BLOCKED ao quality-gate; não agregar A1/A2 nem autorizar release.
+allowed-tools: Read, Grep, Glob, Bash
 ---
 
 # Security Gate

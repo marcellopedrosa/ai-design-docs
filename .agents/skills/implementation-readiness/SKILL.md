@@ -1,6 +1,7 @@
 ---
 name: implementation-readiness
 description: Audita prontidao, decompoe semanticamente tarefas nao atomicas e bloqueia implementacao quando fontes, incertezas, dependencias ou Definition of Done nao estao resolvidas. Use antes de handoff ou edicao executavel; nao use para auditar codigo pronto.
+allowed-tools: Read, Grep, Glob
 ---
 
 # Implementation Readiness Gate

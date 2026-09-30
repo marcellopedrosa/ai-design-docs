@@ -10,7 +10,7 @@ version: 1.6
 date: 2026-09-10
 last_reviewed: 2026-09-28
 keywords: documentacao, indice, descoberta-progressiva, governanca, orquestrador, standards, skills, entrega-git, codex, claude-code, gemini, antigravity, registry, contracts, tooling
-related_files: ai/README.md, adrs/ADR-0000-governanca-do-harness-documental.md, agents/AgentOrchestrator.md, agents/standards/README.md, agents/skills/README.md, automation/README.md, scripts/README.md, settings/settings.md, settings/codex.md, settings/claude-code.md, settings/google-gemini.md
+related_files: ai/README.md, adrs/ADR-0000-governanca-do-harness-documental.md, agents/AgentOrchestrator.md, agents/standards/README.md, agents/skills/README.md, automation/README.md, scripts/README.md, settings/settings.md, settings/codex.md, settings/claude-code.md, settings/google-gemini.md, UPGRADING.md
 code_references: ../AGENTS.md, ../CLAUDE.md, ../GEMINI.md, ../.agents/rules/documentation-governance.md; a topologia do projeto de destino deve ser registrada no manifesto.
 principal_statement: Cada tipo de informacao possui uma fonte canonica e deve ser carregado somente quando relevante.
 ---
@@ -58,6 +58,10 @@ de verdade.
 
 `Empty baseline` significa que somente o contrato da coleção existe. O primeiro
 artefato real ativa o inventário e exige owner e estado próprios.
+
+## Guias e Migração
+
+- [UPGRADING.md](UPGRADING.md): Guia de migração e evolução estrutural para a versão 2.0.0 do harness.
 
 O [AgentOrchestrator](agents/AgentOrchestrator.md) é o único agente inicial. A
 presença de um standard no catálogo o torna disponível, não automaticamente

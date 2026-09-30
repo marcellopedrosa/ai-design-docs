@@ -1,0 +1,30 @@
+name: harness
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Harness doctor
+        run: node tooling/harness-doctor/index.mjs
+      - name: Adapters em paridade
+        run: node tooling/adapters/sync-adapters.mjs --check
+      - name: Runner de evals H1
+        run: node tooling/eval-runner/index.mjs
+      - name: Testes tooling
+        run: node --test tooling/harness-doctor/harness-doctor.test.mjs tooling/adapters/sync-adapters.test.mjs tooling/contracts/validator.test.mjs tooling/hooks/hooks.test.mjs tooling/eval-runner/eval-runner.test.mjs
+      - name: Testes docs/scripts
+        run: node --test docs/scripts/*.test.mjs
+      - name: Governança documental
+        run: node docs/scripts/validate-documentation-governance.mjs --root .
+      - name: Política de qualidade
+        run: node docs/scripts/validate-quality-policy.mjs

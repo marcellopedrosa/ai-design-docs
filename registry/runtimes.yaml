@@ -14,7 +14,7 @@ runtimes:
     description: "Anthropic Claude Code"
     global_adapter: "CLAUDE.md"
     skill_target: ".claude/skills"
-    supports_import: false
+    supports_import: true
     sandbox_required: false
 
   gemini-cli:

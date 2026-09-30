@@ -25,7 +25,7 @@ Aplique `implementation-readiness` antes de escrever código, configuração exe
 
 ## 4. Execução e Assurance
 
-Toda mudança de software cria ou atualiza teste relevante e executa teste focalizado, suíte impactada e gates aplicáveis em ambiente seguro. A1 Test, A2 Quality e A3 Security/Compliance são independentes. Um resultado verde não aprova os demais. Falha fecha o gate (`BLOCKED` ou `FAIL`).
+Toda mudança de software cria ou atualiza teste relevante e executa teste focalizado, suíte impactada e gates aplicáveis em ambiente seguro. A1 Test, A2 Quality e A3 Security/Compliance são independentes. Um resultado verde não aprova os demais. Falha fecha o gate (`BLOCKED` ou `FAIL`). Corrija falhas enquanto houver progresso (redução mensurável de falhas sem novas falhas); o teto é de 3 iterações sem progresso (ou 5 totais), parando com `BLOCKED` e handoff.
 
 ## 5. Segurança e Entrega Git
 

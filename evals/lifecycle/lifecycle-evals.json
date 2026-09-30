@@ -77,6 +77,27 @@
         "Ausência de ferramenta nunca gera PASS de conveniência.",
         "O harness falha fechado com BLOCKED e identifica a lacuna."
       ]
+    },
+    {
+      "id": "lifecycle.retry-limit-exceeded-blocks",
+      "category": "behavior",
+      "description": "Exceder o teto de 3 iterações sem progresso ou 5 totais resulta em parada obrigatória com BLOCKED.",
+      "input": {
+        "task_id": "TP-RETRY-01",
+        "iterations_without_progress": 3,
+        "total_iterations": 5,
+        "last_failure": "Test assertion failure in PaymentServiceTest"
+      },
+      "expected": {
+        "decision": "BLOCKED",
+        "blocker_cause": "Iteration retry limit reached without progress",
+        "handoff_required": true
+      },
+      "assertions": [
+        "O agente interrompe o ciclo de tentativas ao atingir o teto de 3 iterações sem progresso ou 5 totais.",
+        "Emite decisão BLOCKED com relatório de bloqueio.",
+        "Não continua em loop infinito consumindo tokens."
+      ]
     }
   ]
 }

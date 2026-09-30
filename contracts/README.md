@@ -2,6 +2,9 @@
 
 Este diretório contém os schemas JSON formais que governam a troca de mensagens, evidências, resultados de gates e handoffs entre agentes, capacidades e ferramentas do harness agnóstico.
 
+> [!NOTE] Distinção entre `contracts/` e `docs/contracts/`
+> `contracts/` (na raiz) armazena exclusivamente os schemas formais e estruturados da infraestrutura e governança do próprio harness (formatos de mensagens, gates, evidências, handoffs e manifestos). Já `docs/contracts/` é a coleção documental destinada a catalogar as interfaces públicas do produto ou sistema desenvolvido pelo projeto adotante (como especificações OpenAPI, contratos de mensageria AsyncAPI e schemas de dados de negócio).
+
 ## Finalidade dos Schemas
 
 Os schemas formais estabelecem garantias estruturais para a operação de agentes e ferramentas:
@@ -18,7 +21,12 @@ Os schemas formais estabelecem garantias estruturais para a operação de agente
 - [`evidence.schema.json`](evidence.schema.json): Registro formal de evidência de execução de comando, teste ou inspeção.
 - [`security-finding.schema.json`](security-finding.schema.json): Registro de vulnerabilidade ou finding de segurança com exigência de comprovação quádrupla.
 - [`handoff.schema.json`](handoff.schema.json): Registro de transição de responsabilidade entre agentes e capacidades.
+- [`harness-project.schema.json`](harness-project.schema.json): Manifesto estruturado de configuração do projeto adotante (`harness.project.yaml`).
 
-## Validação
+## Validação e Exemplos
 
-Todos os schemas seguem a especificação JSON Schema Draft-07 / 2020-12 e são verificados deterministicamente pelo `harness doctor`.
+Todos os schemas seguem a especificação JSON Schema Draft-07 / 2020-12 e são compilados e verificados deterministicamente pelo `harness doctor` através do validador determinístico próprio em `tooling/contracts/validator.mjs` (suportando validação estrita de `type`, `required`, `additionalProperties: false`, `enum`, `items` e objetos aninhados, sem dependências externas).
+
+Exemplos de conformidade e contraexemplos residem em [`examples/`](examples/):
+- Instâncias válidas (`*.valid.json`) comprovam conformidade estrutural.
+- Instâncias inválidas (`*.invalid.json`) garantem que desvios de contrato são rejeitados fail-closed.
