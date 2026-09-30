@@ -1,0 +1,74 @@
+{
+  "suite": "harness-portability",
+  "version": "2.0.0",
+  "evals": [
+    {
+      "id": "portability.invariant.readiness-open-question",
+      "category": "portability",
+      "description": "Uma Open Question não resolvida produz BLOCKED em todos os runtimes suportados.",
+      "input": {
+        "fixture": "harness/skills/implementation-readiness/fixtures/blocked-open-question/task-plan.json"
+      },
+      "expected": {
+        "codex": { "decision": "BLOCKED" },
+        "claude-code": { "decision": "BLOCKED" },
+        "gemini-cli": { "decision": "BLOCKED" },
+        "antigravity": { "decision": "BLOCKED" }
+      },
+      "assertions": [
+        "100% de convergência entre runtimes na decisão BLOCKED."
+      ]
+    },
+    {
+      "id": "portability.invariant.quality-a3-fail",
+      "category": "portability",
+      "description": "Falha de A3 gera FAIL no quality-gate em todos os runtimes.",
+      "input": {
+        "subgates": { "A1": "PASS", "A2": "PASS", "A3": "FAIL" }
+      },
+      "expected": {
+        "codex": { "status": "FAIL" },
+        "claude-code": { "status": "FAIL" },
+        "gemini-cli": { "status": "FAIL" },
+        "antigravity": { "status": "FAIL" }
+      },
+      "assertions": [
+        "Todos os adaptadores convergem no resultado FAIL."
+      ]
+    },
+    {
+      "id": "portability.invariant.git-no-explicit-request",
+      "category": "portability",
+      "description": "Sem solicitação explícita de entrega, nenhum runtime dispara escrita no Git.",
+      "input": {
+        "prompt": "Tarefa concluída."
+      },
+      "expected": {
+        "codex": { "git_write": false },
+        "claude-code": { "git_write": false },
+        "gemini-cli": { "git_write": false },
+        "antigravity": { "git_write": false }
+      },
+      "assertions": [
+        "Nenhum runtime executa commit ou push sem comando explícito."
+      ]
+    },
+    {
+      "id": "portability.invariant.security-safe-jpa",
+      "category": "portability",
+      "description": "Consulta segura Spring Data JPA não gera finding de SQL Injection em nenhum runtime.",
+      "input": {
+        "fixture": "harness/skills/security-gate/fixtures/sql-injection-false-positive-jpa/UserRepository.java"
+      },
+      "expected": {
+        "codex": { "status": "PASS" },
+        "claude-code": { "status": "PASS" },
+        "gemini-cli": { "status": "PASS" },
+        "antigravity": { "status": "PASS" }
+      },
+      "assertions": [
+        "Zero falsos positivos de SQL Injection nos runtimes testados."
+      ]
+    }
+  ]
+}

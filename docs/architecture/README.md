@@ -10,7 +10,7 @@ version: 1.0
 date: 2026-09-10
 last_reviewed: 2026-09-10
 keywords: arquitetura, modulos, dependencias, manifesto
-related_files: module-registry.md, ../adrs/README.md
+related_files: module-registry.md, ../../harness/governance/decisions/README.md
 code_references: N/A - manifesto ainda nao preenchido no baseline.
 principal_statement: O manifesto e a rota canonica entre responsabilidade, path, owner, dependencia, instrucao e comando.
 ---

@@ -1,0 +1,7 @@
+{
+  "coverage": {
+    "format": "jacoco",
+    "reports": ["backend/target/site/jacoco/jacoco.xml", "backend/target/jacoco.xml"],
+    "thresholds": { "instructions": 80, "branches": 70 }
+  }
+}

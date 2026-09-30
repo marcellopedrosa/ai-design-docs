@@ -20,14 +20,14 @@ Configurar e auditar as permissões da extensão Antigravity no VS Code para o e
 
 ## Escopo e não-objetivos
 
-- Escopo: Configuração do gerenciador `/permissions` no escopo de projeto (`Project`), regras de precedência `Deny > Ask > Allow` e registro documental em `docs/settings/README.md`.
+- Escopo: Configuração do gerenciador `/permissions` no escopo de projeto (`Project`), regras de precedência `Deny > Ask > Allow` e registro documental em `harness/governance/policies/README.md`.
 - Não-objetivos: Alterar políticas globais da máquina sem autorização, modificar binários do VS Code ou permitir exclusão cega de arquivos.
 
 ## Pré-condições
 
 1. Extensão do Antigravity instalada e ativa no Visual Studio Code.
 2. Projeto adotante do harness aberto como workspace ativo no editor.
-3. Especificação de segurança consultada em `docs/settings/README.md`.
+3. Especificação de segurança consultada em `harness/governance/policies/README.md`.
 
 ## Procedimento
 
@@ -55,9 +55,9 @@ Configurar e auditar as permissões da extensão Antigravity no VS Code para o e
 
 ## Entradas, saídas e evidências
 
-- Entradas: Especificação de comandos de `docs/settings/README.md` e escopo `Project`.
+- Entradas: Especificação de comandos de `harness/governance/policies/README.md` e escopo `Project`.
 - Saídas: Regras configuradas no gerenciador `/permissions` do Antigravity para o workspace.
-- Evidências: Arquivo `docs/settings/README.md` atualizado e regras visíveis no painel de permissões.
+- Evidências: Arquivo `harness/governance/policies/README.md` atualizado e regras visíveis no painel de permissões.
 
 ## Critério de conclusão
 

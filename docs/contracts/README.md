@@ -10,7 +10,7 @@ version: 1.0
 date: 2026-09-10
 last_reviewed: 2026-09-10
 keywords: contratos, api, eventos, schema, compatibilidade
-related_files: ../requirements/README.md, ../adrs/README.md
+related_files: ../product/requirements/README.md, ../../harness/governance/decisions/README.md
 code_references: N/A - nenhum contrato ativo no baseline.
 principal_statement: Interface compartilhada possui uma fonte canonica versionada, completa e ligada a produtores e consumidores.
 ---
@@ -30,8 +30,8 @@ principal_statement: Interface compartilhada possui uma fonte canonica versionad
 Requirement, ADR e plano registram a versão e as operações/mensagens exatas. Contrato
 ausente ou incompleto mantém a implementação de produtores e consumidores bloqueada.
 
-> [!NOTE] Distinção entre `docs/contracts/` e `contracts/`
-> `docs/contracts/` cataloga as interfaces canônicas e versionadas do produto final desenvolvido (APIs, OpenAPI, eventos). Os schemas formais que regem o próprio harness de IA (gates, evidências, handoffs) residem na raiz em `contracts/`.
+> [!NOTE] Distinção entre `docs/contracts/` e `harness/contracts/`
+> `docs/contracts/` cataloga as interfaces canônicas e versionadas do produto final desenvolvido (APIs, OpenAPI, eventos). Os schemas formais que regem o próprio harness de IA (gates, evidências, handoffs) residem na raiz em `harness/contracts/`.
 
 ## Índice
 

@@ -15,16 +15,16 @@ jobs:
         with:
           node-version: '20'
       - name: Harness doctor
-        run: node tooling/harness-doctor/index.mjs
+        run: node harness/tooling/harness-doctor/index.mjs
       - name: Adapters em paridade
-        run: node tooling/adapters/sync-adapters.mjs --check
+        run: node harness/tooling/adapters/sync-adapters.mjs --check
       - name: Runner de evals H1
-        run: node tooling/eval-runner/index.mjs
+        run: node harness/tooling/eval-runner/index.mjs
       - name: Testes tooling
-        run: node --test tooling/harness-doctor/harness-doctor.test.mjs tooling/adapters/sync-adapters.test.mjs tooling/contracts/validator.test.mjs tooling/hooks/hooks.test.mjs tooling/eval-runner/eval-runner.test.mjs
-      - name: Testes docs/scripts
-        run: node --test docs/scripts/*.test.mjs
+        run: node --test harness/tooling/harness-doctor/harness-doctor.test.mjs harness/tooling/adapters/sync-adapters.test.mjs harness/tooling/contracts/validator.test.mjs harness/tooling/hooks/hooks.test.mjs harness/tooling/eval-runner/eval-runner.test.mjs harness/tooling/harness.test.mjs harness/tooling/harness-integrity.test.mjs harness/tooling/contracts/trace.test.mjs
+      - name: Testes de validadores
+        run: node --test harness/tooling/validators/*.test.mjs
       - name: Governança documental
-        run: node docs/scripts/validate-documentation-governance.mjs --root .
+        run: node harness/tooling/validators/validate-documentation-governance.mjs --root .
       - name: Política de qualidade
-        run: node docs/scripts/validate-quality-policy.mjs
+        run: node harness/tooling/validators/validate-quality-policy.mjs

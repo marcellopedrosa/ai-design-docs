@@ -10,9 +10,9 @@ version: 1.1
 date: 2026-09-10
 last_reviewed: 2026-09-11
 keywords: modulos, pacotes, paths, owners, comandos
-related_files: README.md, ../README.md, ../agents/AgentOrchestrator.md, ../agents/standards/README.md
-code_references: backend/, frontend/, website/, infra/
-principal_statement: As pastas base sao scaffolds documentais e nenhuma implementacao deve presumir stack, comando ou owner ainda nao materializado no projeto de destino.
+related_files: README.md, ../README.md, ../../harness/governance/agents/AgentOrchestrator.md, ../agents/standards/README.md
+code_references: N/A - nenhum módulo de aplicação implementado no baseline.
+principal_statement: Nenhum módulo de aplicação é presumido; paths, owners e comandos são registrados somente para módulos reais.
 ---
 
 # Manifesto de módulos
@@ -30,19 +30,11 @@ principal_statement: As pastas base sao scaffolds documentais e nenhuma implemen
 | Teste | Comando focalizado e suíte impactada |
 | Quality gate | Comandos determinísticos aplicáveis |
 
-## Scaffolds base
+## Baseline
 
-| Fronteira | Path | Responsabilidade possível | Owner inicial | Estado | Comandos e entrypoints |
-| --- | --- | --- | --- | --- | --- |
-| Backend | [`backend/`](../../backend/README.md) | Serviços, APIs, jobs e regras server-side | Equipe de Backend ou Aplicações | Scaffold | Não configurados |
-| Frontend | [`frontend/`](../../frontend/README.md) | Aplicação cliente interativa | Equipe de Frontend ou Experiência | Scaffold | Não configurados |
-| Website | [`website/`](../../website/README.md) | Superfície pública separada | Equipe de Website, Produto ou Conteúdo | Scaffold opcional | Não configurados |
-| Infra | [`infra/`](../../infra/README.md) | IaC, automação, CI/CD e operação | Equipe de Plataforma, DevOps ou SRE | Scaffold | Não configurados |
-
-`Scaffold` não significa módulo implementado ou `READY`. Durante a adoção, o owner
-deve manter, renomear ou remover cada fronteira conforme a árvore real, registrar
-dependências, instruções, testes, quality gates e entrypoints e atualizar este
-manifesto antes do primeiro handoff executável.
+Nenhum módulo de aplicação ou scaffold de stack é distribuído. Um projeto
+adotante registra aqui apenas módulos reais, com seus paths, owners, comandos,
+dependências e gates, antes do primeiro handoff executável.
 
 ## Módulos ativos
 
