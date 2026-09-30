@@ -6,7 +6,7 @@ scope: Task Plans e Implementation Plans.
 non_objectives: Nao criar requisito, decisao ou approval por meio de plano.
 owner: Engenharia e Arquitetura
 status: Active
-version: 1.1
+version: 1.2
 date: 2026-09-10
 last_reviewed: 2026-09-30
 keywords: planos, tasks, readiness, handoff
@@ -29,7 +29,7 @@ principal_statement: Cada task entrega um resultado observavel, um handoff e um 
 
 | Plano | Objetivo | Status |
 | --- | --- | --- |
-| [TP-00001](TP-00001-harness-remediation.md) | Coordenar a remediação cirúrgica de engenharia do harness v2 (T-04 a T-12) | In Progress |
+| [TP-00001](TP-00001-harness-remediation.md) | Coordenar a remediação cirúrgica de engenharia do harness v2 (T-04 a T-12) | Completed |
 
 Veja também [Implementation Plans](implementation_plans/README.md).
 
@@ -37,6 +37,7 @@ Veja também [Implementation Plans](implementation_plans/README.md).
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.2 | 2026-09-30 | Atualiza status de TP-00001 para Completed com encerramento formal de todas as tarefas. |
 | 1.1 | 2026-09-30 | Cataloga TP-00001 para a remediação cirúrgica de engenharia v2. |
 | 1.0 | 2026-09-10 | Baseline inicial da coleção de Task Plans. |
 
