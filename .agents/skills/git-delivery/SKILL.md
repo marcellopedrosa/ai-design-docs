@@ -13,7 +13,7 @@ disable-model-invocation: true
 ## Objetivo e ativação
 
 Aplicar a política local de entrega Git sem ampliar permissões. Para este projeto,
-siga [`docs/settings/git-delivery.md`](../../docs/settings/git-delivery.md):
+siga `docs/settings/git-delivery.md`:
 trabalhe em branches separadas, integre mudanças aprovadas preservando o trabalho de
 todos os participantes e mantenha a `main` protegida contra escrita direta e
 force-push. A tarefa define o escopo; não exija uma lista fechada de paths para

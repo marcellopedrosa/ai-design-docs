@@ -14,7 +14,12 @@ import {
   parseSimpleYaml,
   splitAllowedTools,
   toolName,
-  findRoot
+  findRoot,
+  checkMarkdownLinks,
+  expandBraces,
+  checkDistributedTree,
+  checkAgentIndex,
+  checkVersionParity
 } from './index.mjs';
 
 test('checkRegistry passes on repository root', () => {
@@ -309,5 +314,87 @@ test('T-11: findRoot locates repository root from nested subdirectory', () => {
   const sub = path.join(root, 'tooling', 'harness-doctor');
   const found = findRoot(sub);
   assert.equal(found, root);
+});
+
+test('T-04: checkMarkdownLinks passes on repository root', () => {
+  const root = path.resolve('.');
+  const { errors } = checkMarkdownLinks(root);
+  assert.equal(errors.length, 0, `Markdown link errors: ${errors.join(', ')}`);
+});
+
+test('T-04: checkMarkdownLinks detects broken relative link', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hd-links-'));
+  fs.writeFileSync(path.join(tmp, 'valid.md'), '# Valid\n');
+  fs.writeFileSync(
+    path.join(tmp, 'test.md'),
+    'Link [broken](missing.md) and [ok](valid.md) and [external](https://example.com).'
+  );
+  const { errors } = checkMarkdownLinks(tmp);
+  assert.equal(errors.length, 1);
+  assert.ok(errors[0].includes('link relativo quebrado -> missing.md'));
+  fs.rmSync(tmp, { recursive: true, force: true });
+});
+
+test('T-04: expandBraces expands single and multiple nested braces', () => {
+  assert.deepEqual(expandBraces('foo/{a,b}/bar'), ['foo/a/bar', 'foo/b/bar']);
+  assert.deepEqual(expandBraces('{x,y}/{1,2}'), ['x/1', 'x/2', 'y/1', 'y/2']);
+  assert.deepEqual(expandBraces('simple/path'), ['simple/path']);
+});
+
+test('T-04: checkDistributedTree passes on repository root', () => {
+  const root = path.resolve('.');
+  const { errors } = checkDistributedTree(root);
+  assert.equal(errors.length, 0, `Distributed tree errors: ${errors.join(', ')}`);
+});
+
+test('T-04: checkDistributedTree detects missing path', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hd-tree-'));
+  fs.writeFileSync(
+    path.join(tmp, 'README.md'),
+    '# Test\n\n## Árvore distribuída\n\n```text\nmissing-dir/missing-file.md\n```\n'
+  );
+  const { errors } = checkDistributedTree(tmp);
+  assert.ok(errors.length > 0);
+  assert.ok(errors.some(e => e.includes("árvore distribuída cita 'missing-dir/missing-file.md' inexistente")));
+  fs.rmSync(tmp, { recursive: true, force: true });
+});
+
+test('T-04: checkAgentIndex passes on repository root', () => {
+  const root = path.resolve('.');
+  const { errors } = checkAgentIndex(root);
+  assert.equal(errors.length, 0, `Agent index errors: ${errors.join(', ')}`);
+});
+
+test('T-04: checkAgentIndex detects unlinked or unlisted agent', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hd-agent-'));
+  const agentsDir = path.join(tmp, 'docs', 'agents');
+  fs.mkdirSync(agentsDir, { recursive: true });
+  fs.writeFileSync(path.join(agentsDir, 'README.md'), '# Agents\n');
+  fs.writeFileSync(path.join(agentsDir, 'OrphanAgent.md'), '# Orphan\n');
+  fs.writeFileSync(
+    path.join(tmp, 'README.md'),
+    '# Root\n\n## Árvore distribuída\n\n```text\ndocs/agents/README.md\n```\n'
+  );
+  const { errors } = checkAgentIndex(tmp);
+  assert.ok(errors.some(e => e.includes("docs/agents/README.md: agente 'OrphanAgent.md' ausente")));
+  assert.ok(errors.some(e => e.includes("README.md: agente 'OrphanAgent.md' ausente da árvore distribuída")));
+  fs.rmSync(tmp, { recursive: true, force: true });
+});
+
+test('T-04: checkVersionParity passes on repository root', () => {
+  const root = path.resolve('.');
+  const { errors } = checkVersionParity(root);
+  assert.equal(errors.length, 0, `Version parity errors: ${errors.join(', ')}`);
+});
+
+test('T-04: checkVersionParity detects divergent versions', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hd-ver-'));
+  fs.mkdirSync(path.join(tmp, 'registry'), { recursive: true });
+  fs.writeFileSync(path.join(tmp, 'registry', 'harness.yaml'), 'harness_version: "2.0.0"\n');
+  fs.writeFileSync(path.join(tmp, 'harness.project.example.yaml'), 'harness_version: "2.1.0"\n');
+  fs.writeFileSync(path.join(tmp, 'README.md'), '---\nversion: 2.0.0\n---\n# Root\n');
+  const { errors } = checkVersionParity(tmp);
+  assert.ok(errors.some(e => e.includes('divergência entre')));
+  fs.rmSync(tmp, { recursive: true, force: true });
 });
 

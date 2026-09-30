@@ -21,6 +21,6 @@ Um adaptador **NÃO PODE**:
 ## Conteúdo
 
 - [`core-policy.md`](core-policy.md): Política neutra de referência compartilhada por todos os adaptadores.
-- [`codex/`](codex/): Mapeamento para OpenAI Codex.
-- [`claude/`](claude/): Mapeamento para Anthropic Claude Code.
-- [`gemini/`](gemini/): Mapeamento para Google Gemini CLI e Antigravity.
+- [`../AGENTS.md`](../AGENTS.md): Mapeamento para OpenAI Codex e baseline agnóstico.
+- [`../CLAUDE.md`](../CLAUDE.md): Mapeamento para Anthropic Claude Code.
+- [`../GEMINI.md`](../GEMINI.md): Mapeamento para Google Gemini CLI e Antigravity.

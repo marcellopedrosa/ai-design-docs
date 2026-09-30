@@ -616,6 +616,190 @@ export function checkFixtureReferences(root) {
   return { errors };
 }
 
+export function checkMarkdownLinks(root) {
+  const errors = [];
+  const linkRegex = /\]\((?!https?:|mailto:|#)([^)\s#]+)/g;
+
+  function walk(dir) {
+    if (!fs.existsSync(dir)) return;
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === '.git' || entry.name === 'node_modules') continue;
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(fullPath);
+      } else if (entry.isFile() && entry.name.endsWith('.md')) {
+        try {
+          const content = fs.readFileSync(fullPath, 'utf8');
+          let match;
+          while ((match = linkRegex.exec(content)) !== null) {
+            const rawTarget = match[1];
+            const cleanTarget = rawTarget.split('?')[0].split('#')[0];
+            if (!cleanTarget) continue;
+            const resolved = path.resolve(path.dirname(fullPath), cleanTarget);
+            if (!fs.existsSync(resolved)) {
+              errors.push(`${path.relative(root, fullPath)}: link relativo quebrado -> ${rawTarget}`);
+            }
+          }
+        } catch (err) {
+          errors.push(`${path.relative(root, fullPath)}: erro ao ler arquivo: ${err.message}`);
+        }
+      }
+    }
+  }
+
+  walk(root);
+  return { errors };
+}
+
+export function expandBraces(str) {
+  const match = str.match(/\{([^{}]+)\}/);
+  if (!match) return [str];
+  const prefix = str.slice(0, match.index);
+  const suffix = str.slice(match.index + match[0].length);
+  const options = match[1].split(',');
+  const results = [];
+  for (const opt of options) {
+    results.push(...expandBraces(prefix + opt.trim() + suffix));
+  }
+  return results;
+}
+
+export function checkDistributedTree(root) {
+  const errors = [];
+  const readmePath = path.join(root, 'README.md');
+  if (!fs.existsSync(readmePath)) {
+    return { errors: ['README.md não encontrado.'] };
+  }
+
+  const readme = fs.readFileSync(readmePath, 'utf8');
+  const treeMatch = readme.match(/## Árvore distribuída\s*```[a-z]*\r?\n([\s\S]*?)```/);
+  if (!treeMatch) {
+    return { errors: ['README.md: seção "## Árvore distribuída" não encontrada ou sem bloco de código.'] };
+  }
+
+  const rawLines = treeMatch[1].split(/\r?\n/);
+  const stack = [];
+
+  for (const rawLine of rawLines) {
+    if (!rawLine.trim()) continue;
+    const indent = rawLine.search(/\S/);
+    const content = rawLine.trim();
+
+    while (stack.length > 0 && stack[stack.length - 1].indent >= indent) {
+      stack.pop();
+    }
+
+    const parentPrefix = stack.length > 0 ? stack[stack.length - 1].prefix : '';
+    const fullRaw = parentPrefix + content;
+
+    if (content.endsWith('/')) {
+      stack.push({ indent, prefix: parentPrefix + content });
+    }
+
+    const expanded = expandBraces(fullRaw);
+    for (const p of expanded) {
+      if (p.includes('*') || p.includes('<') || p.includes('>') || p.includes('...')) {
+        continue;
+      }
+      const targetPath = path.resolve(root, p);
+      if (!fs.existsSync(targetPath)) {
+        errors.push(`README.md: árvore distribuída cita '${p}' inexistente.`);
+      }
+    }
+  }
+
+  return { errors };
+}
+
+export function checkAgentIndex(root) {
+  const errors = [];
+  const agentsDir = path.join(root, 'docs', 'agents');
+  const agentReadmePath = path.join(agentsDir, 'README.md');
+  const rootReadmePath = path.join(root, 'README.md');
+
+  if (!fs.existsSync(agentsDir)) {
+    return { errors: ['docs/agents/: diretório não encontrado.'] };
+  }
+
+  const agentReadme = fs.existsSync(agentReadmePath) ? fs.readFileSync(agentReadmePath, 'utf8') : '';
+  const rootReadme = fs.existsSync(rootReadmePath) ? fs.readFileSync(rootReadmePath, 'utf8') : '';
+  const treeMatch = rootReadme.match(/## Árvore distribuída\s*```[a-z]*\r?\n([\s\S]*?)```/);
+  const treeBlock = treeMatch ? treeMatch[1] : '';
+
+  const entries = fs.readdirSync(agentsDir, { withFileTypes: true });
+  for (const entry of entries) {
+    if (entry.isFile() && entry.name.endsWith('.md') && entry.name !== 'README.md') {
+      const agentFile = entry.name;
+      const linkRegex = new RegExp(`\\]\\(\\s*${agentFile}(?:#[^)]*)?\\s*\\)`);
+      if (!linkRegex.test(agentReadme)) {
+        errors.push(`docs/agents/README.md: agente '${agentFile}' ausente ou não referenciado como link.`);
+      }
+
+      if (!treeBlock.includes(agentFile)) {
+        errors.push(`README.md: agente '${agentFile}' ausente da árvore distribuída.`);
+      }
+    }
+  }
+
+  return { errors };
+}
+
+export function checkVersionParity(root) {
+  const errors = [];
+
+  const harnessYamlPath = path.join(root, 'registry', 'harness.yaml');
+  const exampleYamlPath = path.join(root, 'harness.project.example.yaml');
+  const readmePath = path.join(root, 'README.md');
+
+  let regVersion = null;
+  let exVersion = null;
+  let readmeVersion = null;
+
+  if (fs.existsSync(harnessYamlPath)) {
+    try {
+      const parsed = parseSimpleYaml(fs.readFileSync(harnessYamlPath, 'utf8'), 'registry/harness.yaml');
+      regVersion = parsed.harness_version || parsed.version || null;
+      if (!regVersion) errors.push('registry/harness.yaml: campo harness_version ausente.');
+    } catch (err) {
+      errors.push(`registry/harness.yaml: erro ao ler versão: ${err.message}`);
+    }
+  } else {
+    errors.push('registry/harness.yaml não encontrado.');
+  }
+
+  if (fs.existsSync(exampleYamlPath)) {
+    try {
+      const parsed = parseSimpleYaml(fs.readFileSync(exampleYamlPath, 'utf8'), 'harness.project.example.yaml');
+      exVersion = parsed.harness_version || parsed.version || null;
+      if (!exVersion) errors.push('harness.project.example.yaml: campo harness_version ausente.');
+    } catch (err) {
+      errors.push(`harness.project.example.yaml: erro ao ler versão: ${err.message}`);
+    }
+  } else {
+    errors.push('harness.project.example.yaml não encontrado.');
+  }
+
+  if (fs.existsSync(readmePath)) {
+    const content = fs.readFileSync(readmePath, 'utf8');
+    const fmMatch = content.match(/^version:\s*(.+)$/m);
+    if (fmMatch) {
+      readmeVersion = fmMatch[1].trim();
+    } else {
+      errors.push('README.md: campo version ausente no frontmatter.');
+    }
+  } else {
+    errors.push('README.md não encontrado.');
+  }
+
+  if (regVersion && exVersion && readmeVersion) {
+    if (regVersion !== exVersion || regVersion !== readmeVersion) {
+      errors.push(`Paridade de versão: divergência entre registry/harness.yaml (${regVersion}), harness.project.example.yaml (${exVersion}) e README.md (${readmeVersion}).`);
+    }
+  }
+
+  return { errors };
+}
+
 export function checkDrift(root) {
   const errors = [];
   const skillsYamlPath = path.join(root, 'registry', 'skills.yaml');
@@ -635,12 +819,14 @@ export function checkDrift(root) {
     }
   }
 
-  // Verificar README.md raiz
+  // Verificar árvore no README.md raiz
   const rootReadmePath = path.join(root, 'README.md');
   if (fs.existsSync(rootReadmePath)) {
     const readme = fs.readFileSync(rootReadmePath, 'utf8');
+    const treeMatch = readme.match(/## Árvore distribuída\s*```[a-z]*\r?\n([\s\S]*?)```/);
+    const targetText = treeMatch ? treeMatch[1] : readme;
     for (const skill of registeredSkills) {
-      if (!new RegExp(`(?<![\\w-])${skill}(?![\\w-])`).test(readme)) {
+      if (!new RegExp(`(?<![\\w-])${skill}(?![\\w-])`).test(targetText)) {
         errors.push(`README.md: skill '${skill}' do registry ausente da árvore distribuída.`);
       }
     }
@@ -659,6 +845,10 @@ export function runDoctor(repositoryRoot) {
     evals: checkEvals(root),
     evalsH1: runEvalsH1(root),
     fixtureRefs: checkFixtureReferences(root),
+    links: checkMarkdownLinks(root),
+    tree: checkDistributedTree(root),
+    agentIndex: checkAgentIndex(root),
+    versions: checkVersionParity(root),
     drift: checkDrift(root)
   };
 
@@ -670,6 +860,10 @@ export function runDoctor(repositoryRoot) {
     ...results.evals.errors,
     ...results.evalsH1.failures.map(f => `eval ${f.id} falhou no nível H1`),
     ...results.fixtureRefs.errors,
+    ...results.links.errors,
+    ...results.tree.errors,
+    ...results.agentIndex.errors,
+    ...results.versions.errors,
     ...results.drift.errors
   ];
 
@@ -727,6 +921,10 @@ function main() {
     { name: 'Adapters', errors: results.adapters.errors, detail: 'paridade entre skills/, .agents/ e .claude/' },
     { name: 'Evals', errors: [...results.evals.errors, ...evalH1Errors], detail: evalsDetail },
     { name: 'Fixtures', errors: results.fixtureRefs.errors, detail: 'integridade referencial de fixtures' },
+    { name: 'Links', errors: results.links.errors, detail: 'links relativos em documentos markdown' },
+    { name: 'Tree', errors: results.tree.errors, detail: 'árvore distribuída no README.md' },
+    { name: 'AgentIndex', errors: results.agentIndex.errors, detail: 'índice e catálogo de agentes' },
+    { name: 'Versions', errors: results.versions.errors, detail: 'paridade de versão entre registry, manifesto e README' },
     { name: 'Drift', errors: results.drift.errors, detail: 'paridade entre registry e documentação' }
   ];
 
