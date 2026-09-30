@@ -4,6 +4,7 @@ Este repositório usa o control plane canônico em [`harness/`](harness/README.m
 Leia primeiro `harness/README.md`, depois
 `harness/governance/README.md` e [`docs/README.md`](docs/README.md).
 Antes de executar alterações, carregue as fontes canônicas de [governança comportamental](harness/governance/policies/agent-behavior-policy.md), [proibições](harness/governance/restrictions/agent-prohibitions.md), [segurança](harness/governance/restrictions/security-restrictions.md) e [filesystem](harness/governance/restrictions/filesystem-restrictions.md); não duplique essas regras neste bootstrap.
+Para adoção, use `node harness/tooling/harness.mjs onboard`; para legado use `onboard --source`; para clone configurado use `bootstrap`. A policy canônica está em `harness/onboarding/`.
 Consulte `harness.project.yaml` somente se existir; o exemplo em
 `harness/examples/` não ativa capabilities.
 Quando existir `docs/project-manifest.yaml`, resolva profiles e artefatos pelo

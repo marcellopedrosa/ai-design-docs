@@ -4,6 +4,21 @@ Este diretório contém os registros estruturados do harness agnóstico em forma
 
 O objetivo do registry é servir como **fonte única de verdade (SSOT)** para inventários, relacionamentos, ativação e metadados estruturados do harness.
 
+## Project Lifecycle
+
+- `onboard`: inicializa projeto novo;
+- `onboard --source <path>`: importa conteúdo project-owned legado;
+- `bootstrap`: valida clone configurado;
+- `scaffold`: verifica ou cria artefatos;
+- `doctor`: diagnostica integridade.
+
+## Declarative Chain
+
+`questions.yaml` → `project-manifest.yaml` → `profiles.yaml` → `artifact-routes.yaml` → `templates/`
+
+`harness/onboarding/migration-policy.yaml` é a autoridade da importação legada.
+O harness antigo não deve ser copiado sobre o harness atual.
+
 ## Conteúdo
 
 - [`harness.yaml`](harness.yaml): Metadados estruturais, versão, princípios e ciclo de vida do harness.

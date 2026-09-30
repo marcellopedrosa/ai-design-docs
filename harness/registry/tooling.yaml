@@ -130,3 +130,21 @@ tools:
     secrets: false
     destructive: false
     requires_project_configuration: true
+
+  onboard:
+    status: active
+    implementation: "harness/tooling/onboard/index.mjs"
+    description: "Inicializa projeto ou importa conteúdo project-owned de harness legado"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: false
+
+  bootstrap:
+    status: active
+    implementation: "harness/tooling/bootstrap/index.mjs"
+    description: "Valida clone de projeto já configurado"
+    network: false
+    secrets: false
+    destructive: false
+    requires_project_configuration: true

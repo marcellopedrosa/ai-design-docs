@@ -2,6 +2,12 @@
 
 @./AGENTS.md
 
+## Harness Project Lifecycle
+
+- novo projeto: `node harness/tooling/harness.mjs onboard`;
+- projeto legado: `node harness/tooling/harness.mjs onboard --source "<path>"`;
+- clone configurado: `node harness/tooling/harness.mjs bootstrap`.
+
 ## Harness Governance
 
 As regras canônicas de comportamento, proibições, segurança e filesystem estão em

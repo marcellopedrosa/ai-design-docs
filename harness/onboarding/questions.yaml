@@ -1,0 +1,37 @@
+version: 1
+questions:
+  project-name:
+    label: Project name
+    description: Nome legível do projeto.
+    type: string
+    required: true
+    target: project.name
+  project-type:
+    label: Project type
+    description: Tipo predominante da solução.
+    type: choice
+    required: true
+    options:
+      - application
+      - service
+      - library
+      - infrastructure
+      - mobile
+      - other
+    target: project.type
+  confirm-detected-profiles:
+    label: Confirm detected profiles?
+    description: Confirma os profiles sugeridos pela inspeção.
+    type: confirmation
+    required: true
+  confirm-detected-agents:
+    label: Confirm detected agents?
+    description: Confirma os agents sugeridos pela inspeção.
+    type: confirmation
+    required: true
+  confirm-import-plan:
+    label: Apply the proposed import plan?
+    description: Autoriza a cópia de conteúdo do projeto legado.
+    type: confirmation
+    required: true
+    onlyWhen: legacy-import

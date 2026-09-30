@@ -635,6 +635,22 @@ export function checkGovernance(root) {
   return { errors };
 }
 
+export function checkOnboarding(root) {
+  const errors = [];
+  for (const relative of [
+    'harness/onboarding/README.md',
+    'harness/onboarding/questions.yaml',
+    'harness/onboarding/migration-policy.yaml',
+    'harness/tooling/onboard/index.mjs',
+    'harness/tooling/bootstrap/index.mjs',
+    'harness/tooling/scaffold/index.mjs'
+  ]) {
+    const full = path.join(root, relative);
+    if (!fs.existsSync(full) || !fs.statSync(full).isFile() || !fs.readFileSync(full, 'utf8').trim()) errors.push(`${relative}: ausente ou vazio.`);
+  }
+  return { errors };
+}
+
 export function runDoctor(repositoryRoot) {
   const root = path.resolve(repositoryRoot);
   let scaffold;
@@ -661,6 +677,7 @@ export function runDoctor(repositoryRoot) {
     fixtureRefs: checkFixtureReferences(root),
     drift: checkDrift(root),
     governance: checkGovernance(root),
+    onboarding: checkOnboarding(root),
     scaffold
   };
 
@@ -674,6 +691,7 @@ export function runDoctor(repositoryRoot) {
     ...results.fixtureRefs.errors,
     ...results.drift.errors,
     ...results.governance.errors,
+    ...results.onboarding.errors,
     ...results.scaffold.errors
   ];
 
@@ -706,6 +724,7 @@ function main() {
   printCheck('Fixtures', results.fixtureRefs.errors, 'integridade referencial de fixtures');
   printCheck('Drift', results.drift.errors, 'paridade entre registry e documentação');
   printCheck('Governance V7', results.governance.errors, 'policies e restrictions canônicas');
+  printCheck('Onboarding V8', results.onboarding.errors, 'onboard, bootstrap e fontes declarativas');
   if (results.scaffold.errors.length) {
     printCheck('Scaffold V6', results.scaffold.errors);
   } else if (results.scaffold.warnings.length) {

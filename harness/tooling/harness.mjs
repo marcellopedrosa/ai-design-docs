@@ -11,13 +11,15 @@ const commands = {
   check: ['harness/tooling/validators/validate-documentation-governance.mjs', '--root', root],
   eval: ['harness/tooling/eval-runner/index.mjs', '--level', 'H1', '--root', root],
   sync: ['harness/tooling/adapters/sync-adapters.mjs', '--check', '--root', root],
-  scaffold: ['harness/tooling/scaffold/index.mjs']
+  scaffold: ['harness/tooling/scaffold/index.mjs'],
+  onboard: ['harness/tooling/onboard/index.mjs'],
+  bootstrap: ['harness/tooling/bootstrap/index.mjs']
 };
 
 export function main(args = process.argv.slice(2), runner = spawnSync) {
   const [command, ...extra] = args;
   if (!Object.hasOwn(commands, command)) {
-    process.stderr.write('Usage: node harness/tooling/harness.mjs <doctor|check|eval|sync|scaffold> [tool options]\n');
+    process.stderr.write('Usage: node harness/tooling/harness.mjs <doctor|check|eval|sync|onboard|bootstrap|scaffold> [tool options]\n');
     return 2;
   }
   const [entrypoint, ...defaults] = commands[command];
