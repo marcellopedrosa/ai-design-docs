@@ -5,7 +5,7 @@
     {
       "id": "orchestration.single-initial-agent",
       "category": "behavior",
-      "description": "AgentOrchestrator é o único agente no baseline e não instancia agentes especializados sem handoff comprovado.",
+      "description": "AgentOrchestrator é o único agente orquestrador no baseline e não instancia agentes especializados sem handoff comprovado.",
       "input": {
         "prompt": "Como coordenar o desenvolvimento desta funcionalidade?"
       },

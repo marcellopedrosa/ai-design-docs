@@ -45,7 +45,8 @@ Deve validar, no mínimo:
 - presença dos artefatos obrigatórios e `README.md` de cada coleção ativa;
 - frontmatter/contrato mínimo, IDs, nomes, estados e owners;
 - inventário individual e links relativos;
-- AgentOrchestrator presente e indexado como único agente inicial;
+- AgentOrchestrator presente e indexado como único agente orquestrador;
+  GateEvaluator como subagente de assurance;
 - inventário individual da biblioteca de standards e ativação diferenciada de
   disponibilidade;
 - paridade semântica e nomes das skills pareadas;

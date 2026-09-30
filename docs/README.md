@@ -6,9 +6,9 @@ scope: Documentacao versionada sob docs/.
 non_objectives: Nao duplicar requisitos, decisoes, standards ou configuracao operacional.
 owner: Arquitetura e owners das colecoes
 status: Active
-version: 1.6
+version: 1.7
 date: 2026-09-10
-last_reviewed: 2026-09-28
+last_reviewed: 2026-09-30
 keywords: documentacao, indice, descoberta-progressiva, governanca, orquestrador, standards, skills, entrega-git, codex, claude-code, gemini, antigravity, registry, contracts, tooling
 related_files: ai/README.md, adrs/ADR-0000-governanca-do-harness-documental.md, agents/AgentOrchestrator.md, agents/standards/README.md, agents/skills/README.md, automation/README.md, scripts/README.md, settings/settings.md, settings/codex.md, settings/claude-code.md, settings/google-gemini.md, UPGRADING.md
 code_references: ../AGENTS.md, ../CLAUDE.md, ../GEMINI.md, ../.agents/rules/documentation-governance.md; a topologia do projeto de destino deve ser registrada no manifesto.
@@ -63,7 +63,9 @@ artefato real ativa o inventário e exige owner e estado próprios.
 
 - [UPGRADING.md](UPGRADING.md): Guia de migração e evolução estrutural para a versão 2.0.0 do harness.
 
-O [AgentOrchestrator](agents/AgentOrchestrator.md) é o único agente inicial. A
+O [AgentOrchestrator](agents/AgentOrchestrator.md) é o único agente orquestrador
+do baseline; o subagente isolado [GateEvaluator](agents/GateEvaluator.md) atua na
+avaliação de gates de assurance. A
 presença de um standard no catálogo o torna disponível, não automaticamente
 aplicável; o plano registra quais regras foram ativadas.
 
@@ -97,6 +99,7 @@ adaptadores vigentes.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.7 | 2026-09-30 | Explicita AgentOrchestrator como orquestrador e GateEvaluator como subagente de assurance. |
 | 1.6 | 2026-09-28 | Atualiza o mapa para refletir a arquitetura agnóstica e a camada determinística. |
 | 1.5 | 2026-09-13 | Indexa os mapeamentos portateis de Codex e Claude Code em settings. |
 | 1.4 | 2026-09-13 | Mapeia `scripts/` como extensão executável condicional, separada do contrato documental. |

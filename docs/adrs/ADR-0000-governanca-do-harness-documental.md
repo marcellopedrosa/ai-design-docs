@@ -40,7 +40,7 @@ Todo projeto adotante DEVE manter:
 - `docs/adrs/README.md` e este ADR como decisão de bootstrap;
 - `docs/architecture/module-registry.md` como manifesto da topologia real;
 - `docs/settings/` para política agnóstica de ambiente e assistentes;
-- `docs/agents/AgentOrchestrator.md` como único agente inicial do bootstrap;
+- `docs/agents/AgentOrchestrator.md` como único agente orquestrador do bootstrap;
 - `docs/agents/standards/` como biblioteca canônica de regras reutilizáveis,
   separando standards transversais de standards condicionais por capacidade,
   risco ou stack;
@@ -289,7 +289,7 @@ Conformidade exige:
 1. índices completos e links válidos;
 2. contrato mínimo e natureza primária em todo documento;
 3. manifesto com todos os módulos ativos;
-4. AgentOrchestrator como único agente inicial e inventário individual de todo
+4. AgentOrchestrator como único agente orquestrador e inventário individual de todo
    papel adicional ativado;
 5. catálogo completo de standards, aplicabilidade registrada e nenhuma referência
    normativa ao projeto de origem;

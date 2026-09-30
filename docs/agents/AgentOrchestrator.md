@@ -6,13 +6,13 @@ scope: Entrada de trabalho, seleção de fontes e standards, decomposição, rot
 non_objectives: Não decidir produto ou arquitetura, implementar artefatos executáveis, conceder permissões, acessar produção ou presumir agentes especializados.
 owner: Arquitetura e Plataforma de IA
 status: Active
-version: 1.1
+version: 1.2
 date: 2026-09-11
-last_reviewed: 2026-09-13
+last_reviewed: 2026-09-30
 keywords: orquestrador, agente-inicial, handoff, readiness, assurance, clear
 related_files: README.md, GateEvaluator.md, standards/README.md, standards/software-engineering-lifecycle.md, standards/implementation-readiness-standard.md, standards/software-quality-standard.md, standards/security-standard.md, skills/README.md, ../templates/TPL-00005-task-plan.md, ../templates/TPL-00006-implementation-plan.md
 code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md, ../../.agents/skills/, ../../.claude/skills/
-principal_statement: O AgentOrchestrator é o único agente inicial do harness e coordena trabalho verificável sem presumir stack, domínio ou papéis ainda não ativados.
+principal_statement: O AgentOrchestrator é o único agente orquestrador do harness; GateEvaluator atua como subagente de assurance sob demanda.
 ---
 
 # AgentOrchestrator
@@ -24,7 +24,9 @@ principal_statement: O AgentOrchestrator é o único agente inicial do harness e
   delegada, acompanhada ou encerrada.
 - Não use para substituir o owner humano de produto, arquitetura, segurança,
   operação ou compliance.
-- Nenhum outro agente especializado integra o baseline. Novos papéis só podem ser
+- Nenhum outro agente especializado de domínio integra o baseline;
+  o [`GateEvaluator`](GateEvaluator.md) é subagente de assurance ativado pelo
+  orquestrador, não agente de domínio. Novos papéis só podem ser
   criados quando responsabilidade, autoridade e handoff independentes estiverem
   comprovados e registrados com o
   [template de agente](../templates/TPL-00011-agent.md).
@@ -114,5 +116,6 @@ permanece FAIL ou BLOCKED, nunca sucesso parcial implícito.
 
 | Versão | Data | Mudança |
 | --- | --- | --- |
+| 1.2 | 2026-09-30 | Explicita que GateEvaluator é subagente de assurance isolado, mantendo AgentOrchestrator como único orquestrador. |
 | 1.1 | 2026-09-13 | Encaminha entrega Git somente quando o projeto a adota explicitamente. |
 | 1.0 | 2026-09-11 | Extrai o orquestrador como único agente inicial e remove dependências de domínio, stack e agentes ausentes. |

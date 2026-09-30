@@ -45,7 +45,8 @@ prevenção de drift, validação de contratos e evals de confiabilidade.
 - tooling determinístico portátil (`tooling/`) com `harness doctor` para diagnóstico
   unificado;
 - ADR de governança estrutural e mapa de precedência;
-- `AgentOrchestrator` como único agente inicial do bootstrap;
+- `AgentOrchestrator` como único agente orquestrador do bootstrap;
+  [`GateEvaluator`](docs/agents/GateEvaluator.md) como subagente de assurance;
 - biblioteca portátil de standards transversais e catálogo de exemplos condicionais
   por capacidade ou stack;
 - lifecycle C.L.E.A.R.;
@@ -154,7 +155,7 @@ docs/
   adrs/{README.md,ADR-0000-governanca-do-harness-documental.md}
   architecture/{README.md,module-registry.md}
   settings/{README.md,settings.md}
-  agents/{README.md,AgentOrchestrator.md,skills/README.md,standards/...}
+  agents/{README.md,AgentOrchestrator.md,GateEvaluator.md,skills/README.md,standards/...}
   templates/{README.md,TPL-*.md}
   automation/README.md
   <colecoes de produto e historico>/README.md
