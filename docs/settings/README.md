@@ -1,7 +1,7 @@
 ---
 document_id: SETTINGS-INDEX
 primary_nature: Contexto
-objective: Indexar regras agnosticas de ambiente, permissao e seguranca.
+objective: Indexar regras agnósticas de ambiente, permissão e segurança.
 scope: Politicas compartilhadas por runtimes de agentes.
 non_objectives: Nao definir requisito de produto, arquitetura ou preferencia pessoal.
 owner: Plataforma de IA e DevOps
@@ -12,7 +12,7 @@ last_reviewed: 2026-09-30
 keywords: settings, seguranca, permissoes, entrega-git, runtime, codex, claude-code, gemini, antigravity
 related_files: settings.md, git-delivery.md, codex.md, claude-code.md, google-gemini.md, ../adrs/ADR-0000-governanca-do-harness-documental.md
 code_references: ../../AGENTS.md, ../../CLAUDE.md, ../../GEMINI.md, ../../.agents/rules/documentation-governance.md
-principal_statement: Configuracoes inferiores nao podem enfraquecer politicas organizacionais ou ADRs aceitos.
+principal_statement: Configurações inferiores não podem enfraquecer políticas organizacionais ou ADRs aceitos.
 ---
 
 # Settings

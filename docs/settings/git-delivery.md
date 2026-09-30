@@ -1,9 +1,9 @@
 ---
 document_id: SETTINGS-GIT-DELIVERY
 primary_nature: Regra
-objective: Definir a integracao de trabalhos Git independentes e proteger a branch principal.
+objective: Definir a integração de trabalhos Git independentes e proteger a branch principal.
 scope: Branches, commits, publicacao, revisao e integracao de mudancas deste projeto.
-non_objectives: Nao definir fluxo de produto, convencao universal de nomes ou acesso a credenciais.
+non_objectives: Não definir fluxo de produto, convenção universal de nomes ou acesso a credenciais.
 owner: Mantenedores do projeto
 status: Active
 version: 1.2
@@ -12,7 +12,7 @@ last_reviewed: 2026-09-30
 keywords: git, branches, multiagentes, integracao, main, pull-request
 related_files: settings.md, ../adrs/ADR-0000-governanca-do-harness-documental.md, ../../AGENTS.md, ../../.agents/skills/git-delivery/SKILL.md
 code_references: N/A - politica documental.
-principal_statement: Todo commit solicitado e publicado na branch de trabalho definida, enquanto a branch principal main permanece protegida contra escrita direta e force-push.
+principal_statement: Todo commit solicitado é publicado na branch de trabalho definida, enquanto a branch principal main permanece protegida contra escrita direta e force-push.
 ---
 
 # Politica de entrega Git

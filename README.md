@@ -1,18 +1,18 @@
 ---
 document_id: HARNESS-README
 primary_nature: Contexto
-objective: Disponibilizar um harness documental agnostico, clonavel e adaptavel a projetos de software.
-scope: Governanca documental, descoberta progressiva, planejamento, readiness, assurance e adaptadores de agentes.
-non_objectives: Nao fornecer codigo de produto, stack, dominio, credenciais ou decisoes do projeto de origem. O tooling deterministico do proprio harness (tooling/) e a unica excecao executavel.
+objective: Disponibilizar um harness documental agnóstico, clonável e adaptável a projetos de software.
+scope: Governança documental, descoberta progressiva, planejamento, readiness, assurance e adaptadores de agentes.
+non_objectives: Não fornecer código de produto, stack, domínio, credenciais ou decisões do projeto de origem. O tooling determinístico do próprio harness (tooling/) é a única exceção executável.
 owner: Mantenedores do harness
 status: Active
 version: 2.0.0
 date: 2026-09-10
-last_reviewed: 2026-09-28
+last_reviewed: 2026-09-30
 keywords: harness, documentacao, agentes, orquestrador, standards, clear, readiness, quality-gate, security-gate, security, appsec, entrega-git, gemini, antigravity, registry, contracts, evals, tooling
 related_files: AGENTS.md, CLAUDE.md, GEMINI.md, backend/README.md, frontend/README.md, website/README.md, infra/README.md, docs/README.md, docs/scripts/README.md, docs/agents/AgentOrchestrator.md, docs/agents/standards/README.md, docs/agents/skills/README.md, docs/settings/settings.md, docs/settings/google-gemini.md, docs/adrs/ADR-0000-governanca-do-harness-documental.md, registry/README.md, contracts/README.md, skills/README.md, evals/README.md, tooling/README.md, adapters/README.md, examples/profiles/java-spring.yaml, examples/profiles/node-web.yaml, examples/profiles/python-service.yaml
 code_references: .agents/rules/documentation-governance.md, .agents/skills/, .claude/skills/, registry/, contracts/, skills/, evals/, tooling/, adapters/, examples/; pacote agnóstico com control plane documental e tooling determinístico opcional.
-principal_statement: O pacote fornece as fontes e os contratos necessarios para adotar a mesma governanca sem transportar contexto de produto ou de stack.
+principal_statement: O pacote fornece as fontes e os contratos necessários para adotar a mesma governança sem transportar contexto de produto ou de stack.
 ---
 
 # Harness de engenharia de IA agnóstico
