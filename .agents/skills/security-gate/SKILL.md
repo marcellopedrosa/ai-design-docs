@@ -1,7 +1,7 @@
 ---
 name: security-gate
 description: Executar a verificação especializada do A3 Security/Compliance em aplicações web, APIs, autenticação, autorização, dados, Spring Security, frontend, dependências ou superfícies expostas. Retornar evidência e PASS, FAIL ou BLOCKED ao quality-gate; não agregar A1/A2 nem autorizar release.
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(node --test:*), Bash(node harness/tooling/*:*)
 ---
 
 # Security Gate
@@ -56,6 +56,12 @@ manifesto do projeto e `harness/registry/standards.yaml` (ex: `application-secur
 Não duplicar regras desses documentos dentro desta skill.
 
 ## Procedimento
+
+Resolva os standards aplicáveis assim: `docs/project-manifest.yaml` → `profiles` →
+`harness/registry/profiles.yaml` (com `extends`) → caminho de cada artefato por
+`harness/registry/artifact-routes.yaml`. Standard aplicável `Draft`, sem owner ou
+com marcador `Definir` retorna `BLOCKED`; standard inexistente também retorna
+`BLOCKED`, nunca PASS por omissão.
 
 1. Confirmar o `READY`, os targets e o nível `focused`, `pr` ou `release` recebido
    do `quality-gate` ou do `AgentOrchestrator`.

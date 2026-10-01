@@ -1,7 +1,7 @@
 ---
 name: quality-gate
 description: Seleciona, executa e registra A1 Test, A2 Quality e A3 Security/Compliance do ciclo C.L.E.A.R. Use em mudanças de software, revisão de PR ou qualificação de release; acione security-gate como subgate/executor especializado de A3 quando segurança de aplicação for aplicável. Não use para alteração exclusivamente documental.
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(node --test:*), Bash(node harness/tooling/*:*)
 ---
 
 # Quality Gate C.L.E.A.R.
@@ -41,6 +41,12 @@ Plano vigente, READY, paths, critérios de aceite, ambiente e comandos de gate
 registrados pelo projeto.
 
 ## Procedimento
+
+Resolva os standards aplicáveis assim: `docs/project-manifest.yaml` → `profiles` →
+`harness/registry/profiles.yaml` (com `extends`) → caminho de cada artefato por
+`harness/registry/artifact-routes.yaml`. Standard aplicável `Draft`, sem owner ou
+com marcador `Definir` retorna `BLOCKED`; standard inexistente também retorna
+`BLOCKED`, nunca PASS por omissão.
 
 1. Leia o lifecycle, o Software Quality Standard e os standards ativados pelo
    pacote ou risco.

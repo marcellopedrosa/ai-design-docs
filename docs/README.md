@@ -10,7 +10,7 @@ status: Active
 version: 2.0
 date: 2026-09-30
 last_reviewed: 2026-09-30
-keywords: projeto, produto, documentação, , índice
+keywords: projeto, produto, documentação, índice
 related_files: ../harness/README.md, project-manifest.yaml, agents/README.md, product/README.md, architecture/README.md, domains/README.md, contracts/README.md, compliance/README.md, analysis/README.md, delivery/README.md, onboarding/README.md
 code_references: ../AGENTS.md, ../harness/tooling/validators/validate-documentation-governance.mjs
 principal_statement: docs/ pertence à documentação do projeto; a governança e o tooling do harness pertencem a harness/.

@@ -37,6 +37,12 @@ contratos, approvals, dependências e paths propostos.
 
 ## Procedimento
 
+Resolva os standards aplicáveis assim: `docs/project-manifest.yaml` → `profiles` →
+`harness/registry/profiles.yaml` (com `extends`) → caminho de cada artefato por
+`harness/registry/artifact-routes.yaml`. Standard aplicável `Draft`, sem owner ou
+com marcador `Definir` retorna `BLOCKED`; standard inexistente também retorna
+`BLOCKED`, nunca PASS por omissão.
+
 1. Identifique task ID, `What`, `Where` e versões das fontes.
 2. Verifique PRD `Validated` ou `not applicable` justificado, requirement/ADR/UC
    aplicáveis, contratos e dependências.

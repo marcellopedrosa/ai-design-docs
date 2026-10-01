@@ -34,15 +34,15 @@ export function handlePreToolUse(inputJson) {
   try {
     data = typeof inputJson === 'string' ? JSON.parse(inputJson) : inputJson;
   } catch {
-    // Se JSON não for parseável, permite para não quebrar runtime não-JSON
-    return { allow: true };
+    return { allow: false, reason: 'BLOCKED by guard-paths: invalid hook payload.' };
   }
 
   const tool = data.tool || data.tool_name || '';
-  const isEditTool = ['Edit', 'Write', 'MultiEdit'].includes(tool);
+  const isEditTool = ['Edit', 'Write', 'MultiEdit', 'NotebookEdit'].includes(tool);
   if (!isEditTool) return { allow: true };
 
-  const targetPath = data.parameters?.file_path || data.parameters?.path || data.file_path || '';
+  const targetPath = data.tool_input?.file_path || data.tool_input?.notebook_path || data.parameters?.file_path || data.parameters?.path || data.file_path || '';
+  if (!targetPath) return { allow: false, reason: 'BLOCKED by guard-paths: missing target path.' };
   const check = isForbiddenPath(targetPath);
   if (check.forbidden) {
     return {
@@ -60,7 +60,8 @@ function main() {
   process.stdin.on('data', chunk => { rawInput += chunk; });
   process.stdin.on('end', () => {
     if (!rawInput.trim()) {
-      process.exit(0);
+      process.stderr.write('BLOCKED by guard-paths: empty hook payload.\n');
+      process.exit(2);
     }
     const result = handlePreToolUse(rawInput);
     if (!result.allow) {

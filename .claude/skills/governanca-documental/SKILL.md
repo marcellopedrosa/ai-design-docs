@@ -1,7 +1,7 @@
 ---
 name: governanca-documental
 description: Valida e reconcilia a governanca documental conforme o ADR-0000. Use ao criar, mover, reclassificar ou revisar documentos, indices, templates, adaptadores ou skills; nao use para testes funcionais.
-allowed-tools: Read, Edit, Write, Glob, Grep, Bash
+allowed-tools: Read, Edit, Write, Glob, Grep, Bash(node harness/tooling/validators/validate-documentation-governance.mjs:*)
 ---
 
 # Governança documental

@@ -21,7 +21,9 @@
     "PreToolUse": [
       {
         "matcher": "Edit|Write|MultiEdit",
-        "command": "node harness/tooling/hooks/guard-paths.mjs"
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/harness/tooling/hooks/guard-paths.mjs\"" }
+        ]
       }
     ]
   }

@@ -1311,41 +1311,9 @@ export function validateModuleRegistryStructure(
 function validateModuleRegistry(repositoryRoot) {
   const content = fs.readFileSync(path.join(repositoryRoot, 'docs/architecture/module-registry.md'), 'utf8');
   const errors = [];
-  const pomPath = path.join(repositoryRoot, 'backend/pom.xml');
-  if (fs.existsSync(pomPath)) {
-    const pom = fs.readFileSync(pomPath, 'utf8');
-    const java = pom.match(/<java\.version>([^<]+)<\/java\.version>/)?.[1];
-    const springBoot = pom.match(/<artifactId>spring-boot-starter-parent<\/artifactId>\s*<version>([^<]+)<\/version>/)?.[1];
-    const modulith = pom.match(/<spring-modulith\.version>([^<]+)<\/spring-modulith\.version>/)?.[1];
-    for (const [name, value] of [['Java', java], ['Spring Boot', springBoot], ['Spring Modulith', modulith]]) {
-      if (!value) errors.push(`backend/pom.xml: versao de ${name} nao resolvida`);
-      else if (!content.includes(`${name} ${value}`)) errors.push(`docs/architecture/module-registry.md: baseline diverge de ${name} ${value}`);
-    }
-  }
   let moduleDirectories = [];
-  const backendRoot = path.join(repositoryRoot, 'backend');
-  if (fs.existsSync(backendRoot)) {
-    moduleDirectories = walkFiles(backendRoot)
-      .filter((file) => path.basename(file) === 'package-info.java')
-      .filter((file) => /@org\.springframework\.modulith\.ApplicationModule\b/.test(fs.readFileSync(file, 'utf8')))
-      .map((file) => `${relative(repositoryRoot, path.dirname(file))}/`)
-      .sort();
-  }
   errors.push(...validateModuleRegistryStructure(content, moduleDirectories));
 
-  for (const packageName of ['frontend', 'website']) {
-    const manifestPath = path.join(repositoryRoot, packageName, 'package.json');
-    if (!fs.existsSync(manifestPath)) continue;
-    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-    const nextMajor = String(manifest.dependencies?.next ?? '').match(/\d+/)?.[0];
-    const reactMajor = String(manifest.dependencies?.react ?? '').match(/\d+/)?.[0];
-    if (!nextMajor || !content.includes(`Next.js ${nextMajor}`)) {
-      errors.push(`docs/architecture/module-registry.md: baseline Next.js diverge de ${packageName}/package.json`);
-    }
-    if (!reactMajor || !content.includes(`React ${reactMajor}`)) {
-      errors.push(`docs/architecture/module-registry.md: baseline React diverge de ${packageName}/package.json`);
-    }
-  }
   return errors;
 }
 

@@ -68,10 +68,11 @@ test('syncAdapters --check detects orphan skills and files', () => {
   const orphanFilePath = path.join(tmp, '.claude', 'skills', 'canonical-skill', 'orphan.txt');
   fs.writeFileSync(orphanFilePath, 'orphan file');
 
-  const { errors, orphans } = syncAdapters(tmp, { checkOnly: true });
-  assert.ok(orphans.some(o => o.includes('orphan-skill')), 'Should report orphan skill');
+  const { errors, orphans, warnings } = syncAdapters(tmp, { checkOnly: true });
+  assert.ok(warnings.some(o => o.includes('orphan-skill')), 'Should warn about unmanaged skill');
   assert.ok(orphans.some(o => o.includes('orphan.txt')), 'Should report orphan file');
-  assert.ok(errors.length >= 2, 'Errors should include all orphans');
+  assert.ok(warnings.some(w => w.includes('orphan-skill')), 'Unmanaged skill should be a warning');
+  assert.equal(errors.length, 1, 'Only managed orphan files are errors');
 
   fs.rmSync(tmp, { recursive: true, force: true });
 });
@@ -99,8 +100,8 @@ test('syncAdapters --prune removes orphans in managed targets and preserves unma
 
   // Run with prune
   const pruneResult = syncAdapters(tmp, { checkOnly: false, prune: true });
-  assert.ok(pruneResult.orphans.length >= 2, 'Should report pruned orphans');
-  assert.ok(!fs.existsSync(orphanSkillDir), 'Orphan skill directory should be removed');
+  assert.ok(pruneResult.orphans.length >= 1, 'Should report pruned managed orphans');
+  assert.ok(fs.existsSync(orphanSkillDir), 'Unmanaged orphan skill directory must be preserved');
   assert.ok(!fs.existsSync(orphanFile), 'Orphan file should be removed');
 
   // Ensure unmanaged directory is untouched

@@ -174,6 +174,27 @@ function markdownFiles(root) {
   return result;
 }
 
+function ensureCollectionIndex(root, artifact, relative) {
+  const dir = path.dirname(relative);
+  const readme = path.join(root, dir, 'README.md');
+  if (!fs.existsSync(readme)) {
+    const id = `${dir.toUpperCase().replace(/[^A-Z0-9]+/g, '-')}-INDEX`;
+    const content = `---\ndocument_id: ${id}\nprimary_nature: Contexto\nobjective: Indexar a coleção documental.\nscope: Artefatos da coleção.\nnon_objectives: Definir conteúdo técnico do projeto.\nowner: Owner da coleção\nstatus: Active\nversion: 1.0\ndate: ${new Date().toISOString().slice(0,10)}\nlast_reviewed: ${new Date().toISOString().slice(0,10)}\nkeywords: coleção, índice\nrelated_files: README.md\ncode_references: N/A - índice documental.\nprincipal_statement: Esta coleção indexa artefatos ativos do projeto.\n---\n\n# Coleção\n\n## Índice\n\n`;
+    fs.mkdirSync(path.dirname(readme), { recursive: true });
+    fs.writeFileSync(readme, content, { flag: 'wx' });
+  }
+  const link = `- [${artifact.name}](${path.basename(relative)})`;
+  let current = fs.readFileSync(readme, 'utf8');
+  if (!current.includes(`(${path.basename(relative)})`)) fs.appendFileSync(readme, `${current.endsWith('\n') ? '' : '\n'}${link}\n`);
+  const parent = path.dirname(dir);
+  const parentReadme = path.join(root, parent, 'README.md');
+  if (parent !== '.' && fs.existsSync(parentReadme) && dir !== 'docs') {
+    const subLink = `- [${path.basename(dir)}](${path.basename(dir)}/README.md)`;
+    const parentText = fs.readFileSync(parentReadme, 'utf8');
+    if (!parentText.includes(`(${path.basename(dir)}/README.md)`)) fs.appendFileSync(parentReadme, `${parentText.endsWith('\n') ? '' : '\n'}${subLink}\n`);
+  }
+}
+
 export function inspectProject(root, model = null) {
   const routes = model?.routes ?? loadModel(root).routes;
   const result = [];
@@ -242,12 +263,14 @@ export function auditScaffold(root, { mode = 'check', manifestPath = 'docs/proje
     const template = safePath(root, route.template, 'harness');
     const content = fs.readFileSync(template, 'utf8')
       .replaceAll('{{name}}', artifact.name)
-      .replaceAll('{{title}}', artifact.name.replaceAll('-', ' '));
+      .replaceAll('{{title}}', artifact.name.replaceAll('-', ' '))
+      .replaceAll('{{date}}', new Date().toISOString().slice(0, 10));
     if (content.includes('{{')) throw new Error(`template has unsupported placeholder: ${route.template}`);
     safePath(root, relative, 'docs');
     fs.mkdirSync(path.dirname(full), { recursive: true });
     safePath(root, relative, 'docs');
     fs.writeFileSync(full, content, { flag: 'wx' });
+    ensureCollectionIndex(root, artifact, relative);
     item.status = 'CREATED';
     report.warnings.push(`${relative}: update collection README and complete owner/content before approval`);
   }

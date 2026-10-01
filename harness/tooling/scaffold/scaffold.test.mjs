@@ -49,7 +49,7 @@ test('profile inheritance is deterministic, deduplicated and cycle-safe', () => 
   assert.deepEqual(resolveProfiles(data.profiles, ['frontend', 'security']), ['base', 'frontend', 'security']);
   assert.deepEqual(resolveProfiles(data.profiles, ['backend']), ['base', 'backend']);
   assert.throws(() => resolveProfiles({ a: { extends: ['b'] }, b: { extends: ['a'] } }, ['a']), /cycle/);
-  assert.throws(() => resolveProfiles(data.profiles, ['mobile']), /unknown profile/);
+  assert.deepEqual(resolveProfiles(data.profiles, ['mobile']), ['base', 'mobile']);
   assert.throws(() => resolveProfiles(data.profiles, ['toString']), /unsafe identifier|unknown profile/);
 });
 
@@ -66,6 +66,17 @@ test('frontend requires frontend artifacts; backend does not create frontend art
     assert.ok(resolved.artifacts.some((item) => item.name === 'backend-standard'));
     assert.ok(!resolved.artifacts.some((item) => item.name.startsWith('frontend')));
   }, 'backend-project.yaml');
+});
+
+test('all supported project manifests scaffold and re-check cleanly', () => {
+  for (const manifest of ['backend-project.yaml', 'frontend-project.yaml', 'fullstack-project.yaml', 'mobile-project.yaml']) {
+    withProject((root) => {
+      const created = auditScaffold(root, { mode: 'create' });
+      assert.ok(created.artifacts.some((item) => item.status === 'CREATED'), manifest);
+      const checked = auditScaffold(root, { mode: 'check' });
+      assert.ok(checked.artifacts.every((item) => item.status === 'KEEP'), manifest);
+    }, manifest);
+  }
 });
 
 test('check is read-only; create is exclusive, idempotent and never overwrites local content', () => {
@@ -172,7 +183,7 @@ test('missing parent, inheritance cycle, missing route and missing template fail
   withProject((root) => {
     const registry = path.join(root, 'harness/registry/profiles.yaml');
     const original = fs.readFileSync(registry, 'utf8');
-    fs.writeFileSync(registry, original.replace('      - base', '      - mobile'));
+    fs.writeFileSync(registry, original.replace('      - base', '      - missing-parent'));
     assert.throws(() => loadModel(root), /unknown parent profile/);
     fs.writeFileSync(registry, original.replace('  base:\n    artifacts:', '  base:\n    extends:\n      - frontend\n    artifacts:'));
     assert.throws(() => loadModel(root), /cycle/);

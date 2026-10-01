@@ -7,7 +7,6 @@ import { fileURLToPath } from 'node:url';
 import { parseYamlSubset } from '../scaffold/yaml.mjs';
 import { loadModel, auditScaffold } from '../scaffold/engine.mjs';
 
-const TYPES = new Set(['application', 'service', 'library', 'infrastructure', 'mobile', 'other']);
 const PROJECT_ROOTS = ['docs/agents', 'docs/architecture', 'docs/product', 'docs/requirements', 'docs/decisions'];
 const LEGACY = new Set(['registry', 'tooling', 'contracts', 'evals', 'skills', '.agents', '.claude']);
 
@@ -63,7 +62,9 @@ export function main(args=process.argv.slice(2), root=path.resolve('.')) {
   const manifest=path.join(root,'docs','project-manifest.yaml');
   if (fs.existsSync(manifest)) { console.error('Manifest already exists; use bootstrap.'); return 2; }
   const name=String(opts.name||'').trim(), type=String(opts.type||'application');
-  if (!name || !TYPES.has(type)) { console.error('Questions required: --name and valid --type. Profiles/agents come from Registry.'); return 2; }
+  const schema = JSON.parse(fs.readFileSync(path.join(root, 'harness/contracts/project-manifest.schema.json'), 'utf8'));
+  const types = new Set(schema.properties.project.properties.type.enum);
+  if (!name || !types.has(type)) { console.error('Questions required: --name and valid --type. Profiles/agents come from Registry.'); return 2; }
   let model; try { model=loadModel(root); } catch(e) { console.error(`BLOCKED ${e.message}`); return 2; }
   const profiles=String(opts.profiles||'base').split(',').map(x=>x.trim()).filter(Boolean);
   const agents=String(opts.agents||'').split(',').map(x=>x.trim()).filter(Boolean);

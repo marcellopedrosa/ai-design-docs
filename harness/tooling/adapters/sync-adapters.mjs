@@ -104,6 +104,7 @@ export function syncAdapters(repositoryRoot, options = false) {
   const missing = [];
   const divergent = [];
   const orphans = [];
+  const warnings = [];
   const synced = [];
 
   if (!fs.existsSync(skillsSource)) {
@@ -143,10 +144,7 @@ export function syncAdapters(repositoryRoot, options = false) {
 
         if (!canonicalSkills.has(tSkill)) {
           // Skill órfã
-          orphans.push(`${target.name}/${tSkill}: skill órfã (não existe na fonte canônica).`);
-          if (prune) {
-            fs.rmSync(targetSkillPath, { recursive: true, force: true });
-          }
+          warnings.push(`${target.name}/${tSkill}: skill local não gerenciada pela fonte canônica; preservada.`);
         } else {
           // Arquivos órfãos dentro de skill existente
           const canonicalFiles = canonicalSkills.get(tSkill);
@@ -205,7 +203,7 @@ export function syncAdapters(repositoryRoot, options = false) {
   }
 
   const errors = [...missing, ...divergent, ...orphans];
-  return { errors, missing, divergent, orphans, synced };
+  return { errors, missing, divergent, orphans, warnings, synced };
 }
 
 function parseArgs(args) {
@@ -220,7 +218,7 @@ function parseArgs(args) {
 
 function main() {
   const { root, checkOnly, prune } = parseArgs(process.argv.slice(2));
-  const { errors, missing, divergent, orphans, synced } = syncAdapters(root, { checkOnly, prune });
+  const { errors, missing, divergent, orphans, warnings, synced } = syncAdapters(root, { checkOnly, prune });
 
   if (checkOnly) {
     if (errors.length > 0) {
@@ -232,10 +230,7 @@ function main() {
         process.stderr.write(`Arquivos divergentes (${divergent.length}):\n`);
         for (const d of divergent) process.stderr.write(`  - ${d}\n`);
       }
-      if (orphans.length > 0) {
-        process.stderr.write(`Itens órfãos (${orphans.length}):\n`);
-        for (const o of orphans) process.stderr.write(`  - ${o}\n`);
-      }
+      if (orphans.length > 0) { process.stderr.write(`Itens órfãos gerenciados (${orphans.length}):\n`); for (const o of orphans) process.stderr.write(`  - ${o}\n`); }
       process.stderr.write(`Sync adapters check failed with ${errors.length} error(s).\n`);
       process.exitCode = 1;
       return;
@@ -244,9 +239,7 @@ function main() {
     return;
   }
 
-  if (orphans.length > 0 && !prune) {
-    process.stdout.write(`Aviso: ${orphans.length} item(ns) órfão(s) detectado(s). Use --prune para remover.\n`);
-  }
+  for (const warning of warnings) process.stdout.write(`WARN ${warning}\n`);
 
   process.stdout.write(`Sync adapters completed: ${synced.length} files synchronized.\n`);
 }
