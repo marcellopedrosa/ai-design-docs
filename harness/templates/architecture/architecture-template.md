@@ -8,7 +8,7 @@ non_objectives: Definir limites com o owner.
 owner: Definir owner.
 status: Draft
 version: 0.1
-date: Definir data.
+date: "{{date}}"
 keywords: architecture
 related_files: N/A - definir relações ao preencher.
 code_references: N/A - definir referências ao preencher.

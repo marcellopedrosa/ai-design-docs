@@ -20,6 +20,7 @@ principal_statement: Cada manifesto de exemplo precisa de revisão antes de se t
 - [Frontend](frontend-project.yaml): frontend e security; exige agente frontend e standards correspondentes.
 - [Backend](backend-project.yaml): backend e security; não exige artefatos frontend.
 - [Fullstack](fullstack-project.yaml): combina frontend, backend e security sem duplicar a base.
+- [Mobile](mobile-project.yaml): mobile e security com profile extensível por dados.
 
 São exemplos sintéticos. Um projeto adotante valida seu próprio contexto e owner
 antes de copiar um manifesto para `docs/project-manifest.yaml`.

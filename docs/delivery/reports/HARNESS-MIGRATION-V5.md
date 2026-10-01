@@ -10,17 +10,17 @@ status: Final
 version: 1.0
 date: 2026-09-30
 last_reviewed: 2026-09-30
-keywords: harness, migração, , evidência
+keywords: harness, migração, evidência
 related_files: ../../../harness/governance/decisions/ADR-0001-boundary-harness-v5.md, ../../../harness/UPGRADING.md
 code_references: ../../../harness/tooling/harness.mjs, ../../../harness/registry/
 principal_statement: A fonte canônica do control plane reside em harness/; docs/ contém a documentação do projeto mantenedor.
 ---
 
-# Migração  do repositório mantenedor
+# Migração do repositório mantenedor
 
 ## Decision trace
 
-| Origem  | Destino  | Classificação | Decisão |
+| Origem | Destino | Classificação | Decisão |
 | --- | --- | --- | --- |
 | `contracts/`, `registry/`, `skills/`, `evals/`, `tooling/`, `examples/` | `harness/` | Harness-owned | Fonte canônica movida, com importações, CLI e CI atualizados. |
 | `docs/agents/`, `docs/adrs/`, `docs/settings/`, `docs/templates/` | `harness/governance/`, `harness/adapters/`, `harness/templates/` | Harness-owned | Governança, políticas e templates passam a compor o control plane. |

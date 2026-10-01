@@ -145,6 +145,11 @@ export function evaluateSecurityH1(input, evalFilePath, root) {
 }
 
 export function evaluateQualityH1(input) {
+  if (input.standard_status === 'Draft' || input.standard_status === 'Active') {
+    return input.standard_status === 'Draft'
+      ? { status: 'BLOCKED', blocker_cause: 'applicable-standard-is-Draft' }
+      : { status: 'PASS', evidence: 'applicable-standard-is-Active' };
+  }
   if (input.subgates) {
     const vals = Object.values(input.subgates);
     if (vals.includes('FAIL')) {
@@ -171,7 +176,7 @@ export function evaluateCaseH1(evalCase, evalFilePath, root) {
 
   const isReadiness = evalCase.suite?.includes('readiness') || evalCase.id?.startsWith('readiness') || evalCase.id?.startsWith('lifecycle.prd') || evalCase.id?.startsWith('lifecycle.stale');
   const isSecurity = evalCase.suite?.includes('security') || evalCase.id?.startsWith('security');
-  const isQuality = evalCase.suite?.includes('quality') || evalCase.id?.startsWith('lifecycle.assurance') || evalCase.id?.startsWith('lifecycle.missing');
+  const isQuality = evalCase.suite?.includes('quality') || evalCase.id?.startsWith('lifecycle.assurance') || evalCase.id?.startsWith('lifecycle.missing') || evalCase.id?.startsWith('lifecycle.applicable-standard');
   const isPortability = evalCase.category === 'portability';
 
   if (evalCase.id === 'lifecycle.retry-limit-exceeded-blocks') {

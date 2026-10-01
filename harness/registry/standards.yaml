@@ -5,9 +5,6 @@ standards:
     path: "docs/agents/standards/global/software-engineering-lifecycle.md"
     status: active
     class: baseline
-    activation:
-      triggers:
-        - "software-change"
     owner:
       - "Arquitetura"
       - "Qualidade"
@@ -20,12 +17,6 @@ standards:
     path: "docs/agents/standards/global/implementation-readiness-standard.md"
     status: active
     class: baseline
-    activation:
-      triggers:
-        - "executable-handoff"
-        - "source-change"
-        - "migration"
-        - "iac"
     owner:
       - "Arquitetura"
       - "Produto"
@@ -38,11 +29,6 @@ standards:
     path: "docs/agents/standards/global/software-quality-standard.md"
     status: active
     class: baseline
-    activation:
-      triggers:
-        - "software-change"
-        - "pr-review"
-        - "release-qualification"
     owner:
       - "Arquitetura"
       - "Qualidade"
@@ -55,9 +41,6 @@ standards:
     path: "docs/agents/standards/global/development-standard.md"
     status: active
     class: baseline
-    activation:
-      triggers:
-        - "executable-writing"
     owner:
       - "Engenharia"
     consumers:
@@ -68,10 +51,6 @@ standards:
     path: "docs/agents/standards/global/security-standard.md"
     status: active
     class: baseline
-    activation:
-      triggers:
-        - "software-change"
-        - "operational-doc-change"
     owner:
       - "Segurança"
       - "Engenharia"
@@ -83,72 +62,48 @@ standards:
   application-security-standard:
     status: conditional
     class: conditional
-    activation:
-      any:
-        - "capability:web-app"
-        - "capability:backend-web"
-        - "capability:sensitive-data"
-        - "risk:untrusted-input"
     consumers:
       - "security-gate"
 
   api-security-standard:
     status: conditional
     class: conditional
-    activation:
-      any:
-        - "capability:rest-api"
-        - "capability:graphql"
-        - "capability:http-service"
     consumers:
       - "security-gate"
 
   spring-security-standard:
     status: conditional
     class: conditional
-    activation:
-      any:
-        - "stack:spring-boot"
-        - "stack:spring-security"
     consumers:
       - "security-gate"
 
   frontend-standard:
     status: conditional
     class: conditional
-    activation:
-      any:
-        - "capability:frontend"
     consumers:
       - "quality-gate"
 
   frontend-typography-standard:
     status: conditional
     class: conditional
-    activation:
-      any:
-        - "capability:frontend"
-        - "capability:typography"
     consumers:
       - "quality-gate"
 
   backend-standard:
     status: conditional
     class: conditional
-    activation:
-      any:
-        - "capability:backend"
     consumers:
       - "quality-gate"
 
   iac-supply-chain-standard:
     status: conditional
     class: conditional
-    activation:
-      any:
-        - "capability:iac"
-        - "capability:containers"
-        - "capability:external-dependencies"
     consumers:
       - "security-gate"
+      - "quality-gate"
+
+  mobile-standard:
+    status: conditional
+    class: conditional
+    consumers:
       - "quality-gate"

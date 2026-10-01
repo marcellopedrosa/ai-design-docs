@@ -1,7 +1,7 @@
 ---
 name: git-delivery
 description: Prepara e integra entregas Git governadas em branches de trabalho, preservando a protecao da branch principal.
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(node --test:*)
 disable-model-invocation: true
 ---
 

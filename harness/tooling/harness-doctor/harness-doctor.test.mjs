@@ -179,36 +179,36 @@ test('checkDrift rejects substring match for skill names', () => {
 test('parseSimpleYaml fails loud on inline arrays with content', () => {
   assert.throws(
     () => parseSimpleYaml('items: [a, b]', 'test.yaml'),
-    /test\.yaml:1: sintaxe YAML não suportada: listas inline/
+    /unsupported YAML scalar/
   );
 });
 
 test('parseSimpleYaml fails loud on multiline strings with | or >', () => {
   assert.throws(
     () => parseSimpleYaml('desc: |\n  line1\n  line2', 'test.yaml'),
-    /test\.yaml:1: sintaxe YAML não suportada: strings multilinha com '\|' ou '>'/
+    /unsupported YAML scalar/
   );
   assert.throws(
     () => parseSimpleYaml('desc: >\n  line1\n  line2', 'test.yaml'),
-    /test\.yaml:1: sintaxe YAML não suportada: strings multilinha com '\|' ou '>'/
+    /unsupported YAML scalar/
   );
 });
 
 test('parseSimpleYaml fails loud on anchors and aliases', () => {
   assert.throws(
     () => parseSimpleYaml('val: &anchor 123', 'test.yaml'),
-    /test\.yaml:1: sintaxe YAML não suportada: âncoras '&'/
+    /unsupported YAML scalar/
   );
   assert.throws(
     () => parseSimpleYaml('ref: *anchor', 'test.yaml'),
-    /test\.yaml:1: sintaxe YAML não suportada: aliases '\*'/
+    /unsupported YAML scalar/
   );
 });
 
 test('parseSimpleYaml fails loud on inline objects', () => {
   assert.throws(
     () => parseSimpleYaml('obj: { a: 1 }', 'test.yaml'),
-    /test\.yaml:1: sintaxe YAML não suportada: objetos inline/
+    /unsupported YAML scalar/
   );
 });
 

@@ -79,6 +79,22 @@
       ]
     },
     {
+      "id": "lifecycle.applicable-standard-draft-blocks",
+      "category": "behavior",
+      "description": "Standard aplicável em Draft bloqueia o gate e nunca produz PASS por omissão.",
+      "input": { "standard_status": "Draft" },
+      "expected": { "status": "BLOCKED" },
+      "assertions": ["Standard Draft aplicável gera BLOCKED."]
+    },
+    {
+      "id": "lifecycle.applicable-standard-active-passes",
+      "category": "behavior",
+      "description": "Standard aplicável Active pode produzir PASS quando não há outro bloqueio.",
+      "input": { "standard_status": "Active" },
+      "expected": { "status": "PASS" },
+      "assertions": ["Standard Active é reconhecido pelo gate."]
+    },
+    {
       "id": "lifecycle.retry-limit-exceeded-blocks",
       "category": "behavior",
       "description": "Exceder o teto de 3 iterações sem progresso ou 5 totais resulta em parada obrigatória com BLOCKED.",

@@ -46,5 +46,5 @@ test('handlePreToolUse blocks Edit/Write tools targeting forbidden files', () =>
 test('Claude settings do not activate a Stop hook without deterministic handoff evidence', () => {
   const settings = JSON.parse(fs.readFileSync(new URL('../../../.claude/settings.json', import.meta.url), 'utf8'));
   assert.ok(!Object.hasOwn(settings.hooks, 'Stop'));
-  assert.deepEqual(settings.hooks.PreToolUse.map(hook => hook.command), ['node harness/tooling/hooks/guard-paths.mjs']);
+  assert.deepEqual(settings.hooks.PreToolUse.flatMap(hook => hook.hooks.map(child => child.command)), ['node "$CLAUDE_PROJECT_DIR/harness/tooling/hooks/guard-paths.mjs"']);
 });

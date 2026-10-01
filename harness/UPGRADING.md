@@ -2,7 +2,7 @@
 document_id: HARNESS-UPGRADING
 document_scope: harness
 primary_nature: Contexto
-objective: Orientar a adoção e a migração de layouts  para o boundary .
+objective: Orientar a adoção e a migração de layouts para o boundary .
 scope: Ownership, paths canônicos, adapters, Registry, validação e rollback.
 non_objectives: Sobrescrever conteúdo project-owned, alterar semântica dos gates ou executar rede.
 owner: Mantenedores do harness
@@ -10,10 +10,10 @@ status: Active
 version: 1.0
 date: 2026-09-30
 last_reviewed: 2026-09-30
-keywords: upgrade, , migração, compatibilidade, rollback
+keywords: upgrade, migração, compatibilidade, rollback
 related_files: README.md, governance/decisions/ADR-0001-boundary-harness-v5.md, ../docs/README.md, ../docs/architecture/module-registry.md
 code_references: tooling/harness.mjs, tooling/harness-doctor/index.mjs, tooling/adapters/sync-adapters.mjs
-principal_statement: Migre fonte canônica e consumidores juntos; só remova paths  após Doctor, testes, links e adapters passarem.
+principal_statement: Migre fonte canônica e consumidores juntos; só remova paths após Doctor, testes, links e adapters passarem.
 ---
 
 # Atualização para o boundary
@@ -30,7 +30,7 @@ e só então remova a duplicata. Ambiguidade material bloqueia a movimentação.
 
 ## Mapeamento principal
 
-|  |  |
+| | |
 | --- | --- |
 | `registry/`, `contracts/`, `skills/`, `evals/`, `tooling/`, `adapters/` | `harness/<mesmo-nome>/` |
 | `docs/scripts/` | `harness/tooling/validators/` |
@@ -50,35 +50,35 @@ fica em [examples/](examples/harness.project.example.yaml).
 
 1. Registre branch, baseline de testes e Doctor, paths e falhas preexistentes.
 2. Classifique cada grupo e registre destino, ação e reason code no relatório de
-   migração do projeto.
+  migração do projeto.
 3. Mova fontes canônicas e atualize, no mesmo lote, Registry, imports, scripts,
-   CI, links, metadados e índices imediatos.
+  CI, links, metadados e índices imediatos.
 4. Sincronize adapters somente a partir das skills canônicas; não edite um
-   runtime como fonte independente.
+  runtime como fonte independente.
 5. Reclassifique `docs/` sem criar domínios ou módulos fictícios. Registre
-   módulos reais no [manifesto](../docs/architecture/module-registry.md).
+  módulos reais no [manifesto](../docs/architecture/module-registry.md).
 6. Execute `node harness/tooling/harness.mjs doctor`, `check`, `eval`, `sync`,
-   `node --test` e os gates de stack aplicáveis. Um `SKIP` não é PASS.
+  `node --test` e os gates de stack aplicáveis. Um `SKIP` não é PASS.
 7. Remova paths legados apenas depois de provar que não há consumidor ativo.
 
 ## Rollback
 
 Se um lote falhar, preserve o trabalho local e volte o lote inteiro para os
 paths anteriores usando o inventário e a branch de trabalho. Não deixe Registry
- apontando para tooling  nem adapters de versões diferentes. Reexecute os
+ apontando para tooling nem adapters de versões diferentes. Reexecute os
 mesmos checks e registre causa, owner e condição de retomada. A migração não
 autoriza force-push, produção, dados reais ou bypass de segurança.
 
-## Adoção  — manifesto, profiles e routes
+## Adoção — manifesto, profiles e routes
 
-O  acrescenta uma cadeia independente de `harness.project.yaml`:
+O acrescenta uma cadeia independente de `harness.project.yaml`:
 
 ```text
 docs/project-manifest.yaml
-  → harness/registry/profiles.yaml
-  → harness/registry/artifact-routes.yaml
-  → harness/templates/
-  → docs/ do projeto
+ → harness/registry/profiles.yaml
+ → harness/registry/artifact-routes.yaml
+ → harness/templates/
+ → docs/ do projeto
 ```
 
 Projeto novo: escolha somente os profiles que descrevem sua capacidade real,
@@ -98,7 +98,7 @@ Atualização do harness: preserve os seis registries existentes e acrescente
 testes, Doctor e scaffold check. Não copie os standards do projeto-fonte como
 decisões universais: o projeto adotante responde por seu conteúdo. A route de
 `requirement` neste repositório é `docs/product/requirements/`, preservando a
-coleção ; o exemplo `docs/requirements/` do plano  não cria uma segunda fonte.
+coleção ; o exemplo `docs/requirements/` do plano não cria uma segunda fonte.
 
 Um piloto hermético é executado pelos testes do scaffold com manifestos
 frontend, backend e fullstack. A adoção por uma squad real ainda exige seu

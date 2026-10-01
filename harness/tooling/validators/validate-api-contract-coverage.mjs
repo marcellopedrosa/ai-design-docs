@@ -12,10 +12,6 @@ const HTTP_MAPPINGS = new Map([
   ['PatchMapping', 'patch'],
   ['DeleteMapping', 'delete']
 ]);
-const LEGACY_STATUS_FROM_INDEX = new Set([
-  'conversation-audit-v1.openapi.yaml',
-  'conversation-audit-retention-policy-v1.openapi.yaml'
-]);
 function listFiles(root, suffix) {
   if (!fs.existsSync(root)) return [];
   const result = [];
@@ -335,7 +331,7 @@ export function validateApiContractCoverage({ sourceRoot, contractsRoot }) {
     const contract = parseOpenApiContract(fs.readFileSync(file, 'utf8'), relative);
     if (!/^3\.1\.\d+$/.test(contract.openapi)) errors.push(`${relative}: OpenAPI must be 3.1.x`);
     if (!contract.version) errors.push(`${relative}: missing info.version`);
-    if (!contract.status && !LEGACY_STATUS_FROM_INDEX.has(relative)) {
+    if (!contract.status) {
       errors.push(`${relative}: missing contract lifecycle status`);
     } else if (contract.status && !['Draft', 'Active', 'Deprecated'].includes(contract.status)) {
       errors.push(`${relative}: invalid contract lifecycle status ${contract.status}`);

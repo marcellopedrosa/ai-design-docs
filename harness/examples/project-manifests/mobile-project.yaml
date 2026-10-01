@@ -1,0 +1,9 @@
+version: 1
+project:
+  name: mobile-example
+  type: mobile
+profiles:
+  - mobile
+  - security
+agents:
+  - mobile

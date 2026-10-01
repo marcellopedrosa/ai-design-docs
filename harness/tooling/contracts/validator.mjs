@@ -14,6 +14,18 @@
  */
 
 const VALID_TYPES = new Set(['object', 'array', 'string', 'number', 'integer', 'boolean', 'null']);
+const SUPPORTED_KEYWORDS = new Set(['$schema', '$id', '$comment', 'title', 'description', 'default', 'examples', 'type', 'required', 'properties', 'additionalProperties', 'enum', 'items', 'minItems', 'minLength', 'pattern', 'uniqueItems']);
+
+function checkSupportedKeywords(schema, schemaName, errors, location = schemaName) {
+  for (const key of Object.keys(schema)) {
+    if (!SUPPORTED_KEYWORDS.has(key)) errors.push(`${location}: keyword '${key}' não suportada.`);
+  }
+  if (schema.properties && typeof schema.properties === 'object' && !Array.isArray(schema.properties)) {
+    for (const [name, child] of Object.entries(schema.properties)) if (child && typeof child === 'object') checkSupportedKeywords(child, schemaName, errors, `${location}.properties.${name}`);
+  }
+  if (schema.items && typeof schema.items === 'object') checkSupportedKeywords(schema.items, schemaName, errors, `${location}.items`);
+  if (schema.additionalProperties && typeof schema.additionalProperties === 'object') checkSupportedKeywords(schema.additionalProperties, schemaName, errors, `${location}.additionalProperties`);
+}
 
 export function validateSchemaSyntax(schema, schemaName = 'schema') {
   const errors = [];
@@ -32,6 +44,7 @@ export function validateSchemaSyntax(schema, schemaName = 'schema') {
   if (!schema.type || !VALID_TYPES.has(schema.type)) {
     errors.push(`${schemaName}: campo 'type' ausente ou inválido: '${schema.type}'.`);
   }
+  checkSupportedKeywords(schema, schemaName, errors);
 
   if (schema.required !== undefined) {
     if (!Array.isArray(schema.required)) {
@@ -78,7 +91,6 @@ export function validateInstance(schema, instance, instancePath = '$') {
       errors.push(`${instancePath}: valor '${instance}' não pertence ao enum [${schema.enum.map(e => JSON.stringify(e)).join(', ')}].`);
     }
   }
-
   if (schema.type === 'string' && typeof instance === 'string') {
     if (typeof schema.minLength === 'number' && instance.length < schema.minLength) {
       errors.push(`${instancePath}: string menor que minLength ${schema.minLength}.`);

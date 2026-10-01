@@ -15,7 +15,7 @@ function runCli(level) {
 test('CLI H1 executes deterministic evals', () => {
   const result = runCli('H1');
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /H1 executados: 22/);
+  assert.match(result.stdout, /H1 executados: 24/);
 });
 
 test('CLI H2 fails explicitly instead of passing H1', () => {

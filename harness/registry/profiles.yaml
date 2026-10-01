@@ -43,3 +43,12 @@ profiles:
       - type: standard
         scope: security
         name: application-security-standard
+  mobile:
+    extends:
+      - base
+    artifacts:
+      - type: agent
+        name: mobile
+      - type: standard
+        scope: mobile
+        name: mobile-standard

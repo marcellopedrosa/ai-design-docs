@@ -9,6 +9,7 @@ import { syncAdapters } from '../adapters/sync-adapters.mjs';
 import { compileSchema, validateSchemaSyntax, validateInstance } from '../contracts/validator.mjs';
 import { runEvalsH1 } from '../eval-runner/index.mjs';
 import { auditScaffold } from '../scaffold/engine.mjs';
+import { parseYamlSubset } from '../scaffold/yaml.mjs';
 
 function checkForUnsupportedYaml(rawLine, lineNumber, filename) {
   const trimmed = rawLine.trim();
@@ -37,6 +38,7 @@ function checkForUnsupportedYaml(rawLine, lineNumber, filename) {
 }
 
 export function parseSimpleYaml(content, filename = 'yaml') {
+  return parseYamlSubset(content, filename);
   // Parser leve e determinístico com fail-loud para subconjunto de YAML usado no registry
   const lines = content.split(/\r?\n/);
   const result = {};
@@ -700,7 +702,7 @@ export function runDoctor(repositoryRoot) {
 
 function main() {
   const root = path.resolve('.');
-  process.stdout.write('==> Executando Harness Doctor (Diagnóstico Estrutural )...\n\n');
+  process.stdout.write('==> Executando Harness Doctor (Diagnóstico Estrutural)...\n\n');
 
   const { results, errors } = runDoctor(root);
 
@@ -723,14 +725,14 @@ function main() {
   printCheck('Evals', [...results.evals.errors, ...evalH1Errors], `H0 ${results.evals.count}/${results.evals.count} PASS, H1 ${results.evalsH1.h1Passed}/${results.evalsH1.h1Executed} PASS`);
   printCheck('Fixtures', results.fixtureRefs.errors, 'integridade referencial de fixtures');
   printCheck('Drift', results.drift.errors, 'paridade entre registry e documentação');
-  printCheck('Governance ', results.governance.errors, 'policies e restrictions canônicas');
-  printCheck('Onboarding ', results.onboarding.errors, 'onboard, bootstrap e fontes declarativas');
+  printCheck('Governance', results.governance.errors, 'policies e restrictions canônicas');
+  printCheck('Onboarding', results.onboarding.errors, 'onboard, bootstrap e fontes declarativas');
   if (results.scaffold.errors.length) {
-    printCheck('Scaffold ', results.scaffold.errors);
+    printCheck('Scaffold', results.scaffold.errors);
   } else if (results.scaffold.warnings.length) {
-    for (const warning of results.scaffold.warnings) process.stdout.write(`[WARN] Scaffold : ${warning}\n`);
+    for (const warning of results.scaffold.warnings) process.stdout.write(`[WARN] Scaffold: ${warning}\n`);
   } else {
-    printCheck('Scaffold ', [], 'manifest, profiles, routes, templates e artifacts');
+    printCheck('Scaffold', [], 'manifest, profiles, routes, templates e artifacts');
   }
 
   process.stdout.write('\n');

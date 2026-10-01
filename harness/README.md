@@ -10,7 +10,7 @@ status: Active
 version: 2.0.0
 date: 2026-09-30
 last_reviewed: 2026-09-30
-keywords: harness, , governance, registry, profiles, routes, scaffold, skills, tooling, segurança
+keywords: harness, governance, registry, profiles, routes, scaffold, skills, tooling, segurança
 related_files: governance/README.md, governance/decisions/README.md, adapters/README.md, registry/README.md, contracts/README.md, skills/README.md, evals/README.md, tooling/README.md, tooling/scaffold/README.md, tooling/validators/README.md, templates/README.md, examples/README.md, examples/project-manifests/README.md, examples/harness.project.example.yaml, UPGRADING.md, ../docs/README.md
 code_references: tooling/harness.mjs, tooling/harness-doctor/index.mjs, tooling/scaffold/index.mjs, tooling/adapters/sync-adapters.mjs, ../.agents/skills/, ../.claude/skills/
 principal_statement: harness/ é a única fonte canônica do control plane; docs/ pertence à documentação do projeto e runtimes recebem adapters derivados.
@@ -28,17 +28,17 @@ produção ou release e não substitui decisões humanas.
 ## Bootstrap e descoberta
 
 1. Leia [AGENTS.md](../AGENTS.md) e este índice; em Claude/Gemini leia também
-   [CLAUDE.md](../CLAUDE.md) ou [GEMINI.md](../GEMINI.md), conforme o runtime.
+  [CLAUDE.md](../CLAUDE.md) ou [GEMINI.md](../GEMINI.md), conforme o runtime.
 2. Se existir `harness.project.yaml` na raiz, use-o como configuração do projeto;
-   o [exemplo](examples/harness.project.example.yaml) não ativa capabilities.
+  o [exemplo](examples/harness.project.example.yaml) não ativa capabilities.
 3. Consulte [docs/README.md](../docs/README.md) para produto, módulos e owners.
-   Se houver [manifesto ](../docs/project-manifest.yaml), o projeto declara
-   seus profiles; o [Registry](registry/README.md) decide quais artefatos são
-   esperados e onde ficam, sem impor conteúdo técnico à squad.
+  Se houver [manifesto ](../docs/project-manifest.yaml), o projeto declara
+  seus profiles; o [Registry](registry/README.md) decide quais artefatos são
+  esperados e onde ficam, sem impor conteúdo técnico à squad.
 4. Carregue o [manual de governança](governance/README.md), o
-   [ADR aplicável](governance/decisions/README.md), o
-   [Registry](registry/README.md) e somente os standards/skills exigidos pelo
-   risco e pelo profile ativado. `AgentOrchestrator` é o único agente inicial.
+  [ADR aplicável](governance/decisions/README.md), o
+  [Registry](registry/README.md) e somente os standards/skills exigidos pelo
+  risco e pelo profile ativado. `AgentOrchestrator` é o único agente inicial.
 
 ## Estrutura e ownership
 
@@ -110,7 +110,7 @@ projetos adotantes; sem wrapper local, reporte `Automação não configurada`.
 
 ## Atualização e limites de portabilidade
 
-O [guia de upgrade](UPGRADING.md) descreve a migração →, a adoção  e a separação entre
+O [guia de upgrade](UPGRADING.md) descreve a migração →, a adoção e a separação entre
 arquivos harness-owned e project-owned. Não sobrescreva documentação do projeto,
 não mantenha cópias canônicas nos adapters e não interprete scaffolds como módulos
 implementados. Git segue a [política local](governance/policies/git-delivery-policy.md),
