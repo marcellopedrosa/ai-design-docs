@@ -22,7 +22,7 @@ Os schemas formais estabelecem garantias estruturais para a operação de agente
 - [`security-finding.schema.json`](security-finding.schema.json): Registro de vulnerabilidade ou finding de segurança com exigência de comprovação quádrupla.
 - [`handoff.schema.json`](handoff.schema.json): Registro de transição de responsabilidade entre agentes e capacidades.
 - [`harness-project.schema.json`](harness-project.schema.json): Manifesto estruturado de configuração do projeto adotante (`harness.project.yaml`).
-- [`project-manifest.schema.json`](project-manifest.schema.json): Contexto declarativo  em `docs/project-manifest.yaml`.
+- [`project-manifest.schema.json`](project-manifest.schema.json): Contexto declarativo em `docs/project-manifest.yaml`, incluindo o estado opcional de conclusão do quiz de onboarding.
 - [`profile-registry.schema.json`](profile-registry.schema.json): Profiles, herança e artefatos exigidos.
 - [`artifact-routes.schema.json`](artifact-routes.schema.json): Rotas físicas e templates por tipo.
 

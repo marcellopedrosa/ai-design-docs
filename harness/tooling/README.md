@@ -10,7 +10,7 @@ Este diretório contém ferramentas determinísticas portáteis, entrypoints de 
 
 ## Adoption Lifecycle
 
-- `node harness/tooling/harness.mjs onboard`
+- `node harness/tooling/harness.mjs onboard` — quiz único que cria o manifesto e registra sua conclusão
 - `node harness/tooling/harness.mjs onboard --source "<path>"`
 - `node harness/tooling/harness.mjs bootstrap`
 - `node harness/tooling/harness.mjs scaffold --check|--create|--inspect`
@@ -28,6 +28,8 @@ Ponto de entrada único: `node harness/tooling/harness.mjs <doctor|check|eval|sy
 
 O [scaffold ](scaffold/README.md) consome manifesto, profiles, routes e
 templates; oferece `--inspect`, `--check` e `--create` sem sobrescrita.
+O `onboard` não executa scaffold ou Doctor implicitamente; essas etapas permanecem
+visíveis no lifecycle e o `bootstrap` valida um projeto já configurado.
 `check` executa a governança documental; `eval` executa somente H1; `sync`
 verifica paridade sem escrever. Para sincronização com escrita, use diretamente
 `node harness/tooling/adapters/sync-adapters.mjs` após revisão do diff. A fachada preserva
