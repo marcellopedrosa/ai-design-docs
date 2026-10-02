@@ -7,3 +7,7 @@ profiles:
 agents: []
 metadata:
   owner: harness-maintainers
+onboarding:
+  status: completed
+  questionnaire_version: 2
+  completed_on: 2026-10-01

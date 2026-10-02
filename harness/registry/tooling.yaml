@@ -134,7 +134,7 @@ tools:
   onboard:
     status: active
     implementation: "harness/tooling/onboard/index.mjs"
-    description: "Inicializa projeto ou importa conteúdo project-owned de harness legado"
+    description: "Cria o manifesto por quiz idempotente ou importa conteúdo project-owned de harness legado"
     network: false
     secrets: false
     destructive: false
