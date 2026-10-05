@@ -8,6 +8,20 @@ Também disponível: [validate-relative-links](validate-relative-links/SKILL.md)
 
 Para criar outra skill, comece pelo [molde](../templates/skills/SKILL.md.template), copie-o para `skills/<nome>/SKILL.md` e substitua todos os textos de exemplo. Use um nome curto em kebab-case, uma descrição que delimite quando a skill se aplica e apenas as instruções necessárias. Acrescente `references/`, `scripts/` ou `assets/` somente se o procedimento precisar deles. Skills corporativas complementam o Spec Kit; não reproduzem seus comandos nem instalam fases ou gates paralelos.
 
+## Referências obrigatórias para criação
+
+Ao criar ou revisar uma skill, use explicitamente estas referências oficiais:
+
+1. **Referência principal — Claude Managed Agents:** [Claude Managed Agents overview](https://platform.claude.com/docs/en/managed-agents/overview)
+2. **Referência complementar — OpenAI Skills:** [OpenAI Skills](https://developers.openai.com/api/docs/guides/tools-skills)
+
+A referência principal deve orientar a modelagem da skill como capacidade de um
+agente, incluindo contexto, ferramentas, ambiente e sessão. A referência da
+OpenAI deve ser usada como complemento para validar descoberta, empacotamento,
+recursos auxiliares e compatibilidade com agentes OpenAI/Codex. Quando houver
+diferença entre plataformas, documente a adaptação na própria skill sem alterar
+o contrato canônico `SKILL.md`.
+
 Para publicar as skills em um projeto que usa este harness, execute da raiz. No Windows com PowerShell:
 
 ```powershell

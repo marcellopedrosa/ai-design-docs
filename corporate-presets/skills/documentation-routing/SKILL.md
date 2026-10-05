@@ -1,6 +1,6 @@
 ---
 name: documentation-routing
-description: Escolha o local canônico para criar ou atualizar documentação transversal ou de frontend, backend e mobile em projetos que adotam o harness corporativo.
+description: Escolha o local canônico para criar ou atualizar documentação transversal, de frontend ou de backend em projetos que adotam o harness corporativo.
 ---
 
 # Roteamento documental

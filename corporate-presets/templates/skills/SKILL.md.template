@@ -7,6 +7,19 @@ description: Descreva o resultado concreto e quando usar esta skill.
 
 Use quando: descreva o pedido reconhecível que requer este procedimento.
 
+## Referências de implementação
+
+Esta skill deve ser criada e revisada usando:
+
+- Referência principal: [Claude Managed Agents overview](https://platform.claude.com/docs/en/managed-agents/overview).
+- Referência complementar: [OpenAI Skills](https://developers.openai.com/api/docs/guides/tools-skills).
+
+Use a documentação do Claude Managed Agents para definir a capacidade do agente,
+seu contexto, ferramentas, ambiente e comportamento de sessão. Use a
+documentação da OpenAI como complemento para recursos, empacotamento e
+compatibilidade com Codex. Registre nesta skill qualquer adaptação específica
+de plataforma.
+
 1. Consulte as fontes do projeto necessárias para este pedido.
 2. Execute o procedimento específico desta skill.
 3. Verifique o resultado observável e informe caminhos e limitações.

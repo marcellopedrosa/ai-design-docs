@@ -30,8 +30,8 @@ harness-corporativo/
 ├── corporate-presets/                # Camada corporativa reutilizável
 │   ├── templates/
 │   ├── standards/
-│   ├── governance/
-│   └── contracts/
+│   ├── standards/
+│   └── skills/
 └── projeto/
     ├── AGENTS.md
     ├── docs/                         # Escopo transversal
@@ -44,7 +44,7 @@ harness-corporativo/
     │   ├── architecture/
     │   │   └── adr/
     │   ├── domains/
-    │   ├── contracts/
+    │   ├── api_contracts/
     │   ├── compliance/
     │   ├── security/
     │   ├── standards/
@@ -61,7 +61,7 @@ harness-corporativo/
     │       ├── specs/
     │       ├── requirements/
     │       ├── architecture/
-    │       ├── contracts/
+    │       ├── api_contracts/
     │       ├── decisions/
     │       ├── standards/
     │       ├── checklists/
@@ -77,7 +77,7 @@ harness-corporativo/
     │       ├── specs/
     │       ├── requirements/
     │       ├── architecture/
-    │       ├── contracts/
+    │       ├── api_contracts/
     │       ├── decisions/
     │       ├── standards/
     │       ├── checklists/
@@ -87,22 +87,6 @@ harness-corporativo/
     │       │   ├── reports/
     │       │   └── lessons-learned/
     │       └── onboarding/
-    └── mobile/
-        ├── AGENTS.md
-        └── docs/
-            ├── specs/
-            ├── requirements/
-            ├── architecture/
-            ├── contracts/
-            ├── decisions/
-            ├── standards/
-            ├── checklists/
-            ├── analysis/
-            ├── delivery/
-            │   ├── plans/
-            │   ├── reports/
-            │   └── lessons-learned/
-            └── onboarding/
 ```
 
 ## Regra de decisão
@@ -117,8 +101,8 @@ Exemplos:
 | --- | --- |
 | PRD de uma capacidade do produto | `projeto/docs/product/prd/` |
 | Requisito compartilhado entre frontend e backend | `projeto/docs/product/requirements/` |
-| Contrato geral de uma API | `projeto/docs/contracts/` |
-| Contrato de consumo específico do frontend | `projeto/frontend/docs/contracts/` |
+| Contrato geral de uma API | `projeto/docs/api_contracts/` |
+| Contrato de consumo específico do frontend | `projeto/frontend/docs/api_contracts/` |
 | ADR sobre arquitetura do sistema | `projeto/docs/architecture/adr/` |
 | Decisão sobre estado de tela | `projeto/frontend/docs/decisions/` |
 | Especificação de uma mudança somente no backend | `projeto/backend/docs/specs/` |
@@ -142,23 +126,6 @@ projeto/frontend/docs/specs/<feature>/
 
 O `.specify/` pode conter apenas configuração e memória operacional do Spec Kit;
 o conteúdo documental canônico deve permanecer em `projeto/`.
-
-## Relação com o ai-design-docs-old
-
-| Origem | Destino canônico |
-| --- | --- |
-| `docs/product/` | `projeto/docs/product/` |
-| `docs/architecture/` | `projeto/docs/architecture/` |
-| `docs/domains/` | `projeto/docs/domains/` |
-| `docs/contracts/` | `projeto/docs/contracts/` |
-| `docs/compliance/` | `projeto/docs/compliance/` |
-| `docs/analysis/` | `projeto/docs/analysis/` |
-| `docs/delivery/` | `projeto/docs/delivery/` |
-| `docs/onboarding/` | `projeto/docs/onboarding/` |
-| `docs/agents/standards/` | `corporate-presets/standards/` ou `projeto/*/docs/standards/` |
-| `harness/templates/` | `corporate-presets/templates/` |
-| `harness/governance/` | `corporate-presets/governance/` |
-| `harness/contracts/` | `corporate-presets/contracts/` |
 
 ## Nomenclatura
 

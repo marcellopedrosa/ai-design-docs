@@ -1,7 +1,0 @@
-{
-  "schema_version": 1,
-  "harness_version": "2.0.0",
-  "project": {
-    "id": "sample-service"
-  }
-}
