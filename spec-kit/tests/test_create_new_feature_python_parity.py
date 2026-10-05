@@ -1,0 +1,1789 @@
+"""Parity tests for the Python create-new-feature port."""
+
+from __future__ import annotations
+
+import os
+import re
+import shlex
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+import pytest
+
+from scripts.python import create_new_feature
+from scripts.python.common import persist_feature_json
+from tests.conftest import requires_bash
+from tests.parity_helpers import (
+    HAS_POWERSHELL,
+    WINDOWS_POWERSHELL,
+    _bash_posix_path,
+    bash_cmd,
+    break_wrap_layer,
+    clean_env,
+    collation_range_locale,
+    install_composition_stack,
+    install_scripts,
+    json_stdout,
+    make_python3_path_shim,
+    make_repo,
+    make_yaml_less_venv,
+    normalize_repo_paths,
+    normalize_script_names,
+    ps_cmd,
+    py_cmd,
+    run,
+)
+
+SCRIPT = "create-new-feature"
+TEMPLATE_BODY = "# Spec Template\n\nBody.\n"
+
+
+def _setup_repo(tmp_path: Path, name: str = "proj") -> Path:
+    repo = make_repo(tmp_path, name)
+    install_scripts(repo, SCRIPT)
+    templates = repo / ".specify" / "templates"
+    templates.mkdir(parents=True)
+    (templates / "spec-template.md").write_text(TEMPLATE_BODY, encoding="utf-8")
+    return repo
+
+
+def _normalized_error_text(stderr: str, repo: Path) -> str:
+    stderr = re.sub(r"\x1b\[[0-9;]*m", "", stderr)
+    stderr = re.sub(r"(?m)^\s*\|\s?", "", stderr)
+    stderr = normalize_repo_paths(stderr, repo).replace("-Number", "--number")
+    return " ".join(stderr.split())
+
+
+@pytest.fixture
+def repo(tmp_path: Path) -> Path:
+    return _setup_repo(tmp_path)
+
+
+@pytest.fixture
+def repo_pair(tmp_path: Path) -> tuple[Path, Path]:
+    return _setup_repo(tmp_path, "proj-a"), _setup_repo(tmp_path, "proj-b")
+
+
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param("bash", marks=requires_bash),
+        "python",
+        pytest.param(
+            "powershell",
+            marks=pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available"),
+        ),
+    ],
+)
+@pytest.mark.parametrize("dry_run", [False, True])
+@pytest.mark.parametrize(
+    "description,short_name,suffix,warns",
+    [
+        ("添加用户", None, "添加用户", False),
+        ("добавить", None, "добавить", False),
+        ("!!! ??? ***", None, "", True),
+        ("添加用户", "user-auth", "user-auth", False),
+        ("Add users", "用户", "用户", False),
+        ("Add user authentication", None, "user-authentication", False),
+    ],
+)
+def test_empty_feature_name_warning(
+    repo: Path,
+    variant: str,
+    dry_run: bool,
+    description: str,
+    short_name: str | None,
+    suffix: str,
+    warns: bool,
+) -> None:
+    """Preserve UTF-8 names and warn only when no name remains (#4574)."""
+    powershell = variant == "powershell"
+    args = ["-Json" if powershell else "--json"]
+    if dry_run:
+        args.append("-DryRun" if powershell else "--dry-run")
+    if short_name is not None:
+        args.extend(["-ShortName" if powershell else "--short-name", short_name])
+    args.append(description)
+    command = {"bash": bash_cmd, "python": py_cmd, "powershell": ps_cmd}[variant]
+    result = run(command(repo, SCRIPT, *args), repo)
+
+    assert result.returncode == 0, result.stderr
+    output = json_stdout(result)
+    assert output["BRANCH_NAME"] == f"001-{suffix}"
+    warning = "Feature name is empty after removing unsupported characters"
+    assert result.stderr.count(warning) == int(warns)
+    if warns:
+        assert ("-ShortName" if powershell else "--short-name") in result.stderr
+        assert "letters or digits" in result.stderr
+    assert (repo / "specs" / f"001-{suffix}" / "spec.md").exists() is not dry_run
+
+
+@pytest.mark.parametrize("json_mode", [False, True], ids=["text", "json"])
+@pytest.mark.parametrize("dry_run", [False, True], ids=["create", "dry_run"])
+def test_python_outputs_unicode_when_default_encoding_is_cp1252(
+    repo: Path, json_mode: bool, dry_run: bool
+) -> None:
+    env = clean_env()
+    env["PYTHONIOENCODING"] = "cp1252"
+    args = []
+    if json_mode:
+        args.append("--json")
+    if dry_run:
+        args.append("--dry-run")
+    args.append("添加用户")
+
+    result = run(py_cmd(repo, SCRIPT, *args), repo, env)
+
+    assert result.returncode == 0, result.stderr
+    assert "001-添加用户" in result.stdout
+    if not dry_run:
+        assert "001-添加用户" in result.stderr
+    if json_mode:
+        assert json_stdout(result)["BRANCH_NAME"] == "001-添加用户"
+    else:
+        assert "BRANCH_NAME: 001-添加用户" in result.stdout
+
+
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param("bash", marks=requires_bash),
+        "python",
+        pytest.param(
+            "powershell",
+            marks=pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available"),
+        ),
+    ],
+)
+@pytest.mark.parametrize(
+    ("short_name", "expected"),
+    [
+        ("x²", "001-x"),
+        ("xⅫ", "001-x"),
+        ("x٥", "001-x٥"),
+        ("x𝟘", "001-x𝟘"),
+    ],
+    ids=["superscript_number", "roman_numeral", "decimal_digit", "supplementary_decimal"],
+)
+def test_unicode_number_categories_match(
+    repo: Path, variant: str, short_name: str, expected: str
+) -> None:
+    powershell = variant == "powershell"
+    args = (
+        ("-Json", "-DryRun", "-ShortName", short_name, "x")
+        if powershell
+        else ("--json", "--dry-run", "--short-name", short_name, "x")
+    )
+    command = {"bash": bash_cmd, "python": py_cmd, "powershell": ps_cmd}[variant]
+
+    result = run(command(repo, SCRIPT, *args), repo)
+
+    assert result.returncode == 0, result.stderr
+    assert json_stdout(result)["BRANCH_NAME"] == expected
+
+
+@requires_bash
+def test_bash_reports_missing_utf8_locale_for_unicode_only(
+    repo: Path, tmp_path: Path
+) -> None:
+    real_sed = shutil.which("sed")
+    assert real_sed is not None
+    shim_dir = tmp_path / "bin"
+    shim_dir.mkdir()
+    sed_shim = shim_dir / "sed"
+    sed_shim.write_text(
+        "#!/bin/sh\n"
+        """if [ "$1" = 's/[^[:alnum:]]/-/g' ]; then exit 1; fi\n"""
+        f"exec {shlex.quote(real_sed)} \"$@\"\n",
+        encoding="utf-8",
+    )
+    sed_shim.chmod(0o755)
+    env = clean_env()
+    env["PATH"] = f"{shim_dir}:{env['PATH']}"
+
+    ascii_result = run(
+        bash_cmd(repo, SCRIPT, "--json", "--dry-run", "Add user authentication"),
+        repo,
+        env,
+    )
+    assert ascii_result.returncode == 0, ascii_result.stderr
+    assert json_stdout(ascii_result)["BRANCH_NAME"] == "001-user-authentication"
+
+    for args in (("添加用户",), ("--short-name", "用户", "Add users")):
+        result = run(bash_cmd(repo, SCRIPT, "--json", "--dry-run", *args), repo, env)
+        assert result.returncode == 1
+        assert result.stdout == ""
+        assert "Error: A UTF-8 locale is required" in result.stderr
+        assert not (repo / "specs").exists()
+
+
+@requires_bash
+@pytest.mark.parametrize("locale_name", ["C", "POSIX"])
+def test_bash_respects_explicit_non_utf8_lc_all(repo: Path, locale_name: str) -> None:
+    env = clean_env()
+    env["LC_ALL"] = locale_name
+    env["LANG"] = "C.UTF-8"
+
+    ascii_result = run(
+        bash_cmd(repo, SCRIPT, "--json", "--dry-run", "Add user authentication"),
+        repo,
+        env,
+    )
+    assert ascii_result.returncode == 0, ascii_result.stderr
+    assert json_stdout(ascii_result)["BRANCH_NAME"] == "001-user-authentication"
+
+    for args in (("添加用户",), ("--short-name", "用户", "Add users")):
+        unicode_result = run(
+            bash_cmd(repo, SCRIPT, "--json", "--dry-run", *args), repo, env
+        )
+        assert unicode_result.returncode == 1
+        assert unicode_result.stdout == ""
+        assert "A UTF-8 locale is required" in unicode_result.stderr
+        assert "LC_ALL" in unicode_result.stderr
+        assert not (repo / "specs").exists()
+
+
+@requires_bash
+@pytest.mark.parametrize(
+    "short_name", ["foo\tbar", "foo\nbar"], ids=["tab", "newline"]
+)
+def test_bash_ascii_controls_need_no_utf8_locale_or_python(
+    repo: Path, tmp_path: Path, short_name: str
+) -> None:
+    shim_dir = tmp_path / "bin"
+    shim_dir.mkdir()
+    for name in ("python3", "python", "py"):
+        shim = shim_dir / name
+        shim.write_text("#!/bin/sh\nexit 1\n", encoding="utf-8", newline="\n")
+        shim.chmod(0o755)
+
+    for lc_all in ("C", None):
+        env = clean_env()
+        if lc_all is not None:
+            env["LC_ALL"] = lc_all
+        else:
+            env.pop("LC_ALL", None)
+        env["PATH"] = f"{shim_dir}{os.pathsep}{env['PATH']}"
+        bash = run(
+            bash_cmd(repo, SCRIPT, "--json", "--dry-run", "--short-name", short_name, "x"),
+            repo,
+            env,
+        )
+        py = run(
+            py_cmd(repo, SCRIPT, "--json", "--dry-run", "--short-name", short_name, "x"),
+            repo,
+            env,
+        )
+        assert bash.returncode == py.returncode == 0, bash.stderr
+        assert json_stdout(bash) == json_stdout(py)
+        assert json_stdout(bash)["BRANCH_NAME"] == "001-foo-bar"
+
+
+@requires_bash
+def test_bash_requires_python_only_for_unicode_names(
+    repo: Path, tmp_path: Path
+) -> None:
+    shim_dir = tmp_path / "bin"
+    shim_dir.mkdir()
+    for name in ("python3", "python", "py"):
+        shim = shim_dir / name
+        shim.write_text("#!/bin/sh\nexit 1\n", encoding="utf-8", newline="\n")
+        shim.chmod(0o755)
+    env = clean_env()
+    env["PATH"] = f"{shim_dir}:{env['PATH']}"
+
+    ascii_result = run(
+        bash_cmd(repo, SCRIPT, "--json", "--dry-run", "Add user authentication"),
+        repo,
+        env,
+    )
+    assert ascii_result.returncode == 0, ascii_result.stderr
+    assert json_stdout(ascii_result)["BRANCH_NAME"] == "001-user-authentication"
+
+    unicode_result = run(
+        bash_cmd(repo, SCRIPT, "--json", "--dry-run", "添加用户"), repo, env
+    )
+    assert unicode_result.returncode == 1
+    assert unicode_result.stdout == ""
+    assert "Error: Python 3 is required to create a Unicode feature name" in unicode_result.stderr
+
+
+@requires_bash
+def test_bash_unicode_uses_configured_python_without_pyyaml_in_spaced_path(
+    repo: Path, tmp_path: Path
+) -> None:
+    no_yaml_exe = make_yaml_less_venv(tmp_path / "tool env")
+    shim_dir = tmp_path / "bin"
+    shim_dir.mkdir()
+    for name in ("python3", "python", "py"):
+        shim = shim_dir / name
+        shim.write_text("#!/bin/sh\nexit 1\n", encoding="utf-8", newline="\n")
+        shim.chmod(0o755)
+    env = clean_env()
+    env["SPECKIT_PYTHON_EXECUTABLE"] = _bash_posix_path(no_yaml_exe)
+    env["PATH"] = f"{shim_dir}{os.pathsep}{env['PATH']}"
+
+    result = run(bash_cmd(repo, SCRIPT, "--json", "--dry-run", "添加用户"), repo, env)
+
+    assert result.returncode == 0, result.stderr
+    assert json_stdout(result)["BRANCH_NAME"] == "001-添加用户"
+
+
+@requires_bash
+def test_bash_unicode_uses_py_launcher_with_separate_version_arg(
+    repo: Path, tmp_path: Path
+) -> None:
+    shim_dir = tmp_path / "bin"
+    shim_dir.mkdir()
+    for name in ("python3", "python"):
+        shim = shim_dir / name
+        shim.write_text("#!/bin/sh\nexit 1\n", encoding="utf-8", newline="\n")
+        shim.chmod(0o755)
+    launcher = shim_dir / "py"
+    launcher.write_text(
+        "#!/bin/sh\n"
+        '[ "$1" = "-3" ] || exit 1\n'
+        "shift\n"
+        f'exec {shlex.quote(_bash_posix_path(Path(sys.executable)))} "$@"\n',
+        encoding="utf-8",
+        newline="\n",
+    )
+    launcher.chmod(0o755)
+    env = clean_env()
+    env["PATH"] = f"{shim_dir}{os.pathsep}{env['PATH']}"
+
+    result = run(bash_cmd(repo, SCRIPT, "--json", "--dry-run", "添加用户"), repo, env)
+
+    assert result.returncode == 0, result.stderr
+    assert json_stdout(result)["BRANCH_NAME"] == "001-添加用户"
+
+
+def _run_all_variants_allow_existing(
+    repo: Path, *, number: str, short_name: str
+):
+    """Run each create-new-feature variant with the allow-existing options."""
+    common_args = (
+        "--json",
+        "--dry-run",
+        "--number",
+        number,
+        "--allow-existing-branch",
+        "--short-name",
+        short_name,
+        "x",
+    )
+    bash = run(bash_cmd(repo, SCRIPT, *common_args), repo)
+    py = run(py_cmd(repo, SCRIPT, *common_args), repo)
+    ps = run(
+        ps_cmd(
+            repo,
+            SCRIPT,
+            "-Json",
+            "-DryRun",
+            "-Number",
+            number,
+            "-AllowExistingBranch",
+            "-ShortName",
+            short_name,
+            "x",
+        ),
+        repo,
+    )
+    return bash, ps, py
+
+
+def test_python_prefix_scan_tolerates_permission_error(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Python matches shell variants when a spec directory cannot be listed."""
+    specs_dir = tmp_path / "specs"
+    specs_dir.mkdir()
+
+    def deny_listing(_path: Path):
+        raise PermissionError("denied")
+
+    monkeypatch.setattr(Path, "iterdir", deny_listing)
+
+    assert not create_new_feature._has_spec_prefix_conflict(
+        specs_dir,
+        "001",
+        specs_dir / "001-x",
+        allow_existing=False,
+    )
+
+
+@requires_bash
+@pytest.mark.parametrize(
+    "description",
+    [
+        "Add user authentication system",
+        "I want to add the new API rate limiting feature for users",
+        "Fix UI for DB sync",
+        "a to the of",
+        "Fix \u00e9DB\u00e9 sync",
+        "Ajouter la réservation hôtelière",
+    ],
+    ids=[
+        "plain",
+        "stop_words",
+        "acronyms",
+        "all_stop_words_fallback",
+        "acronym_next_to_non_ascii",
+        "accented_words",
+    ],
+)
+def test_python_branch_name_generation_matches_bash(
+    repo: Path, description: str
+) -> None:
+    bash = run(bash_cmd(repo, SCRIPT, "--json", "--dry-run", description), repo)
+    py = run(py_cmd(repo, SCRIPT, "--json", "--dry-run", description), repo)
+
+    assert py.returncode == bash.returncode == 0
+    assert py.stderr == bash.stderr == ""
+    assert json_stdout(py) == json_stdout(bash)
+
+
+@requires_bash
+@pytest.mark.parametrize(
+    ("description", "expected"),
+    [("ſet account", "001-ſet-account"), ("Set account", "001-account")],
+)
+def test_bash_stop_words_match_only_ascii_words(
+    repo: Path, description: str, expected: str
+) -> None:
+    bash = run(bash_cmd(repo, SCRIPT, "--json", "--dry-run", description), repo)
+    py = run(py_cmd(repo, SCRIPT, "--json", "--dry-run", description), repo)
+
+    assert bash.returncode == py.returncode == 0
+    assert json_stdout(bash) == json_stdout(py)
+    assert json_stdout(bash)["BRANCH_NAME"] == expected
+    if HAS_POWERSHELL:
+        ps = run(ps_cmd(repo, SCRIPT, "-Json", "-DryRun", description), repo)
+        assert ps.returncode == 0, ps.stderr
+        assert json_stdout(ps) == json_stdout(py)
+
+
+@requires_bash
+def test_bash_stop_words_ignore_locale_case_folding(repo: Path, tmp_path: Path) -> None:
+    real_grep = shutil.which("grep")
+    assert real_grep is not None
+    shim_dir = tmp_path / "bin"
+    shim_dir.mkdir()
+    grep_shim = shim_dir / "grep"
+    grep_cmd = shlex.quote(_bash_posix_path(Path(real_grep)))
+    grep_shim.write_text(
+        "#!/bin/sh\n"
+        'if [ "$1" = "-qiE" ]; then\n'
+        "  IFS= read -r word\n"
+        '  [ "$word" = "ſet" ] && exit 0\n'
+        f'  printf "%s\\n" "$word" | {grep_cmd} "$@"\n'
+        "  exit $?\n"
+        "fi\n"
+        f'exec {grep_cmd} "$@"\n',
+        encoding="utf-8",
+        newline="\n",
+    )
+    grep_shim.chmod(0o755)
+    env = clean_env()
+    env["PATH"] = f"{shim_dir}{os.pathsep}{env['PATH']}"
+
+    bash = run(bash_cmd(repo, SCRIPT, "--json", "--dry-run", "ſet account"), repo, env)
+    py = run(py_cmd(repo, SCRIPT, "--json", "--dry-run", "ſet account"), repo, env)
+
+    assert bash.returncode == py.returncode == 0
+    assert json_stdout(bash) == json_stdout(py)
+    assert json_stdout(bash)["BRANCH_NAME"] == "001-ſet-account"
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+@pytest.mark.parametrize(
+    ("description", "expected"),
+    [
+        ("Fix éDBé sync", "001-fix-édbé-sync"),
+        ("É DB sync", "001-É-db-sync"),
+        ("é DB sync", "001-é-db-sync"),
+    ],
+)
+def test_all_variants_keep_acronym_next_to_non_ascii(
+    repo: Path, description: str, expected: str
+) -> None:
+    """Unicode words and adjacent ASCII acronyms survive together."""
+    bash = run(bash_cmd(repo, SCRIPT, "--json", "--dry-run", description), repo)
+    py = run(py_cmd(repo, SCRIPT, "--json", "--dry-run", description), repo)
+    ps = run(ps_cmd(repo, SCRIPT, "-Json", "-DryRun", description), repo)
+
+    assert bash.returncode == py.returncode == ps.returncode == 0
+    assert json_stdout(py) == json_stdout(bash) == json_stdout(ps)
+    assert json_stdout(ps)["BRANCH_NAME"] == expected
+
+
+@requires_bash
+@pytest.mark.parametrize(
+    "args",
+    [
+        ("--json", "--dry-run", "--number", "7", "add rate limiting"),
+        ("--json", "--dry-run", "--number", "010", "add rate limiting"),
+    ],
+    ids=["explicit_number", "leading_zero_number"],
+)
+def test_python_number_flag_matches_bash(repo: Path, args: tuple[str, ...]) -> None:
+    bash = run(bash_cmd(repo, SCRIPT, *args), repo)
+    py = run(py_cmd(repo, SCRIPT, *args), repo)
+
+    assert py.returncode == bash.returncode == 0
+    assert json_stdout(py) == json_stdout(bash)
+
+
+@requires_bash
+def test_python_sequential_numbering_matches_bash(repo: Path) -> None:
+    for name in ("001-first", "0005-fourdigit", "20260101-120000-stamp", "12-short"):
+        (repo / "specs" / name).mkdir(parents=True)
+
+    bash = run(bash_cmd(repo, SCRIPT, "--json", "--dry-run", "add rate limiting"), repo)
+    py = run(py_cmd(repo, SCRIPT, "--json", "--dry-run", "add rate limiting"), repo)
+
+    assert py.returncode == bash.returncode == 0
+    assert json_stdout(py) == json_stdout(bash)
+    assert json_stdout(py)["FEATURE_NUM"] == "006"
+
+
+@requires_bash
+def test_all_variants_timestamp_mode_match_shape(repo: Path) -> None:
+    args = ("--json", "--dry-run", "--timestamp", "--short-name", "user-auth", "x")
+    bash = run(bash_cmd(repo, SCRIPT, *args), repo)
+    py = run(py_cmd(repo, SCRIPT, *args), repo)
+    results = [bash, py]
+    if HAS_POWERSHELL:
+        results.append(
+            run(
+                ps_cmd(
+                    repo,
+                    SCRIPT,
+                    "-Json",
+                    "-DryRun",
+                    "-Timestamp",
+                    "-ShortName",
+                    "user-auth",
+                    "x",
+                ),
+                repo,
+            )
+        )
+
+    assert all(result.returncode == 0 for result in results)
+    # Timestamps may straddle a second boundary, so compare shape and suffix.
+    for result in results:
+        data = json_stdout(result)
+        assert re.fullmatch(r"\d{8}-\d{6}-user-auth", data["BRANCH_NAME"])
+        assert data["BRANCH_NAME"].startswith(data["FEATURE_NUM"])
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+def test_all_variants_timestamp_number_warning_matches(repo: Path) -> None:
+    args = (
+        "--json",
+        "--dry-run",
+        "--timestamp",
+        "--number",
+        "5",
+        "--short-name",
+        "ua",
+        "x",
+    )
+    bash = run(bash_cmd(repo, SCRIPT, *args), repo)
+    ps = run(
+        ps_cmd(
+            repo,
+            SCRIPT,
+            "-Json",
+            "-DryRun",
+            "-Timestamp",
+            "-Number",
+            "5",
+            "-ShortName",
+            "ua",
+            "x",
+        ),
+        repo,
+    )
+    py = run(py_cmd(repo, SCRIPT, *args), repo)
+
+    assert bash.returncode == ps.returncode == py.returncode == 0
+    assert json_stdout(ps)
+    assert (
+        py.stderr
+        == bash.stderr
+        == ps.stderr.replace("-Number", "--number").replace(
+            "-Timestamp", "--timestamp"
+        )
+        == "[specify] Warning: --number is ignored when --timestamp is used\n"
+    )
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+def test_all_variants_invalid_number_fails_cleanly(repo: Path) -> None:
+    args = ("--json", "--dry-run", "--number", "abc", "add rate limiting")
+    bash = run(bash_cmd(repo, SCRIPT, *args), repo)
+    ps = run(
+        ps_cmd(
+            repo,
+            SCRIPT,
+            "-Json",
+            "-DryRun",
+            "-Number",
+            "abc",
+            "add rate limiting",
+        ),
+        repo,
+    )
+    py = run(py_cmd(repo, SCRIPT, *args), repo)
+
+    assert bash.returncode == ps.returncode == py.returncode == 1
+    assert bash.stdout == ps.stdout == py.stdout == ""
+    expected = "Error: --number must be an unsigned integer, got 'abc'"
+    for result in (bash, ps, py):
+        assert expected in _normalized_error_text(result.stderr, repo)
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+def test_all_variants_negative_number_fails_cleanly(repo: Path) -> None:
+    args = ("--json", "--dry-run", "--number", "-1", "add rate limiting")
+    bash = run(bash_cmd(repo, SCRIPT, *args), repo)
+    ps = run(
+        ps_cmd(
+            repo,
+            SCRIPT,
+            "-Json",
+            "-DryRun",
+            "-Number",
+            "-1",
+            "add rate limiting",
+        ),
+        repo,
+    )
+    py = run(py_cmd(repo, SCRIPT, *args), repo)
+
+    assert bash.returncode == ps.returncode == py.returncode == 1
+    assert bash.stdout == ps.stdout == py.stdout == ""
+    expected = "Error: --number must be an unsigned integer, got '-1'"
+    for result in (bash, ps, py):
+        assert expected in _normalized_error_text(result.stderr, repo)
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+@pytest.mark.parametrize("digit_count", [244, 5000])
+def test_all_variants_oversized_number_fails_cleanly(
+    repo: Path, digit_count: int
+) -> None:
+    number = "9" * digit_count
+    bash = run(
+        bash_cmd(
+            repo,
+            SCRIPT,
+            "--json",
+            "--dry-run",
+            "--number",
+            number,
+            "add rate limiting",
+        ),
+        repo,
+    )
+    ps = run(
+        ps_cmd(
+            repo,
+            SCRIPT,
+            "-Json",
+            "-DryRun",
+            "-Number",
+            number,
+            "add rate limiting",
+        ),
+        repo,
+    )
+    py = run(
+        py_cmd(
+            repo,
+            SCRIPT,
+            "--json",
+            "--dry-run",
+            "--number",
+            number,
+            "add rate limiting",
+        ),
+        repo,
+    )
+
+    assert bash.returncode == ps.returncode == py.returncode == 1
+    assert bash.stdout == ps.stdout == py.stdout == ""
+    expected = (
+        f"Error: --number must be between 0 and {2**63 - 1}, got '{number}'"
+    )
+    for result in (bash, ps, py):
+        assert expected in _normalized_error_text(result.stderr, repo)
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+def test_all_variants_branch_truncation_match(repo: Path) -> None:
+    args = ("--json", "--dry-run", "--short-name", "a" * 300, "x")
+    bash = run(bash_cmd(repo, SCRIPT, *args), repo)
+    ps = run(
+        ps_cmd(
+            repo,
+            SCRIPT,
+            "-Json",
+            "-DryRun",
+            "-ShortName",
+            "a" * 300,
+            "x",
+        ),
+        repo,
+    )
+    py = run(py_cmd(repo, SCRIPT, *args), repo)
+
+    assert bash.returncode == ps.returncode == py.returncode == 0
+    assert bash.stderr == ps.stderr == py.stderr
+    assert json_stdout(bash) == json_stdout(ps) == json_stdout(py)
+    assert len(json_stdout(py)["BRANCH_NAME"]) == 244
+
+
+@requires_bash
+def test_python_full_run_matches_bash(repo_pair: tuple[Path, Path]) -> None:
+    repo_a, repo_b = repo_pair
+    description = "Add user authentication system"
+
+    bash = run(bash_cmd(repo_a, SCRIPT, "--json", description), repo_a)
+    py = run(py_cmd(repo_b, SCRIPT, "--json", description), repo_b)
+
+    assert py.returncode == bash.returncode == 0
+    assert normalize_repo_paths(py.stdout, repo_b) == normalize_repo_paths(
+        bash.stdout, repo_a
+    )
+    assert normalize_repo_paths(py.stderr, repo_b) == normalize_repo_paths(
+        bash.stderr, repo_a
+    )
+
+    branch = json_stdout(py)["BRANCH_NAME"]
+    for repo in repo_pair:
+        spec = repo / "specs" / branch / "spec.md"
+        assert spec.read_bytes() == TEMPLATE_BODY.encode("utf-8")
+    assert (repo_b / ".specify" / "feature.json").read_bytes() == (
+        repo_a / ".specify" / "feature.json"
+    ).read_bytes()
+
+
+@requires_bash
+def test_all_variants_materialize_composed_spec_template(tmp_path: Path) -> None:
+    repos = [
+        _setup_repo(tmp_path, "bash"),
+        _setup_repo(tmp_path, "powershell"),
+        _setup_repo(tmp_path, "python"),
+    ]
+    expected = ""
+    for current in repos:
+        expected = install_composition_stack(
+            current, "spec-template", TEMPLATE_BODY
+        )
+
+    bash = run(
+        bash_cmd(
+            repos[0],
+            SCRIPT,
+            "--json",
+            "--number",
+            "1",
+            "--short-name",
+            "composed",
+            "x",
+        ),
+        repos[0],
+    )
+    py = run(
+        py_cmd(
+            repos[2],
+            SCRIPT,
+            "--json",
+            "--number",
+            "1",
+            "--short-name",
+            "composed",
+            "x",
+        ),
+        repos[2],
+    )
+    results = [bash, py]
+    checked_repos = [repos[0], repos[2]]
+    if HAS_POWERSHELL:
+        results.insert(
+            1,
+            run(
+                ps_cmd(
+                    repos[1],
+                    SCRIPT,
+                    "-Json",
+                    "-Number",
+                    "1",
+                    "-ShortName",
+                    "composed",
+                    "x",
+                ),
+                repos[1],
+            ),
+        )
+        checked_repos.insert(1, repos[1])
+
+    assert all(result.returncode == 0 for result in results)
+    for current in checked_repos:
+        assert (
+            current / "specs" / "001-composed" / "spec.md"
+        ).read_text(encoding="utf-8") == expected
+
+
+@requires_bash
+def test_all_variants_fail_for_broken_spec_composition(tmp_path: Path) -> None:
+    repos = [
+        _setup_repo(tmp_path, "bash"),
+        _setup_repo(tmp_path, "powershell"),
+        _setup_repo(tmp_path, "python"),
+    ]
+    for current in repos:
+        install_composition_stack(current, "spec-template", TEMPLATE_BODY)
+        break_wrap_layer(current, "spec-template")
+
+    bash = run(bash_cmd(repos[0], SCRIPT, "--json", "x"), repos[0])
+    py = run(py_cmd(repos[2], SCRIPT, "--json", "x"), repos[2])
+    results = [(bash, repos[0]), (py, repos[2])]
+    if HAS_POWERSHELL:
+        results.append(
+            (
+                run(ps_cmd(repos[1], SCRIPT, "-Json", "x"), repos[1]),
+                repos[1],
+            )
+        )
+
+    assert all(result.returncode != 0 for result, _ in results)
+    assert all(
+        not (current / "specs" / "001-x").exists()
+        for _, current in results
+    )
+
+
+@requires_bash
+def test_python_missing_template_warning_matches_bash(
+    repo_pair: tuple[Path, Path],
+) -> None:
+    repo_a, repo_b = repo_pair
+    for repo in repo_pair:
+        (repo / ".specify" / "templates" / "spec-template.md").unlink()
+
+    bash = run(bash_cmd(repo_a, SCRIPT, "--json", "add rate limiting"), repo_a)
+    py = run(py_cmd(repo_b, SCRIPT, "--json", "add rate limiting"), repo_b)
+
+    assert py.returncode == bash.returncode == 0
+    assert normalize_repo_paths(py.stderr, repo_b) == normalize_repo_paths(
+        bash.stderr, repo_a
+    )
+    branch = json_stdout(py)["BRANCH_NAME"]
+    for repo in repo_pair:
+        assert (repo / "specs" / branch / "spec.md").read_text(encoding="utf-8") == ""
+
+
+@requires_bash
+def test_python_existing_prefix_auto_correct_matches_bash(
+    repo_pair: tuple[Path, Path],
+) -> None:
+    repo_a, repo_b = repo_pair
+    description = "add rate limiting"
+
+    assert (
+        run(
+            bash_cmd(repo_a, SCRIPT, "--json", "--number", "1", description), repo_a
+        ).returncode
+        == 0
+    )
+    assert (
+        run(
+            py_cmd(repo_b, SCRIPT, "--json", "--number", "1", description), repo_b
+        ).returncode
+        == 0
+    )
+
+    bash = run(bash_cmd(repo_a, SCRIPT, "--json", "--number", "1", description), repo_a)
+    py = run(py_cmd(repo_b, SCRIPT, "--json", "--number", "1", description), repo_b)
+
+    assert py.returncode == bash.returncode == 0
+    assert json_stdout(py)["FEATURE_NUM"] == json_stdout(bash)["FEATURE_NUM"] == "002"
+    assert normalize_repo_paths(py.stderr, repo_b) == normalize_repo_paths(
+        bash.stderr, repo_a
+    )
+
+    bash_retry = run(
+        bash_cmd(
+            repo_a,
+            SCRIPT,
+            "--json",
+            "--number",
+            "1",
+            "--allow-existing-branch",
+            description,
+        ),
+        repo_a,
+    )
+    py_retry = run(
+        py_cmd(
+            repo_b,
+            SCRIPT,
+            "--json",
+            "--number",
+            "1",
+            "--allow-existing-branch",
+            description,
+        ),
+        repo_b,
+    )
+    assert py_retry.returncode == bash_retry.returncode == 0
+    assert normalize_repo_paths(py_retry.stdout, repo_b) == normalize_repo_paths(
+        bash_retry.stdout, repo_a
+    )
+
+
+@requires_bash
+@pytest.mark.parametrize(
+    "args",
+    [
+        (),
+        ("   ",),
+        ("--short-name",),
+        ("--number",),
+    ],
+    ids=["missing_description", "whitespace_description", "short_name_no_value", "number_no_value"],
+)
+def test_python_argument_errors_match_bash(repo: Path, args: tuple[str, ...]) -> None:
+    bash = run(bash_cmd(repo, SCRIPT, *args), repo)
+    py = run(py_cmd(repo, SCRIPT, *args), repo)
+
+    assert py.returncode == bash.returncode == 1
+    assert py.stdout == bash.stdout == ""
+    assert normalize_script_names(py.stderr, repo, SCRIPT) == normalize_script_names(
+        bash.stderr, repo, SCRIPT
+    )
+
+
+@requires_bash
+def test_python_help_matches_bash(repo: Path) -> None:
+    bash = run(bash_cmd(repo, SCRIPT, "--help"), repo)
+    py = run(py_cmd(repo, SCRIPT, "--help"), repo)
+
+    assert py.returncode == bash.returncode == 0
+    assert py.stderr == bash.stderr == ""
+    assert normalize_script_names(py.stdout, repo, SCRIPT) == normalize_script_names(
+        bash.stdout, repo, SCRIPT
+    )
+
+
+@requires_bash
+def test_python_persists_relative_feature_json(repo: Path) -> None:
+    py = run(py_cmd(repo, SCRIPT, "--json", "add rate limiting"), repo)
+
+    assert py.returncode == 0, py.stderr
+    branch = json_stdout(py)["BRANCH_NAME"]
+    feature_json = (repo / ".specify" / "feature.json").read_text(encoding="utf-8")
+    assert feature_json == f'{{"feature_directory":"specs/{branch}"}}\n'
+
+
+@requires_bash
+def test_bash_reads_unicode_feature_state_without_jq_under_legacy_encoding(
+    repo: Path, tmp_path: Path
+) -> None:
+    created = run(bash_cmd(repo, SCRIPT, "--json", "添加用户"), repo)
+    assert created.returncode == 0, created.stderr
+    assert json_stdout(created)["BRANCH_NAME"] == "001-添加用户"
+    assert (repo / "specs/001-添加用户/spec.md").is_file()
+
+    shim_dir = make_python3_path_shim(tmp_path / "bin")
+    (shim_dir / "sitecustomize.py").write_text(
+        "import builtins\n"
+        "_open = builtins.open\n"
+        "def legacy_open(file, *args, **kwargs):\n"
+        "    if str(file).endswith('feature.json') and 'encoding' not in kwargs:\n"
+        "        kwargs['encoding'] = 'cp1252'\n"
+        "    return _open(file, *args, **kwargs)\n"
+        "builtins.open = legacy_open\n",
+        encoding="utf-8",
+    )
+    for name in ("jq", "grep"):
+        shim = shim_dir / name
+        shim.write_text("#!/bin/sh\nexit 1\n", encoding="utf-8", newline="\n")
+        shim.chmod(0o755)
+    env = clean_env()
+    env["PATH"] = f"{shim_dir}{os.pathsep}{env['PATH']}"
+    env["PYTHONPATH"] = str(shim_dir)
+    env["PYTHONIOENCODING"] = "utf-8"
+    common = repo / ".specify/scripts/bash/common.sh"
+
+    resolved = run(
+        [
+            "bash",
+            "-c",
+            (
+                'source "$1"; paths=$(get_feature_paths --no-persist) || exit 1; '
+                'printf -v expected "FEATURE_DIR=%q" "$3"; '
+                '[[ "$paths" == *"$expected"* ]] || exit 1; '
+                'read_feature_json_feature_directory "$2"'
+            ),
+            "bash",
+            str(common),
+            str(repo),
+            str(repo / "specs/001-添加用户"),
+        ],
+        repo,
+        env,
+    )
+
+    assert resolved.returncode == 0, resolved.stderr
+    assert resolved.stdout == "specs/001-添加用户"
+    assert (repo / resolved.stdout / "spec.md").is_file()
+
+
+def test_persist_feature_json_avoids_platform_newline_translation(
+    tmp_path: Path, monkeypatch
+) -> None:
+    def windows_write_text(path: Path, data: str, **kwargs) -> int:
+        encoding = kwargs.get("encoding") or "utf-8"
+        return path.write_bytes(data.replace("\n", "\r\n").encode(encoding))
+
+    monkeypatch.setattr(Path, "write_text", windows_write_text)
+
+    persist_feature_json(tmp_path, "specs/001-test")
+
+    assert (tmp_path / ".specify" / "feature.json").read_bytes() == (
+        b'{"feature_directory":"specs/001-test"}\n'
+    )
+
+
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+@pytest.mark.parametrize(
+    ("py_args", "ps_args"),
+    [
+        (
+            ("--json", "--dry-run", "Add user authentication system"),
+            ("-Json", "-DryRun", "Add user authentication system"),
+        ),
+        (
+            ("--json", "--dry-run", "--short-name", "My Fancy Name", "x"),
+            ("-Json", "-DryRun", "-ShortName", "My Fancy Name", "x"),
+        ),
+        (
+            ("--json", "--dry-run", "--number", "7", "add rate limiting"),
+            ("-Json", "-DryRun", "-Number", "7", "add rate limiting"),
+        ),
+    ],
+    ids=["plain", "short_name", "number"],
+)
+def test_python_json_output_matches_powershell(
+    repo: Path, py_args: tuple[str, ...], ps_args: tuple[str, ...]
+) -> None:
+    ps = run(ps_cmd(repo, SCRIPT, *ps_args), repo)
+    py = run(py_cmd(repo, SCRIPT, *py_args), repo)
+
+    assert py.returncode == ps.returncode == 0
+    assert json_stdout(py) == json_stdout(ps)
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+@pytest.mark.parametrize("number", ["-1", "+1"], ids=["negative", "positive_sign"])
+def test_all_variants_reject_signed_number(repo: Path, number: str) -> None:
+    bash = run(
+        bash_cmd(repo, SCRIPT, "--json", "--dry-run", "--number", number, "x"),
+        repo,
+    )
+    ps = run(
+        ps_cmd(repo, SCRIPT, "-Json", "-DryRun", "-Number", number, "x"),
+        repo,
+    )
+    py = run(
+        py_cmd(repo, SCRIPT, "--json", "--dry-run", "--number", number, "x"),
+        repo,
+    )
+
+    assert bash.returncode == ps.returncode == py.returncode == 1
+    expected = f"Error: --number must be an unsigned integer, got '{number}'"
+    for result in (bash, ps, py):
+        assert expected in _normalized_error_text(result.stderr, repo)
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+@pytest.mark.parametrize("timestamp", [False, True], ids=["numbered", "timestamp"])
+def test_all_variants_treat_empty_number_as_omitted(
+    repo: Path, timestamp: bool
+) -> None:
+    if not timestamp:
+        specs_dir = repo / "specs"
+        (specs_dir / "20260318-sequential").mkdir(parents=True)
+        (specs_dir / "20260319-143022-timestamp").mkdir()
+
+    bash_args = ["--json", "--dry-run", "--number", ""]
+    ps_args = ["-Json", "-DryRun", "-Number", ""]
+    py_args = ["--json", "--dry-run", "--number", ""]
+    if timestamp:
+        bash_args.append("--timestamp")
+        ps_args.append("-Timestamp")
+        py_args.append("--timestamp")
+    bash_args.append("x")
+    ps_args.append("x")
+    py_args.append("x")
+
+    bash = run(bash_cmd(repo, SCRIPT, *bash_args), repo)
+    ps = run(ps_cmd(repo, SCRIPT, *ps_args), repo)
+    py = run(py_cmd(repo, SCRIPT, *py_args), repo)
+
+    assert bash.returncode == ps.returncode == py.returncode == 0
+    assert bash.stderr == ps.stderr == py.stderr == ""
+    if not timestamp:
+        assert json_stdout(bash) == json_stdout(ps) == json_stdout(py)
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+@pytest.mark.parametrize(
+    ("number", "returncode"),
+    [
+        (str(2**63 - 1), 0),
+        (str(2**63), 1),
+    ],
+    ids=["int64_max", "int64_overflow"],
+)
+def test_all_variants_share_int64_number_range(
+    repo: Path, number: str, returncode: int
+) -> None:
+    bash = run(
+        bash_cmd(repo, SCRIPT, "--json", "--dry-run", "--number", number, "x"),
+        repo,
+    )
+    ps = run(
+        ps_cmd(repo, SCRIPT, "-Json", "-DryRun", "-Number", number, "x"),
+        repo,
+    )
+    py = run(
+        py_cmd(repo, SCRIPT, "--json", "--dry-run", "--number", number, "x"),
+        repo,
+    )
+
+    assert bash.returncode == ps.returncode == py.returncode == returncode
+    if returncode == 0:
+        assert json_stdout(bash) == json_stdout(ps) == json_stdout(py)
+    else:
+        assert bash.stdout == ps.stdout == py.stdout == ""
+        expected = f"Error: --number must be between 0 and {2**63 - 1}, got '{number}'"
+        for result in (bash, ps, py):
+            assert expected in _normalized_error_text(result.stderr, repo)
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+def test_all_variants_reject_exhausted_auto_number_range(repo: Path) -> None:
+    (repo / "specs" / f"{2**63 - 1}-existing").mkdir(parents=True)
+
+    bash = run(bash_cmd(repo, SCRIPT, "--json", "--dry-run", "x"), repo)
+    ps = run(ps_cmd(repo, SCRIPT, "-Json", "-DryRun", "x"), repo)
+    py = run(py_cmd(repo, SCRIPT, "--json", "--dry-run", "x"), repo)
+
+    assert bash.returncode == ps.returncode == py.returncode == 1
+    assert bash.stdout == ps.stdout == py.stdout == ""
+    expected = f"Error: feature number must be between 0 and {2**63 - 1}, got '{2**63}'"
+    for result in (bash, ps, py):
+        assert expected in _normalized_error_text(result.stderr, repo)
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+@pytest.mark.parametrize("prefix", [2**63, 2**64 + 5])
+def test_all_variants_ignore_out_of_range_existing_prefix(
+    repo: Path, prefix: int
+) -> None:
+    (repo / "specs" / f"{prefix}-existing").mkdir(parents=True)
+
+    bash = run(bash_cmd(repo, SCRIPT, "--json", "--dry-run", "x"), repo)
+    ps = run(ps_cmd(repo, SCRIPT, "-Json", "-DryRun", "x"), repo)
+    py = run(py_cmd(repo, SCRIPT, "--json", "--dry-run", "x"), repo)
+
+    assert bash.returncode == ps.returncode == py.returncode == 0
+    assert json_stdout(bash) == json_stdout(ps) == json_stdout(py)
+    assert json_stdout(py)["FEATURE_NUM"] == "001"
+
+
+def test_python_ignores_unconvertibly_large_existing_prefix() -> None:
+    class Entry:
+        name = f"{'9' * 5000}-existing"
+
+        @staticmethod
+        def is_dir() -> bool:
+            return True
+
+    class SpecsDir:
+        @staticmethod
+        def is_dir() -> bool:
+            return True
+
+        @staticmethod
+        def iterdir() -> list[Entry]:
+            return [Entry()]
+
+    assert create_new_feature._get_highest_from_specs(SpecsDir()) == 0
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+def test_all_variants_text_mode_match(repo: Path) -> None:
+    bash = run(bash_cmd(repo, SCRIPT, "--dry-run", "--number", "7", "x"), repo)
+    ps = run(ps_cmd(repo, SCRIPT, "-DryRun", "-Number", "7", "x"), repo)
+    py = run(py_cmd(repo, SCRIPT, "--dry-run", "--number", "7", "x"), repo)
+
+    assert bash.returncode == ps.returncode == py.returncode == 0
+    assert bash.stderr == ps.stderr == py.stderr == ""
+    assert (
+        normalize_repo_paths(bash.stdout, repo)
+        == normalize_repo_paths(ps.stdout, repo)
+        == normalize_repo_paths(py.stdout, repo)
+    )
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+def test_all_variants_non_dry_text_mode_match(tmp_path: Path) -> None:
+    bash_repo = _setup_repo(tmp_path, "bash")
+    ps_repo = _setup_repo(tmp_path, "powershell")
+    py_repo = _setup_repo(tmp_path, "python")
+
+    bash = run(
+        bash_cmd(bash_repo, SCRIPT, "--number", "7", "x"), bash_repo
+    )
+    ps = run(
+        ps_cmd(ps_repo, SCRIPT, "-Number", "7", "x"), ps_repo
+    )
+    py = run(py_cmd(py_repo, SCRIPT, "--number", "7", "x"), py_repo)
+
+    assert bash.returncode == ps.returncode == py.returncode == 0
+    assert (
+        normalize_repo_paths(bash.stdout, bash_repo)
+        == normalize_repo_paths(py.stdout, py_repo)
+    )
+    assert (
+        normalize_repo_paths(bash.stderr, bash_repo)
+        == normalize_repo_paths(py.stderr, py_repo)
+    )
+    ps_stdout = normalize_repo_paths(ps.stdout, ps_repo)
+    ps_stderr = normalize_repo_paths(ps.stderr, ps_repo)
+    assert "$env:SPECIFY_FEATURE = '007-x'" in ps_stdout
+    assert (
+        "$env:SPECIFY_FEATURE_DIRECTORY = '<REPO>/specs/007-x'" in ps_stdout
+    )
+    assert "$env:SPECIFY_FEATURE = '007-x'" in ps_stderr
+    assert (
+        "$env:SPECIFY_FEATURE_DIRECTORY = '<REPO>/specs/007-x'" in ps_stderr
+    )
+
+
+@requires_bash
+def test_python_persist_hints_match_bash_for_spaced_repo_path(
+    tmp_path: Path,
+) -> None:
+    """Paths with spaces must be quoted identically (shlex.quote format) so
+    the side-by-side text/stderr comparison holds."""
+    bash_repo = _setup_repo(tmp_path, "my proj a")
+    py_repo = _setup_repo(tmp_path, "my proj b")
+
+    bash = run(bash_cmd(bash_repo, SCRIPT, "--number", "7", "x"), bash_repo)
+    py = run(py_cmd(py_repo, SCRIPT, "--number", "7", "x"), py_repo)
+
+    assert bash.returncode == py.returncode == 0, bash.stderr + py.stderr
+    assert normalize_repo_paths(bash.stdout, bash_repo) == normalize_repo_paths(
+        py.stdout, py_repo
+    )
+    assert normalize_repo_paths(bash.stderr, bash_repo) == normalize_repo_paths(
+        py.stderr, py_repo
+    )
+    assert "export SPECIFY_FEATURE_DIRECTORY='<REPO>/specs/007-x'" in (
+        normalize_repo_paths(py.stderr, py_repo)
+    )
+
+
+def test_python_powershell_persistence_assignments_escape_quotes() -> None:
+    assert create_new_feature._persistence_assignments(
+        "007-x", r"C:\repo\O'Brien", powershell=True
+    ) == (
+        "$env:SPECIFY_FEATURE = '007-x'",
+        "$env:SPECIFY_FEATURE_DIRECTORY = 'C:\\repo\\O''Brien'",
+    )
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+def test_all_variants_persist_symlinked_specs_path_lexically(
+    tmp_path: Path,
+) -> None:
+    repos = [
+        _setup_repo(tmp_path, "bash"),
+        _setup_repo(tmp_path, "powershell"),
+        _setup_repo(tmp_path, "python"),
+    ]
+    for current in repos:
+        specs_target = tmp_path / f"{current.name}-specs"
+        specs_target.mkdir()
+        try:
+            (current / "specs").symlink_to(
+                specs_target, target_is_directory=True
+            )
+        except (OSError, NotImplementedError):
+            pytest.skip("Symlinks are not available in this environment")
+
+    bash = run(
+        bash_cmd(repos[0], SCRIPT, "--json", "--number", "7", "x"),
+        repos[0],
+    )
+    ps = run(
+        ps_cmd(repos[1], SCRIPT, "-Json", "-Number", "7", "x"),
+        repos[1],
+    )
+    py = run(
+        py_cmd(repos[2], SCRIPT, "--json", "--number", "7", "x"),
+        repos[2],
+    )
+
+    assert bash.returncode == ps.returncode == py.returncode == 0
+    expected = '{"feature_directory":"specs/007-x"}'
+    for current in repos:
+        assert (
+            current / ".specify" / "feature.json"
+        ).read_text(encoding="utf-8").strip() == expected
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+def test_all_variants_allow_existing_branch(repo: Path) -> None:
+    feature_dir = repo / "specs" / "001-x"
+    feature_dir.mkdir(parents=True)
+    spec_file = feature_dir / "spec.md"
+    spec_file.write_text("existing\n", encoding="utf-8")
+
+    bash = run(
+        bash_cmd(
+            repo,
+            SCRIPT,
+            "--json",
+            "--number",
+            "1",
+            "--allow-existing-branch",
+            "x",
+        ),
+        repo,
+    )
+    ps = run(
+        ps_cmd(
+            repo,
+            SCRIPT,
+            "-Json",
+            "-Number",
+            "1",
+            "-AllowExistingBranch",
+            "x",
+        ),
+        repo,
+    )
+    py = run(
+        py_cmd(
+            repo,
+            SCRIPT,
+            "--json",
+            "--number",
+            "1",
+            "--allow-existing-branch",
+            "x",
+        ),
+        repo,
+    )
+
+    assert bash.returncode == ps.returncode == py.returncode == 0
+    assert json_stdout(bash) == json_stdout(ps) == json_stdout(py)
+    assert spec_file.read_text(encoding="utf-8") == "existing\n"
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+def test_all_variants_allow_existing_prefers_exact_dir_over_sibling(
+    repo: Path,
+) -> None:
+    """Allow-existing preserves exact reuse even when a sibling shares its prefix."""
+    (repo / "specs" / "004-pre-exist").mkdir(parents=True)
+    (repo / "specs" / "004-other").mkdir()
+
+    bash, ps, py = _run_all_variants_allow_existing(
+        repo, number="4", short_name="pre-exist"
+    )
+
+    assert bash.returncode == ps.returncode == py.returncode == 0
+    assert json_stdout(bash) == json_stdout(ps) == json_stdout(py)
+    assert json_stdout(py)["BRANCH_NAME"] == "004-pre-exist"
+    for result in (bash, ps, py):
+        assert "conflicts with an existing spec directory" not in result.stderr
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+def test_all_variants_allow_existing_reuses_truncated_exact_dir(repo: Path) -> None:
+    """Allow-existing compares the canonical truncated feature directory name."""
+    short_name = "a" * 300
+    expected_branch = f"001-{'a' * 240}"
+    (repo / "specs" / expected_branch).mkdir(parents=True)
+
+    bash, ps, py = _run_all_variants_allow_existing(
+        repo, number="1", short_name=short_name
+    )
+
+    assert bash.returncode == ps.returncode == py.returncode == 0
+    assert json_stdout(bash) == json_stdout(ps) == json_stdout(py)
+    assert json_stdout(py)["BRANCH_NAME"] == expected_branch
+    for result in (bash, ps, py):
+        assert "conflicts with an existing spec directory" not in result.stderr
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+def test_all_variants_existing_prefix_auto_correct_diagnostics(repo: Path) -> None:
+    (repo / "specs" / "001-x").mkdir(parents=True)
+    expected = "conflicts with an existing spec directory; using 002 instead"
+
+    bash = run(
+        bash_cmd(repo, SCRIPT, "--json", "--dry-run", "--number", "1", "x"),
+        repo,
+    )
+    ps = run(
+        ps_cmd(repo, SCRIPT, "-Json", "-DryRun", "-Number", "1", "x"),
+        repo,
+    )
+    py = run(
+        py_cmd(repo, SCRIPT, "--json", "--dry-run", "--number", "1", "x"),
+        repo,
+    )
+
+    assert bash.returncode == ps.returncode == py.returncode == 0
+    assert json_stdout(bash) == json_stdout(ps) == json_stdout(py)
+    for result in (bash, ps, py):
+        assert expected in _normalized_error_text(result.stderr, repo)
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+def test_all_variants_corrected_prefix_skips_timestamp_collision(repo: Path) -> None:
+    """Auto-correction skips candidates owned by timestamp directories."""
+    specs_dir = repo / "specs"
+    (specs_dir / "001-existing").mkdir(parents=True)
+    (specs_dir / "20260318-sequential").mkdir()
+    (specs_dir / "20260319-143022-timestamp").mkdir()
+
+    bash = run(
+        bash_cmd(repo, SCRIPT, "--json", "--dry-run", "--number", "1", "x"),
+        repo,
+    )
+    ps = run(
+        ps_cmd(repo, SCRIPT, "-Json", "-DryRun", "-Number", "1", "x"),
+        repo,
+    )
+    py = run(
+        py_cmd(repo, SCRIPT, "--json", "--dry-run", "--number", "1", "x"),
+        repo,
+    )
+
+    assert bash.returncode == ps.returncode == py.returncode == 0
+    assert json_stdout(bash) == json_stdout(ps) == json_stdout(py)
+    assert json_stdout(py)["FEATURE_NUM"] == "20260320"
+    for result in (bash, ps, py):
+        assert "using 20260320 instead" in result.stderr
+
+
+@requires_bash
+@pytest.mark.parametrize(
+    "description",
+    [
+        "Añadir autenticación de usuario",
+        "Prüfung für Benutzer anlegen",
+        "Ajouter la réservation hôtelière",
+    ],
+    ids=["spanish", "german", "french"],
+)
+def test_bash_branch_name_ignores_locale_collation(
+    repo: Path, description: str
+) -> None:
+    """Branch naming preserves each description's Unicode words across locales."""
+    locale_name = collation_range_locale()
+    if locale_name is None:
+        pytest.skip("no locale with collation-ordered [a-z] ranges available")
+
+    env = clean_env()
+    env["LC_ALL"] = locale_name
+    env["LANG"] = locale_name
+
+    bash = run(bash_cmd(repo, SCRIPT, "--json", "--dry-run", description), repo, env)
+    py = run(py_cmd(repo, SCRIPT, "--json", "--dry-run", description), repo, env)
+
+    assert py.returncode == bash.returncode == 0
+    assert json_stdout(py) == json_stdout(bash)
+    branch = json_stdout(bash)["BRANCH_NAME"]
+    assert isinstance(branch, str) and branch == {
+        "Añadir autenticación de usuario": "001-añadir-autenticación-usuario",
+        "Prüfung für Benutzer anlegen": "001-prüfung-für-benutzer-anlegen",
+        "Ajouter la réservation hôtelière": "001-ajouter-réservation-hôtelière",
+    }[description]
+
+    # Both the generated and explicit-name paths must retain the input's words.
+    short_args = ("--json", "--dry-run", "--short-name", description, "x")
+    bash_short = run(bash_cmd(repo, SCRIPT, *short_args), repo, env)
+    py_short = run(py_cmd(repo, SCRIPT, *short_args), repo, env)
+
+    assert py_short.returncode == bash_short.returncode == 0
+    assert json_stdout(py_short) == json_stdout(bash_short)
+    short_branch = json_stdout(bash_short)["BRANCH_NAME"]
+    assert isinstance(short_branch, str) and short_branch == {
+        "Añadir autenticación de usuario": "001-añadir-autenticación-de-usuario",
+        "Prüfung für Benutzer anlegen": "001-prüfung-für-benutzer-anlegen",
+        "Ajouter la réservation hôtelière": "001-ajouter-la-réservation-hôtelière",
+    }[description]
+
+
+@requires_bash
+@pytest.mark.parametrize(
+    ("short_name", "expected"),
+    [
+        ("My Fancy!! Name", "001-my-fancy-name"),
+        ("auth -- v2", "001-auth-v2"),
+    ],
+    ids=["punctuation_run", "separator_run"],
+)
+def test_bash_collapses_repeated_separators(
+    repo: Path, short_name: str, expected: str
+) -> None:
+    """Runs of non-alphanumeric characters collapse to a single hyphen.
+
+    The bash twin squeezed them with ``sed 's/-\\+/-/g'``. ``\\+`` is a GNU
+    extension, not POSIX BRE: BSD ``sed`` (macOS) reads it as a literal ``+``,
+    so nothing collapsed and the branch became ``001-my-fancy---name``.
+    """
+    bash = run(
+        bash_cmd(repo, SCRIPT, "--json", "--dry-run", "--short-name", short_name, "x"),
+        repo,
+    )
+    py = run(
+        py_cmd(repo, SCRIPT, "--json", "--dry-run", "--short-name", short_name, "x"),
+        repo,
+    )
+
+    assert bash.returncode == py.returncode == 0
+    assert json_stdout(bash) == json_stdout(py)
+    assert json_stdout(bash)["BRANCH_NAME"] == expected
+
+
+@requires_bash
+@pytest.mark.parametrize("short_name", ["-n", "-e", "-E"], ids=["n", "e", "E"])
+def test_python_dash_prefixed_short_name_matches_bash(
+    repo: Path, short_name: str
+) -> None:
+    """A short name that looks like an ``echo`` option is still text.
+
+    ``clean_branch_name`` piped the raw value through ``echo "$name"``, so bash
+    consumed ``-n``/``-e``/``-E`` as options and emitted nothing, yielding the
+    suffix-less ``001-`` where Python yields ``001-n``.
+    """
+    args = ("--json", "--dry-run", "--short-name", short_name, "x")
+    bash = run(bash_cmd(repo, SCRIPT, *args), repo)
+    py = run(py_cmd(repo, SCRIPT, *args), repo)
+
+    assert py.returncode == bash.returncode == 0
+    assert json_stdout(py) == json_stdout(bash)
+    expected = f"001-{short_name.lstrip('-').lower()}"
+    assert json_stdout(bash)["BRANCH_NAME"] == expected
+
+
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+@pytest.mark.parametrize(
+    ("description", "expected"),
+    [
+        ("!!! ??? ***", "001-"),
+        ("добавить", "001-добавить"),
+        ("添加用户", "001-添加用户"),
+    ],
+    ids=["punctuation_only", "cyrillic", "han"],
+)
+def test_powershell_preserves_unicode_description(
+    tmp_path: Path, description: str, expected: str
+):
+    """Non-Latin descriptions are usable; punctuation alone still warns."""
+    repo = _setup_repo(tmp_path)
+
+    ps = run(ps_cmd(repo, SCRIPT, "-Json", "-DryRun", description), repo)
+
+    assert ps.returncode == 0, ps.stderr
+    assert "ArgumentNullException" not in ps.stderr
+    assert "Join" not in ps.stderr
+    assert json_stdout(ps)["BRANCH_NAME"] == expected
+
+
+@requires_bash
+@pytest.mark.skipif(not HAS_POWERSHELL, reason="no PowerShell available")
+@pytest.mark.parametrize(
+    ("description", "expected"),
+    [
+        ("добавить", "001-добавить"),
+        ("给倒推引擎加正推能力", "001-给倒推引擎加正推能力"),
+        ("客户邮件。审核队列", "001-客户邮件-审核队列"),
+        ("ПРИВЕТ", "001-ПРИВЕТ"),
+        ("𠀀𠀁。功能", "001-𠀀𠀁-功能"),
+        ("😀!!!", "001-"),
+    ],
+)
+def test_no_ascii_word_description_matches_across_twins(
+    tmp_path: Path, description: str, expected: str
+):
+    """All three twins agree on UTF-8 feature names and separators."""
+
+    bash_repo = _setup_repo(tmp_path, "b")
+    py_repo = _setup_repo(tmp_path, "p")
+    ps_repo = _setup_repo(tmp_path, "s")
+
+    env = clean_env()
+    env.pop("LC_ALL", None)
+    env["LANG"] = "C"
+    bash = run(
+        bash_cmd(bash_repo, SCRIPT, "--json", "--dry-run", description), bash_repo, env
+    )
+    py = run(py_cmd(py_repo, SCRIPT, "--json", "--dry-run", description), py_repo, env)
+    ps = run(ps_cmd(ps_repo, SCRIPT, "-Json", "-DryRun", description), ps_repo, env)
+
+    assert bash.returncode == py.returncode == ps.returncode == 0, (
+        bash.stderr, py.stderr, ps.stderr,
+    )
+    names = {
+        json_stdout(bash)["BRANCH_NAME"],
+        json_stdout(py)["BRANCH_NAME"],
+        json_stdout(ps)["BRANCH_NAME"],
+    }
+    assert names == {expected}, names
+
+
+@pytest.mark.skipif(WINDOWS_POWERSHELL is None, reason="Windows PowerShell unavailable")
+def test_windows_powershell_51_preserves_unicode_and_utf8_limit(repo: Path) -> None:
+    assert WINDOWS_POWERSHELL is not None
+    for short_name, expected in (
+        ("添加用户", "001-添加用户"),
+        ("𠀀" * 240, "001-" + "𠀀" * 60),
+    ):
+        result = run(
+            [
+                WINDOWS_POWERSHELL,
+                "-NoProfile",
+                "-File",
+                str(repo / ".specify/scripts/powershell/create-new-feature.ps1"),
+                "-Json",
+                "-DryRun",
+                "-ShortName",
+                short_name,
+                "x",
+            ],
+            repo,
+        )
+        assert result.returncode == 0, result.stderr
+        assert json_stdout(result)["BRANCH_NAME"] == expected
+        assert len(expected.encode("utf-8")) <= 244
+
+    for description, expected in (
+        ("ſet account", "001-ſet-account"),
+        ("Set account", "001-account"),
+    ):
+        result = run(
+            [
+                WINDOWS_POWERSHELL,
+                "-NoProfile",
+                "-File",
+                str(repo / ".specify/scripts/powershell/create-new-feature.ps1"),
+                "-Json",
+                "-DryRun",
+                description,
+            ],
+            repo,
+        )
+        assert result.returncode == 0, result.stderr
+        assert json_stdout(result)["BRANCH_NAME"] == expected
+
+
+@requires_bash
+@pytest.mark.parametrize("variant", ["bash", "python", "powershell"])
+@pytest.mark.parametrize(
+    ("short_name", "expected_suffix"),
+    [
+        ("客" * 100, "客" * 80),
+        ("a" + "客" * 80, "a" + "客" * 79),
+        ("𠀀" * 240, "𠀀" * 60),
+    ],
+    ids=["exact_boundary", "partial_codepoint", "four_byte_long_suffix"],
+)
+def test_unicode_branch_name_fits_244_bytes(
+    repo: Path, variant: str, short_name: str, expected_suffix: str
+) -> None:
+    """Long UTF-8 names remain valid Git refs within GitHub's byte limit."""
+    if variant == "powershell" and not HAS_POWERSHELL:
+        pytest.skip("no PowerShell available")
+    powershell = variant == "powershell"
+    args = (
+        ("-Json", "-DryRun", "-ShortName", short_name, "x")
+        if powershell
+        else ("--json", "--dry-run", "--short-name", short_name, "x")
+    )
+    command = {"bash": bash_cmd, "python": py_cmd, "powershell": ps_cmd}[variant]
+    result = run(command(repo, SCRIPT, *args), repo)
+
+    assert result.returncode == 0, result.stderr
+    branch = json_stdout(result)["BRANCH_NAME"]
+    assert branch == f"001-{expected_suffix}"
+    assert len(branch.encode("utf-8")) <= 244
+    assert "244-byte limit" in result.stderr
+    assert subprocess.run(
+        ["git", "check-ref-format", "--branch", branch], capture_output=True
+    ).returncode == 0
+
+
+@requires_bash
+def test_bash_truncation_uses_bounded_byte_checks(repo: Path, tmp_path: Path) -> None:
+    real_wc = shutil.which("wc")
+    assert real_wc is not None
+    shim_dir = tmp_path / "bin"
+    shim_dir.mkdir()
+    count_file = tmp_path / "wc-count"
+    shim = shim_dir / "wc"
+    shim.write_text(
+        "#!/bin/sh\n"
+        f"printf . >> {shlex.quote(_bash_posix_path(count_file))}\n"
+        f"exec {shlex.quote(_bash_posix_path(Path(real_wc)))} \"$@\"\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    shim.chmod(0o755)
+    env = clean_env()
+    env["PATH"] = f"{shim_dir}{os.pathsep}{env['PATH']}"
+
+    result = run(
+        bash_cmd(repo, SCRIPT, "--json", "--dry-run", "--short-name", "𠀀" * 240, "x"),
+        repo,
+        env,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert json_stdout(result)["BRANCH_NAME"] == "001-" + "𠀀" * 60
+    assert count_file.read_text(encoding="utf-8").count(".") <= 16

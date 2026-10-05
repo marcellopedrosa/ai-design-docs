@@ -1,0 +1,303 @@
+# Authentication
+
+Specify CLI uses **opt-in authentication** for HTTP requests to catalog
+sources, extension downloads, and release checks.  No credentials are
+sent unless you explicitly configure them.
+
+## Configuration
+
+Create `~/.specify/auth.json` to enable authentication:
+
+```json
+{
+  "providers": [
+    {
+      "hosts": ["github.com", "api.github.com", "raw.githubusercontent.com", "codeload.github.com"],
+      "provider": "github",
+      "auth": "bearer",
+      "token_env": "GH_TOKEN"
+    }
+  ]
+}
+```
+
+> **Security:** Restrict the file to owner-only access:
+>
+> ```bash
+> chmod 600 ~/.specify/auth.json
+> ```
+
+Without this file, all HTTP requests are unauthenticated.
+
+## Fields
+
+Each entry in the `providers` array has the following fields:
+
+| Field | Required | Description |
+|---|---|---|
+| `hosts` | Yes | Array of hostnames this entry applies to. Supports exact hostnames, or a leading `*.` wildcard for subdomains only (for example, `*.visualstudio.com`). `*.visualstudio.com` matches `foo.visualstudio.com`, but not `visualstudio.com`. Other glob patterns such as `*github.com` or `gith?b.com` are not supported. |
+| `provider` | Yes | Built-in provider key: `github`, `azure-devops`, or `bitbucket`. |
+| `auth` | Yes | Auth scheme (see below). |
+| `token` | No | Token value (inline). Use `token_env` instead when possible. |
+| `token_env` | No | Environment variable name to read the token from. |
+| `username` | For `basic` | Username half of a Basic credential — for Bitbucket API tokens, the Atlassian account email. Must not contain `:`. |
+
+For `azure-ad` auth, additional fields are required:
+
+| Field | Required | Description |
+|---|---|---|
+| `tenant_id` | Yes | Azure AD tenant ID. |
+| `client_id` | Yes | Service principal client ID. |
+| `client_secret_env` | Yes | Environment variable containing the client secret. |
+
+Either `token` or `token_env` must be set for the `bearer`, `basic-pat`, and `basic` schemes.
+
+## Providers and auth schemes
+
+### GitHub (`github`)
+
+| Scheme | Header | Use for |
+|---|---|---|
+| `bearer` | `Authorization: Bearer <token>` | PATs, fine-grained PATs, OAuth tokens, GitHub App tokens |
+
+**Example — PAT via environment variable:**
+
+```json
+{
+  "hosts": ["github.com", "api.github.com", "raw.githubusercontent.com", "codeload.github.com"],
+  "provider": "github",
+  "auth": "bearer",
+  "token_env": "GH_TOKEN"
+}
+```
+
+### GitHub Enterprise Server (GHES)
+
+To use a private catalog or extension hosted on a GitHub Enterprise Server
+instance, add a `github` entry listing your GHES host(s). The same entry
+authenticates both catalog JSON fetches **and** private release-asset
+downloads — Specify recognizes the listed hosts as GitHub Enterprise and
+resolves release downloads through the GHES REST API (`/api/v3`).
+
+```json
+{
+  "providers": [
+    {
+      "hosts": ["ghes.example.com", "raw.ghes.example.com", "codeload.ghes.example.com"],
+      "provider": "github",
+      "auth": "bearer",
+      "token_env": "GH_ENTERPRISE_TOKEN"
+    }
+  ]
+}
+```
+
+List the **bare** web host (e.g. `ghes.example.com`) — release-download URLs
+live there. If your instance uses subdomain isolation, also list the `raw.`
+and `codeload.` subdomains your catalog/extension URLs use. A
+`*.ghes.example.com` wildcard matches subdomains but **not** the bare host,
+so always include the bare host explicitly.
+
+### GitHub Enterprise Cloud with data residency (GHE.com)
+
+GHE.com tenants use separate web and REST API hostnames. List both hosts so
+Specify can authenticate the release-metadata lookup and asset download:
+
+```json
+{
+  "providers": [
+    {
+      "hosts": ["tenant.ghe.com", "api.tenant.ghe.com"],
+      "provider": "github",
+      "auth": "bearer",
+      "token_env": "GH_ENTERPRISE_TOKEN"
+    }
+  ]
+}
+```
+
+For a release URL on `tenant.ghe.com`, Specify resolves metadata and release
+assets through `api.tenant.ghe.com`. The returned asset must identify the same
+owner and repository and use the exact numeric
+`/repos/.../releases/assets/...` endpoint. A wildcard such as
+`*.tenant.ghe.com` matches the API hostname but not the bare tenant web
+hostname, so list the web hostname explicitly.
+
+### Azure DevOps (`azure-devops`)
+
+| Scheme | Header | Use for |
+|---|---|---|
+| `basic-pat` | `Authorization: Basic base64(:<PAT>)` | Personal Access Tokens |
+| `bearer` | `Authorization: Bearer <token>` | Pre-acquired OAuth / Azure AD tokens |
+| `azure-cli` | `Authorization: Bearer <token>` | Token acquired via `az account get-access-token` |
+| `azure-ad` | `Authorization: Bearer <token>` | Token acquired via OAuth2 client credentials flow |
+
+**Example — PAT via environment variable:**
+
+```json
+{
+  "hosts": ["dev.azure.com"],
+  "provider": "azure-devops",
+  "auth": "basic-pat",
+  "token_env": "AZURE_DEVOPS_PAT"
+}
+```
+
+**Example — Azure CLI (interactive login):**
+
+```json
+{
+  "hosts": ["dev.azure.com"],
+  "provider": "azure-devops",
+  "auth": "azure-cli"
+}
+```
+
+Requires `az login` to have been run beforehand.
+
+**Example — Azure AD service principal (CI/automation):**
+
+```json
+{
+  "hosts": ["dev.azure.com"],
+  "provider": "azure-devops",
+  "auth": "azure-ad",
+  "tenant_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "client_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "client_secret_env": "AZURE_CLIENT_SECRET"
+}
+```
+
+### Bitbucket (`bitbucket`)
+
+| Scheme | Header | Use for |
+|---|---|---|
+| `bearer` | `Authorization: Bearer <token>` | Repository / project / workspace access tokens, or Atlassian API tokens sent without the account email (Bitbucket Cloud, **`api.bitbucket.org` only** — see note below); HTTP access tokens (Bitbucket Data Center) |
+| `basic` | `Authorization: Basic base64(<username>:<token>)` | Atlassian API tokens (username = Atlassian account email) against `api.bitbucket.org`. Bitbucket Cloud app passwords were removed by Atlassian on July 28, 2026 — use an API token or an access token instead. |
+
+> **Host note:** Bitbucket Cloud splits its surface by host. `api.bitbucket.org`
+> accepts repository/project/workspace access tokens as Bearer, and
+> Atlassian API tokens either as Basic (with the account email as the
+> username) or as Bearer (no email needed), on any REST call, including
+> fetching a catalog file via
+> `GET /2.0/repositories/<workspace>/<repo>/src/<ref>/<path>`. The plain
+> `bitbucket.org` web host (browser pages, `.../raw/...` links, `git clone`
+> over HTTPS) does **not** accept either of those — it authenticates
+> git-over-HTTPS with HTTP Basic using the literal username `x-token-auth`
+> and the access token as the password. Point catalog and `download_url`
+> entries at `api.bitbucket.org` (below) rather than `bitbucket.org/.../raw/...`
+> so the credentials in your `auth.json` actually apply.
+
+**Example — Bitbucket Cloud access token (recommended):**
+
+```json
+{
+  "hosts": ["api.bitbucket.org"],
+  "provider": "bitbucket",
+  "auth": "bearer",
+  "token_env": "BITBUCKET_ACCESS_TOKEN"
+}
+```
+
+Create the token with the **Repositories: Read** scope on the repository
+(or project/workspace) that hosts your catalogs and archives. Fetch a
+catalog file with this credential via
+`https://api.bitbucket.org/2.0/repositories/<workspace>/<repo>/src/<ref>/catalog.json`
+rather than a `bitbucket.org/.../raw/...` URL.
+
+**Example — Atlassian API token (Basic auth):**
+
+```json
+{
+  "hosts": ["api.bitbucket.org"],
+  "provider": "bitbucket",
+  "auth": "basic",
+  "username": "you@example.com",
+  "token_env": "ATLASSIAN_API_TOKEN"
+}
+```
+
+**Example — Bitbucket Data Center HTTP access token:**
+
+```json
+{
+  "hosts": ["bitbucket.example.com"],
+  "provider": "bitbucket",
+  "auth": "bearer",
+  "token_env": "BITBUCKET_DC_TOKEN"
+}
+```
+
+> **Note:** Bitbucket Cloud serves file downloads (the repository
+> **Downloads** section) via a redirect to a pre-signed Amazon S3 URL.
+> Specify strips the `Authorization` header on that redirect because the
+> target leaves your declared hosts — this is expected and the download
+> still succeeds, since the S3 URL is self-authorizing. Pin a `sha256` in
+> your catalog entries so the unauthenticated final hop stays
+> integrity-checked.
+
+## Multiple entries
+
+You can configure multiple entries for different hosts or organizations:
+
+```json
+{
+  "providers": [
+    {
+      "hosts": ["github.com", "api.github.com", "raw.githubusercontent.com", "codeload.github.com"],
+      "provider": "github",
+      "auth": "bearer",
+      "token_env": "GH_TOKEN"
+    },
+    {
+      "hosts": ["dev.azure.com"],
+      "provider": "azure-devops",
+      "auth": "basic-pat",
+      "token_env": "AZURE_DEVOPS_PAT"
+    }
+  ]
+}
+```
+
+## How it works
+
+1. For each outbound HTTP request, the URL hostname is matched against
+   the `hosts` patterns in `auth.json`.
+2. If a match is found, the corresponding provider resolves the token
+   and attaches the appropriate `Authorization` header.
+3. If the request receives a 401 or 403, the next matching entry is tried.
+4. After all matching entries are exhausted, an unauthenticated request
+   is attempted as a final fallback.
+5. On redirects, the `Authorization` header is stripped if the redirect
+   target leaves the entry's declared hosts — preventing credential
+   leakage to CDNs or third-party services.
+
+## Template
+
+A reference `auth.json` with GitHub pre-configured:
+
+```json
+{
+  "providers": [
+    {
+      "hosts": [
+        "github.com",
+        "api.github.com",
+        "raw.githubusercontent.com",
+        "codeload.github.com"
+      ],
+      "provider": "github",
+      "auth": "bearer",
+      "token_env": "GH_TOKEN"
+    }
+  ]
+}
+```
+
+To use it:
+
+```bash
+mkdir -p ~/.specify
+# Copy the JSON above into ~/.specify/auth.json
+chmod 600 ~/.specify/auth.json
+```

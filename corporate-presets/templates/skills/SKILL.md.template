@@ -1,0 +1,14 @@
+---
+name: nome-da-skill
+description: Descreva o resultado concreto e quando usar esta skill.
+---
+
+# Nome da skill
+
+Use quando: descreva o pedido reconhecível que requer este procedimento.
+
+1. Consulte as fontes do projeto necessárias para este pedido.
+2. Execute o procedimento específico desta skill.
+3. Verifique o resultado observável e informe caminhos e limitações.
+
+Limites: respeite as permissões do projeto e use os processos do Spec Kit para o ciclo de desenvolvimento.

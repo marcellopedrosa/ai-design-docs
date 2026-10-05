@@ -1,0 +1,507 @@
+#!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#     "typer",
+#     "rich",
+#     "readchar",
+#     "json5",
+#     "pyyaml",
+#     "packaging",
+#     "mcp>=2.2.0,<3.0.0",
+#     "pydantic>=2.13.0,<3.0.0",
+# ]
+# ///
+"""
+Specify CLI - Setup tool for Specify projects
+
+Usage:
+    uvx specify-cli.py init <project-name>
+    uvx specify-cli.py init .
+    uvx specify-cli.py init --here
+
+Or install globally:
+    uv tool install --from specify-cli.py specify-cli
+    specify init <project-name>
+    specify init .
+    specify init --here
+"""
+
+import os
+import sys
+from pathlib import Path
+
+import typer
+from rich.align import Align
+from .shared_infra import (
+    install_shared_infra as _install_shared_infra_impl,
+    refresh_shared_templates as _refresh_shared_templates_impl,
+)
+
+from ._console import (
+    BANNER as BANNER,
+    TAGLINE as TAGLINE,
+    BannerGroup,
+    StepTracker,
+    console,
+    err_console,
+    get_key as get_key,
+    select_with_arrows as select_with_arrows,
+    show_banner,
+)
+from ._assets import (
+    _locate_bundled_extension as _locate_bundled_extension,
+    _locate_bundled_preset as _locate_bundled_preset,
+    _locate_bundled_workflow as _locate_bundled_workflow,
+    _locate_core_pack,
+    _repo_root,
+    get_speckit_version as get_speckit_version,
+)
+from ._utils import (
+    CLAUDE_LOCAL_PATH as CLAUDE_LOCAL_PATH,
+    CLAUDE_NPM_LOCAL_PATH as CLAUDE_NPM_LOCAL_PATH,
+    _display_project_path,
+    check_tool as check_tool,
+    handle_vscode_settings as handle_vscode_settings,
+    merge_json_files as merge_json_files,
+    run_command as run_command,
+)
+from ._version import (
+    GITHUB_API_LATEST as GITHUB_API_LATEST,
+)
+from .selfs import self_app as _self_app
+from .selfs import self_check as self_check
+from .selfs import self_upgrade as self_upgrade
+from ._agent_config import (
+    AGENT_CONFIG as AGENT_CONFIG,
+    DEFAULT_INIT_INTEGRATION as DEFAULT_INIT_INTEGRATION,
+    DEFAULT_INIT_INTEGRATION_ENV_VAR as DEFAULT_INIT_INTEGRATION_ENV_VAR,
+    SCRIPT_TYPE_CHOICES as SCRIPT_TYPE_CHOICES,
+    resolve_default_init_integration as resolve_default_init_integration,
+)
+from ._init_options import (
+    INIT_OPTIONS_FILE as INIT_OPTIONS_FILE,
+    is_ai_skills_enabled as _is_ai_skills_enabled,
+    load_init_options as load_init_options,
+    save_init_options as save_init_options,
+)
+
+app = typer.Typer(
+    name="specify",
+    help="Setup tool for Specify spec-driven development projects",
+    add_completion=False,
+    invoke_without_command=True,
+    cls=BannerGroup,
+)
+
+def _version_callback(value: bool):
+    if value:
+        console.print(f"specify {get_speckit_version()}")
+        raise typer.Exit()
+
+@app.callback()
+def callback(
+    ctx: typer.Context,
+    version: bool = typer.Option(False, "--version", "-V", callback=_version_callback, is_eager=True, help="Show version and exit."),
+):
+    """Show banner when no subcommand is provided."""
+    if ctx.invoked_subcommand is None and "--help" not in sys.argv and "-h" not in sys.argv:
+        show_banner()
+        console.print(Align.center("[dim]Run 'specify --help' for usage information[/dim]"))
+        console.print()
+
+def _refresh_shared_templates(
+    project_path: Path,
+    *,
+    invoke_separator: str,
+    invoke_prefix: str = "/",
+    force: bool = False,
+) -> None:
+    """Refresh default-sensitive shared templates without touching scripts."""
+    _refresh_shared_templates_impl(
+        project_path,
+        version=get_speckit_version(),
+        core_pack=_locate_core_pack(),
+        repo_root=_repo_root(),
+        console=console,
+        invoke_separator=invoke_separator,
+        invoke_prefix=invoke_prefix,
+        force=force,
+    )
+
+
+def _install_shared_infra(
+    project_path: Path,
+    script_type: str,
+    tracker: StepTracker | None = None,
+    force: bool = False,
+    invoke_separator: str = ".",
+    invoke_prefix: str = "/",
+    refresh_managed: bool = False,
+    refresh_hint: str | None = None,
+) -> bool:
+    """Install shared infrastructure files into *project_path*.
+
+    Copies ``.specify/scripts/<variant>/`` and ``.specify/templates/`` from
+    the bundled core_pack or source checkout. ``sh`` installs Bash, ``ps``
+    installs PowerShell, and ``py`` installs Python plus the platform shell
+    fallback. Tracks all installed files in ``speckit.manifest.json``.
+
+    Shared scripts and page templates are processed to resolve
+    ``__SPECKIT_COMMAND_<NAME>__`` placeholders using *invoke_separator*
+    (``"."`` for markdown agents, ``"-"`` for skills agents).
+
+    Overwrite policy:
+
+    * ``force=True``  — overwrite every existing file (still skips symlinks
+      to avoid following links outside the project root).
+    * ``refresh_managed=True`` — overwrite only files whose on-disk hash
+      still matches the previously recorded manifest hash (i.e. unmodified
+      files installed by spec-kit). Files with diverging hashes are
+      treated as user customizations and preserved with a warning.
+    * Default — only add missing files; existing ones are skipped.
+
+    *refresh_hint* — caller-supplied rich-text fragment shown after the
+    "Preserved customized files" warning to tell the user which flag/command
+    they should re-run with to overwrite their customizations. Each caller
+    passes the flag that's actually valid in its CLI surface (e.g.
+    ``--refresh-shared-infra`` for ``integration switch``,
+    ``--force`` for ``init``/``integration upgrade``). When ``None``, no
+    remediation hint is printed for customizations.
+
+    Returns ``True`` on success.
+    """
+    return _install_shared_infra_impl(
+        project_path,
+        script_type,
+        version=get_speckit_version(),
+        core_pack=_locate_core_pack(),
+        repo_root=_repo_root(),
+        console=console,
+        force=force,
+        invoke_separator=invoke_separator,
+        invoke_prefix=invoke_prefix,
+        refresh_managed=refresh_managed,
+        refresh_hint=refresh_hint,
+    )
+
+
+def _install_shared_infra_or_exit(
+    project_path: Path,
+    script_type: str,
+    tracker: StepTracker | None = None,
+    force: bool = False,
+    invoke_separator: str = ".",
+    invoke_prefix: str = "/",
+    refresh_managed: bool = False,
+    refresh_hint: str | None = None,
+) -> bool:
+    try:
+        return _install_shared_infra(
+            project_path,
+            script_type,
+            tracker=tracker,
+            force=force,
+            invoke_separator=invoke_separator,
+            invoke_prefix=invoke_prefix,
+            refresh_managed=refresh_managed,
+            refresh_hint=refresh_hint,
+        )
+    except (ValueError, OSError) as exc:
+        console.print(f"[red]Error:[/red] Failed to install shared infrastructure: {exc}")
+        raise typer.Exit(1)
+
+
+def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = None) -> None:
+    """Ensure POSIX .sh scripts under .specify/scripts and .specify/extensions (recursively) have execute bits (no-op on Windows)."""
+    if os.name == "nt":
+        return  # Windows: skip silently
+    scan_roots = [
+        project_path / ".specify" / "scripts",
+        project_path / ".specify" / "extensions",
+    ]
+    failures: list[str] = []
+    updated = 0
+    for scripts_root in scan_roots:
+        if not scripts_root.is_dir():
+            continue
+        for script in scripts_root.rglob("*.sh"):
+            try:
+                if script.is_symlink() or not script.is_file():
+                    continue
+                try:
+                    with script.open("rb") as f:
+                        if f.read(2) != b"#!":
+                            continue
+                except Exception:
+                    continue
+                st = script.stat()
+                mode = st.st_mode
+                if mode & 0o111:
+                    continue
+                new_mode = mode
+                if mode & 0o400:
+                    new_mode |= 0o100
+                if mode & 0o040:
+                    new_mode |= 0o010
+                if mode & 0o004:
+                    new_mode |= 0o001
+                if not (new_mode & 0o100):
+                    new_mode |= 0o100
+                os.chmod(script, new_mode)
+                updated += 1
+            except Exception as e:
+                failures.append(f"{_display_project_path(project_path, script)}: {e}")
+    if tracker:
+        detail = f"{updated} updated" + (f", {len(failures)} failed" if failures else "")
+        tracker.add("chmod", "Set script permissions recursively")
+        (tracker.error if failures else tracker.complete)("chmod", detail)
+    else:
+        if updated:
+            console.print(f"[cyan]Updated execute permissions on {updated} script(s) recursively[/cyan]")
+        if failures:
+            console.print("[yellow]Some scripts could not be updated:[/yellow]")
+            for f in failures:
+                console.print(f"  - {f}")
+
+# ---------------------------------------------------------------------------
+# Skills directory helpers
+# ---------------------------------------------------------------------------
+
+def _get_skills_dir(project_path: Path, selected_ai: str) -> Path:
+    """Resolve the agent-specific skills directory.
+
+    Returns ``project_path / <agent_folder> / "skills"``, falling back
+    to ``project_path / ".agents/skills"`` for unknown agents.
+    """
+    if selected_ai == "generic":
+        from .integrations.generic import registration_directory
+
+        return project_path / registration_directory(project_path).relative_to(
+            project_path.resolve()
+        )
+    agent_config = AGENT_CONFIG.get(selected_ai, {})
+    agent_folder = agent_config.get("folder", "")
+    if agent_folder:
+        return project_path / agent_folder.rstrip("/") / "skills"
+    return project_path / ".agents" / "skills"
+
+
+def resolve_active_skills_dir(project_root: Path) -> Path | None:
+    """Return the active skills directory, creating it on demand when enabled.
+
+    Reads ``.specify/init-options.json`` to determine whether skills are
+    enabled and which agent was selected.  Only ``ai_skills`` set to boolean
+    ``True`` creates the directory safely (symlink/containment checks); when
+    ``ai_skills`` is not boolean ``True``, only Kimi's native-skills fallback
+    is honoured, and the native skills directory must already exist.
+
+    Returns:
+        The skills directory ``Path``, or ``None`` if skills are not active.
+
+    Raises:
+        ValueError: If the resolved skills path escapes the project root,
+            a parent component is a symlink, or a path component exists
+            but is not a directory.
+        OSError: If the directory cannot be created (e.g. permission denied).
+    """
+    from .shared_infra import _ensure_safe_shared_directory
+
+    opts = load_init_options(project_root)
+    if not isinstance(opts, dict):
+        opts = {}
+
+    agent = opts.get("ai")
+    if not isinstance(agent, str) or not agent:
+        return None
+
+    ai_skills_enabled = _is_ai_skills_enabled(opts)
+    if not ai_skills_enabled and agent != "kimi":
+        return None
+
+    skills_dir = _get_skills_dir(project_root, agent)
+
+    if not ai_skills_enabled:
+        # Kimi native-skills fallback when ai_skills is not boolean True:
+        # use the native skills directory only if it already exists.
+        if not skills_dir.is_dir():
+            return None
+        _ensure_safe_shared_directory(
+            project_root, skills_dir,
+            create=False, context="agent skills directory",
+        )
+        return skills_dir
+
+    # ai_skills is boolean True: create the directory safely.
+    _ensure_safe_shared_directory(
+        project_root, skills_dir, context="agent skills directory",
+    )
+    return skills_dir
+
+
+def _cli_error_detail(exc: BaseException) -> str:
+    """Return a compact one-line exception detail for CLI output."""
+    detail = str(exc).replace("\n", " ").strip()
+    return detail or exc.__class__.__name__
+
+
+def _cli_phase_label(phase: str, target_kind: str, target: str | None = None) -> str:
+    """Format a stable operation label for user-visible diagnostics."""
+    label = f"{phase} {target_kind}".strip()
+    if target:
+        label = f"{label} '{target}'"
+    return label
+
+
+def _print_cli_warning(
+    phase: str,
+    target_kind: str,
+    target: str | None,
+    exc: BaseException,
+    *,
+    continuing: str | None = None,
+) -> None:
+    """Print a warning that names the failed CLI phase and target."""
+    label = _cli_phase_label(phase, target_kind, target)
+    console.print(f"[yellow]Warning:[/yellow] Failed to {label}: {_cli_error_detail(exc)}")
+    if continuing:
+        console.print(f"[dim]{continuing}[/dim]")
+
+
+# Constants kept for backward compatibility with presets and extensions.
+DEFAULT_SKILLS_DIR = ".agents/skills"
+SKILL_DESCRIPTIONS = {
+    "specify": "Create or update feature specifications from natural language descriptions.",
+    "plan": "Generate technical implementation plans from feature specifications.",
+    "tasks": "Break down implementation plans into actionable task lists.",
+    "implement": "Execute all tasks from the task breakdown to build the feature.",
+    "converge": "Assess the codebase against spec.md, plan.md, and tasks.md and append remaining work as new tasks.",
+    "analyze": "Perform cross-artifact consistency analysis across spec.md, plan.md, and tasks.md.",
+    "clarify": "Structured clarification workflow for underspecified requirements.",
+    "constitution": "Create or update project governing principles and development guidelines.",
+    "checklist": "Generate custom quality checklists for validating requirements completeness and clarity.",
+    "taskstoissues": "Convert tasks from tasks.md into GitHub issues.",
+}
+
+
+# ===== Root Commands =====
+
+from . import command_check as _command_check  # noqa: E402
+from . import command_init as _command_init  # noqa: E402
+from . import command_mcp as _command_mcp  # noqa: E402
+from . import command_version as _command_version  # noqa: E402
+
+_command_init.register(app)
+_command_check.register(app)
+_command_version.register(app)
+_command_mcp.register(app)
+
+# Preserve root imports for handlers that were previously defined here.
+check = _command_check.check
+version = _command_version.version
+
+app.add_typer(_self_app, name="self")
+
+
+# ===== Extension Commands =====
+
+# Moved to extensions/_commands.py — registered here to preserve CLI surface.
+from .extensions._commands import register as _register_extension_cmds  # noqa: E402
+_register_extension_cmds(app)
+
+
+# ===== Integration Commands =====
+
+# Moved to integrations/_commands.py — registered here to preserve CLI surface.
+from .integrations._commands import register as _register_integration_cmds  # noqa: E402
+_register_integration_cmds(app)
+
+
+# ===== Event Commands =====
+from .events import register as _register_event_cmds  # noqa: E402
+_register_event_cmds(app)
+
+# Re-export selected helpers to preserve the public import surface.
+from .integrations._helpers import (  # noqa: E402
+    _clear_init_options_for_integration as _clear_init_options_for_integration,
+    _update_init_options_for_integration as _update_init_options_for_integration,
+)
+from ._project import _resolve_init_dir_override as _resolve_init_dir_override  # noqa: E402
+
+
+def _require_specify_project() -> Path:
+    """Return the project root if it is a spec-kit project, else exit.
+
+    Honors the ``SPECIFY_INIT_DIR`` override (same validation rules as the shell
+    scripts) so a member project can be targeted from a monorepo root without
+    ``cd``. This is the resolution chokepoint for *every* project-scoped
+    subcommand — ``integration``, ``extension``, ``workflow``, ``preset``, and the
+    rest that operate on an existing ``.specify/`` project — so the override
+    applies to all of them uniformly. When the override is unset, the project is
+    the current directory, as before.
+    """
+    override = _resolve_init_dir_override()
+    if override is not None:
+        return override
+    project_root = Path.cwd()
+    if (project_root / ".specify").is_dir():
+        return project_root
+    err_console.print("[red]Error:[/red] Not a Spec Kit project (no .specify/ directory)")
+    err_console.print(
+        "Run this command from a Spec Kit project root or set SPECIFY_INIT_DIR to one."
+    )
+    raise typer.Exit(1)
+
+
+# ===== Preset Commands =====
+
+# Moved to presets/_commands.py — registered here to preserve CLI surface.
+from .presets._commands import register as _register_preset_cmds  # noqa: E402
+_register_preset_cmds(app)
+
+
+# ===== Artifact Commands =====
+
+# Read-only introspection over the composed inventory (commands/templates/scripts).
+from .artifacts._commands import register as _register_artifact_cmds  # noqa: E402
+_register_artifact_cmds(app)
+
+
+# ===== Bundle Commands =====
+
+# Bundle subcommand group (specify bundle ...) — see bundles/_commands.py.
+from .bundles._commands import register as _register_bundle_cmds  # noqa: E402
+_register_bundle_cmds(app)
+
+
+# ===== Workflow Commands =====
+
+# Moved to workflows/_commands.py — registered here to preserve CLI surface.
+from .workflows._commands import register as _register_workflow_cmds  # noqa: E402
+_register_workflow_cmds(app)
+
+# Re-exported at the package root because bundler primitives import these
+# handlers via ``from specify_cli import workflow_*`` (and tests monkeypatch
+# ``specify_cli.workflow_add``). Keep these names resolvable from the root.
+from .workflows.command_add import workflow_add  # noqa: E402,F401
+from .workflows.command_remove import workflow_remove  # noqa: E402,F401
+from .workflows.step.command_add import workflow_step_add  # noqa: E402,F401
+from .workflows.step.command_remove import workflow_step_remove  # noqa: E402,F401
+
+
+def main():
+    # On Windows the default stdout/stderr code page (e.g. cp1252) cannot encode
+    # the Rich banner and box-drawing glyphs, so the CLI crashes with
+    # UnicodeEncodeError whenever output is not a UTF-8 TTY (piped, redirected to
+    # a file, or running under a legacy code page). Force UTF-8 with graceful
+    # replacement so output degrades instead of aborting. No-op on POSIX.
+    if sys.platform == "win32":
+        for _stream in (sys.stdout, sys.stderr):
+            try:
+                _stream.reconfigure(encoding="utf-8", errors="replace")
+            except (AttributeError, ValueError, OSError):
+                pass
+    app()
+
+if __name__ == "__main__":
+    main()
