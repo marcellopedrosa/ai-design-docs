@@ -10,7 +10,7 @@ version: 1.0
 date: 2026-09-10
 last_reviewed: 2026-09-10
 keywords: template, prd, produto, metricas, hipoteses
-related_files: README.md, ../../projeto/docs/product/prd/README.md
+related_files: README.md, ../../projects/docs/product/prd/README.md
 code_references: N/A - template documental.
 principal_statement: Um PRD so recebe Validated quando problema, outcomes, metricas, hipoteses, perguntas e approval estao encerrados por evidencia real.
 ---
@@ -104,4 +104,3 @@ Não copie ou parafraseie acceptance criteria no PRD.
 
 Resultado: BLOCKED
 ```
-

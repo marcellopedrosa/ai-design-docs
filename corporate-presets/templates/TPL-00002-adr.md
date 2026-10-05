@@ -10,14 +10,14 @@ version: 1.0
 date: 2026-09-10
 last_reviewed: 2026-09-10
 keywords: template, adr, arquitetura, decisao
-related_files: README.md, ../../projeto/docs/architecture/adr/README.md
+related_files: README.md, ../../projects/docs/architecture/adr/README.md
 code_references: N/A - template documental.
 principal_statement: ADR registra uma escolha material e somente se torna normativo em Accepted.
 ---
 
 # Template — ADR
 
-Crie em `projeto/docs/architecture/adr/ADR-NNNN-short-title.md` e atualize o
+Crie em `projects/docs/architecture/adr/ADR-NNNN-short-title.md` e atualize o
 `README.md` da coleção na mesma mudança.
 
 ```markdown
@@ -90,4 +90,3 @@ principal_statement: {{decisao proposta em uma frase}}
 - Superseded by: N/A
 - Decisão/data: Pending
 ```
-

@@ -10,7 +10,7 @@ version: 1.0
 date: 2026-09-10
 last_reviewed: 2026-09-10
 keywords: template, lesson-learned, causa, prevencao
-related_files: README.md, ../../projeto/docs/delivery/lessons-learned/README.md
+related_files: README.md, ../../projects/docs/delivery/lessons-learned/README.md
 code_references: N/A - template documental.
 principal_statement: A licao preserva o mecanismo da falha e a prevencao reutilizavel, nao a narrativa privada do incidente.
 ---
@@ -66,4 +66,3 @@ principal_statement: {{regra preventiva em uma frase}}
 - Não se aplica quando: {{condicoes}}
 - Fonte normativa a atualizar: {{standard/ADR ou N/A justificado}}
 ```
-

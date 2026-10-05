@@ -1,6 +1,6 @@
 # Projeto
 
-Esta pasta contém a documentação e os domínios do projeto.
+Esta pasta contém a documentação e os domínios dos projetos.
 
 A árvore canônica e as regras de colocação estão em
 `../corporate-presets/standards/documentation-structure-standard.md`. Consulte

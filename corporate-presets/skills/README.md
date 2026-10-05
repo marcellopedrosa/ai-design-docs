@@ -25,15 +25,15 @@ o contrato canônico `SKILL.md`.
 Para publicar as skills em um projeto que usa este harness, execute da raiz. No Windows com PowerShell:
 
 ```powershell
-powershell -File scripts/install-corporate-skills.ps1 -ProjectRoot projeto -Agent Both
+powershell -File scripts/install-corporate-skills.ps1 -ProjectRoot projects -Agent Both
 ```
 
 No Linux ou macOS com Bash:
 
 ```bash
-bash scripts/install-corporate-skills.sh --project-root projeto --agent both
+bash scripts/install-corporate-skills.sh --project-root projects --agent both
 ```
 
-`Codex` instala em `<projeto>/.agents/skills/` e `Claude` em `<projeto>/.claude/skills/`. Ambos os instaladores preservam destinos existentes e exigem `-Force` (PowerShell) ou `--force` (Bash) para atualizar arquivos. A atualização copia os arquivos da fonte, mas não apaga recursos extras encontrados no destino.
+`Codex` instala em `<projects>/.agents/skills/` e `Claude` em `<projects>/.claude/skills/`. Ambos os instaladores preservam destinos existentes e exigem `-Force` (PowerShell) ou `--force` (Bash) para atualizar arquivos. A atualização copia os arquivos da fonte, mas não apaga recursos extras encontrados no destino.
 
 Para outros projetos, passe o caminho do projeto em `-ProjectRoot` ou `--project-root`. Os instaladores não inicializam o Spec Kit e não criam etapas de desenvolvimento.

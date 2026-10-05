@@ -21,7 +21,7 @@ contratos de API e skills compartilhadas.
 AI Engineering Harness/
 ├── spec-kit/                 # Core do GitHub Spec Kit; protegido e intocável
 ├── corporate-presets/        # Templates, standards e skills corporativas
-├── projeto/                  # Documentação e domínios dos projetos adotantes
+├── projects/                 # Documentação e domínios dos projetos adotantes
 ├── scripts/                  # Automação de instalação e validação
 ├── AGENTS.md                 # Regras gerais para agentes
 └── README.md
@@ -43,20 +43,20 @@ e não deve receber regras específicas de um produto ou alterações corporativ
 - `skills/`: skills corporativas reutilizáveis por Codex, Claude Code e outros
   agentes compatíveis.
 
-### `projeto/`
+### `projects/`
 
 Representa o espaço documental dos projetos. A documentação transversal fica em
-`projeto/docs/`; a documentação específica fica em `projeto/frontend/docs/` ou
-`projeto/backend/docs/`.
+`projects/docs/`; a documentação específica fica em `projects/frontend/docs/` ou
+`projects/backend/docs/`.
 
 Exemplos de coleções:
 
 ```text
-projeto/
+projects/
 ├── docs/
 │   ├── architecture/adr/
 │   ├── api_contracts/
-│   └── delivery/lessons-learned/
+│   └── lessons-learned/
 ├── frontend/docs/
 │   ├── api_contracts/
 │   ├── decisions/
@@ -67,7 +67,7 @@ projeto/
     └── specs/
 ```
 
-Use `projeto/docs/` quando o conhecimento afetar mais de um domínio. Use o
+Use `projects/docs/` quando o conhecimento afetar mais de um domínio. Use o
 diretório do domínio quando o conteúdo puder ser implementado e revisado
 isoladamente.
 
@@ -81,11 +81,11 @@ e, como complemento, a [documentação de Skills da OpenAI](https://developers.o
 Para instalar as skills em um projeto:
 
 ```powershell
-powershell -File scripts/install-corporate-skills.ps1 -ProjectRoot projeto -Agent Both
+powershell -File scripts/install-corporate-skills.ps1 -ProjectRoot projects -Agent Both
 ```
 
 ```bash
-bash scripts/install-corporate-skills.sh --project-root projeto --agent both
+bash scripts/install-corporate-skills.sh --project-root projects --agent both
 ```
 
 ## Fluxo recomendado

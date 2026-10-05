@@ -10,7 +10,7 @@ version: 1.0
 date: 2026-09-10
 last_reviewed: 2026-09-10
 keywords: template, readme, colecao, indice
-related_files: README.md, ../../projeto/docs/README.md
+related_files: README.md, ../../projects/docs/README.md
 code_references: N/A - template documental.
 principal_statement: Toda colecao ativa declara fronteira, convencao, estados e inventario individual completo.
 ---
@@ -53,4 +53,3 @@ Nenhum artefato ativo.
 
 Substitua todos os marcadores por fatos. Owner desconhecido, natureza ambígua ou
 destino incerto produz `Needs review` e não autoriza criação automática.
-

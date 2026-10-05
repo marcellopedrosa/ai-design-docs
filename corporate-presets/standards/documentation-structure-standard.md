@@ -15,7 +15,7 @@ transversal e a documentação específica de cada domínio.
 1. `spec-kit/` contém o core upstream e não recebe regras de um produto.
 2. `corporate-presets/` contém templates, standards, políticas e contratos
    reutilizáveis.
-3. `projeto/docs/` contém conhecimento transversal do produto.
+3. `projects/docs/` contém conhecimento transversal do produto.
 4. `<dominio>/docs/` contém conhecimento específico de um domínio.
 5. Artefatos do Spec Kit devem ficar em `docs/specs/` do escopo afetado.
 6. Uma pasta só deve ser criada quando houver conteúdo aplicável; a árvore é
@@ -32,7 +32,7 @@ harness-corporativo/
 │   ├── standards/
 │   ├── standards/
 │   └── skills/
-└── projeto/
+└── projects/
     ├── AGENTS.md
     ├── docs/                         # Escopo transversal
     │   ├── product/
@@ -50,8 +50,6 @@ harness-corporativo/
     │   ├── standards/
     │   ├── analysis/
     │   ├── delivery/
-    │   │   ├── plans/
-    │   │   ├── reports/
     │   │   ├── pocs/
     │   │   └── lessons-learned/
     │   └── onboarding/
@@ -64,12 +62,8 @@ harness-corporativo/
     │       ├── api_contracts/
     │       ├── decisions/
     │       ├── standards/
-    │       ├── checklists/
-    │       ├── analysis/
     │       ├── delivery/
-    │       │   ├── plans/
-    │       │   ├── reports/
-    │       │   └── lessons-learned/
+    │       ├── lessons-learned/
     │       └── onboarding/
     ├── backend/
     │   ├── AGENTS.md
@@ -80,18 +74,14 @@ harness-corporativo/
     │       ├── api_contracts/
     │       ├── decisions/
     │       ├── standards/
-    │       ├── checklists/
-    │       ├── analysis/
     │       ├── delivery/
-    │       │   ├── plans/
-    │       │   ├── reports/
     │       │   └── lessons-learned/
     │       └── onboarding/
 ```
 
 ## Regra de decisão
 
-Use `projeto/docs/` quando o conteúdo afetar dois ou mais domínios ou representar
+Use `projects/docs/` quando o conteúdo afetar dois ou mais domínios ou representar
 o produto como um todo. Use `<dominio>/docs/` quando o conteúdo puder ser
 entendido, implementado e revisado dentro de um único domínio.
 
@@ -99,16 +89,16 @@ Exemplos:
 
 | Conteúdo | Local |
 | --- | --- |
-| PRD de uma capacidade do produto | `projeto/docs/product/prd/` |
-| Requisito compartilhado entre frontend e backend | `projeto/docs/product/requirements/` |
-| Contrato geral de uma API | `projeto/docs/api_contracts/` |
-| Contrato de consumo específico do frontend | `projeto/frontend/docs/api_contracts/` |
-| ADR sobre arquitetura do sistema | `projeto/docs/architecture/adr/` |
-| Decisão sobre estado de tela | `projeto/frontend/docs/decisions/` |
-| Especificação de uma mudança somente no backend | `projeto/backend/docs/specs/` |
-| Especificação que atravessa domínios | `projeto/docs/specs/` |
-| Lição aprendida de uma entrega transversal | `projeto/docs/delivery/lessons-learned/` |
-| Lição aprendida de uma implementação frontend | `projeto/frontend/docs/delivery/lessons-learned/` |
+| PRD de uma capacidade do produto | `projects/docs/product/prd/` |
+| Requisito compartilhado entre frontend e backend | `projects/docs/product/requirements/` |
+| Contrato geral de uma API | `projects/docs/api_contracts/` |
+| Contrato de consumo específico do frontend | `projects/frontend/docs/api_contracts/` |
+| ADR sobre arquitetura do sistema | `projects/docs/architecture/adr/` |
+| Decisão sobre estado de tela | `projects/frontend/docs/decisions/` |
+| Especificação de uma mudança somente no backend | `projects/backend/docs/specs/` |
+| Especificação que atravessa domínios | `projects/docs/specs/` |
+| Lição aprendida de uma entrega transversal | `projects/docs/delivery/lessons-learned/` |
+| Lição aprendida de uma implementação frontend | `projects/frontend/docs/lessons-learned/` |
 
 ## Artefatos do Spec Kit
 
@@ -117,7 +107,7 @@ checklist e convergência. Neste harness, esses artefatos devem ser publicados
 no `docs/specs/` do escopo correspondente, em vez de misturados com o core:
 
 ```text
-projeto/frontend/docs/specs/<feature>/
+projects/frontend/docs/specs/<feature>/
 ├── spec.md
 ├── plan.md
 ├── tasks.md
@@ -125,7 +115,7 @@ projeto/frontend/docs/specs/<feature>/
 ```
 
 O `.specify/` pode conter apenas configuração e memória operacional do Spec Kit;
-o conteúdo documental canônico deve permanecer em `projeto/`.
+o conteúdo documental canônico deve permanecer em `projects/`.
 
 ## Nomenclatura
 

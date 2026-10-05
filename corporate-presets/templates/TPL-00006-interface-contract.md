@@ -10,15 +10,15 @@ version: 1.1
 date: 2026-09-10
 last_reviewed: 2026-09-10
 keywords: template, contrato, api, evento, schema
-related_files: README.md, ../../projeto/docs/api_contracts/README.md
+related_files: README.md, ../../projects/docs/api_contracts/README.md
 code_references: N/A - template documental.
 principal_statement: Toda interface compartilhada tem uma fonte canonica completa, versionada e ligada aos comportamentos que a exigem.
 ---
 
 # Template — Interface Contract
 
-No projeto consumidor, crie o artefato canônico em `projeto/docs/api_contracts/` para
-interfaces transversais ou em `projeto/<domínio>/docs/api_contracts/` para interfaces
+No projeto consumidor, crie o artefato canônico em `projects/docs/api_contracts/` para
+interfaces transversais ou em `projects/<domínio>/docs/api_contracts/` para interfaces
 locais. Atualize o `README.md` da coleção na mesma mudança.
 
 Esta ficha acompanha o contrato formal escolhido pelo projeto. Para uma API HTTP,
@@ -115,4 +115,3 @@ com consumidores existentes.
 - Consumer owners: Pending
 - Security/privacy: {{Pending ou N/A justificado}}
 ```
-

@@ -7,7 +7,6 @@ Modelos complementares de produto e documentação duradoura:
 | [PRD](TPL-00001-prd.md) | Contexto e objetivos de produto |
 | [ADR](TPL-00002-adr.md) | Decisão arquitetural |
 | [Lição aprendida](TPL-00003-lesson-learned.md) | Aprendizado após uma entrega |
-| [Relatório](TPL-00004-report.md) | Registro formal de resultados |
 | [README de coleção](TPL-00005-collection-readme.md) | Índice documental |
 | [Contrato de interface](TPL-00006-interface-contract.md) | Interface entre sistemas |
 
