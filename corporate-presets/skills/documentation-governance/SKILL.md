@@ -7,7 +7,7 @@ description: Mantenha índices README e a fonte canônica ao criar, mover, renom
 
 Use esta skill quando uma mudança alterar documentos ou a estrutura de uma coleção.
 
-1. Leia o `AGENTS.md` aplicável e o standard de governança documental.
+1. Leia as restrições corporativas, o `AGENTS.md` aplicável e o standard de governança documental.
 2. Identifique a coleção imediata e seu `README.md`.
 3. Atualize o README para refletir escopo, convenções e inventário dos artefatos.
 4. Atualize o índice pai quando a coleção for criada, movida, renomeada ou removida.

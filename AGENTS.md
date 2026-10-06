@@ -9,6 +9,9 @@ Este repositório separa o core do Spec Kit das extensões corporativas e da doc
 - Artefatos de cada domínio devem ficar em seu respectivo `docs/`.
 - Antes de implementar, consultar a especificação, os standards aplicáveis e o `AGENTS.md` do domínio.
 
+Restrições universais ficam em `corporate-presets/restrictions/`; políticas operacionais
+ficam em `corporate-presets/policies/`; skills não podem relaxar essas regras.
+
 Não criar novas regras dentro de `spec-kit/` para resolver necessidades de `projects/`; use presets, extensões ou workflows fora do core.
 
 `spec-kit/` está protegido por ACL. Antes de qualquer operação que possa escrever, criar, excluir, formatar ou gerar arquivos nesse diretório, interrompa a operação e consulte `scripts/README.md`. Atualizações intencionais exigem desbloqueio explícito e novo bloqueio após a mudança. Nunca use `spec-kit/.specify/` como destino de artefatos de `projects/`.

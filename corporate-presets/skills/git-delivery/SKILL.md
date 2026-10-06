@@ -12,7 +12,7 @@ allowed-tools: Read, Grep, Glob, Bash
 ## Objetivo e ativação
 
 Aplicar a política local de entrega Git sem ampliar permissões. Para este projeto,
-siga as regras de `AGENTS.md` e as proteções efetivas do repositório:
+siga `corporate-presets/policies/git-delivery-policy.md`, `AGENTS.md` e as proteções efetivas do repositório:
 trabalhe em branches separadas, integre mudanças aprovadas preservando o trabalho de
 todos os participantes e mantenha a `main` protegida contra escrita direta e
 force-push. A tarefa define o escopo; não exija uma lista fechada de paths para
