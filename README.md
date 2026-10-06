@@ -54,16 +54,16 @@ Exemplos de coleções:
 ```text
 projects/
 ├── docs/
-│   ├── architecture/adr/
-│   ├── api_contracts/
+│   ├── specs/
+│   ├── requirements/
+│   ├── adrs/
+│   ├── standards/
 │   └── lessons-learned/
 ├── frontend/docs/
-│   ├── api_contracts/
-│   ├── decisions/
+│   ├── adrs/
 │   └── specs/
 └── backend/docs/
-    ├── api_contracts/
-    ├── decisions/
+    ├── adrs/
     └── specs/
 ```
 

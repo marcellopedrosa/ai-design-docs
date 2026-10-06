@@ -1,8 +1,6 @@
 # Documentação do projeto
 
-Documentação transversal ao frontend e backend. Especificações de implementação devem ficar no domínio afetado:
+Documentação transversal ao frontend e backend, seguindo a mesma estrutura documental dos domínios.
 
-- `../frontend/docs/specs/`
-- `../backend/docs/specs/`
-
-Use esta pasta para visão do produto, contexto compartilhado, roadmap e decisões que não pertençam a um único domínio.
+Especificações transversais ficam em `specs/`; requisitos compartilhados ficam em
+`requirements/`; decisões ficam em `adrs/`.

@@ -35,34 +35,19 @@ harness-corporativo/
 └── projects/
     ├── AGENTS.md
     ├── docs/                         # Escopo transversal
-    │   ├── product/
-    │   │   ├── prd/
-    │   │   ├── requirements/
-    │   │   ├── use-cases/
-    │   │   ├── capabilities/
-    │   │   └── business/
-    │   ├── architecture/
-    │   │   └── adr/
-    │   ├── domains/
-    │   ├── api_contracts/
-    │   ├── compliance/
-    │   ├── security/
+    │   ├── specs/
+    │   ├── requirements/
+    │   ├── adrs/
     │   ├── standards/
-    │   ├── analysis/
-    │   ├── delivery/
-    │   │   ├── pocs/
-    │   │   └── lessons-learned/
+    │   ├── lessons-learned/
     │   └── onboarding/
     ├── frontend/
     │   ├── AGENTS.md
     │   └── docs/
     │       ├── specs/
     │       ├── requirements/
-    │       ├── architecture/
-    │       ├── api_contracts/
-    │       ├── decisions/
+    │       ├── adrs/
     │       ├── standards/
-    │       ├── delivery/
     │       ├── lessons-learned/
     │       └── onboarding/
     ├── backend/
@@ -70,12 +55,9 @@ harness-corporativo/
     │   └── docs/
     │       ├── specs/
     │       ├── requirements/
-    │       ├── architecture/
-    │       ├── api_contracts/
-    │       ├── decisions/
+    │       ├── adrs/
     │       ├── standards/
-    │       ├── delivery/
-    │       │   └── lessons-learned/
+    │       ├── lessons-learned/
     │       └── onboarding/
 ```
 
@@ -89,15 +71,11 @@ Exemplos:
 
 | Conteúdo | Local |
 | --- | --- |
-| PRD de uma capacidade do produto | `projects/docs/product/prd/` |
-| Requisito compartilhado entre frontend e backend | `projects/docs/product/requirements/` |
-| Contrato geral de uma API | `projects/docs/api_contracts/` |
-| Contrato de consumo específico do frontend | `projects/frontend/docs/api_contracts/` |
-| ADR sobre arquitetura do sistema | `projects/docs/architecture/adr/` |
-| Decisão sobre estado de tela | `projects/frontend/docs/decisions/` |
+| ADR sobre arquitetura do sistema | `projects/docs/adrs/` |
+| Decisão sobre estado de tela | `projects/frontend/docs/adrs/` |
 | Especificação de uma mudança somente no backend | `projects/backend/docs/specs/` |
 | Especificação que atravessa domínios | `projects/docs/specs/` |
-| Lição aprendida de uma entrega transversal | `projects/docs/delivery/lessons-learned/` |
+| Lição aprendida de uma entrega transversal | `projects/docs/lessons-learned/` |
 | Lição aprendida de uma implementação frontend | `projects/frontend/docs/lessons-learned/` |
 
 ## Artefatos do Spec Kit
@@ -120,7 +98,7 @@ o conteúdo documental canônico deve permanecer em `projects/`.
 ## Nomenclatura
 
 - Diretórios usam nomes minúsculos e kebab-case quando houver mais de uma palavra.
-- ADRs ficam em `adr/` e usam `ADR-<número>-<slug>.md`.
+- ADRs ficam em `adrs/` e usam `ADR-<número>-<slug>.md`.
 - Especificações usam um diretório por feature em `docs/specs/<feature>/`.
 - Templates corporativos não devem ser copiados para dentro do core.
 - Cada coleção deve possuir um `README.md` quando tiver mais de um artefato.
