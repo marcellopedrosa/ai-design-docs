@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ArtifactRoutes",
+  "description": "Rotas físicas e templates para tipos de artefato.",
+  "type": "object",
+  "required": ["version", "routes"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "integer", "enum": [1] },
+    "routes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["root", "naming", "template"],
+        "additionalProperties": false,
+        "properties": {
+          "root": { "type": "string", "minLength": 1 },
+          "naming": { "type": "string", "minLength": 1 },
+          "template": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

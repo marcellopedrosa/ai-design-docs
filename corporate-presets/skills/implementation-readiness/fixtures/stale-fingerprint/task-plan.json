@@ -1,0 +1,7 @@
+{
+  "task_id": "TP-00104",
+  "title": "Atualizar política de autenticação",
+  "readiness_previous_fingerprint": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+  "current_scope_fingerprint": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+  "note": "O escopo mudou após a emissão do READY anterior."
+}

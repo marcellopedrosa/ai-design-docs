@@ -1,3 +1,3 @@
 # Decisões
 
-Decisões técnicas locais do frontend.
+Decisões técnicas do frontend reconciliadas de `saas-service/docs/adrs`.

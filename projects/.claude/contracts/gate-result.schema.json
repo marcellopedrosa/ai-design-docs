@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ai-design-docs.internal/contracts/gate-result.schema.json",
+  "title": "GateResult",
+  "description": "Contrato estruturado para resultados de gates e subgates (A1, A2, A3, Quality Gate, Delivery).",
+  "type": "object",
+  "required": [
+    "gate",
+    "executor",
+    "status",
+    "task_id",
+    "scope_fingerprint",
+    "handoff"
+  ],
+  "properties": {
+    "gate": {
+      "type": "string",
+      "enum": ["A1", "A2", "A3", "quality-gate", "git-delivery", "governanca-documental"],
+      "description": "Identificador do gate avaliado."
+    },
+    "executor": {
+      "type": "string",
+      "description": "Nome da skill ou ferramenta executora (ex: quality-gate, security-gate)."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["PASS", "FAIL", "BLOCKED"],
+      "description": "Decisão do gate. Fail-closed: ausência de evidência obrigatória produz BLOCKED."
+    },
+    "task_id": {
+      "type": "string",
+      "description": "Identificador da tarefa avaliada."
+    },
+    "level": {
+      "type": "string",
+      "enum": ["focused", "pr", "release"],
+      "default": "focused"
+    },
+    "scope_fingerprint": {
+      "type": "string",
+      "description": "Fingerprint do escopo validado para prevenir uso de evidência stale."
+    },
+    "standards": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Standards verificados."
+    },
+    "subgates": {
+      "type": "object",
+      "properties": {
+        "A1": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string", "enum": ["PASS", "FAIL", "BLOCKED", "SKIPPED"] },
+            "evidence": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "A2": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string", "enum": ["PASS", "FAIL", "BLOCKED", "SKIPPED"] },
+            "evidence": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "A3": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string", "enum": ["PASS", "FAIL", "BLOCKED", "SKIPPED"] },
+            "evidence": { "type": "array", "items": { "type": "string" } },
+            "findings": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      },
+      "description": "Resultados dos subgates agregados (usado pelo quality-gate)."
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Lista de IDs de evidência observada."
+    },
+    "findings": {
+      "type": "array",
+      "items": { "type": "object" },
+      "description": "Findings identificados (vulnerabilidades, não-conformidades)."
+    },
+    "skips": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["item", "rationale"],
+        "properties": {
+          "item": { "type": "string" },
+          "rationale": { "type": "string" }
+        }
+      },
+      "description": "Itens justificados como não aplicáveis."
+    },
+    "limitations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Limitações conhecidas da avaliação."
+    },
+    "handoff": {
+      "type": "string",
+      "description": "Destinatário do resultado (ex: AgentOrchestrator, quality-gate)."
+    }
+  },
+  "additionalProperties": false
+}

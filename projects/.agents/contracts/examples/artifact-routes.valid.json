@@ -1,0 +1,1 @@
+{"version":1,"routes":{"standard":{"root":"docs/agents/standards/{scope}","naming":"{name}.md","template":"harness/templates/standards/standard-template.md"}}}

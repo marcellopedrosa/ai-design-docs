@@ -17,7 +17,8 @@ principal_statement: Toda colecao ativa declara fronteira, convencao, estados e 
 
 # Template — Collection README
 
-Crie como `README.md` da coleção e atualize o índice da coleção pai na mesma mudança.
+Crie como `README.md` da coleção. Ele é o índice semântico imediato: atualize-o
+na mesma mudança e atualize o índice da coleção pai quando a composição mudar.
 
 ```markdown
 ---

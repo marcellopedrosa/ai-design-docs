@@ -1,0 +1,19 @@
+{
+  "task_id": "TP-00103",
+  "title": "Integração com gateway de pagamento",
+  "prd": { "id": "PRD-00001", "version": "1.0", "status": "Validated" },
+  "requirements": [{ "id": "REQ-00003", "status": "Accepted", "acceptance_criteria": ["AC-01"] }],
+  "open_questions": [
+    {
+      "id": "OQ-001",
+      "question": "Qual ambiente de sandbox usar para testes de webhook?",
+      "owner": "tech-lead",
+      "status": "Open"
+    }
+  ],
+  "scope": {
+    "paths": ["backend/src/main/java/PaymentWebhook.java"],
+    "fingerprint": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "dod": "Webhook recebido e testado."
+}

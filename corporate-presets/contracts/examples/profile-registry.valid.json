@@ -1,0 +1,1 @@
+{"version":1,"profiles":{"base":{"artifacts":[]},"frontend":{"extends":["base"],"artifacts":[{"type":"agent","name":"frontend"},{"type":"standard","scope":"frontend","name":"frontend-standard"}]}}}

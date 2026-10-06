@@ -2,7 +2,10 @@
 
 Esta pasta é a fonte versionada das skills reutilizáveis da empresa. Cada skill vive em `<nome>/SKILL.md`, com frontmatter `name` e `description`; recursos opcionais ficam junto dela.
 
-Skill disponível: [documentation-routing](documentation-routing/SKILL.md), para localizar o destino correto de documentos do projeto.
+Skills disponíveis: [documentation-routing](documentation-routing/SKILL.md), [documentation-governance](documentation-governance/SKILL.md), [document-number-sequence](document-number-sequence/SKILL.md), [implementation-readiness](implementation-readiness/SKILL.md), [git-delivery](git-delivery/SKILL.md), [security-gate](security-gate/SKILL.md) e [validate-relative-links](validate-relative-links/SKILL.md).
+
+Esta pasta é a fonte canônica. As skills são projetadas para `projects/.agents/skills/`
+e `projects/.claude/skills/` pelos instaladores ou pela sincronização do projeto.
 
 Também disponível: [validate-relative-links](validate-relative-links/SKILL.md), para detectar referências locais quebradas após mudanças documentais. Requer Node.js para executar o verificador e seus evals.
 

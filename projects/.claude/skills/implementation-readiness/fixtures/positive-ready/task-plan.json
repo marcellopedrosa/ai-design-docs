@@ -1,0 +1,15 @@
+{
+  "task_id": "TP-00101",
+  "title": "Implementar endpoint de health check",
+  "prd": { "id": "PRD-00001", "version": "1.0", "status": "Validated" },
+  "requirements": [{ "id": "REQ-00001", "status": "Accepted", "acceptance_criteria": ["AC-01", "AC-02"] }],
+  "adrs": [{ "id": "ADR-0000", "status": "Accepted" }],
+  "open_questions": [],
+  "assumptions": [],
+  "scope": {
+    "paths": ["backend/src/main/java/HealthController.java"],
+    "fingerprint": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "dependencies": ["spring-boot-starter-actuator"],
+  "dod": "Endpoint retorna 200 OK com payload de status e testes unitários cobrem o controller."
+}

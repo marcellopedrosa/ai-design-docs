@@ -86,10 +86,27 @@ export function checkRoot(root) {
   return markdownFiles(root).flatMap(checkFile);
 }
 
+export function checkCollectionReadmes(root) {
+  const findings = [];
+  function walk(directory, insideDocs = false) {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      if (entry.isSymbolicLink() || !entry.isDirectory() || ignoredDirectories.has(entry.name)) continue;
+      const absolute = path.join(directory, entry.name);
+      const inCollectionTree = insideDocs || entry.name === 'docs';
+      if (inCollectionTree && !fs.existsSync(path.join(absolute, 'README.md'))) {
+        findings.push({ file: absolute, line: 1, target: 'README.md', reason: 'collection missing immediate README' });
+      }
+      walk(absolute, inCollectionTree);
+    }
+  }
+  walk(root);
+  return findings;
+}
+
 function main() {
   const args = process.argv.slice(2);
-  if (args.length !== 2 || args[0] !== '--root') {
-    process.stderr.write('Usage: node scripts/check-links.mjs --root <directory>\n');
+  if (args.length < 2 || args[0] !== '--root' || (args.length === 3 && args[2] !== '--check-collection-readmes') || args.length > 3) {
+    process.stderr.write('Usage: node scripts/check-links.mjs --root <directory> [--check-collection-readmes]\n');
     process.exitCode = 2;
     return;
   }
@@ -100,6 +117,7 @@ function main() {
     return;
   }
   const findings = checkRoot(root);
+  if (args.includes('--check-collection-readmes')) findings.push(...checkCollectionReadmes(root));
   for (const finding of findings) {
     process.stdout.write(`${path.relative(root, finding.file)}:${finding.line}: ${finding.reason}: ${finding.target}\n`);
   }
