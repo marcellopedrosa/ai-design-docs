@@ -1,0 +1,1131 @@
+openapi: 3.1.0
+info:
+  title: SaaS Service Commercial Legacy API Baseline
+  version: 0.3.0
+  description: >-
+    Draft, non-implementable projection of 10 legacy Commercial HTTP operations extracted
+    from Spring MVC controllers after listContacts moved to its own Active contract. Version 0.3.0
+    refines the five P3 contact-detail/status and notification-recipient mutations. It records
+    observed code and unresolved design gaps; it is not approval of the current behavior. Every
+    x-open-questions item must be resolved from an approved requirement, use case, ADR or owner
+    decision before any operation is promoted to Active.
+x-document-metadata:
+  documentId: COMMERCIAL-V1
+  primaryNature: Contrato
+  owner: Arquitetura, Backend e Qualidade
+  status: Draft
+  date: 2026-09-10
+  lastReviewed: 2026-09-10
+  normativeBaseline: TP-00052 v1.32, ANL-00055 v1.29, ANL-00056 v1.30 and ANL-00057 v1.0; operation-level product sources remain required
+  relatedFiles:
+    - docs/delivery/plans/TP-00052-backend-api-contract-baseline.md
+    - docs/analysis/ANL-00055-backend-api-contract-coverage-inventory.md
+    - docs/analysis/ANL-00057-frontend-backend-api-contract-catalog.md
+    - docs/analysis/ANL-00056-api-contract-validation-loop.md
+    - docs/agents/standards/api-client-standard.md
+x-contract-status: Draft
+x-implementation-authorization: blocked
+x-extraction-baseline:
+  date: 2026-09-10
+  source: Spring MVC controllers, SecurityConfig, method security and shared HTTP handlers
+  controllers: 2
+  operations: 10
+  caveat: Code is evidence of current behavior, not an approved source of product intent.
+x-open-questions:
+  - id: COMMERCIAL-BASELINE-001
+    topic: schemas
+    blocking: true
+    action: Replace every permissive Java-type projection with a closed, validated wire schema.
+  - id: COMMERCIAL-BASELINE-002
+    topic: errors
+    blocking: true
+    action: Validate operation-specific error codes, bodies and headers; decide the RFC 9457 migration boundary.
+  - id: COMMERCIAL-BASELINE-003
+    topic: authorization
+    blocking: true
+    action: Validate route and method authorization, role composition, tenant boundary and negative cases.
+  - id: COMMERCIAL-BASELINE-004
+    topic: consumers
+    blocking: true
+    action: Confirm consumers and update each affected official document with version and operationIds.
+x-change-log:
+  - version: 0.3.0
+    date: 2026-09-10
+    compatibility: draft-refinement
+    changes: >-
+      Refined all five P3 operations with contact detail/history/delivery schemas, status CAS,
+      recipient email normalization and soft delete; exposed the controller/filter versus service
+      ROLE_COMMERCIAL drift, PII and non-idempotent mutation semantics without promotion.
+  - version: 0.2.0
+    date: 2026-09-10
+    compatibility: draft-breaking-refinement
+    changes: Refined six P1 operations with observed contacts, recipient, settings and public idempotent intake shapes; exposed annotation/service RBAC drift and technical-token/rate-limit boundaries.
+  - version: 0.1.0
+    date: 2026-09-10
+    compatibility: initial-draft
+    changes: Extracted the legacy baseline for 11 previously uncovered operations.
+servers:
+  - url: /
+security:
+  - bearerAuth: []
+tags:
+  - name: CommercialContactAdminController
+    description: Draft operations extracted from CommercialContactAdminController.
+  - name: PublicCommercialContactController
+    description: Draft operations extracted from PublicCommercialContactController.
+paths:
+  /api/v1/admin/commercial/contacts/{id}:
+    get:
+      operationId: getContact
+      tags: [CommercialContactAdminController]
+      summary: Get a commercial contact with follow-up and delivery evidence
+      description: >-
+        Returns platform-global contact PII, status history and notification delivery evidence.
+        SecurityConfig and method security admit Commercial or Super Admin in the admin realm
+        without tenant context, but the current service still requires a raw global Super Admin;
+        a Commercial principal therefore reaches the method and receives 403. History is newest
+        first; no cache or redaction policy is declared. This is observed behavior, not approval.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-route-admitted-roles: [ROLE_COMMERCIAL, ROLE_SUPER_ADMIN]
+      x-tenant-boundary: Admin-realm principal without tenant_id, X-Tenant-ID or active TenantContext.
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig admin matcher; @PreAuthorize"
+      x-authorization-review: observed-conflicting-enforcement-owner-decision-required
+      x-preauthorize-expression: "hasAnyRole('SUPER_ADMIN', 'COMMERCIAL')"
+      x-contract-priority: 3
+      x-priority-basis: "Administrative, identity-related or sensitive-data surface."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/commercial/internal/presentation/rest/CommercialContactAdminController.java:84"
+      x-source-method: "CommercialContactAdminController.getContact"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: COMMERCIAL-GETCONTACT-001
+          blocking: true
+          action: Approve PII, history and delivery visibility, ordering, redaction, retention and cache policy.
+        - id: COMMERCIAL-GETCONTACT-002
+          blocking: true
+          action: Resolve ROLE_COMMERCIAL allowed by URL/method versus rejected by the service and bind the outcome to PRD/REQ/UC sources.
+        - id: COMMERCIAL-GETCONTACT-003
+          blocking: true
+          action: Prove positive and negative parity for admin realm, absent tenant context, not-found body and the strict frontend schema.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Full contact detail with status history and notification delivery evidence.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommercialContactDetail'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '404':
+          $ref: '#/components/responses/CommercialNotFound'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/admin/commercial/contacts/{id}/status:
+    patch:
+      operationId: updateStatus
+      tags: [CommercialContactAdminController]
+      summary: Append a status follow-up to a commercial contact
+      description: >-
+        Appends an immutable actor/time/note history item and updates the contact using a
+        compare-and-set against the previously read status in one platform transaction. Repeated
+        requests are not idempotent and no If-Match or idempotency key is accepted. The request
+        actor is always taken from the authenticated principal. SecurityConfig and method security
+        admit Commercial or Super Admin, while the service requires a raw global Super Admin, so
+        ROLE_COMMERCIAL currently receives 403. Unknown request members are ignored by Jackson.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-route-admitted-roles: [ROLE_COMMERCIAL, ROLE_SUPER_ADMIN]
+      x-tenant-boundary: Admin-realm principal without tenant_id, X-Tenant-ID or active TenantContext.
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig admin matcher; @PreAuthorize"
+      x-authorization-review: observed-conflicting-enforcement-owner-decision-required
+      x-preauthorize-expression: "hasAnyRole('SUPER_ADMIN', 'COMMERCIAL')"
+      x-contract-priority: 3
+      x-priority-basis: "Administrative, identity-related or sensitive-data surface."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/commercial/internal/presentation/rest/CommercialContactAdminController.java:90"
+      x-source-method: "CommercialContactAdminController.updateStatus"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: COMMERCIAL-UPDATESTATUS-001
+          blocking: true
+          action: Approve status transition, history, audit/PII exposure and concurrency semantics, including repeated same-status writes.
+        - id: COMMERCIAL-UPDATESTATUS-002
+          blocking: true
+          action: Resolve ROLE_COMMERCIAL allowed by URL/method versus rejected by the service and bind the outcome to PRD/REQ/UC sources.
+        - id: COMMERCIAL-UPDATESTATUS-003
+          blocking: true
+          action: Decide optimistic-concurrency/idempotency headers and prove 400/403/404/409 plus strict frontend parity.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCommercialContactStatusRequest'
+      responses:
+        '200':
+          description: Updated contact detail including the newly appended history entry.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommercialContactDetail'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '404':
+          $ref: '#/components/responses/CommercialNotFound'
+        '409':
+          $ref: '#/components/responses/CommercialConflict'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/admin/commercial/notification-recipients:
+    get:
+      operationId: listRecipients
+      tags: [CommercialContactAdminController]
+      summary: Legacy listRecipients operation
+      description: >-
+        Draft projection extracted from CommercialContactAdminController.listRecipients.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-tenant-boundary: Admin-realm principal without tenant_id, X-Tenant-ID or active TenantContext.
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig admin matcher; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/commercial/internal/presentation/rest/CommercialContactAdminController.java:100"
+      x-source-method: "CommercialContactAdminController.listRecipients"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: COMMERCIAL-LISTRECIPIENTS-001
+          blocking: true
+          action: Approve the observed global recipient list, ordering and raw-Super-Admin/no-tenant boundary before deciding RFC 9457 migration.
+        - id: COMMERCIAL-LISTRECIPIENTS-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/admin/commercial/notification-recipients"
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CommercialNotificationRecipient'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+    post:
+      operationId: createRecipient
+      tags: [CommercialContactAdminController]
+      summary: Legacy createRecipient operation
+      description: >-
+        Draft projection extracted from CommercialContactAdminController.createRecipient.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-tenant-boundary: Admin-realm principal without tenant_id, X-Tenant-ID or active TenantContext.
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig admin matcher; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/commercial/internal/presentation/rest/CommercialContactAdminController.java:106"
+      x-source-method: "CommercialContactAdminController.createRecipient"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: COMMERCIAL-CREATERECIPIENT-001
+          blocking: true
+          action: Approve the observed normalized email request, 201 recipient response, duplicate 409 and raw-Super-Admin/no-tenant boundary before deciding RFC 9457 migration.
+        - id: COMMERCIAL-CREATERECIPIENT-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/admin/commercial/notification-recipients"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommercialNotificationRecipientRequest'
+      responses:
+        '201':
+          description: Resource created with the representation emitted by the controller.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommercialNotificationRecipient'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '409':
+          $ref: '#/components/responses/CommercialConflict'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/admin/commercial/notification-recipients/{id}:
+    delete:
+      operationId: deleteRecipient
+      tags: [CommercialContactAdminController]
+      summary: Soft-delete a commercial notification recipient
+      description: >-
+        Requires a raw global Super Admin with no tenant claim, header or active impersonation.
+        Marks the recipient inactive and sets deletedAt/updatedBy/updatedAt in the platform
+        database, then returns bodyless 204. A repeated delete returns 404, so the operation is
+        not idempotent at the HTTP outcome level. The authenticated actor and server clock are
+        authoritative. This is observed behavior, not an approved lifecycle policy.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-tenant-boundary: Admin-realm principal without tenant_id, X-Tenant-ID or active TenantContext.
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig admin matcher; @PreAuthorize"
+      x-authorization-review: observed-global-super-admin-owner-approval-required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 3
+      x-priority-basis: "Administrative, identity-related or sensitive-data surface."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/commercial/internal/presentation/rest/CommercialContactAdminController.java:133"
+      x-source-method: "CommercialContactAdminController.deleteRecipient"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: COMMERCIAL-DELETERECIPIENT-001
+          blocking: true
+          action: Approve soft-delete retention, reactivation/recreation behavior, audit evidence and repeated-delete semantics.
+        - id: COMMERCIAL-DELETERECIPIENT-002
+          blocking: true
+          action: Bind raw global Super Admin, admin realm and no-tenant/no-impersonation boundary to canonical product and security sources.
+        - id: COMMERCIAL-DELETERECIPIENT-003
+          blocking: true
+          action: Prove 204/400/401/403/404 parity and decide whether DELETE must become outcome-idempotent.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Recipient marked inactive and soft-deleted; no response body.
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-bodyless-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '404':
+          $ref: '#/components/responses/CommercialNotFound'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+    patch:
+      operationId: setRecipientActive
+      tags: [CommercialContactAdminController]
+      summary: Set whether a commercial notification recipient is active
+      description: >-
+        Requires a raw global Super Admin with no tenant claim, header or active impersonation.
+        The boolean is written with authenticated actor and server timestamp and the updated
+        recipient is returned. Repeating the same value still changes updatedAt; no If-Match or
+        idempotency key is accepted. Unknown request members are ignored by Jackson.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-tenant-boundary: Admin-realm principal without tenant_id, X-Tenant-ID or active TenantContext.
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig admin matcher; @PreAuthorize"
+      x-authorization-review: observed-global-super-admin-owner-approval-required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 3
+      x-priority-basis: "Administrative, identity-related or sensitive-data surface."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/commercial/internal/presentation/rest/CommercialContactAdminController.java:115"
+      x-source-method: "CommercialContactAdminController.setRecipientActive"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: COMMERCIAL-SETRECIPIENTACTIVE-001
+          blocking: true
+          action: Approve activation lifecycle, audit/timestamp semantics and behavior when the requested state already matches.
+        - id: COMMERCIAL-SETRECIPIENTACTIVE-002
+          blocking: true
+          action: Bind raw global Super Admin, admin realm and no-tenant/no-impersonation boundary to canonical product and security sources.
+        - id: COMMERCIAL-SETRECIPIENTACTIVE-003
+          blocking: true
+          action: Decide concurrency/idempotency headers and prove 200/400/401/403/404 plus strict frontend parity.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetCommercialNotificationRecipientActiveRequest'
+      responses:
+        '200':
+          description: Recipient representation after writing the requested active state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommercialNotificationRecipient'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '404':
+          $ref: '#/components/responses/CommercialNotFound'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+    put:
+      operationId: updateRecipientEmail
+      tags: [CommercialContactAdminController]
+      summary: Replace a commercial notification recipient email
+      description: >-
+        Requires a raw global Super Admin with no tenant claim, header or active impersonation.
+        The email is trimmed and lowercased before persistence; the authenticated actor and server
+        clock set update metadata. A normalized-email uniqueness collision returns 409 and an
+        absent/soft-deleted recipient returns 404. Unknown request members are ignored by Jackson;
+        the production frontend validates a strict request and response.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-tenant-boundary: Admin-realm principal without tenant_id, X-Tenant-ID or active TenantContext.
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig admin matcher; @PreAuthorize"
+      x-authorization-review: observed-global-super-admin-owner-approval-required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 3
+      x-priority-basis: "Administrative, identity-related or sensitive-data surface."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/commercial/internal/presentation/rest/CommercialContactAdminController.java:124"
+      x-source-method: "CommercialContactAdminController.updateRecipientEmail"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: COMMERCIAL-UPDATERECIPIENTEMAIL-001
+          blocking: true
+          action: Approve normalization, uniqueness, audit, concurrency and repeated-same-email semantics.
+        - id: COMMERCIAL-UPDATERECIPIENTEMAIL-002
+          blocking: true
+          action: Bind raw global Super Admin, admin realm and no-tenant/no-impersonation boundary to canonical product and security sources.
+        - id: COMMERCIAL-UPDATERECIPIENTEMAIL-003
+          blocking: true
+          action: Decide concurrency/idempotency headers and prove 200/400/401/403/404/409 plus strict frontend parity.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCommercialNotificationRecipientEmailRequest'
+      responses:
+        '200':
+          description: Recipient representation with normalized email and updated timestamp.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommercialNotificationRecipient'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '404':
+          $ref: '#/components/responses/CommercialNotFound'
+        '409':
+          $ref: '#/components/responses/CommercialConflict'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/admin/commercial/notification-settings:
+    get:
+      operationId: getNotificationSettings
+      tags: [CommercialContactAdminController]
+      summary: Legacy getNotificationSettings operation
+      description: >-
+        Draft projection extracted from CommercialContactAdminController.getNotificationSettings.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig admin matcher; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/commercial/internal/presentation/rest/CommercialContactAdminController.java:141"
+      x-source-method: "CommercialContactAdminController.getNotificationSettings"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: COMMERCIAL-GETNOTIFICATIONSETTINGS-001
+          blocking: true
+          action: Approve the observed global dispatch interval and timestamps, cache policy and raw-Super-Admin/no-tenant boundary before deciding RFC 9457 migration.
+        - id: COMMERCIAL-GETNOTIFICATIONSETTINGS-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/admin/commercial/notification-settings"
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommercialNotificationSettings'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+    put:
+      operationId: updateNotificationSettings
+      tags: [CommercialContactAdminController]
+      summary: Legacy updateNotificationSettings operation
+      description: >-
+        Draft projection extracted from CommercialContactAdminController.updateNotificationSettings.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig admin matcher; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/commercial/internal/presentation/rest/CommercialContactAdminController.java:147"
+      x-source-method: "CommercialContactAdminController.updateNotificationSettings"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: COMMERCIAL-UPDATENOTIFICATIONSETTINGS-001
+          blocking: true
+          action: Approve the 1..3600 second update, returned scheduling timestamps, concurrency/audit semantics and raw-Super-Admin/no-tenant boundary before deciding RFC 9457 migration.
+        - id: COMMERCIAL-UPDATENOTIFICATIONSETTINGS-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/admin/commercial/notification-settings"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCommercialNotificationSettingsRequest'
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommercialNotificationSettings'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/public/commercial/contacts:
+    post:
+      operationId: create
+      tags: [PublicCommercialContactController]
+      summary: Legacy create operation
+      description: >-
+        Draft projection extracted from PublicCommercialContactController.create.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security: []
+      x-required-roles:
+        []
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig permitAll matcher"
+      x-authorization-review: required
+      x-public-protection-review: "Rate limiting, abuse prevention and public-data minimization must be validated."
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/commercial/internal/presentation/rest/PublicCommercialContactController.java:38"
+      x-source-method: "PublicCommercialContactController.create"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: COMMERCIAL-CREATE-001
+          blocking: true
+          action: Approve the observed technical-token, idempotency, normalization, replay, rate-limit and response contract before deciding RFC 9457 migration.
+        - id: COMMERCIAL-CREATE-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/public/commercial/contacts"
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          x-java-type: "String"
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 128
+            pattern: '^[A-Za-z0-9._:-]+$'
+          description: >-
+            Missing or invalid values bind as nullable but are rejected before persistence.
+            Reuse with the same payload returns the original resource with 201; reuse with a
+            different payload returns 409.
+        - name: X-Website-Contact-Token
+          in: header
+          required: true
+          x-java-type: "String"
+          schema:
+            type: string
+            writeOnly: true
+          description: Technical website credential compared by digest; missing or invalid values return 401.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommercialContactRequest'
+      responses:
+        '201':
+          description: Resource created with the representation emitted by the controller.
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/RateLimitLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimitRemaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommercialContactCreated'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/CommercialTechnicalUnauthorized'
+        '409':
+          $ref: '#/components/responses/CommercialConflict'
+        '429':
+          $ref: '#/components/responses/CommercialRateLimited'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  headers:
+    RateLimitLimit:
+      description: Configured request limit for the public commercial-contact policy.
+      schema:
+        type: integer
+        minimum: 1
+    RateLimitRemaining:
+      description: Non-negative remaining request count in the current rate-limit window.
+      schema:
+        type: integer
+        minimum: 0
+  responses:
+    LegacyBadRequest:
+      description: Current shared handlers may emit a 400 JSON error; exact operation codes and variants require validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacyError'
+    LegacyUnauthorized:
+      description: Current security entry point emits a 401 JSON error; migration to RFC 9457 requires a versioned decision.
+      headers:
+        WWW-Authenticate:
+          description: Bearer challenge governed by RFC 9110.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacySecurityError'
+    LegacyForbidden:
+      description: Current security or exception handler emits a 403 JSON error; exact boundary variants require validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacySecurityError'
+    CommercialNotFound:
+      description: Contact or non-deleted notification recipient was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacyError'
+    CommercialTechnicalUnauthorized:
+      description: Missing, blank, unconfigured or invalid website technical credential.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacyError'
+    CommercialConflict:
+      description: Idempotency key, recipient email or mutable resource state conflicts with the persisted state.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacyError'
+    CommercialRateLimited:
+      description: The public commercial-contact request limit was exceeded.
+      headers:
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/RateLimitLimit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/RateLimitRemaining'
+        Retry-After:
+          description: Current filter emits a fixed delay of 60 seconds.
+          schema:
+            type: integer
+            const: 60
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacyError'
+    LegacyInternalFailure:
+      description: Current shared handler emits a sanitized 500 JSON error with an errorId.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacyError'
+  schemas:
+    CommercialContactPage:
+      type: object
+      additionalProperties: false
+      required: [content, page, size, totalElements, totalPages]
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommercialContactSummary'
+        page:
+          type: integer
+          minimum: 0
+        size:
+          type: integer
+          minimum: 1
+          maximum: 100
+        totalElements:
+          type: integer
+          format: int64
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+    CommercialContactSummary:
+      type: object
+      additionalProperties: false
+      required: [id, name, email, phone, plan, office, status, createdAt, notificationStatus]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 2
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          maxLength: 160
+        phone:
+          type: string
+          pattern: '^\\d{10,11}$'
+        plan:
+          type: string
+          enum: [START, BUSINESS, PREMIUM, NOT_SURE]
+        office:
+          type: string
+          minLength: 2
+          maxLength: 140
+        status:
+          type: string
+          enum: [NEW, CONTACTED, PENDING]
+        createdAt:
+          type: string
+          format: date-time
+        notificationStatus:
+          type: string
+          enum: [NOT_CONFIGURED, PENDING, SENT, FAILED]
+    CommercialContactDetail:
+      type: object
+      additionalProperties: false
+      required: [id, name, email, phone, plan, office, status, createdAt, notificationStatus, replyNotificationStatus, message, statusNote, statusChangedAt, history, deliveries]
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string, minLength: 2, maxLength: 100}
+        email: {type: string, format: email, maxLength: 160}
+        phone: {type: string, pattern: '^\d{10,11}$'}
+        plan: {type: string, enum: [START, BUSINESS, PREMIUM, NOT_SURE]}
+        office: {type: string, minLength: 2, maxLength: 140}
+        status: {type: string, enum: [NEW, CONTACTED, PENDING]}
+        createdAt: {type: string, format: date-time}
+        notificationStatus: {type: string, enum: [NOT_CONFIGURED, PENDING, SENT, FAILED]}
+        replyNotificationStatus: {type: string, enum: [NOT_CONFIGURED, PENDING, SENT, FAILED]}
+        message: {type: string, minLength: 10, maxLength: 1500}
+        statusNote: {type: [string, 'null'], minLength: 10, maxLength: 1000}
+        statusChangedAt: {type: [string, 'null'], format: date-time}
+        history:
+          type: array
+          description: Newest item first by createdAt and id.
+          items: {$ref: '#/components/schemas/CommercialContactStatusHistory'}
+        deliveries:
+          type: array
+          items: {$ref: '#/components/schemas/CommercialNotificationDelivery'}
+      x-sensitive-fields: [name, email, phone, message, statusNote, history, deliveries]
+      x-consumer-drift: >-
+        The strict frontend delivery status omits PROCESSING, which is permitted by the database
+        and can be projected while an outbox item is leased.
+    CommercialContactStatusHistory:
+      type: object
+      additionalProperties: false
+      required: [id, previousStatus, newStatus, note, actor, createdAt]
+      properties:
+        id: {type: string, format: uuid}
+        previousStatus: {type: string, enum: [NEW, CONTACTED, PENDING]}
+        newStatus: {type: string, enum: [CONTACTED, PENDING]}
+        note: {type: string, minLength: 10, maxLength: 1000}
+        actor:
+          type: string
+          format: uuid
+          description: Authenticated actor UUID serialized as a string.
+        createdAt: {type: string, format: date-time}
+    CommercialNotificationDelivery:
+      type: object
+      additionalProperties: false
+      required: [id, recipientEmail, audience, templateCode, status, attemptCount, availableAt, lastAttemptAt, sentAt, failureReason]
+      properties:
+        id: {type: string, format: uuid}
+        recipientEmail: {type: string, format: email, maxLength: 160}
+        audience: {type: string, enum: [COMMERCIAL_TEAM, CONTACT_REPLY]}
+        templateCode: {type: string, enum: [MSG_NEW_CONTATO, MSG_NEW_CONTATO_REPLY]}
+        status: {type: string, enum: [PENDING, PROCESSING, SENT, FAILED]}
+        attemptCount: {type: integer, minimum: 0, maximum: 3}
+        availableAt: {type: string, format: date-time}
+        lastAttemptAt: {type: [string, 'null'], format: date-time}
+        sentAt: {type: [string, 'null'], format: date-time}
+        failureReason: {type: [string, 'null'], maxLength: 500}
+    UpdateCommercialContactStatusRequest:
+      type: object
+      description: >-
+        Unknown members are ignored by the current Jackson boundary. The frontend additionally
+        rejects control characters in note; the backend does not enforce that restriction.
+      additionalProperties: true
+      required: [status, note]
+      properties:
+        status: {type: string, enum: [CONTACTED, PENDING]}
+        note: {type: string, minLength: 10, maxLength: 1000}
+    CommercialNotificationRecipient:
+      type: object
+      additionalProperties: false
+      required: [id, email, active, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+          maxLength: 160
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    SetCommercialNotificationRecipientActiveRequest:
+      type: object
+      description: Unknown members are ignored by the current Jackson boundary.
+      additionalProperties: true
+      required: [active]
+      properties:
+        active: {type: boolean}
+    UpdateCommercialNotificationRecipientEmailRequest:
+      type: object
+      description: Unknown members are ignored by Jackson; the service trims and lowercases email.
+      additionalProperties: true
+      required: [email]
+      properties:
+        email: {type: string, format: email, maxLength: 160}
+    CreateCommercialNotificationRecipientRequest:
+      type: object
+      additionalProperties: true
+      description: Unknown members are ignored by the current Jackson boundary.
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 160
+    CommercialNotificationSettings:
+      type: object
+      additionalProperties: false
+      required: [sendIntervalSeconds, nextDispatchAt, updatedAt]
+      properties:
+        sendIntervalSeconds:
+          type: integer
+          minimum: 1
+          maximum: 3600
+        nextDispatchAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    UpdateCommercialNotificationSettingsRequest:
+      type: object
+      additionalProperties: true
+      description: Unknown members are ignored by the current Jackson boundary.
+      required: [sendIntervalSeconds]
+      properties:
+        sendIntervalSeconds:
+          type: integer
+          minimum: 1
+          maximum: 3600
+    CreateCommercialContactRequest:
+      type: object
+      additionalProperties: true
+      description: >-
+        Observed backend request. company is persisted and returned as office;
+        phone is normalized to 10 or 11 digits after accepting punctuation.
+      required: [name, email, company, phone, plan, message]
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          maxLength: 160
+        company:
+          type: string
+          minLength: 2
+          maxLength: 140
+        phone:
+          type: string
+          minLength: 2
+          maxLength: 32
+          description: Effective domain validation requires 10 or 11 digits after removing non-digits.
+        plan:
+          type: string
+          enum: [START, BUSINESS, PREMIUM, NOT_SURE]
+        message:
+          type: string
+          minLength: 10
+          maxLength: 1500
+    CommercialContactCreated:
+      type: object
+      additionalProperties: false
+      required: [id, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          const: NEW
+        createdAt:
+          type: string
+          format: date-time
+    LegacyError:
+      type: object
+      description: Observed non-RFC-9457 envelope; variants remain a blocking review item.
+      additionalProperties: true
+      required: [message]
+      properties:
+        message:
+          type: string
+        errorId:
+          type: string
+          format: uuid
+        errors:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      x-schema-review: required
+    LegacySecurityError:
+      type: object
+      description: Observed default security envelope; specialized path handlers may differ.
+      additionalProperties: true
+      required: [error, message, status, timestamp, path]
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        status:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+      x-schema-review: required
+    Problem:
+      type: object
+      description: Target Problem Details shape governed by RFC 9457; not claimed as current legacy behavior.
+      additionalProperties: true
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri-reference

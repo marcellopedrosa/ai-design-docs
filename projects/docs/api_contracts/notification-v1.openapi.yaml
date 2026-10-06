@@ -1,0 +1,1088 @@
+openapi: 3.1.0
+info:
+  title: SaaS Service Notification Legacy API Baseline
+  version: 0.3.0
+  description: >-
+    Draft, non-implementable projection of 11 legacy Notification HTTP operations extracted
+    from Spring MVC controllers. It records observed code and unresolved design gaps; it is not
+    approval of the current behavior. Every x-open-questions item must be resolved from an approved
+    requirement, use case, ADR or owner decision before any operation is promoted to Active.
+x-document-metadata:
+  documentId: NOTIFICATION-V1
+  primaryNature: Contrato
+  owner: Arquitetura, Backend e Qualidade
+  status: Draft
+  date: 2026-09-10
+  lastReviewed: 2026-09-10
+  normativeBaseline: TP-00052 v1.32, ANL-00055 v1.29, ANL-00056 v1.30 and ANL-00057 v1.0; operation-level product sources remain required
+  relatedFiles:
+    - docs/delivery/plans/TP-00052-backend-api-contract-baseline.md
+    - docs/analysis/ANL-00055-backend-api-contract-coverage-inventory.md
+    - docs/analysis/ANL-00057-frontend-backend-api-contract-catalog.md
+    - docs/analysis/ANL-00056-api-contract-validation-loop.md
+    - docs/agents/standards/api-client-standard.md
+x-contract-status: Draft
+x-implementation-authorization: blocked
+x-extraction-baseline:
+  date: 2026-09-10
+  source: Spring MVC controllers, SecurityConfig, method security and shared HTTP handlers
+  controllers: 3
+  operations: 11
+  caveat: Code is evidence of current behavior, not an approved source of product intent.
+x-open-questions:
+  - id: NOTIFICATION-BASELINE-001
+    topic: schemas
+    blocking: true
+    action: Replace every permissive Java-type projection with a closed, validated wire schema.
+  - id: NOTIFICATION-BASELINE-002
+    topic: errors
+    blocking: true
+    action: Validate operation-specific error codes, bodies and headers; decide the RFC 9457 migration boundary.
+  - id: NOTIFICATION-BASELINE-003
+    topic: authorization
+    blocking: true
+    action: Validate route and method authorization, role composition, tenant boundary and negative cases.
+  - id: NOTIFICATION-BASELINE-004
+    topic: consumers
+    blocking: true
+    action: Confirm consumers and update each affected official document with version and operationIds.
+x-change-log:
+  - version: 0.3.0
+    date: 2026-09-10
+    compatibility: draft-breaking-refinement
+    changes: Refined the six global P1 operations with observed SMTP and template schemas; exposed masked-password lifecycle, CSV channels, ignored update parameterCode, null timestamps and current 400-not-404 behavior.
+  - version: 0.2.0
+    date: 2026-09-10
+    compatibility: draft-breaking-refinement
+    changes: Refined five tenant/local P1 operations with observed notification, bodyless mutation, SSE and Page shapes; exposed SSE status drift, legacy 400-not-404 and audit nullability while global operations remain at their extracted baseline.
+  - version: 0.1.0
+    date: 2026-09-10
+    compatibility: initial-draft
+    changes: Extracted the legacy baseline for 11 previously uncovered operations.
+servers:
+  - url: /
+security:
+  - bearerAuth: []
+tags:
+  - name: GlobalNotificationAdminController
+    description: Draft operations extracted from GlobalNotificationAdminController.
+  - name: NotificationController
+    description: Draft operations extracted from NotificationController.
+  - name: TenantNotificationAuditController
+    description: Draft operations extracted from TenantNotificationAuditController.
+paths:
+  /api/v1/global/notifications/config/smtp:
+    get:
+      operationId: getSmtpConfig
+      tags: [GlobalNotificationAdminController]
+      summary: Legacy getSmtpConfig operation
+      description: >-
+        Draft projection extracted from GlobalNotificationAdminController.getSmtpConfig.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/notification/internal/presentation/rest/GlobalNotificationAdminController.java:38"
+      x-source-method: "GlobalNotificationAdminController.getSmtpConfig"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: NOTIFICATION-GETSMTPCONFIG-001
+          blocking: true
+          action: Approve the observed masked SMTP response, nullable inherited timestamps and bodyless 404, then decide cache, secret lifecycle and RFC 9457 compatibility.
+        - id: NOTIFICATION-GETSMTPCONFIG-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/global/notifications/config/smtp"
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SmtpProviderConfig'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '404':
+          description: No SMTP configuration exists; current controller returns no body.
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+    post:
+      operationId: configureSmtp
+      tags: [GlobalNotificationAdminController]
+      summary: Legacy configureSmtp operation
+      description: >-
+        Draft projection extracted from GlobalNotificationAdminController.configureSmtp.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/notification/internal/presentation/rest/GlobalNotificationAdminController.java:31"
+      x-source-method: "GlobalNotificationAdminController.configureSmtp"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: NOTIFICATION-CONFIGURESMTP-001
+          blocking: true
+          action: Approve the observed SMTP request, password-mask reuse, synchronous connection test, bodyless 204 and sanitized failure contract before deciding RFC 9457 migration.
+        - id: NOTIFICATION-CONFIGURESMTP-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/global/notifications/config/smtp"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SmtpConfigRequest'
+      responses:
+        '204':
+          description: Operation completed without a response body.
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/global/notifications/templates:
+    get:
+      operationId: listTemplates
+      tags: [GlobalNotificationAdminController]
+      summary: Legacy listTemplates operation
+      description: >-
+        Draft projection extracted from GlobalNotificationAdminController.listTemplates.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/notification/internal/presentation/rest/GlobalNotificationAdminController.java:48"
+      x-source-method: "GlobalNotificationAdminController.listTemplates"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: NOTIFICATION-LISTTEMPLATES-001
+          blocking: true
+          action: Approve the observed template list with CSV channels and null inherited timestamps, including ordering and redaction, before deciding RFC 9457 compatibility.
+        - id: NOTIFICATION-LISTTEMPLATES-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/global/notifications/templates"
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationTemplate'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+    post:
+      operationId: createTemplate
+      tags: [GlobalNotificationAdminController]
+      summary: Legacy createTemplate operation
+      description: >-
+        Draft projection extracted from GlobalNotificationAdminController.createTemplate.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/notification/internal/presentation/rest/GlobalNotificationAdminController.java:54"
+      x-source-method: "GlobalNotificationAdminController.createTemplate"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: NOTIFICATION-CREATETEMPLATE-001
+          blocking: true
+          action: Approve the observed create request, 200 response, CSV channel representation and duplicate-code mapping to legacy 400 rather than 409.
+        - id: NOTIFICATION-CREATETEMPLATE-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/global/notifications/templates"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateNotificationTemplateRequest'
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationTemplate'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/global/notifications/templates/{id}:
+    put:
+      operationId: updateTemplate
+      tags: [GlobalNotificationAdminController]
+      summary: Legacy updateTemplate operation
+      description: >-
+        Draft projection extracted from GlobalNotificationAdminController.updateTemplate.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/notification/internal/presentation/rest/GlobalNotificationAdminController.java:60"
+      x-source-method: "GlobalNotificationAdminController.updateTemplate"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: NOTIFICATION-UPDATETEMPLATE-001
+          blocking: true
+          action: Approve the observed update/response schemas, ignored frontend parameterCode and current missing-template 400 rather than 404.
+        - id: NOTIFICATION-UPDATETEMPLATE-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/global/notifications/templates/{id}"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNotificationTemplateRequest'
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationTemplate'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/global/notifications/templates/{id}/status:
+    patch:
+      operationId: toggleTemplateStatus
+      tags: [GlobalNotificationAdminController]
+      summary: Legacy toggleTemplateStatus operation
+      description: >-
+        Draft projection extracted from GlobalNotificationAdminController.toggleTemplateStatus.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/notification/internal/presentation/rest/GlobalNotificationAdminController.java:66"
+      x-source-method: "GlobalNotificationAdminController.toggleTemplateStatus"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: NOTIFICATION-TOGGLETEMPLATESTATUS-001
+          blocking: true
+          action: Approve the observed boolean query, bodyless 204, idempotency semantics and current missing-template 400 rather than 404.
+        - id: NOTIFICATION-TOGGLETEMPLATESTATUS-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/global/notifications/templates/{id}/status"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+        - name: active
+          in: query
+          required: true
+          x-java-type: "boolean"
+          schema:
+            type: boolean
+      responses:
+        '204':
+          description: Operation completed without a response body.
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/notifications:
+    get:
+      operationId: list
+      tags: [NotificationController]
+      summary: Legacy list operation
+      description: >-
+        Draft projection extracted from NotificationController.list.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+        - ROLE_TENANT_USER
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasAnyRole('TENANT_ADMIN', 'TENANT_USER')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/notification/internal/presentation/rest/NotificationController.java:46"
+      x-source-method: "NotificationController.list"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: NOTIFICATION-LIST-001
+          blocking: true
+          action: Approve the observed twenty-item NotificationListResponse schema, unread-count semantics and success/error variants before deciding the RFC 9457 boundary.
+        - id: NOTIFICATION-LIST-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/notifications"
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationList'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/notifications/read-all:
+    patch:
+      operationId: markAllAsRead
+      tags: [NotificationController]
+      summary: Legacy markAllAsRead operation
+      description: >-
+        Draft projection extracted from NotificationController.markAllAsRead.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+        - ROLE_TENANT_USER
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasAnyRole('TENANT_ADMIN', 'TENANT_USER')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/notification/internal/presentation/rest/NotificationController.java:65"
+      x-source-method: "NotificationController.markAllAsRead"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: NOTIFICATION-MARKALLASREAD-001
+          blocking: true
+          action: Approve the observed idempotent-looking 204 bodyless behavior, concurrency semantics and errors; implementation alone does not prove idempotency policy.
+        - id: NOTIFICATION-MARKALLASREAD-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/notifications/read-all"
+      responses:
+        '204':
+          description: Operation completed without a response body.
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/notifications/stream:
+    get:
+      operationId: stream
+      tags: [NotificationController]
+      summary: Legacy stream operation
+      description: >-
+        Draft projection extracted from NotificationController.stream.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+        - ROLE_TENANT_USER
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasAnyRole('TENANT_ADMIN', 'TENANT_USER')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/notification/internal/presentation/rest/NotificationController.java:76"
+      x-source-method: "NotificationController.stream"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: NOTIFICATION-STREAM-001
+          blocking: true
+          action: Approve SSE event name/data, authentication, retry/timeout behavior and resolve the missing status field expected by the frontend NotificationDto.
+        - id: NOTIFICATION-STREAM-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/notifications/stream"
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: SSE frames; current service emits event notification with JSON data matching NotificationSseData and closes after a 30-minute server timeout.
+                x-sse-event-name: notification
+                x-sse-data-schema:
+                  $ref: '#/components/schemas/NotificationSseData'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/notifications/{id}/read:
+    patch:
+      operationId: markAsRead
+      tags: [NotificationController]
+      summary: Legacy markAsRead operation
+      description: >-
+        Draft projection extracted from NotificationController.markAsRead.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+        - ROLE_TENANT_USER
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasAnyRole('TENANT_ADMIN', 'TENANT_USER')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/notification/internal/presentation/rest/NotificationController.java:58"
+      x-source-method: "NotificationController.markAsRead"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: NOTIFICATION-MARKASREAD-001
+          blocking: true
+          action: Approve the observed 204 bodyless behavior and current cross-tenant/not-found mapping to legacy 400 rather than 404, then decide the RFC 9457 migration.
+        - id: NOTIFICATION-MARKASREAD-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/notifications/{id}/read"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Operation completed without a response body.
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/tenants/notifications/logs:
+    get:
+      operationId: auditLogs
+      tags: [TenantNotificationAuditController]
+      summary: Legacy auditLogs operation
+      description: >-
+        Draft projection extracted from TenantNotificationAuditController.auditLogs.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('TENANT_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/notification/internal/presentation/rest/TenantNotificationAuditController.java:23"
+      x-source-method: "TenantNotificationAuditController.auditLogs"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: NOTIFICATION-AUDITLOGS-001
+          blocking: true
+          action: Approve the observed Spring Page<NotificationLog> representation, nullable/redacted fields, pagination limits and exact success/error variants.
+        - id: NOTIFICATION-AUDITLOGS-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/tenants/notifications/logs"
+      parameters:
+        - name: page
+          in: query
+          required: false
+          x-java-type: "int"
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          x-java-type: "int"
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          required: false
+          x-java-type: "List<String>"
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationLogPage'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    LegacyBadRequest:
+      description: Current shared handlers may emit a 400 JSON error; exact operation codes and variants require validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacyError'
+    LegacyUnauthorized:
+      description: Current security entry point emits a 401 JSON error; migration to RFC 9457 requires a versioned decision.
+      headers:
+        WWW-Authenticate:
+          description: Bearer challenge governed by RFC 9110.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacySecurityError'
+    LegacyForbidden:
+      description: Current security or exception handler emits a 403 JSON error; exact boundary variants require validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacySecurityError'
+    LegacyInternalFailure:
+      description: Current shared handler emits a sanitized 500 JSON error with an errorId.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacyError'
+  schemas:
+    SmtpConfigRequest:
+      type: object
+      additionalProperties: true
+      description: >-
+        Observed command shape. Unknown members are ignored by the current Jackson
+        boundary. Password may contain a new secret or the literal ******** to
+        reuse an existing persisted password; omission is accepted by binding but
+        can fail during connection testing or persistence.
+      required: [host, port, username, tlsEnabled, fromEmail]
+      properties:
+        host:
+          type: string
+        port:
+          type: integer
+          format: int32
+        username:
+          type: string
+        password:
+          type: [string, 'null']
+          writeOnly: true
+        tlsEnabled:
+          type: boolean
+        fromEmail:
+          type: string
+    SmtpProviderConfig:
+      type: object
+      additionalProperties: false
+      description: Observed persisted SMTP configuration; password is replaced by a fixed mask before return.
+      required: [id, providerType, host, port, username, password, tlsEnabled, fromEmail, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        providerType:
+          type: string
+          const: SMTP
+        host:
+          type: string
+        port:
+          type: integer
+          format: int32
+        username:
+          type: string
+        password:
+          type: string
+          const: '********'
+          readOnly: true
+        tlsEnabled:
+          type: boolean
+        fromEmail:
+          type: string
+        createdAt:
+          type: [string, 'null']
+          format: date-time
+          description: Current persistence mapper does not copy this inherited field and therefore returns null.
+        updatedAt:
+          type: [string, 'null']
+          format: date-time
+          description: Current persistence mapper does not copy this inherited field and therefore returns null.
+    CreateNotificationTemplateRequest:
+      type: object
+      additionalProperties: true
+      description: Observed CreateTemplateCommand boundary; channels are joined as a comma-separated string for persistence.
+      required: [parameterCode, subject, messageBody, channels]
+      properties:
+        parameterCode:
+          type: string
+        subject:
+          type: string
+        messageBody:
+          type: string
+        channels:
+          type: array
+          items:
+            type: string
+        isHtml:
+          type: boolean
+          default: false
+        active:
+          type: boolean
+          default: false
+    UpdateNotificationTemplateRequest:
+      type: object
+      additionalProperties: true
+      description: >-
+        Observed UpdateTemplateCommand boundary. The frontend sends parameterCode,
+        but the Java command ignores it; channels are joined as CSV.
+      required: [subject, messageBody, channels]
+      properties:
+        parameterCode:
+          type: string
+          deprecated: true
+          description: Sent by the current frontend but ignored by UpdateTemplateCommand.
+        subject:
+          type: string
+        messageBody:
+          type: string
+        channels:
+          type: array
+          items:
+            type: string
+        isHtml:
+          type: boolean
+          default: false
+        active:
+          type: boolean
+          default: false
+    NotificationTemplate:
+      type: object
+      additionalProperties: false
+      description: >-
+        Observed NotificationTemplate wire shape. channels is serialized as CSV;
+        the frontend normalizes string or array input to its array model.
+      required: [id, parameterCode, subject, messageBody, channels, isHtml, active, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        parameterCode:
+          type: string
+        subject:
+          type: string
+        messageBody:
+          type: string
+        channels:
+          type: string
+          description: Comma-separated channel values; the backend does not validate an enum at this boundary.
+        isHtml:
+          type: boolean
+        active:
+          type: boolean
+        createdAt:
+          type: [string, 'null']
+          format: date-time
+          description: Current persistence mapper does not copy this inherited field and therefore returns null.
+        updatedAt:
+          type: [string, 'null']
+          format: date-time
+          description: Current persistence mapper does not copy this inherited field and therefore returns null.
+    NotificationList:
+      type: object
+      additionalProperties: false
+      description: Observed NotificationListResponse with at most twenty recent notifications.
+      required: [notifications, unreadCount]
+      properties:
+        notifications:
+          type: array
+          maxItems: 20
+          items:
+            $ref: '#/components/schemas/NotificationItem'
+        unreadCount:
+          type: integer
+          format: int64
+          minimum: 0
+    NotificationItem:
+      type: object
+      additionalProperties: false
+      required: [id, title, message, category, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          maxLength: 200
+        message:
+          type: string
+          maxLength: 500
+        category:
+          type: string
+          enum: [CLIENT_CREATED, CLIENT_UPDATED, CONTACT_ASSIGNED, CERTIFICATE_UPLOADED, CERTIFICATE_REVOKED, CHATBOT_MENU_CONFIGURED, SERPRO_CREDENTIALS_UPDATED, FISCAL_QUERY_COMPLETED, SYSTEM]
+        status:
+          type: string
+          enum: [UNREAD, READ]
+        createdAt:
+          type: string
+          format: date-time
+    NotificationSseData:
+      type: object
+      additionalProperties: false
+      description: Current JSON data emitted inside an SSE notification event; unlike NotificationItem, it omits status.
+      required: [id, title, message, category, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        message:
+          type: string
+        category:
+          type: string
+          enum: [CLIENT_CREATED, CLIENT_UPDATED, CONTACT_ASSIGNED, CERTIFICATE_UPLOADED, CERTIFICATE_REVOKED, CHATBOT_MENU_CONFIGURED, SERPRO_CREDENTIALS_UPDATED, FISCAL_QUERY_COMPLETED, SYSTEM]
+        createdAt:
+          type: string
+          format: date-time
+    NotificationLogPage:
+      type: object
+      additionalProperties: true
+      description: >-
+        Observed Page<NotificationLog> boundary. The frontend consumes the five
+        fields below; the exact Spring Page metadata representation still requires
+        runtime parity before this schema can be closed.
+      required: [content, totalElements, totalPages, size, number]
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationLog'
+        totalElements:
+          type: integer
+          format: int64
+          minimum: 0
+        totalPages:
+          type: integer
+          format: int32
+          minimum: 0
+        size:
+          type: integer
+          format: int32
+          minimum: 0
+        number:
+          type: integer
+          format: int32
+          minimum: 0
+      x-schema-review: required
+    NotificationLog:
+      type: object
+      additionalProperties: false
+      description: Observed redacted NotificationLog domain projection returned by the audit use case.
+      required: [id, tenantId, recipient, channel, subject, status, errorLog, requestedAt, sentAt, messageContent, isHtml, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        tenantId:
+          type: string
+          format: uuid
+        recipient:
+          type: string
+          description: Sensitive value decrypted for the domain then redacted before return; owner must approve exposure.
+        channel:
+          type: string
+        subject:
+          type: [string, 'null']
+        status:
+          type: string
+        errorLog:
+          type: [string, 'null']
+        requestedAt:
+          type: string
+          format: date-time
+        sentAt:
+          type: [string, 'null']
+          format: date-time
+        messageContent:
+          type: [string, 'null']
+          description: Sensitive content redacted for query-string secrets and bearer tokens before return.
+        isHtml:
+          type: [boolean, 'null']
+        createdAt:
+          type: [string, 'null']
+          format: date-time
+        updatedAt:
+          type: [string, 'null']
+          format: date-time
+    LegacyError:
+      type: object
+      description: Observed non-RFC-9457 envelope; variants remain a blocking review item.
+      additionalProperties: true
+      required: [message]
+      properties:
+        message:
+          type: string
+        errorId:
+          type: string
+          format: uuid
+        errors:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      x-schema-review: required
+    LegacySecurityError:
+      type: object
+      description: Observed default security envelope; specialized path handlers may differ.
+      additionalProperties: true
+      required: [error, message, status, timestamp, path]
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        status:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+      x-schema-review: required
+    Problem:
+      type: object
+      description: Target Problem Details shape governed by RFC 9457; not claimed as current legacy behavior.
+      additionalProperties: true
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri-reference

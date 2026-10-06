@@ -1,0 +1,2884 @@
+openapi: 3.1.0
+info:
+  title: SaaS Service Tenant Legacy API Baseline
+  version: 0.11.0
+  description: >-
+    Draft, non-implementable projection of 29 legacy Tenant HTTP operations extracted
+    from Spring MVC controllers. Version 0.2.0 refines the four P1 global-admin identity operations;
+    version 0.3.0 adds public invite/discovery and authenticated user profile operations against
+    validation, domain, IAM and frontend evidence; version 0.4.0 refines the five tenant lifecycle
+    operations; version 0.5.0 refines the six tenant-user administration operations; version
+    0.6.0 completes P1 with the pool-policy read/update pair; version 0.7.0 refines four P3
+    legacy onboarding, SERPRO credential-status and traffic-inspector operations; and version
+    0.8.0 refines the P4 SERPRO credential mutation; and version 0.9.0 closes the
+    observed P5 rollback and slug-availability wire projections; version 0.10.0 cataloged the
+    frontend-only global tenant-search call; and version 0.11.0 removes that projection after its
+    unused frontend consumer was expunged. It records
+    observed code and unresolved design gaps; it is not approval of current behavior.
+x-document-metadata:
+  documentId: TENANT-V1
+  primaryNature: Contrato
+  owner: Arquitetura, Backend e Qualidade
+  status: Draft
+  date: 2026-09-10
+  lastReviewed: 2026-09-11
+  normativeBaseline: TP-00052 v1.35, TP-00057 v1.0, ANL-00055 v1.32, ANL-00056 v1.33 and ANL-00057 v1.3; operation-level product sources remain required
+  relatedFiles:
+    - docs/delivery/plans/TP-00052-backend-api-contract-baseline.md
+    - docs/analysis/ANL-00055-backend-api-contract-coverage-inventory.md
+    - docs/analysis/ANL-00057-frontend-backend-api-contract-catalog.md
+    - docs/agents/standards/api-client-standard.md
+x-contract-status: Draft
+x-implementation-authorization: blocked
+x-extraction-baseline:
+  date: 2026-09-10
+  source: Spring MVC controllers, SecurityConfig, method security and shared HTTP handlers
+  controllers: 8
+  operations: 29
+  caveat: Code is evidence of current behavior, not an approved source of product intent.
+x-directional-catalog:
+  backendImplementedOperations: 29
+  frontendConsumedBackendOperations: 28
+  backendOnlyOperations: 1
+  frontendOnlyBackendUnimplementedOperations: 0
+  totalContractOperations: 29
+  evidence: docs/analysis/ANL-00057-frontend-backend-api-contract-catalog.md
+x-open-questions:
+  - id: TENANT-BASELINE-001
+    topic: schemas
+    blocking: true
+    action: Replace every permissive Java-type projection with a closed, validated wire schema.
+  - id: TENANT-BASELINE-002
+    topic: errors
+    blocking: true
+    action: Validate operation-specific error codes, bodies and headers; decide the RFC 9457 migration boundary.
+  - id: TENANT-BASELINE-003
+    topic: authorization
+    blocking: true
+    action: Validate route and method authorization, role composition, tenant boundary and negative cases.
+  - id: TENANT-BASELINE-004
+    topic: consumers
+    blocking: true
+    action: Confirm consumers and update each affected official document with version and operationIds.
+x-change-log:
+  - version: 0.11.0
+    date: 2026-09-11
+    compatibility: draft-catalog-correction
+    changes: >-
+      Removed the frontend-only global tenant-search projection after its unused service, hook,
+      mock and type were expunged by TP-00057; no backend operation was changed.
+  - version: 0.10.0
+    date: 2026-09-10
+    compatibility: draft-catalog-extension
+    changes: >-
+      Cataloged the production frontend global tenant-search call without a matching backend
+      controller as consumer-only/backend-unimplemented; no runtime behavior was changed or inferred.
+  - version: 0.9.0
+    date: 2026-09-10
+    compatibility: draft-breaking-refinement
+    changes: >-
+      Refined the two P5 operations for asynchronous tenant-pool rollback and global slug
+      availability; corrected rollback to HTTP 202 with strict JSON, strong ETag and idempotency,
+      and documented fail-open catalog lookup plus the non-reserving slug suggestion race.
+  - version: 0.8.0
+    date: 2026-09-10
+    compatibility: draft-refinement
+    changes: >-
+      Refined the P4 current-tenant SERPRO credential mutation; documented exact-mask retention,
+      blank-secret clearing, encrypted persistence, tenant-scoped auditing and the stricter
+      frontend validation drift without promoting the operation.
+  - version: 0.7.0
+    date: 2026-09-10
+    compatibility: draft-refinement
+    changes: >-
+      Refined all four P3 operations for legacy tenant onboarding, SERPRO credential presence and
+      traffic-inspector settings; documented unused admin fields, non-transactional provisioning,
+      missing-tenant false defaults and primitive-boolean disable behavior without promotion.
+  - version: 0.6.0
+    date: 2026-09-10
+    compatibility: draft-refinement
+    changes: >-
+      Completed the two remaining P1 pool-policy operations with strict schemas, ETag, idempotency,
+      asynchronous 202, platform boundary, rate limit and RFC 9457-compatible errors; retained Draft
+      pending current product-gate binding and parity rerun.
+  - version: 0.5.0
+    date: 2026-09-10
+    compatibility: draft-refinement
+    changes: >-
+      Refined six P1 tenant-user operations; documented unprefixed output roles, bodyless mutations,
+      tenant path enforcement, quota/readiness checks and IAM/local/event partial-failure risks without
+      promotion.
+  - version: 0.4.0
+    date: 2026-09-10
+    compatibility: draft-refinement
+    changes: >-
+      Refined five P1 tenant lifecycle operations for list, create, detail, update and subscription;
+      documented the Spring Page envelope, effective tenant path boundary, onboarding compensation,
+      placeholder usage metrics and frontend request/response drifts without promotion.
+  - version: 0.3.0
+    date: 2026-09-10
+    compatibility: draft-refinement
+    changes: >-
+      Refined five P1 operations for invite activation, tenant discovery and own profile/password;
+      documented public enumeration/abuse, token consumption, issuer/realm binding, password grant,
+      IAM-only profile updates and bodyless responses without promotion.
+  - version: 0.2.0
+    date: 2026-09-10
+    compatibility: draft-refinement
+    changes: >-
+      Refined four Super Admin identity P1 operations; documented validation, profiles/status,
+      bodyless mutations, IAM/local-mirror partial-failure risk and legacy 400 errors without promotion.
+  - version: 0.1.0
+    date: 2026-09-10
+    compatibility: initial-draft
+    changes: Extracted the legacy baseline for 29 previously uncovered operations.
+servers:
+  - url: /
+security:
+  - bearerAuth: []
+tags:
+  - name: AdminUserController
+    description: Draft operations extracted from AdminUserController.
+  - name: PublicInviteController
+    description: Draft operations extracted from PublicInviteController.
+  - name: TenantAdminController
+    description: Draft operations extracted from TenantAdminController.
+  - name: TenantController
+    description: Draft operations extracted from TenantController.
+  - name: TenantDiscoveryController
+    description: Draft operations extracted from TenantDiscoveryController.
+  - name: TenantPoolPolicyController
+    description: Draft operations extracted from TenantPoolPolicyController.
+  - name: TenantUserController
+    description: Draft operations extracted from TenantUserController.
+  - name: UserProfileController
+    description: Draft operations extracted from UserProfileController.
+paths:
+  /api/admin/tenants:
+    post:
+      operationId: tenantAdminCreateTenant
+      tags: [TenantAdminController]
+      summary: Provision a tenant through the legacy administrative boundary
+      description: >-
+        Legacy duplicate of the v1 tenant-creation capability with a different request and response.
+        It creates a physical database outside a transaction, registers datasource/metadata,
+        provisions an IAM realm and publishes an event, compensating those resources best effort in
+        reverse order after failure. The controller has no Bean Validation; unknown members are
+        ignored and missing fields fail heterogeneously. adminName and adminPassword are accepted by
+        the command but are not consumed by the observed onboarding path. loginUrl is populated from
+        the tenant domain template, not an authentication transaction. No idempotency key is accepted.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: observed-super-admin-global-boundary-approval-required
+      x-tenant-boundary: >-
+        ROLE_SUPER_ADMIN is required, but this route has no explicit raw-global/no-impersonation
+        guard comparable to platform control-plane endpoints.
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 3
+      x-priority-basis: "Administrative, identity-related or sensitive-data surface."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantAdminController.java:21"
+      x-source-method: "TenantAdminController.createTenant"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-TENANTADMINCREATETENANT-001
+          blocking: true
+          action: Decide whether this duplicate legacy route remains public, aliases v1 or is deprecated with a migration window.
+        - id: TENANT-TENANTADMINCREATETENANT-002
+          blocking: true
+          action: Approve field validation/defaults, unused admin credentials, loginUrl semantics and raw-global/no-impersonation authorization.
+        - id: TENANT-TENANTADMINCREATETENANT-003
+          blocking: true
+          action: Approve idempotency and compensation/recovery for database, metadata, datasource, IAM realm and event partial failures.
+        - id: TENANT-TENANTADMINCREATETENANT-004
+          blocking: true
+          action: Prove 201 and negative 400/401/403/409/500 parity; no production frontend consumer was found.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LegacyAdminCreateTenantRequest'
+      responses:
+        '201':
+          description: Tenant resources provisioned and registration receipt returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantRegistrationResult'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-shape-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '409':
+          description: >-
+            Potential target contract for duplicate documento or slug; current BusinessException
+            is instead handled as 400 and migration requires a versioned decision.
+          x-source-confidence: target-not-current
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/admin/users:
+    get:
+      operationId: listSuperAdmins
+      tags: [AdminUserController]
+      summary: Legacy listSuperAdmins operation
+      description: >-
+        Lists all global administrative users from the local mirror. The result includes both
+        SUPER_ADMIN and COMMERCIAL profiles; ordering is repository-defined.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig admin matcher; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/AdminUserController.java:49"
+      x-source-method: "AdminUserController.listSuperAdmins"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-LISTSUPERADMINS-001
+          blocking: true
+          action: Approve operation naming, ordering, email/name exposure, cache and whether COMMERCIAL belongs in this collection.
+        - id: TENANT-LISTSUPERADMINS-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/admin/users"
+        - "frontend/src/services/adminUserService.ts"
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminUser'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-shape-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+    post:
+      operationId: createSuperAdmin
+      tags: [AdminUserController]
+      summary: Legacy createSuperAdmin operation
+      description: >-
+        Creates the identity in IAM first and then saves a local mirror with status ATIVO. Returns
+        HTTP 201 without a Location header. A local duplicate email is reported as legacy 400.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig admin matcher; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/AdminUserController.java:34"
+      x-source-method: "AdminUserController.createSuperAdmin"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-CREATESUPERADMIN-001
+          blocking: true
+          action: Approve profile delegation, password policy/lifecycle, duplicate status, Location, audit and compensation when IAM succeeds but local save fails.
+        - id: TENANT-CREATESUPERADMIN-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/admin/users"
+        - "frontend/src/services/adminUserService.ts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSuperAdminRequest'
+      responses:
+        '201':
+          description: Resource created with the representation emitted by the controller.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUser'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-shape-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/admin/users/{id}:
+    delete:
+      operationId: deleteSuperAdmin
+      tags: [AdminUserController]
+      summary: Legacy deleteSuperAdmin operation
+      description: >-
+        Deletes the IAM identity first and the local mirror second, then returns HTTP 204. A missing
+        local admin currently produces legacy 400 rather than 404.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig admin matcher; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/AdminUserController.java:59"
+      x-source-method: "AdminUserController.deleteSuperAdmin"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-DELETESUPERADMIN-001
+          blocking: true
+          action: Approve self/last-admin protection, missing-id status, audit, idempotency and recovery when IAM delete succeeds but local delete fails.
+        - id: TENANT-DELETESUPERADMIN-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/admin/users/{id}"
+        - "frontend/src/services/adminUserService.ts"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "java.util.UUID"
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: IAM and local administrative identity deletion completed without a response body.
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-bodyless-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/admin/users/{id}/reset-password:
+    post:
+      operationId: resetSuperAdminPassword
+      tags: [AdminUserController]
+      summary: Legacy resetSuperAdminPassword operation
+      description: >-
+        Sets a temporary IAM password for the mirrored administrator and returns HTTP 200 without
+        a body. A missing local admin currently produces legacy 400 rather than 404.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig admin matcher; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/AdminUserController.java:66"
+      x-source-method: "AdminUserController.resetSuperAdminPassword"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-RESETSUPERADMINPASSWORD-001
+          blocking: true
+          action: Approve reset authorization, temporary-password delivery/lifecycle, audit, session revocation, missing-id status and IAM failure sanitization.
+        - id: TENANT-RESETSUPERADMINPASSWORD-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/admin/users/{id}/reset-password"
+        - "frontend/src/services/adminUserService.ts"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "java.util.UUID"
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetAdminPasswordRequest'
+      responses:
+        '200':
+          description: Temporary IAM password reset completed without a response body.
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-bodyless-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/platform/tenant-pool-policies/{tenantId}:
+    get:
+      operationId: get
+      tags: [TenantPoolPolicyController]
+      summary: Read one tenant's pool-policy control-plane resource
+      description: >-
+        Returns the desired/committed snapshots, latest asynchronous operation, aggregate capacity,
+        rollout, effective bounds, three ordered profile seeds and revision-descending rollback
+        candidates. This global control-plane endpoint accepts only a raw Super Admin identity and
+        rejects X-Tenant-ID or any tenant context. It never opens the target tenant database.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig platform matcher; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantPoolPolicyController.java:71"
+      x-source-method: "TenantPoolPolicyController.get"
+      x-source-confidence: observed-and-requirement-backed-not-active
+      x-open-questions:
+        - id: TENANT-GET-001
+          blocking: true
+          action: Bind REQ-00047 and its repository-local evidence to the current Product Definition Gate or record an approved not-applicable justification before Active.
+        - id: TENANT-GET-002
+          blocking: true
+          action: Re-run and attach the positive/negative HTTP parity suite for this OpenAPI version and approve external-environment feature-gate semantics.
+      x-consumer-evidence:
+        - "/api/v1/platform/tenant-pool-policies/{tenantId}"
+        - "frontend/src/services/tenantPoolPolicyService.ts"
+        - "frontend/src/schemas/tenantPoolPolicySchemas.ts"
+        - "docs/product/requirements/REQ-00047-super-admin-tenant-pool-policy-administration.md"
+        - "docs/product/use-cases/UC-00046-super-admin-tenant-pool-policy-management.md"
+      x-platform-boundary: Raw ROLE_SUPER_ADMIN only; X-Tenant-ID and JWT/user tenant context are rejected before the controller.
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          x-java-type: "String"
+          schema:
+            type: string
+            format: uuid
+            pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+      responses:
+        '200':
+          description: Complete non-secret control-plane representation for the tenant.
+          headers:
+            ETag:
+              required: true
+              description: Strong validator for the desired head revision and snapshot.
+              schema: {$ref: '#/components/schemas/StrongEtag'}
+            Cache-Control:
+              required: true
+              schema: {type: string, const: no-store}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantPoolPolicyResource'
+          x-source-confidence: observed-and-requirement-backed-not-active
+          x-response-review: observed-shape-product-gate-and-parity-rerun-required
+        '400':
+          $ref: '#/components/responses/TenantPoolBadRequest'
+        '401':
+          $ref: '#/components/responses/TenantPoolUnauthorized'
+        '403':
+          $ref: '#/components/responses/TenantPoolForbidden'
+        '404':
+          $ref: '#/components/responses/TenantPoolTargetNotFound'
+        '409':
+          $ref: '#/components/responses/TenantPoolTargetNotProvisioned'
+        '429':
+          $ref: '#/components/responses/TenantPoolRateLimited'
+        '503':
+          $ref: '#/components/responses/TenantPoolUnavailable'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: observed-product-gate-and-parity-rerun-required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+    put:
+      operationId: update
+      tags: [TenantPoolPolicyController]
+      summary: Submit a complete tenant pool-policy revision
+      description: >-
+        Strictly parses a complete snapshot and reason, validates strong If-Match and an opaque
+        idempotency key, persists a monotonic desired revision/intent under platform transaction and
+        reserves capacity. HTTP 202 means accepted PENDING, not applied or converged. Replaying the
+        same key and content returns the same intent; different content returns conflict.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig platform matcher; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantPoolPolicyController.java:82"
+      x-source-method: "TenantPoolPolicyController.update"
+      x-source-confidence: observed-and-requirement-backed-not-active
+      x-open-questions:
+        - id: TENANT-UPDATE-001
+          blocking: true
+          action: Bind REQ-00047 and its repository-local evidence to the current Product Definition Gate or record an approved not-applicable justification before Active.
+        - id: TENANT-UPDATE-002
+          blocking: true
+          action: Re-run and attach strict JSON, RBAC, rate-limit, CAS, idempotency and frontend parity for this OpenAPI version; approve external feature-gate/capacity readiness.
+      x-consumer-evidence:
+        - "/api/v1/platform/tenant-pool-policies/{tenantId}"
+        - "frontend/src/services/tenantPoolPolicyService.ts"
+        - "frontend/src/schemas/tenantPoolPolicySchemas.ts"
+        - "docs/product/requirements/REQ-00047-super-admin-tenant-pool-policy-administration.md"
+        - "docs/product/use-cases/UC-00046-super-admin-tenant-pool-policy-management.md"
+      x-platform-boundary: Raw ROLE_SUPER_ADMIN only; X-Tenant-ID and JWT/user tenant context are rejected before the controller.
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          x-java-type: "String"
+          schema:
+            type: string
+            format: uuid
+            pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+        - name: Idempotency-Key
+          in: header
+          required: true
+          x-java-type: "String"
+          schema:
+            type: string
+            minLength: 16
+            maxLength: 128
+            pattern: '^[A-Za-z0-9._:-]+$'
+        - name: If-Match
+          in: header
+          required: true
+          x-java-type: "String"
+          schema:
+            $ref: '#/components/schemas/StrongEtag'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantPoolPolicyUpdateRequest'
+      responses:
+        '202':
+          description: Idempotent revision intent accepted; rollout has not necessarily applied it.
+          headers:
+            Cache-Control:
+              required: true
+              schema: {type: string, const: no-store}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantPoolPolicyOperation'
+          x-source-confidence: observed-and-requirement-backed-not-active
+          x-response-review: observed-shape-product-gate-and-parity-rerun-required
+        '400':
+          $ref: '#/components/responses/TenantPoolBadRequest'
+        '401':
+          $ref: '#/components/responses/TenantPoolUnauthorized'
+        '403':
+          $ref: '#/components/responses/TenantPoolForbidden'
+        '404':
+          $ref: '#/components/responses/TenantPoolTargetNotFound'
+        '409':
+          $ref: '#/components/responses/TenantPoolConflict'
+        '422':
+          $ref: '#/components/responses/TenantPoolUnprocessablePolicy'
+        '429':
+          $ref: '#/components/responses/TenantPoolRateLimited'
+        '503':
+          $ref: '#/components/responses/TenantPoolUnavailable'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: observed-product-gate-and-parity-rerun-required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/platform/tenant-pool-policies/{tenantId}/rollback:
+    post:
+      operationId: rollback
+      tags: [TenantPoolPolicyController]
+      summary: Submit an idempotent rollback as a new pool-policy revision
+      description: >-
+        Strictly accepts a prior positive source revision and a reason, then creates a new
+        monotonic desired revision asynchronously. The raw global Super Admin boundary rejects
+        callers carrying tenant context; acceptance does not mean rollout convergence.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig platform matcher; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 5
+      x-priority-basis: "Internal or lower-use surface pending consumer validation."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantPoolPolicyController.java:100"
+      x-source-method: "TenantPoolPolicyController.rollback"
+      x-source-confidence: observed-and-requirement-backed-not-active
+      x-open-questions:
+        - id: TENANT-ROLLBACK-001
+          blocking: true
+          action: Approve the observed strict request, HTTP 202 operation schema, error variants and compatibility before Active.
+        - id: TENANT-ROLLBACK-002
+          blocking: true
+          action: Bind the operation to the current Product Definition Gate and rerun strict JSON, RBAC, rate-limit, CAS, idempotency and frontend parity evidence.
+      x-consumer-evidence:
+        - "/api/v1/platform/tenant-pool-policies/{tenantId}/rollback"
+        - "frontend/src/services/tenantPoolPolicyService.ts"
+        - "frontend/src/schemas/tenantPoolPolicySchemas.ts"
+        - "frontend/e2e/tenant/tenant-pool-policy.backend-real.spec.ts"
+        - "docs/product/requirements/REQ-00047-super-admin-tenant-pool-policy-administration.md"
+        - "docs/product/use-cases/UC-00046-super-admin-tenant-pool-policy-management.md"
+      x-platform-boundary: Raw ROLE_SUPER_ADMIN only; X-Tenant-ID and JWT/user tenant context are rejected before the controller.
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          x-java-type: "String"
+          schema:
+            type: string
+            format: uuid
+            pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+        - name: Idempotency-Key
+          in: header
+          required: true
+          x-java-type: "String"
+          schema:
+            type: string
+            minLength: 16
+            maxLength: 128
+            pattern: '^[A-Za-z0-9._:-]+$'
+        - name: If-Match
+          in: header
+          required: true
+          x-java-type: "String"
+          schema:
+            $ref: '#/components/schemas/StrongEtag'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantPoolPolicyRollbackRequest'
+      responses:
+        '202':
+          description: Idempotent rollback revision intent accepted; rollout has not necessarily applied it.
+          headers:
+            Cache-Control:
+              required: true
+              schema: {type: string, const: no-store}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantPoolPolicyOperation'
+          x-source-confidence: observed-and-requirement-backed-not-active
+          x-response-review: observed-shape-product-gate-and-parity-rerun-required
+        '400':
+          $ref: '#/components/responses/TenantPoolBadRequest'
+        '401':
+          $ref: '#/components/responses/TenantPoolUnauthorized'
+        '403':
+          $ref: '#/components/responses/TenantPoolForbidden'
+        '404':
+          $ref: '#/components/responses/TenantPoolTargetNotFound'
+        '409':
+          $ref: '#/components/responses/TenantPoolConflict'
+        '422':
+          $ref: '#/components/responses/TenantPoolUnprocessablePolicy'
+        '429':
+          $ref: '#/components/responses/TenantPoolRateLimited'
+        '503':
+          $ref: '#/components/responses/TenantPoolUnavailable'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: observed-product-gate-and-parity-rerun-required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/public/invites/activate:
+    post:
+      operationId: activateUser
+      tags: [PublicInviteController]
+      summary: Legacy activateUser operation
+      description: >-
+        Publicly consumes an encrypted, realm-bound, expiring single-use invite, sets a permanent
+        IAM password, removes UPDATE_PASSWORD, activates every matching pending local mirror and
+        returns HTTP 204. The token is consumed before password reset.
+      security: []
+      x-required-roles:
+        []
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig permitAll matcher"
+      x-authorization-review: required
+      x-public-protection-review: "Rate limiting, abuse prevention and public-data minimization must be validated."
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/PublicInviteController.java:26"
+      x-source-method: "PublicInviteController.activateUser"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-ACTIVATEUSER-001
+          blocking: true
+          action: Approve rate limit, token/realm/expiry policy, password/MFA policy, replay response, local-mirror fan-out and recovery after token consumption or partial IAM/local failure.
+        - id: TENANT-ACTIVATEUSER-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/public/invites/activate"
+        - "frontend/src/services/publicInviteService.ts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivateInviteRequest'
+      responses:
+        '204':
+          description: Invite consumed and matching pending user mirrors activated without a response body.
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-bodyless-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/public/tenant-discovery:
+    post:
+      operationId: discover
+      tags: [TenantDiscoveryController]
+      summary: Legacy discover operation
+      description: >-
+        Publicly discovers active, database-provisioned tenants associated with an active user email.
+        Email is normalized and no match returns an empty array, but positive results expose tenant
+        UUID, realm slug, company name and optional logo.
+      security: []
+      x-required-roles:
+        []
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig permitAll matcher"
+      x-authorization-review: required
+      x-public-protection-review: "Rate limiting, abuse prevention and public-data minimization must be validated."
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantDiscoveryController.java:29"
+      x-source-method: "TenantDiscoveryController.discover"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-DISCOVER-001
+          blocking: true
+          action: Approve account/tenant enumeration risk, rate limit, response minimization, duplicate ordering, logging and whether UUID/realm slug may be public.
+        - id: TENANT-DISCOVER-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/public/tenant-discovery"
+        - "frontend/src/features/auth/services/tenantDiscoveryService.ts"
+      x-consumer-drift: Frontend handles 429 RATE_LIMIT_EXCEEDED, but no endpoint-specific rate limiter or 429 response was found in the current backend path.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantDiscoveryRequest'
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DiscoveredTenant'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-shape-public-data-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/tenants:
+    get:
+      operationId: listTenants
+      tags: [TenantController]
+      summary: List tenants in the global control plane
+      description: >-
+        Lists tenant summaries for a Super Admin using a zero-based Spring Page. Search is trimmed,
+        lowercased and matched against repository-defined fields; blank search is treated as absent.
+        The repository currently repeats the legal name in tradeName and derives status as ATIVO or
+        SUSPENSO. No explicit page-size upper bound is enforced by this controller.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantController.java:83"
+      x-source-method: "TenantController.listTenants"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-LISTTENANTS-001
+          blocking: true
+          action: Approve searchable fields, stable ordering, page-size cap, list data exposure and the observed Spring Page representation.
+        - id: TENANT-LISTTENANTS-002
+          blocking: true
+          action: Decide whether frontend plan/status filters must be implemented or removed and validate exact error variants and compatibility.
+      x-consumer-evidence:
+        - "/api/v1/tenants"
+        - "frontend/src/services/tenantService.ts"
+        - "frontend/src/types/api.ts"
+        - "frontend/src/types/tenant.ts"
+      x-consumer-drift: Frontend sends plan and status query parameters, but the controller declares only page, size and search; the extra filters are ignored by Spring MVC and are not applied.
+      parameters:
+        - name: page
+          in: query
+          required: false
+          x-java-type: "int"
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: search
+          in: query
+          required: false
+          x-java-type: "String"
+          schema:
+            type: string
+        - name: size
+          in: query
+          required: false
+          x-java-type: "int"
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+      responses:
+        '200':
+          description: Zero-based Spring Page of tenant summaries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantSummaryPage'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-shape-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+    post:
+      operationId: tenantCreateTenant
+      tags: [TenantController]
+      summary: Provision a tenant
+      description: >-
+        Validates document uniqueness and slug availability, creates and grants the physical database,
+        registers the data source, saves tenant metadata, provisions an IAM realm and publishes the
+        provisioned event. Failures after database creation trigger best-effort compensation of realm,
+        data source, metadata and database. Missing limits default to 50 documents, 30 chatbot messages,
+        100 fiscal queries and 5 sessions.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantController.java:60"
+      x-source-method: "TenantController.createTenant"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-TENANTCREATETENANT-001
+          blocking: true
+          action: Approve synchronous infrastructure provisioning, compensation guarantees, idempotency, timeout/retry semantics and whether partial rollback requires an operator-visible receipt.
+        - id: TENANT-TENANTCREATETENANT-002
+          blocking: true
+          action: Align frontend slug transmission and TenantDetail typing with the observed id-only 201 response; validate missing-field, duplicate, invalid-enum and infrastructure-failure variants.
+      x-consumer-evidence:
+        - "/api/v1/tenants"
+        - "frontend/src/services/tenantService.ts"
+        - "frontend/src/schemas/tenantSchemas.ts"
+        - "frontend/src/types/tenant.ts"
+      x-consumer-drift: Frontend accepts slug but omits it from the backend payload, and types the 201 body as TenantDetail although the backend returns only an id.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTenantRequest'
+      responses:
+        '201':
+          description: Tenant infrastructure and metadata provisioned; response contains only its identifier.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateTenantResponse'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-shape-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '409':
+          description: A persistence uniqueness or integrity constraint was violated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/tenants/check-slug:
+    get:
+      operationId: checkSlugAvailability
+      tags: [TenantController]
+      summary: Check global tenant slug availability and suggest a free candidate
+      description: >-
+        Checks the tenant registry and then the PostgreSQL catalog for saas_{slug}. If the catalog
+        lookup fails, current behavior treats it as absent. The suggestion repeats these checks and
+        increments a numeric suffix; neither the result nor suggestion reserves a slug, so callers
+        must tolerate a later creation race.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 5
+      x-priority-basis: "Internal or lower-use surface pending consumer validation."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantController.java:116"
+      x-source-method: "TenantController.checkSlugAvailability"
+      x-source-confidence: observed-static-not-approved
+      x-open-questions:
+        - id: TENANT-CHECKSLUGAVAILABILITY-001
+          blocking: true
+          action: Approve the observed closed response and decide whether catalog failure may remain fail-open.
+        - id: TENANT-CHECKSLUGAVAILABILITY-002
+          blocking: true
+          action: Approve global Super Admin authorization, input constraints and non-reserving suggestion race before Active.
+      x-consumer-evidence:
+        - "/api/v1/tenants/check-slug"
+        - "frontend/src/services/tenantService.ts"
+        - "frontend/src/hooks/queries/useTenantQueries.ts"
+      x-tenant-boundary: Global platform lookup; no tenant context is used by the operation.
+      parameters:
+        - name: slug
+          in: query
+          required: true
+          x-java-type: "String"
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlugAvailability'
+          x-source-confidence: observed-static-not-approved
+          x-response-review: observed-shape-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: observed-legacy-owner-approval-required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/tenants/me/serpro-credentials:
+    put:
+      operationId: updateSerproCredentials
+      tags: [TenantController]
+      summary: Replace the current tenant's SERPRO credentials
+      description: >-
+        Resolves the effective TenantContext, loads that tenant in the platform transaction and
+        replaces consumerKey and the encrypted consumerSecret. A null or blank secret clears the
+        stored encrypted value; exactly ******** preserves it; any other value is encrypted before
+        persistence. The successful, audited UPDATE_SERPRO_CREDENTIALS action returns bodyless 204.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('TENANT_ADMIN')"
+      x-contract-priority: 4
+      x-priority-basis: "Billing or external-provider integration surface."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantController.java:147"
+      x-source-method: "TenantController.updateSerproCredentials"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-UPDATESERPROCREDENTIALS-001
+          blocking: true
+          action: Approve null/blank secret clearing, exact-mask retention, consumer-key nullability and credential length/rotation policy.
+        - id: TENANT-UPDATESERPROCREDENTIALS-002
+          blocking: true
+          action: Bind Tenant Admin and Super Admin impersonation boundaries, audit semantics and cross-tenant negatives to product/security sources.
+        - id: TENANT-UPDATESERPROCREDENTIALS-003
+          blocking: true
+          action: Reconcile the frontend-required 1..100 constraints with the backend's unvalidated nullable strings and prove exact 204/400/401/403/500 behavior.
+      x-consumer-evidence:
+        - "/api/v1/tenants/me/serpro-credentials"
+        - "frontend/src/services/tenantService.ts"
+        - "frontend/src/hooks/queries/useTenantQueries.ts"
+        - "frontend/src/schemas/serproSchemas.ts"
+      x-consumer-drift: Frontend requires both strings with length 1..100; backend accepts unknown members and nullable/unbounded strings, with blank secret meaning destructive clearing.
+      x-tenant-boundary: Effective TenantContext selected by the authenticated tenant or validated Super Admin impersonation; no tenant id is accepted from the request.
+      x-audit-observation: Transactional platform persistence is annotated as UPDATE_SERPRO_CREDENTIALS on TENANT; audit outcome and secret-redaction behavior still require proof.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SerproCredentialsUpdateRequest'
+      responses:
+        '204':
+          description: Operation completed without a response body.
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-bodyless-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/tenants/me/settings/serpro-status:
+    get:
+      operationId: getSerproCredentialsStatus
+      tags: [TenantController]
+      summary: Read whether the current tenant has SERPRO credentials
+      description: >-
+        Reads the effective TenantContext and returns three booleans without exposing credential
+        values. Missing tenant metadata or settings returns all false rather than 404;
+        fullyConfigured is the conjunction of key and encrypted-secret presence. The production
+        frontend consumes this exact shape. Freshness and cache behavior are not declared.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: observed-tenant-admin-effective-context-approval-required
+      x-tenant-boundary: Effective TenantContext selected by the authenticated tenant or validated Super Admin impersonation.
+      x-preauthorize-expression: "hasRole('TENANT_ADMIN')"
+      x-contract-priority: 3
+      x-priority-basis: "Administrative, identity-related or sensitive-data surface."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantController.java:187"
+      x-source-method: "TenantController.getSerproCredentialsStatus"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-GETSERPROCREDENTIALSSTATUS-001
+          blocking: true
+          action: Approve missing-tenant-as-unconfigured semantics, freshness/cache behavior and secret-presence disclosure.
+        - id: TENANT-GETSERPROCREDENTIALSSTATUS-002
+          blocking: true
+          action: Bind Tenant Admin and Super Admin impersonation boundaries to product/security sources and prove cross-tenant negatives.
+        - id: TENANT-GETSERPROCREDENTIALSSTATUS-003
+          blocking: true
+          action: Prove exact 200/400/401/403/500 and frontend parity without exposing secret values.
+      responses:
+        '200':
+          description: Credential-presence flags for the effective tenant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SerproCredentialsStatus'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/tenants/me/settings/traffic-inspector:
+    get:
+      operationId: getTrafficInspectorSettings
+      tags: [TenantController]
+      summary: Read traffic-inspector enablement for the current tenant
+      description: >-
+        Reads the effective TenantContext and returns a single enabled flag. Missing tenant
+        metadata or settings returns false rather than 404. This setting controls capture of
+        SERPRO traffic evidence and is consumed by the production frontend; no cache header or
+        version/concurrency token is emitted.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: observed-tenant-admin-effective-context-approval-required
+      x-tenant-boundary: Effective TenantContext selected by the authenticated tenant or validated Super Admin impersonation.
+      x-preauthorize-expression: "hasRole('TENANT_ADMIN')"
+      x-contract-priority: 3
+      x-priority-basis: "Administrative, identity-related or sensitive-data surface."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantController.java:178"
+      x-source-method: "TenantController.getTrafficInspectorSettings"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-GETTRAFFICINSPECTORSETTINGS-001
+          blocking: true
+          action: Approve missing-tenant-as-disabled semantics, freshness/cache behavior and the privacy meaning of enablement.
+        - id: TENANT-GETTRAFFICINSPECTORSETTINGS-002
+          blocking: true
+          action: Bind Tenant Admin and Super Admin impersonation boundaries to product/security sources and prove cross-tenant negatives.
+        - id: TENANT-GETTRAFFICINSPECTORSETTINGS-003
+          blocking: true
+          action: Prove exact 200/400/401/403/500 and strict frontend parity.
+      responses:
+        '200':
+          description: Current traffic-inspector enablement for the effective tenant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrafficInspectorSettings'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+    patch:
+      operationId: updateTrafficInspector
+      tags: [TenantController]
+      summary: Set traffic-inspector enablement for the current tenant
+      description: >-
+        Audited platform transaction that persists the flag for the effective tenant and returns
+        bodyless 204. The request uses a primitive boolean: absent or JSON-null enabled can bind as
+        false, so an empty object may disable capture. Unknown members are ignored. Missing tenant
+        returns the shared 400 BusinessException envelope; no If-Match or idempotency key is accepted.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: observed-tenant-admin-effective-context-approval-required
+      x-tenant-boundary: Effective TenantContext selected by the authenticated tenant or validated Super Admin impersonation.
+      x-preauthorize-expression: "hasRole('TENANT_ADMIN')"
+      x-contract-priority: 3
+      x-priority-basis: "Administrative, identity-related or sensitive-data surface."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantController.java:163"
+      x-source-method: "TenantController.updateTrafficInspector"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-UPDATETRAFFICINSPECTOR-001
+          blocking: true
+          action: Decide whether enabled must be required/nullable-safe and whether missing tenant becomes 404 instead of 400.
+        - id: TENANT-UPDATETRAFFICINSPECTOR-002
+          blocking: true
+          action: Approve privacy, retention, audit and concurrency/idempotency semantics for enabling or disabling traffic capture.
+        - id: TENANT-UPDATETRAFFICINSPECTOR-003
+          blocking: true
+          action: Bind Tenant Admin and impersonated Super Admin boundaries and prove empty/null/body, cross-tenant and frontend negatives.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTrafficInspectorRequest'
+      responses:
+        '204':
+          description: Setting persisted and audit advice invoked; no response body.
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-bodyless-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/tenants/{id}:
+    get:
+      operationId: getTenant
+      tags: [TenantController]
+      summary: Get tenant details
+      description: >-
+        Returns platform tenant metadata and effective limits. Missing settings fall back to 50
+        documents, 30 chatbot messages, 100 fiscal queries and 5 sessions. For non-Super Admin
+        callers, the global tenant-boundary filter requires the UUID in the path to equal the
+        canonical tenant_id JWT claim before method authorization is evaluated.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+        - ROLE_TENANT_ADMIN
+        - ROLE_TENANT_USER
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN') or hasRole('TENANT_ADMIN') or hasRole('TENANT_USER')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantController.java:93"
+      x-source-method: "TenantController.getTenant"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-GETTENANT-001
+          blocking: true
+          action: Approve exposure of taxId, email, phone, slug and limits to ROLE_TENANT_USER and validate field nullability and caching.
+        - id: TENANT-GETTENANT-002
+          blocking: true
+          action: Align frontend createdAt/themeConfig expectations with the observed response and approve exact not-found/security error variants.
+      x-consumer-evidence:
+        - "/api/v1/tenants/{id}"
+        - "frontend/src/services/tenantService.ts"
+        - "frontend/src/types/tenant.ts"
+      x-tenant-boundary: Non-Super Admin callers must present a canonical tenant_id claim equal to id; Super Admin may read any id without X-Tenant-ID.
+      x-consumer-drift: Frontend TenantDetail requires createdAt and optionally consumes themeConfig, but neither field is emitted by TenantDetailDTO.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantDetail'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-shape-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+    patch:
+      operationId: updateTenant
+      tags: [TenantController]
+      summary: Partially update tenant metadata, limits, plan or status
+      description: >-
+        Applies each non-null mutable field, validates non-negative limits and returns the resulting
+        tenant detail. ATIVO activates; INATIVO and SUSPENSO suspend; every other status is currently
+        a silent no-op. Plan changes are rejected while the tenant is suspended. Suspension evicts
+        the committed pool-policy cache after transaction commit.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantController.java:124"
+      x-source-method: "TenantController.updateTenant"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-UPDATETENANT-001
+          blocking: true
+          action: Approve optimistic concurrency/idempotency, field normalization, null semantics, allowed status values and the plan/status ordering that rejects a plan change on a suspended tenant.
+        - id: TENANT-UPDATETENANT-002
+          blocking: true
+          action: Decide whether taxId and slug are immutable or should be removed from frontend forms, and validate audit, cache-eviction and exact error variants.
+      x-consumer-evidence:
+        - "/api/v1/tenants/{id}"
+        - "frontend/src/services/tenantService.ts"
+        - "frontend/src/schemas/tenantSchemas.ts"
+        - "frontend/src/types/tenant.ts"
+      x-consumer-drift: Frontend accepts taxId and slug edits but neither is sent or supported by this PATCH; arbitrary status strings deserialize and currently return 200 without changing status.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTenantRequest'
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantDetail'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-shape-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/tenants/{id}/subscription:
+    get:
+      operationId: getTenantSubscription
+      tags: [TenantController]
+      summary: Get tenant plan limits and partial usage
+      description: >-
+        Returns the tenant plan, configured limits and an overage-policy label. Only concurrentSessions.used
+        is calculated, from the current tenant-user count; documentos.used, chatbotMessages.used and
+        fiscalQueries.used are hard-coded to zero. For non-Super Admin callers, the path UUID must
+        equal the canonical tenant_id JWT claim.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+        - ROLE_TENANT_ADMIN
+        - ROLE_TENANT_USER
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN') or hasRole('TENANT_ADMIN') or hasRole('TENANT_USER')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantController.java:100"
+      x-source-method: "TenantController.getTenantSubscription"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-GETTENANTSUBSCRIPTION-001
+          blocking: true
+          action: Replace or explicitly approve the three zero placeholders, define usage windows/freshness and clarify whether user count is truly concurrent-session usage.
+        - id: TENANT-GETTENANTSUBSCRIPTION-002
+          blocking: true
+          action: Approve ROLE_TENANT_USER access, overagePolicy semantics/localization, negative sentinel limits and exact not-found/security error variants.
+      x-consumer-evidence:
+        - "/api/v1/tenants/{id}/subscription"
+        - "frontend/src/services/tenantService.ts"
+        - "frontend/src/types/tenant.ts"
+      x-tenant-boundary: Non-Super Admin callers must present a canonical tenant_id claim equal to id; Super Admin may read any id without X-Tenant-ID.
+      x-data-quality: Three used metrics are placeholders fixed at zero; concurrentSessions.used is a tenant-user count rather than observed active sessions.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionUsage'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-shape-placeholder-values-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/tenants/{tenantId}/users:
+    get:
+      operationId: listUsers
+      tags: [TenantUserController]
+      summary: List users of a tenant
+      description: >-
+        Returns every local tenant-user mirror as an unpaginated array in repository order. Roles
+        are emitted without the ROLE_ prefix. A non-Super Admin caller must have TENANT_ADMIN and a
+        canonical tenant_id claim equal to tenantId; Super Admin may target any tenant UUID.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+        - ROLE_TENANT_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasAnyRole('SUPER_ADMIN', 'TENANT_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantUserController.java:47"
+      x-source-method: "TenantUserController.listUsers"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-LISTUSERS-001
+          blocking: true
+          action: Approve unpaginated exposure of names/emails/roles/status, stable ordering, limits, cache and role-prefix convention.
+        - id: TENANT-LISTUSERS-002
+          blocking: true
+          action: Align frontend array/page mocks and initials/status typings, then validate exact security/error variants and Super Admin impersonation semantics.
+      x-consumer-evidence:
+        - "/api/v1/tenants/{tenantId}/users"
+        - "frontend/src/services/tenantService.ts"
+        - "frontend/src/services/tenantUserService.ts"
+        - "frontend/src/components/users/UserGrid.tsx"
+      x-tenant-boundary: Tenant Admin claim must equal tenantId; Super Admin bypasses path equality and does not require X-Tenant-ID for this non-Billing route.
+      x-consumer-drift: Production consumes an array and tolerates unprefixed roles, while the MSW handler returns a page; TenantUser expects initials not emitted by the backend and tenantUserService omits the emitted status field from its DTO type.
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TenantUser'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-shape-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/tenants/{tenantId}/users/invites:
+    post:
+      operationId: inviteUser
+      tags: [TenantUserController]
+      summary: Invite a user to a tenant
+      description: >-
+        Requires notification-provider readiness, an active tenant, available session/user quota and
+        a tenant-unique email. Accepts only tenant admin, audit or user roles, creates the IAM user,
+        saves a PENDENTE local mirror and publishes an invitation event. Local/event failure triggers
+        best-effort IAM deletion; success returns HTTP 201 without a body.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+        - ROLE_TENANT_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasAnyRole('SUPER_ADMIN', 'TENANT_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantUserController.java:59"
+      x-source-method: "TenantUserController.inviteUser"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-INVITEUSER-001
+          blocking: true
+          action: Approve Tenant Admin delegation to TENANT_ADMIN, quota-as-user-count, invitation TTL/delivery, idempotency, duplicate privacy and notification readiness dependency.
+        - id: TENANT-INVITEUSER-002
+          blocking: true
+          action: Define compensation/recovery when IAM deletion fails, event publication semantics, audit and exact validation/IAM error variants.
+      x-consumer-evidence:
+        - "/api/v1/tenants/{tenantId}/users/invites"
+        - "frontend/src/services/tenantService.ts"
+        - "frontend/src/services/tenantUserService.ts"
+        - "frontend/src/schemas/tenantSchemas.ts"
+      x-tenant-boundary: Tenant Admin claim must equal tenantId; Super Admin bypasses path equality and does not require X-Tenant-ID for this non-Billing route.
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InviteTenantUserRequest'
+      responses:
+        '201':
+          description: IAM identity and pending local mirror created and invitation event published; no response body.
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-bodyless-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/tenants/{tenantId}/users/{id}:
+    delete:
+      operationId: deleteUser
+      tags: [TenantUserController]
+      summary: Hard-delete a tenant user
+      description: >-
+        Verifies local ownership, stages a hard delete in the platform database, removes the IAM
+        identity by email and returns HTTP 204. A thrown IAM failure rolls back the local transaction,
+        but an ambiguous or partially applied IAM operation has no explicit reconciliation receipt.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+        - ROLE_TENANT_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasAnyRole('SUPER_ADMIN', 'TENANT_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantUserController.java:94"
+      x-source-method: "TenantUserController.deleteUser"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-DELETEUSER-001
+          blocking: true
+          action: Approve hard deletion, self/last-admin protection, idempotency, quota release, retention/audit and missing/wrong-tenant response codes.
+        - id: TENANT-DELETEUSER-002
+          blocking: true
+          action: Define IAM/local atomicity and reconciliation after ambiguous IAM outcomes; validate exact security and failure variants.
+      x-consumer-evidence:
+        - "/api/v1/tenants/{tenantId}/users/{id}"
+        - "frontend/src/services/tenantUserService.ts"
+        - "frontend/src/components/users/UserGrid.tsx"
+      x-tenant-boundary: Tenant Admin claim must equal tenantId and the service rechecks user ownership; Super Admin may target any tenant UUID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+        - name: tenantId
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Local user and corresponding IAM identity deleted without a response body.
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-bodyless-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+    put:
+      operationId: updateUser
+      tags: [TenantUserController]
+      summary: Replace a tenant user's editable name and role
+      description: >-
+        Validates name and role, verifies local ownership, saves the local mirror and then updates
+        the IAM name and realm-role mapping. The local transaction rolls back on a thrown IAM error,
+        but an ambiguous partial IAM update has no explicit compensation. Success is HTTP 204.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+        - ROLE_TENANT_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasAnyRole('SUPER_ADMIN', 'TENANT_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantUserController.java:82"
+      x-source-method: "TenantUserController.updateUser"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-UPDATEUSER-001
+          blocking: true
+          action: Approve Tenant Admin privilege delegation, self/last-admin constraints, PUT/idempotency semantics, name policy, audit and missing/wrong-tenant responses.
+        - id: TENANT-UPDATEUSER-002
+          blocking: true
+          action: Define local/IAM atomicity and reconciliation after partial role/name updates; validate exact security and IAM error variants.
+      x-consumer-evidence:
+        - "/api/v1/tenants/{tenantId}/users/{id}"
+        - "frontend/src/services/tenantUserService.ts"
+        - "frontend/src/components/users/UserGrid.tsx"
+      x-tenant-boundary: Tenant Admin claim must equal tenantId and the service rechecks user ownership; Super Admin may target any tenant UUID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+        - name: tenantId
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTenantUserRequest'
+      responses:
+        '204':
+          description: Local and IAM name/role updates completed without a response body.
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-bodyless-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/tenants/{tenantId}/users/{id}/resend-invite:
+    post:
+      operationId: resendInvite
+      tags: [TenantUserController]
+      summary: Regenerate and resend a pending user's invitation
+      description: >-
+        Requires notification-provider readiness, verifies tenant/user ownership and rejects an active
+        user. It regenerates the IAM action URL, publishes a new invitation event and returns HTTP 204.
+        Failure after URL regeneration has no explicit token rollback or delivery receipt.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+        - ROLE_TENANT_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasAnyRole('SUPER_ADMIN', 'TENANT_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantUserController.java:104"
+      x-source-method: "TenantUserController.resendInvite"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-RESENDINVITE-001
+          blocking: true
+          action: Approve which non-active statuses are eligible, TTL/invalidation, rate limit, idempotency, notification delivery and audit semantics.
+        - id: TENANT-RESENDINVITE-002
+          blocking: true
+          action: Define recovery when event publication fails after action-URL regeneration and validate exact missing/wrong-tenant/IAM errors.
+      x-consumer-evidence:
+        - "/api/v1/tenants/{tenantId}/users/{id}/resend-invite"
+        - "frontend/src/services/tenantService.ts"
+        - "frontend/src/components/users/UserGrid.tsx"
+      x-tenant-boundary: Tenant Admin claim must equal tenantId and the service rechecks user ownership; Super Admin may target any tenant UUID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+        - name: tenantId
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: New IAM action URL generated and invitation event published without a response body.
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-bodyless-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/tenants/{tenantId}/users/{id}/status:
+    patch:
+      operationId: updateUserStatus
+      tags: [TenantUserController]
+      summary: Change a tenant user's lifecycle status
+      description: >-
+        Validates ATIVO, INATIVO or PENDENTE, verifies local ownership, saves the local status and then
+        enables IAM only for ATIVO; both INATIVO and PENDENTE disable IAM. A thrown IAM failure rolls
+        back the local transaction, but ambiguous IAM application has no explicit reconciliation.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+        - ROLE_TENANT_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasAnyRole('SUPER_ADMIN', 'TENANT_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/TenantUserController.java:117"
+      x-source-method: "TenantUserController.updateUserStatus"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-UPDATEUSERSTATUS-001
+          blocking: true
+          action: Approve PENDENTE as an administrative transition, self/last-admin protection, session revocation, idempotency, audit and missing/wrong-tenant responses.
+        - id: TENANT-UPDATEUSERSTATUS-002
+          blocking: true
+          action: Define local/IAM atomicity and reconciliation after ambiguous enable/disable outcomes; validate exact security and IAM error variants.
+      x-consumer-evidence:
+        - "/api/v1/tenants/{tenantId}/users/{id}/status"
+        - "frontend/src/services/tenantService.ts"
+        - "frontend/src/components/users/UserGrid.tsx"
+      x-consumer-drift: The frontend status mutation exposes only ATIVO and INATIVO although the backend also accepts PENDENTE.
+      x-tenant-boundary: Tenant Admin claim must equal tenantId and the service rechecks user ownership; Super Admin may target any tenant UUID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+        - name: tenantId
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTenantUserStatusRequest'
+      responses:
+        '204':
+          description: Local status and IAM enabled state updated without a response body.
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-bodyless-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/user-profile:
+    get:
+      operationId: getProfile
+      tags: [UserProfileController]
+      summary: Legacy getProfile operation
+      description: >-
+        Reads the current authenticated identity profile from the IAM realm resolved from the
+        user's tenant/Super Admin status and verifies that the JWT issuer names that same realm.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        []
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback"
+      x-authorization-review: required
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/UserProfileController.java:26"
+      x-source-method: "UserProfileController.getProfile"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-GETPROFILE-001
+          blocking: true
+          action: Approve eligible authenticated roles, issuer/realm policy, empty-name normalization, cache and IAM error sanitization.
+        - id: TENANT-GETPROFILE-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/user-profile"
+        - "frontend/src/services/userProfileService.ts"
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-shape-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+    put:
+      operationId: updateProfile
+      tags: [UserProfileController]
+      summary: Legacy updateProfile operation
+      description: >-
+        Trims and updates both names directly in the issuer-matched IAM realm, then returns the
+        resulting two-field profile. No local user mirror is updated by this path.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        []
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback"
+      x-authorization-review: required
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/UserProfileController.java:31"
+      x-source-method: "UserProfileController.updateProfile"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-UPDATEPROFILE-001
+          blocking: true
+          action: Approve name character policy, local-mirror consistency, audit, concurrency and IAM failure/error semantics.
+        - id: TENANT-UPDATEPROFILE-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/user-profile"
+        - "frontend/src/services/userProfileService.ts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-shape-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+  /api/v1/user-profile/password:
+    put:
+      operationId: changePassword
+      tags: [UserProfileController]
+      summary: Legacy changePassword operation
+      description: >-
+        Verifies the current credential through a server-side password grant, sets a permanent new
+        IAM password and returns HTTP 204. The one-shot verification token is discarded.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        []
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback"
+      x-authorization-review: required
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/presentation/rest/UserProfileController.java:38"
+      x-source-method: "UserProfileController.changePassword"
+      x-source-confidence: observed-not-approved
+      x-open-questions:
+        - id: TENANT-CHANGEPASSWORD-001
+          blocking: true
+          action: Approve password policy, password-grant dependency, MFA/session revocation, brute-force protection, audit and sanitized IAM errors.
+        - id: TENANT-CHANGEPASSWORD-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/user-profile/password"
+        - "frontend/src/services/userProfileService.ts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeOwnPasswordRequest'
+      responses:
+        '204':
+          description: Current credential verified and permanent IAM password changed without a response body.
+          x-source-confidence: observed-not-approved
+          x-response-review: observed-bodyless-product-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.11.0
+        compatibilityDecision: required-before-active
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    LegacyBadRequest:
+      description: Current shared handlers may emit a 400 JSON error; exact operation codes and variants require validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacyError'
+    LegacyUnauthorized:
+      description: Current security entry point emits a 401 JSON error; migration to RFC 9457 requires a versioned decision.
+      headers:
+        WWW-Authenticate:
+          description: Bearer challenge governed by RFC 9110.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacySecurityError'
+    LegacyForbidden:
+      description: Current security or exception handler emits a 403 JSON error; exact boundary variants require validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacySecurityError'
+    LegacyInternalFailure:
+      description: Current shared handler emits a sanitized 500 JSON error with an errorId.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacyError'
+    TenantPoolBadRequest:
+      description: Malformed canonical tenantId, strict JSON, required header or transport value; errorCode is TENANT_POOL_POLICY_INVALID.
+      headers:
+        Cache-Control: {schema: {type: string, const: no-store}}
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/TenantPoolProblem'}
+    TenantPoolUnauthorized:
+      description: Authentication is missing or cannot be resolved; errorCode is UNAUTHORIZED.
+      headers:
+        Cache-Control: {schema: {type: string, const: no-store}}
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/TenantPoolProblem'}
+    TenantPoolForbidden:
+      description: Caller is not a raw global Super Admin or carries tenant context; errorCode is ACCESS_DENIED.
+      headers:
+        Cache-Control: {schema: {type: string, const: no-store}}
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/TenantPoolProblem'}
+    TenantPoolTargetNotFound:
+      description: Target tenant does not exist; errorCode is TENANT_POOL_TARGET_UNAVAILABLE.
+      headers:
+        Cache-Control: {schema: {type: string, const: no-store}}
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/TenantPoolProblem'}
+    TenantPoolTargetNotProvisioned:
+      description: Target is inactive, unprovisioned or lacks a policy head; errorCode is TENANT_POOL_TARGET_UNAVAILABLE.
+      headers:
+        Cache-Control: {schema: {type: string, const: no-store}}
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/TenantPoolProblem'}
+    TenantPoolConflict:
+      description: Stale revision, conflicting idempotency reuse, active change, unavailable target or insufficient capacity.
+      headers:
+        Cache-Control: {schema: {type: string, const: no-store}}
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/TenantPoolProblem'}
+    TenantPoolUnprocessablePolicy:
+      description: Structurally valid request violates policy or environment bounds; errorCode is TENANT_POOL_POLICY_INVALID.
+      headers:
+        Cache-Control: {schema: {type: string, const: no-store}}
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/TenantPoolProblem'}
+    TenantPoolRateLimited:
+      description: Per-actor administrative rate limit exceeded; errorCode is TENANT_POOL_RATE_LIMITED.
+      headers:
+        Retry-After:
+          required: true
+          description: Positive delay in seconds before a new attempt.
+          schema: {type: integer, minimum: 1}
+        Cache-Control: {schema: {type: string, const: no-store}}
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/TenantPoolProblem'}
+    TenantPoolUnavailable:
+      description: Read or mutation feature gate is disabled; current errorCode is TENANT_POOL_MUTATION_DISABLED for both paths.
+      headers:
+        Cache-Control: {schema: {type: string, const: no-store}}
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/TenantPoolProblem'}
+  schemas:
+    StrongEtag:
+      type: string
+      pattern: '^"[^"\r\n]+"$'
+      description: Strong quoted entity tag; weak W/ validators are rejected.
+    TenantPoolProblemCode:
+      type: string
+      enum:
+        - UNAUTHORIZED
+        - ACCESS_DENIED
+        - TENANT_POOL_TARGET_UNAVAILABLE
+        - TENANT_POOL_POLICY_INVALID
+        - TENANT_POOL_REVISION_CONFLICT
+        - IDEMPOTENCY_CONFLICT
+        - TENANT_POOL_CHANGE_IN_PROGRESS
+        - TENANT_POOL_CAPACITY_EXCEEDED
+        - TENANT_POOL_RATE_LIMITED
+        - TENANT_POOL_MUTATION_DISABLED
+    TenantPoolProblem:
+      type: object
+      description: Feature-scoped Problem Details representation compatible with RFC 9457 fields plus stable extensions.
+      additionalProperties: false
+      required: [type, title, status, detail, instance, errorCode, traceId, timestamp]
+      properties:
+        type: {type: string, format: uri}
+        title: {type: string, const: Falha na administração da política de pool}
+        status: {type: integer, minimum: 400, maximum: 599}
+        detail: {type: string, minLength: 1}
+        instance: {type: string, format: uri}
+        errorCode: {$ref: '#/components/schemas/TenantPoolProblemCode'}
+        traceId: {type: string, minLength: 1}
+        timestamp: {type: string, format: date-time}
+    TenantPoolProfileSource:
+      type: string
+      enum: [SMALL, STANDARD, ROBUST, CUSTOM]
+    TenantPoolRolloutState:
+      type: string
+      enum: [PENDING, PREPARING, COMMITTED, CONVERGED, DEGRADED, FAILED]
+    TenantPoolFailureCode:
+      type: string
+      enum: [CAPACITY_EXCEEDED, CANDIDATE_FAILED, CONNECTIVITY_FAILED, FENCING_FAILED, DRAIN_TIMEOUT, INTERNAL_ERROR]
+    TenantPoolCapacityStatus:
+      type: string
+      enum: [AVAILABLE, INSUFFICIENT, UNKNOWN]
+    TenantPoolPolicySnapshot:
+      type: object
+      description: Complete non-secret snapshot. Durations use ISO-8601; cross-field and effective environment bounds remain server-authoritative.
+      additionalProperties: false
+      required: [profileSource, minimumIdle, maximumPoolSize, connectionTimeout, validationTimeout, idleTimeout, maxLifetime, keepaliveTime]
+      properties:
+        profileSource: {$ref: '#/components/schemas/TenantPoolProfileSource'}
+        minimumIdle: {type: integer, format: int32, minimum: 0}
+        maximumPoolSize: {type: integer, format: int32, minimum: 1}
+        connectionTimeout: {type: string, format: duration}
+        validationTimeout: {type: string, format: duration}
+        idleTimeout: {type: string, format: duration}
+        maxLifetime: {type: string, format: duration}
+        keepaliveTime: {type: string, format: duration}
+      x-cross-field-invariants:
+        - minimumIdle <= maximumPoolSize
+        - validationTimeout <= connectionTimeout
+        - keepaliveTime == PT0S or keepaliveTime < maxLifetime
+    TenantPoolPolicyUpdateRequest:
+      type: object
+      additionalProperties: false
+      required: [snapshot, reason]
+      properties:
+        snapshot: {$ref: '#/components/schemas/TenantPoolPolicySnapshot'}
+        reason:
+          type: string
+          minLength: 10
+          maxLength: 500
+          description: Trimmed and rejected when it contains ISO control characters.
+    TenantPoolPolicyRollbackRequest:
+      type: object
+      additionalProperties: false
+      required: [sourceRevision, reason]
+      properties:
+        sourceRevision:
+          type: integer
+          format: int64
+          minimum: 1
+        reason:
+          type: string
+          minLength: 10
+          maxLength: 500
+          description: Trimmed and rejected when it contains ISO control characters.
+    TenantPoolPolicyOperation:
+      type: object
+      additionalProperties: false
+      required: [operationId, tenantId, desiredRevision, committedRevision, state, policy, acceptedAt, updatedAt, failureCode]
+      properties:
+        operationId: {type: string, format: uuid}
+        tenantId: {type: string, format: uuid}
+        desiredRevision: {type: integer, format: int64, minimum: 1}
+        committedRevision: {type: [integer, 'null'], format: int64, minimum: 1}
+        state: {$ref: '#/components/schemas/TenantPoolRolloutState'}
+        policy: {$ref: '#/components/schemas/TenantPoolPolicySnapshot'}
+        acceptedAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+        failureCode:
+          anyOf:
+            - $ref: '#/components/schemas/TenantPoolFailureCode'
+            - type: 'null'
+      x-cross-field-invariants:
+        - committedRevision is null or committedRevision <= desiredRevision
+        - updatedAt >= acceptedAt
+        - FAILED requires failureCode; failureCode is otherwise allowed only for DEGRADED
+    TenantPoolCapacity:
+      type: object
+      additionalProperties: false
+      required: [status, replicasMax, safeConnectionBudget, allocatedConnections, remainingConnections]
+      properties:
+        status: {$ref: '#/components/schemas/TenantPoolCapacityStatus'}
+        replicasMax: {type: [integer, 'null'], format: int32, minimum: 1}
+        safeConnectionBudget: {type: [integer, 'null'], format: int32, minimum: 0}
+        allocatedConnections: {type: [integer, 'null'], format: int32, minimum: 0}
+        remainingConnections: {type: [integer, 'null'], format: int32, minimum: 0}
+      x-cross-field-invariants:
+        - UNKNOWN requires every fact null; other statuses require every fact non-null
+    TenantPoolRollout:
+      type: object
+      additionalProperties: false
+      required: [state, requiredRuntimeCount, readyRuntimeCount, swappedRuntimeCount, drainedRuntimeCount]
+      properties:
+        state: {$ref: '#/components/schemas/TenantPoolRolloutState'}
+        requiredRuntimeCount: {type: integer, format: int32, minimum: 0}
+        readyRuntimeCount: {type: integer, format: int32, minimum: 0}
+        swappedRuntimeCount: {type: integer, format: int32, minimum: 0}
+        drainedRuntimeCount: {type: integer, format: int32, minimum: 0}
+      x-cross-field-invariants:
+        - drainedRuntimeCount <= swappedRuntimeCount <= readyRuntimeCount <= requiredRuntimeCount
+    TenantPoolBounds:
+      type: object
+      additionalProperties: false
+      required: [minimumIdleMin, minimumIdleMax, maximumPoolSizeMin, maximumPoolSizeMax, connectionTimeoutMin, connectionTimeoutMax, validationTimeoutMin, validationTimeoutMax, idleTimeoutMinWhenEnabled, idleTimeoutMax, maxLifetimeMin, maxLifetimeMax, keepaliveTimeMinWhenEnabled, keepaliveTimeMax, rollbackWindow]
+      properties:
+        minimumIdleMin: {type: integer, format: int32, minimum: 0}
+        minimumIdleMax: {type: integer, format: int32, minimum: 0}
+        maximumPoolSizeMin: {type: integer, format: int32, minimum: 1}
+        maximumPoolSizeMax: {type: integer, format: int32, minimum: 1}
+        connectionTimeoutMin: {type: string, format: duration}
+        connectionTimeoutMax: {type: string, format: duration}
+        validationTimeoutMin: {type: string, format: duration}
+        validationTimeoutMax: {type: string, format: duration}
+        idleTimeoutMinWhenEnabled: {type: string, format: duration}
+        idleTimeoutMax: {type: string, format: duration}
+        maxLifetimeMin: {type: string, format: duration}
+        maxLifetimeMax: {type: string, format: duration}
+        keepaliveTimeMinWhenEnabled: {type: string, format: duration}
+        keepaliveTimeMax: {type: string, format: duration}
+        rollbackWindow: {type: string, format: duration}
+    TenantPoolProfile:
+      type: object
+      additionalProperties: false
+      required: [profileSource, policy]
+      properties:
+        profileSource: {type: string, enum: [SMALL, STANDARD, ROBUST]}
+        policy: {$ref: '#/components/schemas/TenantPoolPolicySnapshot'}
+    TenantPoolRevisionSummary:
+      type: object
+      additionalProperties: false
+      required: [revision, profileSource, maximumPoolSize, createdAt, rollbackEligible]
+      properties:
+        revision: {type: integer, format: int64, minimum: 1}
+        profileSource: {$ref: '#/components/schemas/TenantPoolProfileSource'}
+        maximumPoolSize: {type: integer, format: int32, minimum: 1}
+        createdAt: {type: string, format: date-time}
+        rollbackEligible: {type: boolean}
+    TenantPoolPolicyResource:
+      type: object
+      additionalProperties: false
+      required: [tenantId, desiredRevision, committedRevision, desiredPolicy, committedPolicy, latestOperation, capacity, rollout, bounds, profiles, rollbackCandidates, updatedAt]
+      properties:
+        tenantId: {type: string, format: uuid}
+        desiredRevision: {type: integer, format: int64, minimum: 1}
+        committedRevision: {type: [integer, 'null'], format: int64, minimum: 1}
+        desiredPolicy: {$ref: '#/components/schemas/TenantPoolPolicySnapshot'}
+        committedPolicy:
+          anyOf:
+            - $ref: '#/components/schemas/TenantPoolPolicySnapshot'
+            - type: 'null'
+        latestOperation:
+          anyOf:
+            - $ref: '#/components/schemas/TenantPoolPolicyOperation'
+            - type: 'null'
+        capacity: {$ref: '#/components/schemas/TenantPoolCapacity'}
+        rollout: {$ref: '#/components/schemas/TenantPoolRollout'}
+        bounds: {$ref: '#/components/schemas/TenantPoolBounds'}
+        profiles:
+          type: array
+          minItems: 3
+          maxItems: 3
+          items: {$ref: '#/components/schemas/TenantPoolProfile'}
+        rollbackCandidates:
+          type: array
+          items: {$ref: '#/components/schemas/TenantPoolRevisionSummary'}
+        updatedAt: {type: string, format: date-time}
+      x-cross-field-invariants:
+        - committedRevision and committedPolicy are both null or both non-null
+        - latestOperation.tenantId equals tenantId when present
+        - profiles are SMALL, STANDARD and ROBUST in that order
+        - rollbackCandidates are unique and revision-descending below desiredRevision
+    SlugAvailability:
+      type: object
+      additionalProperties: false
+      required: [available, suggestedSlug]
+      properties:
+        available: {type: boolean}
+        suggestedSlug: {type: string}
+    AdminAccessProfile:
+      type: string
+      enum: [SUPER_ADMIN, COMMERCIAL]
+    AdminUserStatus:
+      type: string
+      enum: [PENDENTE, ATIVO, INATIVO]
+    AdminUser:
+      type: object
+      additionalProperties: false
+      required: [id, email, firstName, lastName, status, profile, createdAt]
+      properties:
+        id: {type: string, format: uuid}
+        email: {type: string, format: email}
+        firstName: {type: string}
+        lastName: {type: [string, 'null']}
+        status: {$ref: '#/components/schemas/AdminUserStatus'}
+        profile: {$ref: '#/components/schemas/AdminAccessProfile'}
+        createdAt: {type: string, format: date-time}
+    CreateSuperAdminRequest:
+      type: object
+      description: Unknown members are currently ignored by Jackson.
+      additionalProperties: true
+      required: [firstName, lastName, email, password, profile]
+      properties:
+        firstName: {type: string, minLength: 1}
+        lastName: {type: string, minLength: 1}
+        email: {type: string, format: email, minLength: 1}
+        password: {type: string, minLength: 12, maxLength: 128, writeOnly: true}
+        profile: {$ref: '#/components/schemas/AdminAccessProfile'}
+      x-schema-review: permissive-jackson-name-bounds-and-password-policy
+    ResetAdminPasswordRequest:
+      type: object
+      description: Unknown members are currently ignored by Jackson.
+      additionalProperties: true
+      required: [password]
+      properties:
+        password: {type: string, minLength: 12, maxLength: 128, writeOnly: true}
+      x-schema-review: permissive-jackson-password-policy-and-secret-handling
+    ActivateInviteRequest:
+      type: object
+      description: Unknown members are currently ignored by Jackson.
+      additionalProperties: true
+      required: [token, password]
+      properties:
+        token: {type: string, minLength: 1, writeOnly: true}
+        password: {type: string, minLength: 12, maxLength: 128, writeOnly: true}
+      x-schema-review: permissive-jackson-password-policy-token-size-and-abuse-controls
+    TenantDiscoveryRequest:
+      type: object
+      description: Unknown members are currently ignored by Jackson; email is trimmed and lowercased.
+      additionalProperties: true
+      required: [email]
+      properties:
+        email: {type: string, format: email, minLength: 1, maxLength: 254}
+      x-schema-review: permissive-jackson-enumeration-and-abuse-controls
+    DiscoveredTenant:
+      type: object
+      additionalProperties: false
+      required: [tenantId, slug, companyName, logoUrl]
+      properties:
+        tenantId: {type: string, format: uuid}
+        slug: {type: string}
+        companyName: {type: string}
+        logoUrl: {type: [string, 'null']}
+    UserProfile:
+      type: object
+      additionalProperties: false
+      required: [firstName, lastName]
+      properties:
+        firstName: {type: string}
+        lastName: {type: string}
+    UpdateProfileRequest:
+      type: object
+      description: Unknown members are currently ignored by Jackson; both names are trimmed before IAM update.
+      additionalProperties: true
+      required: [firstName, lastName]
+      properties:
+        firstName: {type: string, minLength: 1, maxLength: 100}
+        lastName: {type: string, minLength: 1, maxLength: 100}
+      x-schema-review: permissive-jackson-name-character-policy
+    ChangeOwnPasswordRequest:
+      type: object
+      description: Unknown members are currently ignored by Jackson.
+      additionalProperties: true
+      required: [currentPassword, newPassword, confirmation]
+      properties:
+        currentPassword: {type: string, minLength: 1, writeOnly: true}
+        newPassword:
+          type: string
+          minLength: 12
+          maxLength: 128
+          writeOnly: true
+          description: Must differ from currentPassword and contain an uppercase letter, digit and supported special character.
+        confirmation: {type: string, minLength: 1, writeOnly: true}
+      x-schema-review: permissive-jackson-password-policy-session-and-secret-handling
+    TenantUserRole:
+      type: string
+      enum: [TENANT_ADMIN, TENANT_AUDIT, TENANT_USER]
+      description: Current list response omits the ROLE_ prefix.
+    InvitableTenantUserRole:
+      type: string
+      enum: [TENANT_ADMIN, TENANT_AUDIT, TENANT_USER, ROLE_TENANT_ADMIN, ROLE_TENANT_AUDIT, ROLE_TENANT_USER]
+      description: Request boundary accepts canonical enum names with or without ROLE_.
+    TenantUserStatus:
+      type: string
+      enum: [PENDENTE, ATIVO, INATIVO]
+    TenantUser:
+      type: object
+      additionalProperties: false
+      required: [id, name, email, role, status, createdAt]
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string}
+        email: {type: string, format: email}
+        role: {$ref: '#/components/schemas/TenantUserRole'}
+        status: {$ref: '#/components/schemas/TenantUserStatus'}
+        createdAt: {type: [string, 'null'], format: date-time}
+    InviteTenantUserRequest:
+      type: object
+      description: Unknown members are ignored by Jackson; missing or blank role defaults to TENANT_USER in the command constructor.
+      additionalProperties: true
+      required: [name, email]
+      properties:
+        name: {type: string, minLength: 1}
+        email: {type: string, format: email, minLength: 1}
+        role:
+          anyOf:
+            - $ref: '#/components/schemas/InvitableTenantUserRole'
+            - type: 'null'
+      x-schema-review: permissive-jackson-name-bounds-case-normalization-and-role-default
+    UpdateTenantUserRequest:
+      type: object
+      description: Unknown members are ignored by Jackson; name and role are bean-validated as nonblank.
+      additionalProperties: true
+      required: [name, role]
+      properties:
+        name: {type: string, minLength: 1}
+        role: {$ref: '#/components/schemas/InvitableTenantUserRole'}
+      x-schema-review: permissive-jackson-name-bounds-and-role-normalization
+    UpdateTenantUserStatusRequest:
+      type: object
+      description: Unknown members are ignored by Jackson; status is bean-validated against the closed enum.
+      additionalProperties: true
+      required: [status]
+      properties:
+        status: {$ref: '#/components/schemas/TenantUserStatus'}
+      x-schema-review: permissive-jackson-only
+    TenantPlan:
+      type: string
+      enum: [START, BUSINESS, PREMIUM]
+    TenantLifecycleStatus:
+      type: string
+      enum: [ATIVO, SUSPENSO]
+    LegacyAdminCreateTenantRequest:
+      type: object
+      description: >-
+        Direct CreateTenantCommand binding with no Bean Validation. Unknown members are ignored;
+        null/missing values can fail later in value objects, SQL, datasource or IAM work. A null
+        plan becomes START and null limits are passed to tenant settings defaults. adminName and
+        adminPassword are accepted but not consumed by the observed onboarding path.
+      additionalProperties: true
+      properties:
+        companyName: {type: [string, 'null']}
+        slug:
+          type: [string, 'null']
+          pattern: '^[a-z0-9][a-z0-9-]{1,49}$'
+        tradeName: {type: [string, 'null']}
+        documento: {type: [string, 'null'], description: CPF or CNPJ value-object input.}
+        adminEmail: {type: [string, 'null'], format: email}
+        phone: {type: [string, 'null']}
+        adminName:
+          type: [string, 'null']
+          deprecated: true
+          description: Accepted by the command but not consumed in the observed path.
+        adminPassword:
+          type: [string, 'null']
+          writeOnly: true
+          deprecated: true
+          description: Accepted by the command but not consumed in the observed path.
+        plan:
+          anyOf:
+            - $ref: '#/components/schemas/TenantPlan'
+            - type: 'null'
+          default: START
+        documentoLimit: {type: [integer, 'null'], format: int32, minimum: 0}
+        chatbotLimit: {type: [integer, 'null'], format: int32, minimum: 0}
+        fiscalLimit: {type: [integer, 'null'], format: int32, minimum: 0}
+        sessionsLimit: {type: [integer, 'null'], format: int32, minimum: 0}
+      x-schema-review: permissive-unvalidated-command-unused-credentials-and-late-failure-semantics
+    TenantRegistrationResult:
+      type: object
+      additionalProperties: false
+      required: [tenantId, slug, loginUrl]
+      properties:
+        tenantId: {type: string, format: uuid}
+        slug: {type: string, pattern: '^[a-z0-9][a-z0-9-]{1,49}$'}
+        loginUrl:
+          type: string
+          format: uri
+          description: Tenant domain template expanded with slug; not proof of an IAM login transaction.
+    SerproCredentialsStatus:
+      type: object
+      additionalProperties: false
+      required: [hasConsumerKey, hasConsumerSecret, fullyConfigured]
+      properties:
+        hasConsumerKey: {type: boolean}
+        hasConsumerSecret: {type: boolean}
+        fullyConfigured:
+          type: boolean
+          description: Always hasConsumerKey AND hasConsumerSecret in the observed implementation.
+    SerproCredentialsUpdateRequest:
+      type: object
+      description: >-
+        Unknown members are ignored by Jackson and neither field has backend bean validation.
+        consumerKey is persisted as supplied. Null/blank consumerSecret clears the encrypted
+        secret, exactly ******** preserves it, and every other value is encrypted.
+      additionalProperties: true
+      properties:
+        consumerKey:
+          type: [string, 'null']
+        consumerSecret:
+          type: [string, 'null']
+          writeOnly: true
+      x-schema-review: permissive-jackson-nullability-secret-clear-mask-length-and-rotation-policy
+    TrafficInspectorSettings:
+      type: object
+      additionalProperties: false
+      required: [enabled]
+      properties:
+        enabled: {type: boolean}
+    UpdateTrafficInspectorRequest:
+      type: object
+      description: >-
+        Unknown members are ignored. enabled is intentionally not required in this AS-IS
+        projection because the primitive Java boolean may bind absent or JSON-null as false.
+      additionalProperties: true
+      properties:
+        enabled: {type: [boolean, 'null'], default: false}
+      x-schema-review: primitive-boolean-absence-and-null-can-disable-sensitive-capture
+    CreateTenantRequest:
+      type: object
+      description: >-
+        Unknown members are currently ignored by Jackson. Required marks operational requirements;
+        the controller has no bean-validation boundary, so absent/null values may fail through
+        heterogeneous 400 or 500 legacy handlers rather than a stable field-error response.
+      additionalProperties: true
+      required: [razaoSocial, documento, plan]
+      properties:
+        razaoSocial: {type: string, minLength: 1}
+        slug:
+          type: [string, 'null']
+          pattern: '^[a-z0-9][a-z0-9-]{1,49}$'
+          description: When null or blank, generated from razaoSocial; a supplied nonblank value must match this pattern.
+        tradeName: {type: [string, 'null']}
+        email: {type: [string, 'null'], format: email}
+        phone: {type: [string, 'null']}
+        documento:
+          type: string
+          description: Valid CPF or CNPJ, with or without dot, slash and hyphen formatting.
+        plan: {$ref: '#/components/schemas/TenantPlan'}
+        documentoLimit: {type: [integer, 'null'], format: int32, minimum: 0, default: 50}
+        chatbotLimit: {type: [integer, 'null'], format: int32, minimum: 0, default: 30}
+        fiscalLimit: {type: [integer, 'null'], format: int32, minimum: 0, default: 100}
+        sessionsLimit: {type: [integer, 'null'], format: int32, minimum: 0, default: 5}
+      x-schema-review: permissive-jackson-missing-field-errors-contact-validation-and-compensation-policy
+    CreateTenantResponse:
+      type: object
+      additionalProperties: false
+      required: [id]
+      properties:
+        id: {type: string, format: uuid}
+    TenantSummary:
+      type: object
+      additionalProperties: false
+      required: [id, name, tradeName, taxId, plan, status, usersCount]
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string}
+        tradeName:
+          type: string
+          description: Current list adapter repeats name here instead of reading the stored trade name.
+        taxId: {type: string}
+        plan: {$ref: '#/components/schemas/TenantPlan'}
+        status: {$ref: '#/components/schemas/TenantLifecycleStatus'}
+        usersCount: {type: integer, format: int32, minimum: 0}
+    TenantSummaryPage:
+      type: object
+      description: Observed Spring Data PageImpl JSON representation.
+      additionalProperties: false
+      required: [content, pageable, last, totalPages, totalElements, size, number, sort, first, numberOfElements, empty]
+      properties:
+        content:
+          type: array
+          items: {$ref: '#/components/schemas/TenantSummary'}
+        pageable: {$ref: '#/components/schemas/SpringPageable'}
+        last: {type: boolean}
+        totalPages: {type: integer, format: int32, minimum: 0}
+        totalElements: {type: integer, format: int64, minimum: 0}
+        size: {type: integer, format: int32, minimum: 1}
+        number: {type: integer, format: int32, minimum: 0}
+        sort: {$ref: '#/components/schemas/SpringSort'}
+        first: {type: boolean}
+        numberOfElements: {type: integer, format: int32, minimum: 0}
+        empty: {type: boolean}
+    SpringPageable:
+      type: object
+      additionalProperties: false
+      required: [pageNumber, pageSize, sort, offset, paged, unpaged]
+      properties:
+        pageNumber: {type: integer, format: int32, minimum: 0}
+        pageSize: {type: integer, format: int32, minimum: 1}
+        sort: {$ref: '#/components/schemas/SpringSort'}
+        offset: {type: integer, format: int64, minimum: 0}
+        paged: {type: boolean}
+        unpaged: {type: boolean}
+    SpringSort:
+      type: object
+      additionalProperties: false
+      required: [empty, sorted, unsorted]
+      properties:
+        empty: {type: boolean}
+        sorted: {type: boolean}
+        unsorted: {type: boolean}
+    TenantDetail:
+      type: object
+      additionalProperties: false
+      required: [id, name, tradeName, taxId, plan, status, email, phone, slug, documentoLimit, chatbotLimit, fiscalLimit, sessionsLimit]
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string}
+        tradeName: {type: [string, 'null']}
+        taxId: {type: string}
+        plan: {$ref: '#/components/schemas/TenantPlan'}
+        status: {$ref: '#/components/schemas/TenantLifecycleStatus'}
+        email: {type: [string, 'null']}
+        phone: {type: [string, 'null']}
+        slug: {type: [string, 'null']}
+        documentoLimit: {type: integer, format: int32, minimum: 0, default: 50}
+        chatbotLimit: {type: integer, format: int32, minimum: 0, default: 30}
+        fiscalLimit: {type: integer, format: int32, minimum: 0, default: 100}
+        sessionsLimit: {type: integer, format: int32, minimum: 0, default: 5}
+    UpdateTenantRequest:
+      type: object
+      description: >-
+        Unknown members are ignored by Jackson and every known member is optional. Null preserves
+        the current value. Unknown status strings are accepted and produce a successful no-op.
+      additionalProperties: true
+      properties:
+        razaoSocial: {type: [string, 'null'], minLength: 1}
+        tradeName: {type: [string, 'null']}
+        email: {type: [string, 'null']}
+        phone: {type: [string, 'null']}
+        documentoLimit: {type: [integer, 'null'], format: int32, minimum: 0}
+        chatbotLimit: {type: [integer, 'null'], format: int32, minimum: 0}
+        fiscalLimit: {type: [integer, 'null'], format: int32, minimum: 0}
+        sessionsLimit: {type: [integer, 'null'], format: int32, minimum: 0}
+        plan:
+          anyOf:
+            - $ref: '#/components/schemas/TenantPlan'
+            - type: 'null'
+        status:
+          type: [string, 'null']
+          description: ATIVO activates; INATIVO or SUSPENSO suspends; any other string is a no-op.
+      x-schema-review: permissive-jackson-null-semantics-status-no-op-and-contact-validation
+    UsageMetric:
+      type: object
+      additionalProperties: false
+      required: [used, limit]
+      properties:
+        used: {type: integer, format: int32, minimum: 0}
+        limit: {type: integer, format: int32, minimum: -1}
+    SubscriptionUsage:
+      type: object
+      additionalProperties: false
+      required: [plan, documentos, chatbotMessages, fiscalQueries, concurrentSessions, overagePolicy]
+      properties:
+        plan: {$ref: '#/components/schemas/TenantPlan'}
+        documentos: {$ref: '#/components/schemas/UsageMetric'}
+        chatbotMessages: {$ref: '#/components/schemas/UsageMetric'}
+        fiscalQueries: {$ref: '#/components/schemas/UsageMetric'}
+        concurrentSessions: {$ref: '#/components/schemas/UsageMetric'}
+        overagePolicy:
+          type: string
+          const: Tarifa reduzida após o limite
+    LegacyError:
+      type: object
+      description: Observed non-RFC-9457 envelope; variants remain a blocking review item.
+      additionalProperties: true
+      required: [message]
+      properties:
+        message:
+          type: string
+        errorId:
+          type: string
+          format: uuid
+        errors:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      x-schema-review: required
+    LegacySecurityError:
+      type: object
+      description: Observed default security envelope; specialized path handlers may differ.
+      additionalProperties: true
+      required: [error, message, status, timestamp, path]
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        status:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+      x-schema-review: required
+    Problem:
+      type: object
+      description: Target Problem Details shape governed by RFC 9457; not claimed as current legacy behavior.
+      additionalProperties: true
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri-reference

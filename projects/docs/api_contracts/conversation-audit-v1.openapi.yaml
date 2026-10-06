@@ -1,0 +1,857 @@
+openapi: 3.1.0
+info:
+  title: SaaS Service Conversation Audit API
+  version: 1.2.1
+  description: >-
+    Canonical additive contract for tenant-scoped, read-only chatbot conversation
+    auditing. This contract does not replace the legacy chatbot conversation endpoints.
+    ROLE_TENANT_AUDIT is the only entitlement for every operation. ROLE_TENANT_ADMIN
+    and ROLE_SUPER_ADMIN alone are denied. A Super Admin must also carry
+    ROLE_TENANT_AUDIT and explicitly impersonate an active tenant whose identifier
+    matches the tenantId path parameter. The audit role grants no other access.
+    All timestamps are UTC instants. Responses are private and non-cacheable.
+    Every operation fails closed before accessing conversation data unless data
+    protection is enabled and the effective tenant database has durable readiness
+    proving zero rows with eligible plaintext, invalid or missing blind-index hash,
+    unknown key ID, missing or stale protection attestation, or pending write activity.
+    API exposure flags and allowlists do not replace this five-risk gate.
+    The data-protection, HTTP API, legacy-read and backfill switches are all off
+    by default; this contract defines the wire shape and does not assert that an
+    environment or tenant is enabled or approved for production. Version 1.2.1
+    distinguishes an actual query timeout from another sanitized query dependency
+    failure without changing the HTTP status, payload shape or retry policy. Version 1.2.0
+    documents the dedicated RBAC and impersonation boundary; request and response
+    payload schemas remain unchanged from 1.1.3.
+x-rbac:
+  requiredAuthority: ROLE_TENANT_AUDIT
+  tenantAdminInherited: false
+  superAdminInherited: false
+  roleInvitableForTenant: true
+  grantsOtherCapabilities: false
+  superAdminRequiresActiveTenantImpersonation: true
+x-change-log:
+  - version: 1.2.1
+    date: 2026-09-05
+    changes: AUD-503-QUERY_TIMEOUT is reserved for causal timeouts; other sanitized query dependency failures use AUD-503-QUERY_UNAVAILABLE.
+  - version: 1.2.0
+    date: 2026-08-22
+    changes: Dedicated ROLE_TENANT_AUDIT policy and conditional Super Admin impersonation header documented.
+  - version: 1.1.3
+    date: 2026-08-21
+    changes: Five-risk data-protection readiness clarification; no wire-schema change.
+servers:
+  - url: /
+security:
+  - bearerAuth: []
+tags:
+  - name: ConversationAudit
+    description: Read-only operational audit for the effective tenant, exclusively authorized by ROLE_TENANT_AUDIT.
+
+paths:
+  /api/v1/tenants/{tenantId}/chatbot/audit/conversations/search:
+    post:
+      operationId: searchConversationAudit
+      tags: [ConversationAudit]
+      summary: Search the effective tenant's conversations
+      description: >-
+        Applies all filters server-side. The exact remote identifier is carried only
+        in the request body and must never be copied to URLs, logs, metrics, traces,
+        audit details, or browser storage. With no channel selected, the backend
+        evaluates safe normalizations for both supported channels. With multiple
+        channels selected, it computes one contextual blind-index candidate per
+        channel and never decrypts a table to filter.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/EffectiveTenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConversationAuditSearchRequest'
+      responses:
+        '200':
+          description: Canonical page of masked conversation summaries.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Correlation-ID:
+              $ref: '#/components/headers/CorrelationId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationAuditSummaryPage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+
+  /api/v1/tenants/{tenantId}/chatbot/audit/conversations/{conversationId}:
+    get:
+      operationId: getConversationAudit
+      tags: [ConversationAudit]
+      summary: Get safe conversation metadata
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/EffectiveTenantId'
+        - $ref: '#/components/parameters/ConversationId'
+      responses:
+        '200':
+          description: Conversation metadata without message content or full identifier.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Correlation-ID:
+              $ref: '#/components/headers/CorrelationId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationAuditDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+
+  /api/v1/tenants/{tenantId}/chatbot/audit/conversations/{conversationId}/messages:
+    get:
+      operationId: listConversationAuditMessages
+      tags: [ConversationAudit]
+      summary: List a deterministic page of conversation messages
+      description: >-
+        Page zero contains the oldest messages. Pages and items are ordered by
+        sentAt ASC and the internal message UUID ASC. Provider identifiers are never
+        exposed. This operation owns one conversation_audit:view_messages event.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/EffectiveTenantId'
+        - $ref: '#/components/parameters/ConversationId'
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: direction
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/MessageDirection'
+        - name: origin
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/MessageOrigin'
+      responses:
+        '200':
+          description: Canonical page of evidence-safe timeline messages.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Correlation-ID:
+              $ref: '#/components/headers/CorrelationId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationAuditMessagePage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+
+  /api/v1/tenants/{tenantId}/chatbot/audit/conversations/{conversationId}/remote-identifier/reveal:
+    post:
+      operationId: revealConversationRemoteIdentifier
+      tags: [ConversationAudit]
+      summary: Reveal the full remote identifier after authorization and audit
+      description: >-
+        The request has no body. The response must not be cached or retained by the
+        browser/query cache. This operation owns exactly one
+        conversation_audit:reveal_identifier event and fails closed when audit or
+        decryption cannot complete.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/EffectiveTenantId'
+        - $ref: '#/components/parameters/ConversationId'
+      responses:
+        '200':
+          description: Ephemeral full identifier.
+          headers:
+            Cache-Control:
+              $ref: '#/components/headers/NoStore'
+            X-Correlation-ID:
+              $ref: '#/components/headers/CorrelationId'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemoteIdentifierReveal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalFailure'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    TenantId:
+      name: tenantId
+      in: path
+      required: true
+      description: >-
+        Must equal the effective authenticated tenant context. For a tenant auditor,
+        that context comes from the canonical tenant_id JWT claim. For a Super Admin
+        carrying ROLE_TENANT_AUDIT, it comes only from explicit active-tenant
+        impersonation through X-Tenant-ID.
+      schema:
+        type: string
+        format: uuid
+    EffectiveTenantId:
+      name: X-Tenant-ID
+      in: header
+      required: false
+      description: >-
+        Required only when an identity carrying both ROLE_SUPER_ADMIN and
+        ROLE_TENANT_AUDIT explicitly impersonates an active tenant. It must be a
+        canonical UUID equal to tenantId in the path. Tenant-scoped auditors use
+        their tenant_id JWT claim; this header cannot switch their tenant.
+      schema:
+        type: string
+        format: uuid
+    ConversationId:
+      name: conversationId
+      in: path
+      required: true
+      description: Internal conversation UUID, always resolved together with tenantId.
+      schema:
+        type: string
+        format: uuid
+
+  headers:
+    NoStore:
+      description: Sensitive authenticated data must not be cached.
+      schema:
+        type: string
+        const: no-store
+    CorrelationId:
+      description: Opaque identifier safe to present to support.
+      schema:
+        type: string
+        format: uuid
+    RetryAfter:
+      description: Whole seconds before a manual retry is allowed.
+      schema:
+        type: integer
+        minimum: 1
+
+  responses:
+    BadRequest:
+      description: Invalid shape, enum, UUID, range, period, or identifier.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Correlation-ID:
+          $ref: '#/components/headers/CorrelationId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ConversationAuditError'
+          examples:
+            invalidFilter:
+              value:
+                code: AUD-400-FILTER
+                message: Revise os filtros informados.
+                errorId: 11111111-1111-1111-1111-111111111111
+                fieldErrors:
+                  - field: size
+                    code: MAX
+                    message: O tamanho da página deve ser no máximo 100.
+    Unauthorized:
+      description: Missing, expired, or invalid authentication.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Correlation-ID:
+          $ref: '#/components/headers/CorrelationId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ConversationAuditError'
+          examples:
+            unauthorized:
+              value:
+                code: AUTH-401
+                message: Autenticação necessária.
+                errorId: 11111111-1111-1111-1111-111111111111
+    Forbidden:
+      description: >-
+        Dedicated role, impersonation, tenant context, or path boundary denied.
+        ROLE_TENANT_ADMIN and ROLE_SUPER_ADMIN alone are insufficient. A Super Admin
+        also needs ROLE_TENANT_AUDIT and explicit active-tenant impersonation.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Correlation-ID:
+          $ref: '#/components/headers/CorrelationId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ConversationAuditError'
+          examples:
+            forbidden:
+              value:
+                code: AUD-403-FORBIDDEN
+                message: Acesso negado.
+                errorId: 11111111-1111-1111-1111-111111111111
+    NotFound:
+      description: Resource does not exist, belongs to another tenant, or the API is not exposed for that tenant.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Correlation-ID:
+          $ref: '#/components/headers/CorrelationId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ConversationAuditError'
+          examples:
+            notFound:
+              value:
+                code: AUD-404-CONVERSATION
+                message: Conversa não encontrada.
+                errorId: 11111111-1111-1111-1111-111111111111
+            exposureNotFound:
+              value:
+                code: AUD-404-NOT_FOUND
+                message: Recurso não encontrado.
+                errorId: 11111111-1111-1111-1111-111111111111
+    RateLimited:
+      description: Per-effective-tenant, user, and operation rate limit exceeded.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Correlation-ID:
+          $ref: '#/components/headers/CorrelationId'
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ConversationAuditError'
+          examples:
+            rateLimited:
+              value:
+                code: AUD-429-RATE_LIMIT
+                message: Limite temporário de consultas atingido.
+                errorId: 11111111-1111-1111-1111-111111111111
+    InternalFailure:
+      description: Fail-closed audit, decryption, or unexpected internal failure.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Correlation-ID:
+          $ref: '#/components/headers/CorrelationId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ConversationAuditError'
+          examples:
+            decryptFailure:
+              value:
+                code: AUD-500-DECRYPT
+                message: Não foi possível concluir a operação.
+                errorId: 11111111-1111-1111-1111-111111111111
+            auditFailure:
+              value:
+                code: AUD-500-AUDIT_FAILURE
+                message: Não foi possível concluir a operação.
+                errorId: 11111111-1111-1111-1111-111111111111
+    Unavailable:
+      description: Data protection not ready, query timeout, or dependency temporarily unavailable.
+      headers:
+        Cache-Control:
+          $ref: '#/components/headers/NoStore'
+        X-Correlation-ID:
+          $ref: '#/components/headers/CorrelationId'
+        Retry-After:
+          $ref: '#/components/headers/RetryAfter'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ConversationAuditError'
+          examples:
+            queryTimeout:
+              value:
+                code: AUD-503-QUERY_TIMEOUT
+                message: Consulta temporariamente indisponível.
+                errorId: 11111111-1111-1111-1111-111111111111
+            queryUnavailable:
+              value:
+                code: AUD-503-QUERY_UNAVAILABLE
+                message: Consulta temporariamente indisponível.
+                errorId: 11111111-1111-1111-1111-111111111111
+            rateLimitUnavailable:
+              value:
+                code: AUD-503-RATE_LIMIT_UNAVAILABLE
+                message: Consulta temporariamente indisponível.
+                errorId: 11111111-1111-1111-1111-111111111111
+            dataProtectionNotReady:
+              value:
+                code: AUD-503-DATA_PROTECTION_NOT_READY
+                message: Consulta temporariamente indisponível.
+                errorId: 11111111-1111-1111-1111-111111111111
+
+  schemas:
+    ConversationAuditSearchRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        channels:
+          type: array
+          uniqueItems: true
+          maxItems: 2
+          items:
+            $ref: '#/components/schemas/ConversationChannelFilter'
+          default: []
+        remoteIdentifier:
+          type: string
+          minLength: 1
+          maxLength: 64
+          description: >-
+            Exact E.164 value for WhatsApp or signed numeric chat_id for Telegram.
+            It is trimmed and normalized server-side and is never echoed in an error.
+        sessionStatuses:
+          type: array
+          uniqueItems: true
+          maxItems: 3
+          items:
+            $ref: '#/components/schemas/ConversationSessionStatus'
+          default: []
+        from:
+          type: string
+          format: date-time
+          description: Inclusive UTC lower bound. The UI default is now minus 30 days.
+        to:
+          type: string
+          format: date-time
+          description: >-
+            Inclusive UTC upper bound. May be at most five minutes beyond server time
+            for clock skew. The from/to interval must not exceed 366 days.
+        page:
+          type: integer
+          minimum: 0
+          default: 0
+        size:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 25
+        sort:
+          $ref: '#/components/schemas/ConversationAuditSort'
+      required: []
+
+    ConversationAuditSummaryPage:
+      type: object
+      additionalProperties: false
+      required: [items, page]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConversationAuditSummary'
+        page:
+          $ref: '#/components/schemas/PageMetadata'
+
+    ConversationAuditMessagePage:
+      type: object
+      additionalProperties: false
+      required: [items, page]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConversationAuditMessage'
+        page:
+          $ref: '#/components/schemas/PageMetadata'
+
+    PageMetadata:
+      type: object
+      additionalProperties: false
+      required: [number, size, totalElements, totalPages, hasNext, hasPrevious]
+      properties:
+        number:
+          type: integer
+          minimum: 0
+        size:
+          type: integer
+          minimum: 1
+          maximum: 100
+        totalElements:
+          type: integer
+          format: int64
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+        hasNext:
+          type: boolean
+        hasPrevious:
+          type: boolean
+
+    ConversationAuditSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - conversationId
+        - channel
+        - remoteIdentifierType
+        - remoteIdentifierMasked
+        - workflowState
+        - sessionStatus
+        - lastInteractionAt
+        - messageCount
+        - inboundCount
+        - outboundCount
+        - lastOutboundDeliveryStatus
+      properties:
+        conversationId:
+          type: string
+          format: uuid
+        channel:
+          $ref: '#/components/schemas/ConversationChannelResponse'
+        remoteIdentifierType:
+          $ref: '#/components/schemas/RemoteIdentifierType'
+        remoteIdentifierMasked:
+          type: string
+          minLength: 1
+          maxLength: 64
+          description: >-
+            WhatsApp keeps a safe prefix and final four digits; Telegram emits
+            bullets plus only the final three digits and never exposes a sign/group ID.
+        workflowState:
+          type: string
+          minLength: 1
+          maxLength: 64
+          pattern: '^[A-Z][A-Z0-9_]*$'
+        sessionStatus:
+          $ref: '#/components/schemas/ConversationSessionStatus'
+        lastInteractionAt:
+          type: string
+          format: date-time
+        messageCount:
+          type: integer
+          format: int64
+          minimum: 0
+        inboundCount:
+          type: integer
+          format: int64
+          minimum: 0
+        outboundCount:
+          type: integer
+          format: int64
+          minimum: 0
+        lastOutboundDeliveryStatus:
+          oneOf:
+            - $ref: '#/components/schemas/MessageDeliveryStatus'
+            - type: 'null'
+
+    ConversationAuditDetail:
+      type: object
+      additionalProperties: false
+      required:
+        - conversationId
+        - channel
+        - remoteIdentifierType
+        - remoteIdentifierMasked
+        - workflowState
+        - previousWorkflowState
+        - sessionStatus
+        - startedAt
+        - lastInteractionAt
+        - messageCount
+        - availableEvidence
+      properties:
+        conversationId:
+          type: string
+          format: uuid
+        channel:
+          $ref: '#/components/schemas/ConversationChannelResponse'
+        remoteIdentifierType:
+          $ref: '#/components/schemas/RemoteIdentifierType'
+        remoteIdentifierMasked:
+          type: string
+          minLength: 1
+          maxLength: 64
+        workflowState:
+          type: string
+          minLength: 1
+          maxLength: 64
+          pattern: '^[A-Z][A-Z0-9_]*$'
+        previousWorkflowState:
+          type: [string, 'null']
+          maxLength: 64
+          pattern: '^[A-Z][A-Z0-9_]*$'
+        sessionStatus:
+          $ref: '#/components/schemas/ConversationSessionStatus'
+        startedAt:
+          type: string
+          format: date-time
+        lastInteractionAt:
+          type: string
+          format: date-time
+        messageCount:
+          type: integer
+          format: int64
+          minimum: 0
+        availableEvidence:
+          $ref: '#/components/schemas/AvailableEvidence'
+
+    AvailableEvidence:
+      type: object
+      additionalProperties: false
+      required: [originAttribution, providerDeliveryReceipts]
+      properties:
+        originAttribution:
+          type: boolean
+        providerDeliveryReceipts:
+          type: boolean
+
+    ConversationAuditMessage:
+      type: object
+      additionalProperties: false
+      required:
+        - messageId
+        - direction
+        - origin
+        - messageType
+        - content
+        - mediaMetadata
+        - sentAt
+        - deliveryStatus
+        - providerAcceptedAt
+        - deliveredAt
+        - readAt
+        - failedAt
+        - failureCategory
+        - correlationId
+      properties:
+        messageId:
+          type: string
+          format: uuid
+          description: Internal UUID. It is never the provider message identifier.
+        direction:
+          $ref: '#/components/schemas/MessageDirection'
+        origin:
+          $ref: '#/components/schemas/MessageOrigin'
+        messageType:
+          $ref: '#/components/schemas/ConversationMessageType'
+        content:
+          type: [string, 'null']
+          maxLength: 4096
+        mediaMetadata:
+          oneOf:
+            - $ref: '#/components/schemas/SafeMediaMetadata'
+            - type: 'null'
+        sentAt:
+          type: string
+          format: date-time
+        deliveryStatus:
+          $ref: '#/components/schemas/MessageDeliveryStatus'
+        providerAcceptedAt:
+          type: [string, 'null']
+          format: date-time
+        deliveredAt:
+          type: [string, 'null']
+          format: date-time
+        readAt:
+          type: [string, 'null']
+          format: date-time
+        failedAt:
+          type: [string, 'null']
+          format: date-time
+        failureCategory:
+          oneOf:
+            - $ref: '#/components/schemas/MessageFailureCategory'
+            - type: 'null'
+        correlationId:
+          type: [string, 'null']
+          format: uuid
+
+    SafeMediaMetadata:
+      type: object
+      additionalProperties: false
+      required: [mimeType, fileName, sizeBytes]
+      properties:
+        mimeType:
+          type: [string, 'null']
+          maxLength: 100
+        fileName:
+          type: [string, 'null']
+          maxLength: 255
+          description: Sanitized display name only; never a URL, path, token, or signed query.
+        sizeBytes:
+          type: [integer, 'null']
+          format: int64
+          minimum: 0
+
+    RemoteIdentifierReveal:
+      type: object
+      additionalProperties: false
+      required: [remoteIdentifierType, remoteIdentifier, revealedAt]
+      properties:
+        remoteIdentifierType:
+          $ref: '#/components/schemas/RemoteIdentifierType'
+        remoteIdentifier:
+          type: string
+          minLength: 1
+          maxLength: 64
+        revealedAt:
+          type: string
+          format: date-time
+
+    ConversationAuditError:
+      type: object
+      additionalProperties: false
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 64
+          pattern: '^(AUTH|AUD)-[A-Z0-9_-]+$'
+        message:
+          type: string
+          minLength: 1
+          maxLength: 255
+        errorId:
+          type: [string, 'null']
+          format: uuid
+        fieldErrors:
+          type: array
+          maxItems: 20
+          items:
+            $ref: '#/components/schemas/ConversationAuditFieldError'
+
+    ConversationAuditFieldError:
+      type: object
+      additionalProperties: false
+      required: [field, code, message]
+      properties:
+        field:
+          type: string
+          minLength: 1
+          maxLength: 64
+        code:
+          type: string
+          minLength: 1
+          maxLength: 32
+          pattern: '^[A-Z0-9_]+$'
+        message:
+          type: string
+          minLength: 1
+          maxLength: 255
+
+    ConversationChannelFilter:
+      type: string
+      enum: [WHATSAPP, TELEGRAM]
+
+    ConversationChannelResponse:
+      type: string
+      minLength: 1
+      maxLength: 32
+      pattern: '^[A-Z][A-Z0-9_]*$'
+      description: >-
+        Forward-compatible response value. WHATSAPP and TELEGRAM have dedicated
+        labels; a future allowlisted backend value is rendered with a safe generic
+        label. Search input remains closed by ConversationChannelFilter.
+
+    RemoteIdentifierType:
+      type: string
+      enum: [PHONE, CHAT_ID]
+
+    ConversationSessionStatus:
+      type: string
+      enum: [ACTIVE, EXPIRED, COMPLETED]
+
+    ConversationAuditSort:
+      type: string
+      enum: [LAST_INTERACTION_DESC, LAST_INTERACTION_ASC]
+      default: LAST_INTERACTION_DESC
+
+    MessageDirection:
+      type: string
+      enum: [INBOUND, OUTBOUND]
+
+    MessageOrigin:
+      type: string
+      enum: [CLIENT, BOT, SYSTEM, OPERATOR, UNKNOWN_LEGACY]
+
+    ConversationMessageType:
+      type: string
+      enum: [TEXT, DOCUMENT, IMAGE, AUDIO, INTERACTIVE, CONTACT, PROGRESS, UNKNOWN]
+
+    MessageDeliveryStatus:
+      type: string
+      enum: [PROVIDER_ACCEPTED, DELIVERED, READ, FAILED, UNKNOWN]
+
+    MessageFailureCategory:
+      type: string
+      enum:
+        - PROVIDER_REJECTED
+        - RATE_LIMITED
+        - TIMEOUT
+        - AUTHENTICATION
+        - INVALID_RECIPIENT
+        - UNKNOWN_SAFE

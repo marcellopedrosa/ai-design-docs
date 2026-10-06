@@ -1,0 +1,890 @@
+openapi: 3.1.0
+info:
+  title: SaaS Service Client Legacy API Baseline
+  version: 0.3.0
+  description: >-
+    Draft, non-implementable projection of 9 legacy Client HTTP operations extracted
+    from Spring MVC controllers. Version 0.3.0 closes the three P5 authorized-contact wire
+    projections. It records observed code and unresolved design gaps; it is not
+    approval of the current behavior. Every x-open-questions item must be resolved from an approved
+    requirement, use case, ADR or owner decision before any operation is promoted to Active.
+x-document-metadata:
+  documentId: CLIENT-V1
+  primaryNature: Contrato
+  owner: Arquitetura, Backend e Qualidade
+  status: Draft
+  date: 2026-09-10
+  lastReviewed: 2026-09-10
+  normativeBaseline: TP-00052 v1.32, ANL-00055 v1.29, ANL-00056 v1.30 and ANL-00057 v1.0; operation-level product sources remain required
+  relatedFiles:
+    - docs/delivery/plans/TP-00052-backend-api-contract-baseline.md
+    - docs/analysis/ANL-00055-backend-api-contract-coverage-inventory.md
+    - docs/analysis/ANL-00057-frontend-backend-api-contract-catalog.md
+    - docs/analysis/ANL-00056-api-contract-validation-loop.md
+    - docs/agents/standards/api-client-standard.md
+x-contract-status: Draft
+x-implementation-authorization: blocked
+x-extraction-baseline:
+  date: 2026-09-10
+  source: Spring MVC controllers, SecurityConfig, method security and shared HTTP handlers
+  controllers: 1
+  operations: 9
+  caveat: Code is evidence of current behavior, not an approved source of product intent.
+x-open-questions:
+  - id: CLIENT-BASELINE-001
+    topic: schemas
+    blocking: true
+    action: Replace every permissive Java-type projection with a closed, validated wire schema.
+  - id: CLIENT-BASELINE-002
+    topic: errors
+    blocking: true
+    action: Validate operation-specific error codes, bodies and headers; decide the RFC 9457 migration boundary.
+  - id: CLIENT-BASELINE-003
+    topic: authorization
+    blocking: true
+    action: Validate route and method authorization, role composition, tenant boundary and negative cases.
+  - id: CLIENT-BASELINE-004
+    topic: consumers
+    blocking: true
+    action: Confirm consumers and update each affected official document with version and operationIds.
+x-change-log:
+  - version: 0.3.0
+    date: 2026-09-10
+    compatibility: draft-breaking-refinement
+    changes: >-
+      Refined all three P5 authorized-contact operations with closed response schemas, the current
+      permissive request, tenant-scoped lookup, synchronous transaction/event behavior and legacy
+      400 semantics for missing or duplicate resources.
+  - version: 0.2.0
+    date: 2026-09-10
+    compatibility: draft-breaking-refinement
+    changes: Replaced opaque P1 projections with observed DTO/page schemas, exposed the ignored tipoDocumento consumer field and current 409 variant; owner approval, request strictness, RFC 9457 and authorization remain blocked.
+  - version: 0.1.0
+    date: 2026-09-10
+    compatibility: initial-draft
+    changes: Extracted the legacy baseline for 9 previously uncovered operations.
+servers:
+  - url: /
+security:
+  - bearerAuth: []
+tags:
+  - name: ClientController
+    description: Draft operations extracted from ClientController.
+paths:
+  /api/v1/clients:
+    get:
+      operationId: list
+      tags: [ClientController]
+      summary: Legacy list operation
+      description: >-
+        Draft projection extracted from ClientController.list.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_FISCAL_ADMIN
+        - ROLE_TENANT_ADMIN
+        - ROLE_TENANT_OPERATOR
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasAnyRole('TENANT_ADMIN', 'TENANT_OPERATOR', 'FISCAL_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/client/internal/presentation/rest/ClientController.java:38"
+      x-source-method: "ClientController.list"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: CLIENT-LIST-001
+          blocking: true
+          action: Approve the observed Page<ClientCompanyDto> wire schema/status and decide the legacy-error to RFC 9457 compatibility boundary.
+        - id: CLIENT-LIST-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/clients"
+      parameters:
+        - name: page
+          in: query
+          required: false
+          x-java-type: "int"
+          schema:
+            type: integer
+            default: 0
+        - name: search
+          in: query
+          required: false
+          x-java-type: "String"
+          schema:
+            type: string
+        - name: size
+          in: query
+          required: false
+          x-java-type: "int"
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          required: false
+          x-java-type: "List<String>"
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientPage'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+    post:
+      operationId: createClient
+      tags: [ClientController]
+      summary: Legacy createClient operation
+      description: >-
+        Draft projection extracted from ClientController.createClient.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+        - ROLE_TENANT_OPERATOR
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('TENANT_ADMIN') or hasRole('TENANT_OPERATOR')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/client/internal/presentation/rest/ClientController.java:53"
+      x-source-method: "ClientController.createClient"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: CLIENT-CREATECLIENT-001
+          blocking: true
+          action: Approve the observed CreateClientDto/ClientCompanyDto schemas and 200 status, then decide the legacy-error to RFC 9457 compatibility boundary.
+        - id: CLIENT-CREATECLIENT-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/clients"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientWriteRequest'
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientCompany'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '409':
+          $ref: '#/components/responses/LegacyConflict'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/clients/limits:
+    get:
+      operationId: getLimits
+      tags: [ClientController]
+      summary: Legacy getLimits operation
+      description: >-
+        Draft projection extracted from ClientController.getLimits.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+        - ROLE_TENANT_OPERATOR
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('TENANT_ADMIN') or hasRole('TENANT_OPERATOR')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/client/internal/presentation/rest/ClientController.java:75"
+      x-source-method: "ClientController.getLimits"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: CLIENT-GETLIMITS-001
+          blocking: true
+          action: Approve the observed TenantUsageDto schema and 200 status, then decide the legacy-error to RFC 9457 compatibility boundary.
+        - id: CLIENT-GETLIMITS-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/clients/limits"
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantUsage'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/clients/{clientId}/contacts:
+    get:
+      operationId: listContacts
+      tags: [ClientController]
+      summary: List a tenant-scoped client's authorized contacts
+      description: >-
+        Resolves the effective TenantContext, requires the client to belong to that tenant and
+        returns its contacts in aggregate order. A missing client currently maps to legacy 400.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+        - ROLE_TENANT_OPERATOR
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('TENANT_ADMIN') or hasRole('TENANT_OPERATOR')"
+      x-contract-priority: 5
+      x-priority-basis: "Internal or lower-use surface pending consumer validation."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/client/internal/presentation/rest/ClientController.java:83"
+      x-source-method: "ClientController.listContacts"
+      x-source-confidence: observed-static-not-approved
+      x-open-questions:
+        - id: CLIENT-LISTCONTACTS-001
+          blocking: true
+          action: Approve the observed AuthorizedContact array and legacy missing-client 400 before Active.
+        - id: CLIENT-LISTCONTACTS-002
+          blocking: true
+          action: Approve inherited roles, effective TenantContext isolation and consumer compatibility.
+      x-consumer-evidence:
+        - "/api/v1/clients/{clientId}/contacts"
+        - "frontend/src/services/clientService.ts"
+        - "frontend/src/types/client.ts"
+        - "frontend/src/hooks/queries/useClientQueries.ts"
+      x-tenant-boundary: Effective TenantContext plus findByIdAndTenantId; cross-tenant identifiers resolve as legacy 400.
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthorizedContact'
+          x-source-confidence: observed-static-not-approved
+          x-response-review: observed-shape-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: observed-legacy-owner-approval-required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+    post:
+      operationId: addContact
+      tags: [ClientController]
+      summary: Add an authorized contact to a tenant-scoped client
+      description: >-
+        Adds an ACTIVE contact in the client aggregate and publishes ContactAssignedEvent in the
+        same transaction. Channel defaults to WHATSAPP and is uppercased; duplicate phone plus
+        case-insensitive channel and a missing client currently map to legacy 400.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+        - ROLE_TENANT_OPERATOR
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('TENANT_ADMIN') or hasRole('TENANT_OPERATOR')"
+      x-contract-priority: 5
+      x-priority-basis: "Internal or lower-use surface pending consumer validation."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/client/internal/presentation/rest/ClientController.java:89"
+      x-source-method: "ClientController.addContact"
+      x-source-confidence: observed-static-not-approved
+      x-open-questions:
+        - id: CLIENT-ADDCONTACT-001
+          blocking: true
+          action: Approve the observed permissive request, closed response and legacy duplicate/missing 400 before Active.
+        - id: CLIENT-ADDCONTACT-002
+          blocking: true
+          action: Approve inherited roles, effective TenantContext isolation and same-transaction event side effects.
+      x-consumer-evidence:
+        - "/api/v1/clients/{clientId}/contacts"
+        - "frontend/src/services/clientService.ts"
+        - "frontend/src/types/client.ts"
+        - "frontend/src/hooks/queries/useClientQueries.ts"
+      x-tenant-boundary: Effective TenantContext plus findByIdAndTenantId; cross-tenant identifiers resolve as legacy 400.
+      x-side-effects: Persists the aggregate and publishes ContactAssignedEvent inside the transaction.
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddContactRequest'
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizedContact'
+          x-source-confidence: observed-static-not-approved
+          x-response-review: observed-shape-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: observed-legacy-owner-approval-required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/clients/{clientId}/contacts/{contactId}:
+    delete:
+      operationId: removeContact
+      tags: [ClientController]
+      summary: Remove an authorized contact from a tenant-scoped client
+      description: >-
+        Hard-removes the contact from the tenant-scoped client aggregate and publishes
+        ContactRevokedEvent in the same transaction. Missing client or contact, including a
+        repeated delete, currently maps to legacy 400.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+        - ROLE_TENANT_OPERATOR
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('TENANT_ADMIN') or hasRole('TENANT_OPERATOR')"
+      x-contract-priority: 5
+      x-priority-basis: "Internal or lower-use surface pending consumer validation."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/client/internal/presentation/rest/ClientController.java:97"
+      x-source-method: "ClientController.removeContact"
+      x-source-confidence: observed-static-not-approved
+      x-open-questions:
+        - id: CLIENT-REMOVECONTACT-001
+          blocking: true
+          action: Approve bodyless HTTP 204 and legacy missing-resource/repeated-delete 400 before Active.
+        - id: CLIENT-REMOVECONTACT-002
+          blocking: true
+          action: Approve inherited roles, effective TenantContext isolation and same-transaction revocation side effects.
+      x-consumer-evidence:
+        - "/api/v1/clients/{clientId}/contacts/{contactId}"
+        - "frontend/src/services/clientService.ts"
+        - "frontend/src/hooks/queries/useClientQueries.ts"
+      x-tenant-boundary: Effective TenantContext plus tenant-scoped client lookup; cross-tenant identifiers resolve as legacy 400.
+      x-side-effects: Hard-removes the aggregate member and publishes ContactRevokedEvent inside the transaction.
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+        - name: contactId
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Operation completed without a response body.
+          x-source-confidence: observed-static-not-approved
+          x-response-review: observed-bodyless-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: observed-legacy-owner-approval-required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+  /api/v1/clients/{id}:
+    delete:
+      operationId: deleteClient
+      tags: [ClientController]
+      summary: Legacy deleteClient operation
+      description: >-
+        Draft projection extracted from ClientController.deleteClient.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+        - ROLE_TENANT_OPERATOR
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('TENANT_ADMIN') or hasRole('TENANT_OPERATOR')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/client/internal/presentation/rest/ClientController.java:68"
+      x-source-method: "ClientController.deleteClient"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: CLIENT-DELETECLIENT-001
+          blocking: true
+          action: Approve the observed 204 response without body and decide the legacy-error to RFC 9457 compatibility boundary.
+        - id: CLIENT-DELETECLIENT-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/clients/{id}"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Operation completed without a response body.
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+    get:
+      operationId: getClient
+      tags: [ClientController]
+      summary: Legacy getClient operation
+      description: >-
+        Draft projection extracted from ClientController.getClient.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+        - ROLE_TENANT_OPERATOR
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('TENANT_ADMIN') or hasRole('TENANT_OPERATOR')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/client/internal/presentation/rest/ClientController.java:47"
+      x-source-method: "ClientController.getClient"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: CLIENT-GETCLIENT-001
+          blocking: true
+          action: Approve the observed ClientCompanyDto schema and current 200/400 behavior, then decide the legacy-error to RFC 9457 compatibility boundary.
+        - id: CLIENT-GETCLIENT-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/clients/{id}"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientCompany'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+    put:
+      operationId: updateClient
+      tags: [ClientController]
+      summary: Legacy updateClient operation
+      description: >-
+        Draft projection extracted from ClientController.updateClient.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_TENANT_ADMIN
+        - ROLE_TENANT_OPERATOR
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig authenticated fallback; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('TENANT_ADMIN') or hasRole('TENANT_OPERATOR')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/client/internal/presentation/rest/ClientController.java:60"
+      x-source-method: "ClientController.updateClient"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: CLIENT-UPDATECLIENT-001
+          blocking: true
+          action: Approve the observed UpdateClientDto/ClientCompanyDto schemas and current 200/400 behavior, then decide the legacy-error to RFC 9457 compatibility boundary.
+        - id: CLIENT-UPDATECLIENT-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/clients/{id}"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          x-java-type: "UUID"
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientWriteRequest'
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientCompany'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '409':
+          $ref: '#/components/responses/LegacyConflict'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.3.0
+        compatibilityDecision: required-before-active
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    LegacyBadRequest:
+      description: Current shared handlers may emit a 400 JSON error; exact operation codes and variants require validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacyError'
+    LegacyConflict:
+      description: Current DataIntegrityViolationException handler emits 409 for duplicate tenant/document persistence conflicts.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacyError'
+    LegacyUnauthorized:
+      description: Current security entry point emits a 401 JSON error; migration to RFC 9457 requires a versioned decision.
+      headers:
+        WWW-Authenticate:
+          description: Bearer challenge governed by RFC 9110.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacySecurityError'
+    LegacyForbidden:
+      description: Current security or exception handler emits a 403 JSON error; exact boundary variants require validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacySecurityError'
+    LegacyInternalFailure:
+      description: Current shared handler emits a sanitized 500 JSON error with an errorId.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacyError'
+  schemas:
+    AddContactRequest:
+      type: object
+      additionalProperties: true
+      description: >-
+        Observed AddContactDto boundary. Current Jackson configuration ignores unknown members and
+        no Bean Validation constrains the three fields; domain construction rejects null name/phone,
+        defaults null channel to WHATSAPP and uppercases a non-null channel.
+      properties:
+        contactName: {type: [string, 'null']}
+        phoneNumber: {type: [string, 'null']}
+        channel: {type: [string, 'null']}
+    AuthorizedContact:
+      type: object
+      additionalProperties: false
+      required: [id, clientId, contactName, phoneNumber, channel, status, syncStatus, addedAt]
+      properties:
+        id: {type: string, format: uuid}
+        clientId: {type: string, format: uuid}
+        contactName: {type: string}
+        phoneNumber: {type: string}
+        channel: {type: string}
+        status: {type: string, enum: [ACTIVE, INACTIVE]}
+        syncStatus: {type: string, enum: [PENDING, SYNCED]}
+        addedAt: {type: string, format: date-time}
+    ClientWriteRequest:
+      type: object
+      additionalProperties: true
+      description: >-
+        Observed successful request shape shared by CreateClientDto and UpdateClientDto. The
+        current Jackson boundary ignores unknown members; closing that runtime behavior requires
+        a separate compatibility decision. The frontend currently sends tipoDocumento although
+        the Java DTO does not consume it.
+      required: [razaoSocial, documento]
+      properties:
+        razaoSocial:
+          type: string
+          maxLength: 255
+        documento:
+          type: string
+          description: CPF or CNPJ accepted with or without punctuation and normalized to digits by Documento.
+        tipoDocumento:
+          type: integer
+          enum: [1, 2]
+          deprecated: true
+          description: Accepted from the current frontend payload but ignored by CreateClientDto and UpdateClientDto.
+    ClientCompany:
+      type: object
+      additionalProperties: false
+      description: Observed ClientCompanyDto response shape.
+      required: [id, tenantId, razaoSocial, documento, createdAt, authorizedPhonesCount]
+      properties:
+        id:
+          type: string
+          format: uuid
+        tenantId:
+          type: string
+          format: uuid
+        razaoSocial:
+          type: string
+        documento:
+          type: string
+          description: Normalized eleven-digit CPF or fourteen-digit CNPJ.
+          pattern: '^(?:[0-9]{11}|[0-9]{14})$'
+        createdAt:
+          type: string
+          format: date-time
+        authorizedPhonesCount:
+          type: integer
+          format: int32
+          minimum: 0
+    ClientPage:
+      type: object
+      additionalProperties: false
+      description: Observed Spring Data page representation consumed and normalized by clientService.
+      required: [content, page]
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClientCompany'
+        page:
+          $ref: '#/components/schemas/PageMetadata'
+    PageMetadata:
+      type: object
+      additionalProperties: false
+      required: [size, number, totalElements, totalPages]
+      properties:
+        size:
+          type: integer
+          format: int32
+          minimum: 0
+        number:
+          type: integer
+          format: int32
+          minimum: 0
+        totalElements:
+          type: integer
+          format: int64
+          minimum: 0
+        totalPages:
+          type: integer
+          format: int32
+          minimum: 0
+    TenantUsage:
+      type: object
+      additionalProperties: false
+      description: Observed TenantUsageDto response shape.
+      required: [usedDocumentos, limitDocumentos]
+      properties:
+        usedDocumentos:
+          type: integer
+          format: int64
+          minimum: 0
+        limitDocumentos:
+          type: integer
+          format: int64
+          minimum: 0
+    LegacyError:
+      type: object
+      description: Observed non-RFC-9457 envelope; variants remain a blocking review item.
+      additionalProperties: true
+      required: [message]
+      properties:
+        message:
+          type: string
+        errorId:
+          type: string
+          format: uuid
+        errors:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      x-schema-review: required
+    LegacySecurityError:
+      type: object
+      description: Observed default security envelope; specialized path handlers may differ.
+      additionalProperties: true
+      required: [error, message, status, timestamp, path]
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        status:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+      x-schema-review: required
+    Problem:
+      type: object
+      description: Target Problem Details shape governed by RFC 9457; not claimed as current legacy behavior.
+      additionalProperties: true
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri-reference

@@ -1,0 +1,480 @@
+openapi: 3.1.0
+info:
+  title: SaaS Service Llm Legacy API Baseline
+  version: 0.2.0
+  description: >-
+    Draft, non-implementable projection of 4 legacy Llm HTTP operations extracted
+    from Spring MVC controllers. It records observed code and unresolved design gaps; it is not
+    approval of the current behavior. Every x-open-questions item must be resolved from an approved
+    requirement, use case, ADR or owner decision before any operation is promoted to Active.
+x-document-metadata:
+  documentId: LLM-V1
+  primaryNature: Contrato
+  owner: Arquitetura, Backend e Qualidade
+  status: Draft
+  date: 2026-09-10
+  lastReviewed: 2026-09-10
+  normativeBaseline: TP-00052 v1.32, ANL-00055 v1.29, ANL-00056 v1.30 and ANL-00057 v1.0; operation-level product sources remain required
+  relatedFiles:
+    - docs/delivery/plans/TP-00052-backend-api-contract-baseline.md
+    - docs/analysis/ANL-00055-backend-api-contract-coverage-inventory.md
+    - docs/analysis/ANL-00057-frontend-backend-api-contract-catalog.md
+    - docs/analysis/ANL-00056-api-contract-validation-loop.md
+    - docs/agents/standards/api-client-standard.md
+x-contract-status: Draft
+x-implementation-authorization: blocked
+x-extraction-baseline:
+  date: 2026-09-10
+  source: Spring MVC controllers, SecurityConfig, method security and shared HTTP handlers
+  controllers: 1
+  operations: 4
+  caveat: Code is evidence of current behavior, not an approved source of product intent.
+x-open-questions:
+  - id: LLM-BASELINE-001
+    topic: schemas
+    blocking: true
+    action: Replace every permissive Java-type projection with a closed, validated wire schema.
+  - id: LLM-BASELINE-002
+    topic: errors
+    blocking: true
+    action: Validate operation-specific error codes, bodies and headers; decide the RFC 9457 migration boundary.
+  - id: LLM-BASELINE-003
+    topic: authorization
+    blocking: true
+    action: Validate route and method authorization, role composition, tenant boundary and negative cases.
+  - id: LLM-BASELINE-004
+    topic: consumers
+    blocking: true
+    action: Confirm consumers and update each affected official document with version and operationIds.
+x-change-log:
+  - version: 0.2.0
+    date: 2026-09-10
+    compatibility: draft-breaking-refinement
+    changes: Replaced opaque P1 request/response projections with observed schemas and exposed nullable output fields, masked API keys, provider-strategy gaps and empty-or-legacy 400 variants; owner approval, RFC 9457 and authorization remain blocked.
+  - version: 0.1.0
+    date: 2026-09-10
+    compatibility: initial-draft
+    changes: Extracted the legacy baseline for 4 previously uncovered operations.
+servers:
+  - url: /
+security:
+  - bearerAuth: []
+tags:
+  - name: LlmModelController
+    description: Draft operations extracted from LlmModelController.
+paths:
+  /api/v1/llm-models:
+    get:
+      operationId: listModels
+      tags: [LlmModelController]
+      summary: Legacy listModels operation
+      description: >-
+        Draft projection extracted from LlmModelController.listModels.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig exact matcher; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/llm/presentation/rest/LlmModelController.java:25"
+      x-source-method: "LlmModelController.listModels"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: LLM-LISTMODELS-001
+          blocking: true
+          action: Approve the observed LlmModelResponse list schema, nullable numeric fields, masked apiKey and 200 status, then decide the legacy-error to RFC 9457 compatibility boundary.
+        - id: LLM-LISTMODELS-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/llm-models"
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LlmModel'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.2.0
+        compatibilityDecision: required-before-active
+    post:
+      operationId: createModel
+      tags: [LlmModelController]
+      summary: Legacy createModel operation
+      description: >-
+        Draft projection extracted from LlmModelController.createModel.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig exact matcher; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/llm/presentation/rest/LlmModelController.java:32"
+      x-source-method: "LlmModelController.createModel"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: LLM-CREATEMODEL-001
+          blocking: true
+          action: Approve the observed request/LlmModelResponse schemas, current 200 status, nullable numeric fields and persistence failure variants, then decide the legacy-error to RFC 9457 compatibility boundary.
+        - id: LLM-CREATEMODEL-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/llm-models"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLlmModelRequest'
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LlmModel'
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          $ref: '#/components/responses/LegacyBadRequest'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.2.0
+        compatibilityDecision: required-before-active
+  /api/v1/llm-models/fetch-remote-models:
+    post:
+      operationId: fetchRemoteModels
+      tags: [LlmModelController]
+      summary: Legacy fetchRemoteModels operation
+      description: >-
+        Draft projection extracted from LlmModelController.fetchRemoteModels.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig exact matcher; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/llm/presentation/rest/LlmModelController.java:58"
+      x-source-method: "LlmModelController.fetchRemoteModels"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: LLM-FETCHREMOTEMODELS-001
+          blocking: true
+          action: Approve the observed connection request/string-list response, provider support boundary and empty-or-legacy 400 variants, then decide the RFC 9457 compatibility boundary.
+        - id: LLM-FETCHREMOTEMODELS-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/llm-models/fetch-remote-models"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LlmConnectionRequest'
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          description: The controller returns an empty 400 after provider, outbound-policy or remote failures; malformed JSON may instead produce the legacy JSON error envelope.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.2.0
+        compatibilityDecision: required-before-active
+  /api/v1/llm-models/test-connection:
+    post:
+      operationId: testConnection
+      tags: [LlmModelController]
+      summary: Legacy testConnection operation
+      description: >-
+        Draft projection extracted from LlmModelController.testConnection.
+        Request, response, errors, authorization and compatibility require owner validation
+        before this operation can become Active.
+      security:
+        - bearerAuth: []
+      x-required-roles:
+        - ROLE_SUPER_ADMIN
+      x-required-authorities:
+        []
+      x-authorization-source: "SecurityConfig exact matcher; @PreAuthorize"
+      x-authorization-review: required
+      x-preauthorize-expression: "hasRole('SUPER_ADMIN')"
+      x-contract-priority: 1
+      x-priority-basis: "Static route evidence found under frontend/ or website/."
+      x-source-controller: "backend/src/main/java/br/com/duoset/saas_service/contexts/llm/presentation/rest/LlmModelController.java:44"
+      x-source-method: "LlmModelController.testConnection"
+      x-source-confidence: extracted-not-approved
+      x-open-questions:
+        - id: LLM-TESTCONNECTION-001
+          blocking: true
+          action: Approve the observed connection request, bodyless 200 and empty-or-legacy 400 variants, including the provider support boundary, then decide the RFC 9457 compatibility boundary.
+        - id: LLM-TESTCONNECTION-002
+          blocking: true
+          action: Confirm authorization, tenant boundary, consumers and compatibility from canonical sources.
+      x-consumer-evidence:
+        - "/api/v1/llm-models/test-connection"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LlmConnectionRequest'
+      responses:
+        '200':
+          description: Operation completed with the current representation.
+          x-source-confidence: extracted-not-approved
+          x-response-review: observed-static-owner-approval-required
+        '400':
+          description: The controller returns an empty 400 when a supported provider reports false; request, provider or outbound-policy rejection may instead produce the legacy JSON error envelope.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegacyError'
+        '401':
+          $ref: '#/components/responses/LegacyUnauthorized'
+        '403':
+          $ref: '#/components/responses/LegacyForbidden'
+        '500':
+          $ref: '#/components/responses/LegacyInternalFailure'
+      x-error-contract-review: required
+      x-version-policy:
+        publicMajor: v1
+        draftContractVersion: 0.2.0
+        compatibilityDecision: required-before-active
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    LegacyBadRequest:
+      description: Current shared handlers may emit a 400 JSON error; exact operation codes and variants require validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacyError'
+    LegacyUnauthorized:
+      description: Current security entry point emits a 401 JSON error; migration to RFC 9457 requires a versioned decision.
+      headers:
+        WWW-Authenticate:
+          description: Bearer challenge governed by RFC 9110.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacySecurityError'
+    LegacyForbidden:
+      description: Current security or exception handler emits a 403 JSON error; exact boundary variants require validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacySecurityError'
+    LegacyInternalFailure:
+      description: Current shared handler emits a sanitized 500 JSON error with an errorId.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LegacyError'
+  schemas:
+    CreateLlmModelRequest:
+      type: object
+      additionalProperties: true
+      description: >-
+        Observed successful persistence request. Jackson currently ignores unknown
+        members; closing that boundary requires a compatibility decision.
+      required: [provider, modelName, endpointUrl, apiKey]
+      properties:
+        provider:
+          $ref: '#/components/schemas/LlmProvider'
+        modelName:
+          type: string
+        endpointUrl:
+          type: string
+        apiKey:
+          type: string
+          writeOnly: true
+        temperature:
+          type: [number, 'null']
+          format: double
+        maxTokens:
+          type: [integer, 'null']
+          format: int32
+    LlmConnectionRequest:
+      type: object
+      additionalProperties: true
+      description: >-
+        Observed fields consumed by testConnection and fetchRemoteModels. The same
+        Java DTO accepts and ignores modelName, temperature and maxTokens here.
+      required: [provider, endpointUrl, apiKey]
+      properties:
+        provider:
+          $ref: '#/components/schemas/LlmProvider'
+        endpointUrl:
+          type: string
+        apiKey:
+          type: string
+          writeOnly: true
+        modelName:
+          type: string
+          deprecated: true
+          description: Accepted by the shared DTO but ignored by these two operations.
+        temperature:
+          type: [number, 'null']
+          format: double
+          deprecated: true
+          description: Accepted by the shared DTO but ignored by these two operations.
+        maxTokens:
+          type: [integer, 'null']
+          format: int32
+          deprecated: true
+          description: Accepted by the shared DTO but ignored by these two operations.
+    LlmProvider:
+      type: string
+      enum: [OPENAI, GEMINI, ANTHROPIC, CUSTOM]
+      description: >-
+        Domain enum accepted by the DTO. Current connection-test and remote-model
+        strategies exist only for OPENAI and GEMINI.
+    LlmModel:
+      type: object
+      additionalProperties: false
+      description: Observed LlmModelResponse shape; apiKey is always the fixed mask.
+      required: [id, provider, modelName, endpointUrl, apiKey, temperature, maxTokens]
+      properties:
+        id:
+          type: string
+          format: uuid
+        provider:
+          $ref: '#/components/schemas/LlmProvider'
+        modelName:
+          type: string
+        endpointUrl:
+          type: string
+        apiKey:
+          type: string
+          const: '********'
+          readOnly: true
+        temperature:
+          type: [number, 'null']
+          format: double
+        maxTokens:
+          type: [integer, 'null']
+          format: int32
+    LegacyError:
+      type: object
+      description: Observed non-RFC-9457 envelope; variants remain a blocking review item.
+      additionalProperties: true
+      required: [message]
+      properties:
+        message:
+          type: string
+        errorId:
+          type: string
+          format: uuid
+        errors:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      x-schema-review: required
+    LegacySecurityError:
+      type: object
+      description: Observed default security envelope; specialized path handlers may differ.
+      additionalProperties: true
+      required: [error, message, status, timestamp, path]
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        status:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+      x-schema-review: required
+    Problem:
+      type: object
+      description: Target Problem Details shape governed by RFC 9457; not claimed as current legacy behavior.
+      additionalProperties: true
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri-reference
