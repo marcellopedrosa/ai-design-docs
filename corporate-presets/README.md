@@ -5,6 +5,7 @@ Camada corporativa complementar ao Spec Kit. O conteúdo desta pasta define conv
 - `templates/`: modelos documentais reutilizáveis.
 - `restrictions/`: limites universais para agentes e tooling.
 - `policies/`: políticas corporativas de operação e colocação de artefatos.
+- `standards/agent-context-loading-standard.md`: ordem de leitura e seleção progressiva de contexto para agentes.
 - `standards/`: estrutura documental e standards técnicos aplicáveis.
 - `skills/`: fonte das skills corporativas publicadas nos diretórios nativos dos agentes.
 

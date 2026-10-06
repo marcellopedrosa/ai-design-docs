@@ -19,3 +19,5 @@ Não criar novas regras dentro de `spec-kit/` para resolver necessidades de `pro
 Após criar, mover, renomear ou remover documentos Markdown em `corporate-presets/` ou `projects/`, execute a skill `validate-relative-links` ou seu verificador. Corrija as referências novas ou alteradas antes de concluir; reporte separadamente as referências legadas ainda quebradas.
 
 Cada coleção documental ativa deve manter um `README.md` como índice semântico imediato, conforme `corporate-presets/standards/documentation-governance-standard.md`.
+
+Para seleção progressiva de contexto, siga `corporate-presets/standards/agent-context-loading-standard.md`.
