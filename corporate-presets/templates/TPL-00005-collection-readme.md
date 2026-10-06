@@ -23,6 +23,7 @@ na mesma mudança e atualize o índice da coleção pai quando a composição mu
 ```markdown
 ---
 document_id: {{ID-INDEX}}
+collection: true
 primary_nature: Contexto
 objective: {{pergunta respondida pela colecao}}
 scope: {{conteudo coberto}}
@@ -40,6 +41,11 @@ principal_statement: {{afirmacao central}}
 
 # {{Nome da coleção}}
 
+## Propósito do índice
+
+Este README é o índice semântico da coleção. Consulte-o antes dos documentos
+completos e mantenha o inventário sincronizado.
+
 ## Contrato da coleção
 
 - Conteúdo aceito: {{tipos permitidos}}.
@@ -49,7 +55,21 @@ principal_statement: {{afirmacao central}}
 
 ## Índice
 
-Nenhum artefato ativo.
+| ID | Título | Status | Data | Domínio |
+| --- | --- | --- | --- | --- |
+| Nenhum artefato ativo | — | — | — | — |
+
+## Rotas temáticas
+
+| Tema | Documentos |
+| --- | --- |
+| Nenhuma rota temática | — |
+
+## Change log
+
+| Versão | Data | Mudança |
+| --- | --- | --- |
+| 1.0 | YYYY-MM-DD | Criação do índice. |
 ```
 
 Substitua todos os marcadores por fatos. Owner desconhecido, natureza ambígua ou
