@@ -73,6 +73,78 @@ AI Engineering Harness/
 └── README.md
 ```
 
+## Guia das pastas
+
+### `spec-kit/`
+
+Contem o core upstream do GitHub Spec Kit: CLI, templates, comandos,
+integracoes, workflows e documentacao oficial. Deve permanecer protegido,
+independente e sem regras especificas de produtos.
+
+### `.specify/`
+
+E criado pelo Spec Kit quando um projeto e inicializado. Armazena os artefatos
+operacionais da instancia do Spec Kit, como memoria, scripts e configuracoes.
+Quando a inicializacao ocorrer na raiz do harness, ele fica na raiz. Nao use
+`spec-kit/.specify/` para armazenar documentos de produtos.
+
+### `.agents/` e `.claude/`
+
+Sao diretorios de integracao das ferramentas de IA. Na raiz, recebem as skills
+e configuracoes do Spec Kit para o harness. Em `projects/`, recebem as skills
+corporativas destinadas aos produtos, conforme o agente utilizado.
+
+### `corporate-presets/`
+
+E a fonte canonica das extensoes corporativas:
+
+- `templates/`: modelos de PRD, requisitos, ADRs, contratos e outros documentos;
+- `standards/`: padroes de estrutura, governanca e engenharia;
+- `policies/`: politicas operacionais;
+- `restrictions/`: restricoes universais;
+- `skills/`: skills reutilizaveis para os agentes.
+
+Essa camada complementa o Spec Kit e nao cria um ciclo de desenvolvimento
+paralelo.
+
+### `projects/docs/`
+
+Contem a documentacao transversal, independente de tecnologia ou dominio.
+
+- `requirements/`: PRDs e requisitos de produto;
+- `specs/`: especificacoes transversais derivadas dos requisitos;
+- `adrs/`: decisoes de arquitetura com impacto transversal;
+- `standards/`: convencoes especificas do contexto dos projetos;
+- `onboarding/`: orientacoes para entrada de pessoas e equipes;
+- `lessons-learned/`: aprendizados consolidados.
+
+### `projects/frontend/` e `projects/backend/`
+
+Representam dominios ou produtos especificos. Cada um possui seu proprio
+`docs/`, com `requirements/`, `specs/`, `adrs/` e demais colecoes documentais.
+Use esses caminhos quando o documento puder ser implementado, revisado ou
+mantido isoladamente pelo dominio.
+
+### `specs/<feature>/`
+
+Uma especificacao do Spec Kit deve representar uma feature ou mudanca concreta,
+e nao necessariamente o PRD inteiro. Seus artefatos seguem o ciclo:
+
+```text
+spec.md      # comportamento, requisitos funcionais e criterios de aceite
+plan.md      # abordagem tecnica e decisoes de implementacao
+tasks.md     # tarefas executaveis organizadas por dependencia
+```
+
+O PRD permanece em `requirements/`; `spec.md`, `plan.md` e `tasks.md` detalham
+como uma parte do produto sera especificada e implementada.
+
+### `scripts/`
+
+Contem automacoes do harness, incluindo instalacao das skills corporativas,
+validacao e protecao do diretorio `spec-kit/`. Os scripts nao substituem os
+comandos oficiais do Spec Kit.
+
 ### `spec-kit/`
 
 Contém a distribuição utilizada do GitHub Spec Kit, incluindo seus templates,
