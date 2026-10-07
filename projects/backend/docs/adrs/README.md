@@ -1,25 +1,7 @@
----
-collection: true
-domain: backend
-status: active
----
-
 # ADRs do backend
 
-Índice semântico das decisões técnicas do backend e da infraestrutura.
+Decisões arquiteturais específicas do backend.
 
-## Inventário
-
-| ID | Título | Status | Data | Domínio |
-| --- | --- | --- | --- | --- |
-| — | Nenhum ADR ativo | — | — | backend |
-
-## Rotas temáticas
-
-| Tema | Documentos |
-| --- | --- |
-| Nenhuma rota temática registrada | — |
-
-## Changelog
-
-- 2026-10-05: ADRs reconciliados removidos; a coleção permanece disponível para novas decisões.
+Use `ADR-NNNN-slug.md` com contexto, alternativas, decisão, consequências e
+rastreabilidade. A coleção está vazia neste baseline; novas decisões devem ser
+adicionadas aqui quando aprovadas.

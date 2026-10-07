@@ -1,0 +1,22 @@
+# Dependencies
+/node_modules
+
+# Next.js
+/.next
+/.next-e2e
+/out
+
+# Tests
+/coverage
+/test-results
+/playwright-report
+
+# Local environment
+.env
+.env.local
+.env.*.local
+
+# Misc
+*.tsbuildinfo
+.DS_Store
+npm-debug.log*

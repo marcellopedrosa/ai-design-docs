@@ -2,7 +2,8 @@
 
 Status: Active  
 Owner: Harness corporativo  
-Version: 1.0
+Version: 1.2
+Last reviewed: 2026-10-07
 
 ## Objetivo
 
@@ -13,8 +14,8 @@ transversal e a documentação específica de cada domínio.
 ## Princípios
 
 1. `spec-kit/` contém o core upstream e não recebe regras de um produto.
-2. `corporate-presets/` contém templates, standards, políticas e contratos
-   reutilizáveis.
+2. `corporate-presets/` contém templates, standards, políticas, restrições,
+   contratos e skills reutilizáveis.
 3. `projects/docs/` contém conhecimento transversal do produto.
 4. `<dominio>/docs/` contém conhecimento específico de um domínio.
 5. Artefatos do Spec Kit devem ficar em `docs/specs/` do escopo afetado.
@@ -29,20 +30,28 @@ harness-corporativo/
 ├── spec-kit/                         # Core upstream, protegido
 ├── corporate-presets/                # Camada corporativa reutilizável
 │   ├── templates/
-│   ├── standards/
-│   ├── standards/
-│   └── skills/
+│   ├── standards/                    # Padrões corporativos
+│   ├── contracts/                    # Contratos do harness e exemplos
+│   ├── policies/                     # Políticas operacionais
+│   ├── restrictions/                 # Restrições universais
+│   └── skills/                       # Procedimentos operacionais
 └── projects/
     ├── AGENTS.md
     ├── docs/                         # Escopo transversal
     │   ├── specs/
+    │   ├── architecture/             # Modelos e blueprints arquiteturais
+    │   ├── use-cases/                 # Casos de uso transversais
     │   ├── requirements/
+    │   ├── agents/                    # Agentes e standards operacionais do projeto
+    │   ├── api_contracts/             # Contratos de API do produto
+    │   ├── prds/                      # PRDs transversais do produto
     │   ├── adrs/
     │   ├── standards/
     │   ├── lessons-learned/
     │   └── onboarding/
     ├── frontend/
     │   ├── AGENTS.md
+    │   ├── app/                       # Implementação do domínio frontend
     │   └── docs/
     │       ├── specs/
     │       ├── requirements/
@@ -52,6 +61,7 @@ harness-corporativo/
     │       └── onboarding/
     ├── backend/
     │   ├── AGENTS.md
+    │   ├── app/                       # Implementação do domínio backend
     │   └── docs/
     │       ├── specs/
     │       ├── requirements/
@@ -71,12 +81,39 @@ Exemplos:
 
 | Conteúdo | Local |
 | --- | --- |
+| Standard técnico ou arquitetural transversal do projeto | `projects/docs/standards/` |
+| Blueprint ou modelo arquitetural transversal | `projects/docs/architecture/` |
+| Caso de uso transversal do produto | `projects/docs/use-cases/` |
+| Requirement transversal ou compartilhado | `projects/docs/requirements/` |
+| PRD transversal do produto | `projects/docs/prds/` |
+| Agentes, skills e standards operacionais específicos do projeto | `projects/docs/agents/` |
+| Contrato versionado de API do produto | `projects/docs/api_contracts/` |
 | ADR sobre arquitetura do sistema | `projects/docs/adrs/` |
 | Decisão sobre estado de tela | `projects/frontend/docs/adrs/` |
 | Especificação de uma mudança somente no backend | `projects/backend/docs/specs/` |
 | Especificação que atravessa domínios | `projects/docs/specs/` |
 | Lição aprendida de uma entrega transversal | `projects/docs/lessons-learned/` |
 | Lição aprendida de uma implementação frontend | `projects/frontend/docs/lessons-learned/` |
+
+`projects/docs/standards/` é a coleção canônica de padrões técnicos e
+arquiteturais transversais utilizados pelos projetos. Estado arquitetural,
+fronteiras de módulos, dependências, matrizes e manifestos ficam ali quando forem
+artefatos normativos; decisões formais continuam em `projects/docs/adrs/` ou no
+`adrs/` do domínio e os standards devem referenciá-las quando aplicável.
+
+`projects/docs/architecture/` é a coleção canônica de blueprints, modelos e
+descrições arquiteturais transversais. Use `standards/` para regras prescritivas
+e critérios que devem ser seguidos; use `architecture/` para registrar a forma,
+as fronteiras e a composição do sistema. Requisitos compartilhados ficam em
+`projects/docs/requirements/`, e casos de uso que atravessam domínios ficam em
+`projects/docs/use-cases/`.
+
+`projects/docs/agents/` contém os agentes e standards operacionais específicos do
+projeto. Ele não substitui `corporate-presets/skills/` nem o ciclo do Spec Kit.
+
+`projects/frontend/app/` e `projects/backend/app/` são fronteiras de implementação,
+não coleções documentais. A documentação correspondente permanece em `docs/` do
+domínio.
 
 ## Artefatos do Spec Kit
 
@@ -101,4 +138,16 @@ o conteúdo documental canônico deve permanecer em `projects/`.
 - ADRs ficam em `adrs/` e usam `ADR-<número>-<slug>.md`.
 - Especificações usam um diretório por feature em `docs/specs/<feature>/`.
 - Templates corporativos não devem ser copiados para dentro do core.
-- Cada coleção deve possuir um `README.md` quando tiver mais de um artefato.
+- Cada coleção documental ativa deve possuir um `README.md` imediato, mesmo quando
+  o conteúdo inicial for apenas o contrato da coleção.
+
+## Extensões corporativas
+
+Os seguintes diretórios fazem parte da camada corporativa e não devem ser
+reclassificados como documentação de produto:
+
+- `corporate-presets/contracts/`: contratos do harness e exemplos reutilizáveis;
+- `corporate-presets/policies/`: políticas operacionais e de colocação;
+- `corporate-presets/restrictions/`: limites universais de segurança e autonomia;
+- `corporate-presets/templates/`, `standards/` e `skills/`: formas, regras e
+  procedimentos corporativos.

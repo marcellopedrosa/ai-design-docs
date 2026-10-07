@@ -1,0 +1,4 @@
+User-Agent: *
+Allow: /
+
+Sitemap: http://localhost:3002/sitemap.xml

@@ -66,7 +66,7 @@ sem mover o core ou criar regras dentro de `spec-kit/`.
 ```text
 AI Engineering Harness/
 ├── spec-kit/                 # Core do GitHub Spec Kit; protegido e intocável
-├── corporate-presets/        # Templates, standards e skills corporativas
+├── corporate-presets/        # Templates, standards, contratos e políticas corporativas
 ├── projects/                 # Documentação e domínios dos projetos adotantes
 ├── scripts/                  # Automação de instalação e validação
 ├── AGENTS.md                 # Regras gerais para agentes
@@ -158,6 +158,9 @@ e não deve receber regras específicas de um produto ou alterações corporativ
 - `templates/`: modelos para PRD, ADR, lições aprendidas, contratos de API,
   relatórios e outros documentos;
 - `standards/`: padrões de estrutura documental e padrões técnicos;
+- `contracts/`: contratos do harness e exemplos reutilizáveis;
+- `policies/`: políticas operacionais e de colocação;
+- `restrictions/`: restrições universais para agentes e tooling;
 - `skills/`: skills corporativas reutilizáveis por Codex, Claude Code e outros
   agentes compatíveis.
 
@@ -174,6 +177,9 @@ projects/
 ├── docs/
 │   ├── specs/
 │   ├── requirements/
+│   ├── agents/
+│   ├── api_contracts/
+│   ├── prds/
 │   ├── adrs/
 │   ├── standards/
 │   └── lessons-learned/
@@ -184,6 +190,11 @@ projects/
     ├── adrs/
     └── specs/
 ```
+
+As fronteiras de implementação ficam em `projects/frontend/app/` e
+`projects/backend/app/`; sua documentação permanece nas respectivas árvores
+`docs/`. A referência normativa completa está em
+`corporate-presets/standards/documentation-structure-standard.md`.
 
 Use `projects/docs/` quando o conhecimento afetar mais de um domínio. Use o
 diretório do domínio quando o conteúdo puder ser implementado e revisado

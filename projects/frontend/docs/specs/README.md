@@ -1,3 +1,15 @@
-# Especificações
+---
+collection: true
+domain: frontend
+status: active
+---
 
-Artefatos do Spec Kit específicos do frontend: spec, plan, tasks e checklists.
+# Especificações do frontend
+
+Coleção de artefatos do Spec Kit reconciliados para o frontend.
+
+## Inventário
+
+Nenhuma especificação está registrada neste baseline. Novos artefatos do Spec Kit
+devem ser criados por feature, com `spec.md`, `plan.md`, `tasks.md` e checklists,
+após a prontidão documental aplicável.
