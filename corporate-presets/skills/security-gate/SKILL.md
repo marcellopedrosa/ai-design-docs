@@ -44,7 +44,7 @@ aceite, ambiente e comandos de validação registrados pelo projeto.
 
 Ler sempre:
 
-- `corporate-presets/standards/global/security-standard.md`;
+- `projects/docs/agents/standards/security-standard.md`;
 - `references/false-positive-controls.md` para heurísticas contra falsos positivos;
 - `references/finding-evidence.md` para regras de comprovação de findings;
 - `references/threat-review-model.md` para delimitação de trust boundaries.

@@ -15,6 +15,19 @@ preservando fontes canônicas e evitando contexto redundante.
 6. Especificação, plano, tarefas e critérios de aceite da tarefa.
 7. Preferências locais do usuário, quando não conflitarem com as camadas superiores.
 
+## Localização canônica de agentes e padrões
+
+Ao criar um agente específico do projeto, o arquivo do agente MUST ficar em
+`projects/docs/agents/<AgentName>.md`. Os padrões operacionais que esse agente
+deve seguir MUST ficar em `projects/docs/agents/standards/`, cada um com seu
+próprio arquivo Markdown e índice no README da coleção.
+
+O agente deve referenciar explicitamente, em `related_files` e no corpo da sua
+especificação, os standards aplicáveis. A criação de um agente sem definir seus
+standards obrigatórios é incompleta. Standards corporativos reutilizáveis ficam
+em `corporate-presets/standards/`; standards específicos do projeto ficam em
+`projects/docs/agents/standards/` e não devem duplicar a fonte corporativa.
+
 Uma fonte inferior pode especializar o escopo, mas não enfraquecer uma fonte
 superior. Em conflito não resolvido, registre a lacuna e aplique o limite mais
 restritivo até obter decisão do owner.

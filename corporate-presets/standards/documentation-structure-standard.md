@@ -111,6 +111,11 @@ as fronteiras e a composição do sistema. Requisitos compartilhados ficam em
 `projects/docs/agents/` contém os agentes e standards operacionais específicos do
 projeto. Ele não substitui `corporate-presets/skills/` nem o ciclo do Spec Kit.
 
+Ao criar um novo agente de projeto, use `projects/docs/agents/<AgentName>.md`.
+Os padrões que ele deve seguir ficam em `projects/docs/agents/standards/` e
+devem ser referenciados explicitamente pelo agente. Padrões aplicáveis a todos
+os projetos permanecem em `corporate-presets/standards/`.
+
 `projects/frontend/app/` e `projects/backend/app/` são fronteiras de implementação,
 não coleções documentais. A documentação correspondente permanece em `docs/` do
 domínio.
