@@ -22,13 +22,15 @@ principal_statement: Procedimentos devem indicar ambiente, pré-requisitos, risc
 - Nomes: `<ambiente-ou-capacidade>-<procedimento>.md` em kebab-case.
 - Estados permitidos: `Draft`, `Active`, `Historical` e `Deprecated`.
 - Critério de granularidade: separar um procedimento quando ambiente, audiência, owner, risco, pré-requisito ou ciclo operacional forem independentes.
-- Inventário: cada guia ou runbook possui entrada e link individuais na tabela abaixo.
+- Inventário atual: nenhum guia ou runbook está registrado neste baseline. O
+  inventário histórico abaixo não representa artefatos ativos.
 
 Esta coleção contém guias e runbooks operacionais. Convenção:
 `<ambiente-ou-capacidade>-<procedimento>.md`. Tipos aceitos: `Guia` para preparação
 e `Runbook` para operação repetível. Estados: `Draft`, `Active`, `Historical`,
 `Deprecated`.
 
+~~~text
 | Documento | Tipo | Descrição curta |
 | --- | --- | --- |
 | [Bootstrap do host de desenvolvimento local](local-development-host-bootstrap.md) | Guia | Prepara o acesso Docker, governa o start incremental e alerta sobre o reset Docker global aprovado. |
@@ -49,6 +51,8 @@ e `Runbook` para operação repetível. Estados: `Draft`, `Active`, `Historical`
 | [Política de pool gerenciada no DEV](tenant-pool-policy-managed-dev-runbook.md) | Runbook | Inicia o runtime gerenciado normal, valida readiness e testa pela tela alteração A/B e rollback sem restart. |
 | [Configuração de webhooks omnichannel](omnichannel-webhook-configuration.md) | Runbook | v1.4 governa DEV/HML/PRD, exige keyrings criptográficos antes do webhook remoto, proxy Docker canônico, autenticação Telegram, TLS e diagnóstico de 429/503. |
 | [Configuração de pool por tenant em HML e PRD](tenant-pool-policy-hml-prd-configuration.md) | Guia | Draft: orienta flags, capacidade, autoridade, readiness, canary e rollback sem executar deploy ou ler segredos. |
+
+~~~
 
 ## Change Log
 

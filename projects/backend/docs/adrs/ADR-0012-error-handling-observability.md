@@ -9,7 +9,7 @@ status: "Accepted"
 date: "2026-04-17"
 version: "1.2"
 keywords: "adr, decisao, arquitetura, padronização, de, tratamento, de, erros, e, observabilidade, logs, trace, e, métricas"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0001-technology-stack-and-architecture.md, docs/adrs/ADR-0002-separacao-banco-por-contexto-multitenancy.md, docs/adrs/ADR-0004-whatsapp-integration-architecture.md, docs/adrs/ADR-0005-multi-tenancy-architecture.md, docs/adrs/ADR-0006-audit-compliance.md, docs/adrs/ADR-0007-multi-provider-llm-integration.md, docs/adrs/ADR-0023-agnostic-payment-provider-integration.md, docs/adrs/ADR-0008-stripe-billing-subscription.md, docs/adrs/ADR-0010-tenant-plan-parametrization.md"
+related_files: "README.md, ADR-0001-technology-stack-and-architecture.md, ADR-0002-separacao-banco-por-contexto-multitenancy.md, ADR-0004-whatsapp-integration-architecture.md, ADR-0005-multi-tenancy-architecture.md, ADR-0006-audit-compliance.md, ADR-0007-multi-provider-llm-integration.md, ADR-0023-agnostic-payment-provider-integration.md, ADR-0008-stripe-billing-subscription.md, ADR-0010-tenant-plan-parametrization.md"
 code_references: "FiscalQueryRequestedEvent, FiscalQueryResultEvent, docker-compose.yml, TenantContextFilter, ModuleMdcFilter, ResponseEntity, TraceIdResponseFilter, TenantLimitAlertEvent"
 principal_statement: "O sistema padroniza erros HTTP em RFC 7807, exceções de domínio, correlation ID, logs JSON, observabilidade self-hosted e métricas com dimensões finitas e allowlisted, sem identificadores de tenant, usuário ou recurso como labels."
 ---
@@ -974,16 +974,16 @@ Mitigation: `@Order(Ordered.HIGHEST_PRECEDENCE)` no GlobalExceptionHandler, mas 
 
 # 12. Related ADRs
 
-- [ADR-0001 - Technology Stack and Architecture Foundation](./ADR-0001-technology-stack-and-architecture.md) — Define Spring Boot Actuator e Micrometer como base de observabilidade. Este ADR concretiza com PLG stack e métricas de negócio.
-- [ADR-0002 - Multi-Tenant Database Isolation Strategy](./ADR-0002-separacao-banco-por-contexto-multitenancy.md) — Define 5 databases. A tag `module` em logs e métricas mapeia para o bounded context correspondente.
-- [ADR-0004 - WhatsApp Integration Architecture](./ADR-0004-whatsapp-integration-architecture.md) — Fluxo cross-module (WhatsApp → Fiscal → SERPRO) é o principal caso de uso de distributed tracing.
-- [ADR-0005 - Multi-Tenancy Architecture](./ADR-0005-multi-tenancy-architecture.md) — Define `TenantContextFilter` e MDC. Este ADR estende o MDC com campos adicionais (module, traceId via Micrometer).
-- [ADR-0006 - Audit and Compliance](./ADR-0006-audit-compliance.md) — Audit log é complementar aos logs operacionais. Audit log captura **ações de negócio**; logs operacionais capturam **comportamento técnico**.
-- [ADR-0007 - Multi-Provider LLM Integration](./ADR-0007-multi-provider-llm-integration.md) — Métricas de tokens LLM e fallback são expostas via Micrometer (catálogo deste ADR).
-- [ADR-0023 - Integração agnóstica de provedores de pagamento](./ADR-0023-agnostic-payment-provider-integration.md) — Métricas financeiras usam dimensões neutras e `provider_code` somente na infraestrutura/observabilidade.
-- [ADR-0008 - Stripe Billing & Subscription Management](./ADR-0008-stripe-billing-subscription.md) — Baseline histórico substituído pelo ADR-0023.
-- [ADR-0010 - Tenant Plan Parametrization](./ADR-0010-tenant-plan-parametrization.md) — `TenantLimitAlertEvent` (80% threshold) gera log + métrica rastreável por este ADR.
-- [ADR-0011 - Resilience Strategy](./ADR-0011-resilience-retry-circuit-breaker.md) — Métricas Resilience4j são visualizadas no Grafana configurado por este ADR. Fallbacks geram logs estruturados com traceId.
+- [ADR-0001 - Technology Stack and Architecture Foundation](ADR-0001-technology-stack-and-architecture.md) — Define Spring Boot Actuator e Micrometer como base de observabilidade. Este ADR concretiza com PLG stack e métricas de negócio.
+- [ADR-0002 - Multi-Tenant Database Isolation Strategy](ADR-0002-separacao-banco-por-contexto-multitenancy.md) — Define 5 databases. A tag `module` em logs e métricas mapeia para o bounded context correspondente.
+- [ADR-0004 - WhatsApp Integration Architecture](ADR-0004-whatsapp-integration-architecture.md) — Fluxo cross-module (WhatsApp → Fiscal → SERPRO) é o principal caso de uso de distributed tracing.
+- [ADR-0005 - Multi-Tenancy Architecture](ADR-0005-multi-tenancy-architecture.md) — Define `TenantContextFilter` e MDC. Este ADR estende o MDC com campos adicionais (module, traceId via Micrometer).
+- [ADR-0006 - Audit and Compliance](ADR-0006-audit-compliance.md) — Audit log é complementar aos logs operacionais. Audit log captura **ações de negócio**; logs operacionais capturam **comportamento técnico**.
+- [ADR-0007 - Multi-Provider LLM Integration](ADR-0007-multi-provider-llm-integration.md) — Métricas de tokens LLM e fallback são expostas via Micrometer (catálogo deste ADR).
+- [ADR-0023 - Integração agnóstica de provedores de pagamento](ADR-0023-agnostic-payment-provider-integration.md) — Métricas financeiras usam dimensões neutras e `provider_code` somente na infraestrutura/observabilidade.
+- [ADR-0008 - Stripe Billing & Subscription Management](ADR-0008-stripe-billing-subscription.md) — Baseline histórico substituído pelo ADR-0023.
+- [ADR-0010 - Tenant Plan Parametrization](ADR-0010-tenant-plan-parametrization.md) — `TenantLimitAlertEvent` (80% threshold) gera log + métrica rastreável por este ADR.
+- [ADR-0011 - Resilience Strategy](ADR-0011-resilience-retry-circuit-breaker.md) — Métricas Resilience4j são visualizadas no Grafana configurado por este ADR. Fallbacks geram logs estruturados com traceId.
 
 ---
 

@@ -9,7 +9,7 @@ status: "Accepted"
 date: "2026-03-08"
 version: "1.2"
 keywords: "adr, decisao, arquitetura, multi, tenancy, strategy, per, context, database, schema, vs, tenant, id"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0002-separacao-banco-por-contexto-multitenancy.md, docs/adrs/ADR-0001-technology-stack-and-architecture.md, docs/adrs/ADR-0005-multi-tenancy-architecture.md, docs/product/business/product-vision.md, docs/agents/README.md"
+related_files: "README.md, ADR-0002-separacao-banco-por-contexto-multitenancy.md, ADR-0001-technology-stack-and-architecture.md, ADR-0005-multi-tenancy-architecture.md"
 code_references: "@Filter, SchemaCreationService, TenantContext, TenantAwareEntity, TenantFilter, @Entity"
 principal_statement: "The system will use **`tenant_id` column-based (row-level) multi-tenancy** within each bounded context database. All tables will contain a `tenant_id` column. Tenant isolation will be enforced at the ORM level by Hibernate `@Filter` activated globally via a session interceptor. There will be no per-tenant schemas."
 ---
@@ -28,7 +28,7 @@ principal_statement: "The system will use **`tenant_id` column-based (row-level)
 
 # 1. Context
 
-[ADR-0002](./ADR-0002-separacao-banco-por-contexto-multitenancy.md) established **one database per bounded context** for the SaaS Hub Contabil Inteligente project: `saas_tenant`, `saas_certificate`, `saas_fiscal`, `saas_billing`, and `saas_whatsapp`. ADR-0002 also recommended `tenant_id` discriminator-based isolation.
+[ADR-0002](ADR-0002-separacao-banco-por-contexto-multitenancy.md) established **one database per bounded context** for the SaaS Hub Contabil Inteligente project: `saas_tenant`, `saas_certificate`, `saas_fiscal`, `saas_billing`, and `saas_whatsapp`. ADR-0002 also recommended `tenant_id` discriminator-based isolation.
 
 This ADR provides the detailed technical analysis behind the multi-tenancy choice **within** each context database: should the project use **(a) a schema per tenant** (`tenant_<uuid>` with `SET search_path`) or **(b) a single schema with `tenant_id` column** (row-level filtering via Hibernate `@Filter`)?
 
@@ -327,11 +327,11 @@ Mitigation: `tenant_id` UUID index adds ~16 bytes per row + B-tree overhead. Neg
 
 # 12. Related ADRs
 
-- [ADR-0001 - Technology Stack and Architecture Foundation](./ADR-0001-technology-stack-and-architecture.md) — Defines Spring Boot 4.x, Spring Modulith, PostgreSQL, Clean Architecture.
-- [ADR-0002 - Multi-Tenant Database Isolation Strategy](./ADR-0002-separacao-banco-por-contexto-multitenancy.md) — Establishes database per bounded context and recommends `tenant_id` discriminator.
+- [ADR-0001 - Technology Stack and Architecture Foundation](ADR-0001-technology-stack-and-architecture.md) — Defines Spring Boot 4.x, Spring Modulith, PostgreSQL, Clean Architecture.
+- [ADR-0002 - Multi-Tenant Database Isolation Strategy](ADR-0002-separacao-banco-por-contexto-multitenancy.md) — Establishes database per bounded context and recommends `tenant_id` discriminator.
 
 - (Future) ADR-0004 — WhatsApp Integration Architecture.
-- [ADR-0005 - Multi-Tenancy Architecture](./ADR-0005-multi-tenancy-architecture.md)
+- [ADR-0005 - Multi-Tenancy Architecture](ADR-0005-multi-tenancy-architecture.md)
 - (Future) ADR-0006 — Authentication and Authorization with Keycloak.
 
 ---

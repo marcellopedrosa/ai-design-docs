@@ -9,7 +9,7 @@ status: "Active"
 date: "2026-08-28"
 version: "1.3"
 keywords: "iac, supply-chain, open-source, origem, redirect, credencial-efêmera, pinning, lockfile, checksum, assinatura, malware, licença, cve, mirror, provenance, offline, quarentena"
-related_files: "../../adrs/ADR-0033-arquitetura-alvo-iac-segura.md, docs/product/requirements/REQ-00044-infrastructure-iac-hermetic-poc.md, artefatos de análise/ANL-00044-req-00044-iac-hermetic-poc-adherence-analysis.md, docs/delivery/plans/TP-00017-infrastructure-iac-hermetic-poc.md, docs/delivery/plans/TP-00018-opentofu-offline-manifest-correction.md, docs/delivery/plans/TP-00025-opentofu-artifact-eligibility.md, docs/delivery/reports/RPT-0004-frontend-backend-cibersecurity.md, ./security-standard.md"
+related_files: "../../../backend/docs/adrs/ADR-0033-arquitetura-alvo-iac-segura.md, docs/product/requirements/REQ-00044-infrastructure-iac-hermetic-poc.md, artefatos de análise/ANL-00044-req-00044-iac-hermetic-poc-adherence-analysis.md, ../../specs/TP-00017-infrastructure-iac-hermetic-poc.md, ../../specs/TP-00018-opentofu-offline-manifest-correction.md, ../../specs/TP-00025-opentofu-artifact-eligibility.md, docs/delivery/reports/RPT-0004-frontend-backend-cibersecurity.md, ./security-standard.md"
 code_references: "N/A - standard documental; infra/iac, tooling e artefatos da cadeia ainda não existem."
 principal_statement: "O baseline open-source-first e o perfil tipificado EPHEMERAL_PUBLIC_ASSET_REDIRECT estão Active; nenhuma origem ou matriz concreta foi aprovada, a allowlist permanece vazia e toda aquisição ou execução continua bloqueada."
 last_reviewed: "2026-08-28"
@@ -530,15 +530,15 @@ gates de aquisição e replay.
 
 Cada decisão futura deverá ligar o manifesto e os resultados a:
 
-- [ADR-0033](../../adrs/ADR-0033-arquitetura-alvo-iac-segura.md);
+- [ADR-0033](../../../backend/docs/adrs/ADR-0033-arquitetura-alvo-iac-segura.md);
 - [REQ-00044](../../product/requirements/REQ-00044-infrastructure-iac-hermetic-poc.md),
   especialmente `AC-002`–`004`, `AC-011` e `AC-014`;
 - ANL-00044,
   especialmente `G3-GAP-002` e `L-007`;
-- [TP-00017](../../delivery/plans/TP-00017-infrastructure-iac-hermetic-poc.md),
+- [TP-00017](../../specs/TP-00017-infrastructure-iac-hermetic-poc.md),
   como ciclo encerrado e fonte do registro append-only; eventual sucessor deverá
   reaplicar `TP-C02`–`C04` e gates equivalentes;
-- [TP-00018](../../delivery/plans/TP-00018-opentofu-offline-manifest-correction.md),
+- [TP-00018](../../specs/TP-00018-opentofu-offline-manifest-correction.md),
   como evidência sucessora limitada de um único intake OpenTofu, encerrado
   `Artifact Not Eligible`; seus `PASS` de integridade e leaf binding não
   constituem provenance integral, allowlist ou autorização operacional;

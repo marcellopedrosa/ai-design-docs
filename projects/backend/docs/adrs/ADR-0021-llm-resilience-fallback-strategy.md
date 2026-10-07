@@ -10,8 +10,8 @@ date: "2026-07-27"
 last_reviewed: "2026-09-01"
 version: "1.3"
 keywords: "adr, decisao, arquitetura, llm, resilience, and, fallback, strategy"
-related_files: "docs/adrs/README.md, docs/product/use-cases/UC-00009-llm-admin-config.md, docs/product/requirements/REQ-00050-omnichannel-durable-inbound-processing.md, docs/adrs/ADR-0054-omnichannel-tenant-local-durable-inbox.md, docs/delivery/lessons-learned/backend/LL-BE-00093-webhook-ack-is-not-worker-completion.md, docs/delivery/lessons-learned/backend/LL-BE-00094-fallback-must-be-terminal-and-truthful.md"
-code_references: "backend/src/main/java/br/com/duoset/saas_service/contexts/omnichannel/internal/infrastructure/external/llm/LlmProviderChain.java, backend/src/main/java/br/com/duoset/saas_service/contexts/omnichannel/internal/infrastructure/external/llm/SpringAiLlmAdapter.java, backend/src/test/java/br/com/duoset/saas_service/contexts/omnichannel/internal/infrastructure/external/llm/LlmProviderChainTest.java"
+related_files: "README.md, ADR-0054-omnichannel-tenant-local-durable-inbox.md, ../lessons-learned/LL-BE-00093-webhook-ack-is-not-worker-completion.md, ../lessons-learned/LL-BE-00094-fallback-must-be-terminal-and-truthful.md"
+code_references: "app/src/main/java/br/com/duoset/saas_service/contexts/omnichannel/internal/infrastructure/external/llm/LlmProviderChain.java, app/src/main/java/br/com/duoset/saas_service/contexts/omnichannel/internal/infrastructure/external/llm/SpringAiLlmAdapter.java, app/src/test/java/br/com/duoset/saas_service/contexts/omnichannel/internal/infrastructure/external/llm/LlmProviderChainTest.java"
 principal_statement: "A estratégia de fallback em cascata respeita prioridade e circuit breaker dentro de um orçamento monotônico global; um provider só começa quando resta tempo para uma tentativa completa, evitando reter indefinidamente o worker conversacional."
 ---
 
@@ -182,8 +182,8 @@ iniciar tentativa que não caiba integralmente no restante.
 - [UC-00009 — Configuração Agnóstica de Provedores e Modelos de IA](../product/use-cases/UC-00009-llm-admin-config.md)
 - [REQ-00050 — Processamento inbound durável omnichannel](../product/requirements/REQ-00050-omnichannel-durable-inbound-processing.md)
 - [ADR-0054 — Inbox durável omnichannel no banco do tenant](ADR-0054-omnichannel-tenant-local-durable-inbox.md)
-- [LL-BE-00093 — ACK de webhook não é conclusão do worker](../delivery/lessons-learned/backend/LL-BE-00093-webhook-ack-is-not-worker-completion.md)
-- [LL-BE-00094 — Fallback deve ser terminal e verdadeiro](../delivery/lessons-learned/backend/LL-BE-00094-fallback-must-be-terminal-and-truthful.md)
+- [LL-BE-00093 — ACK de webhook não é conclusão do worker](../lessons-learned/LL-BE-00093-webhook-ack-is-not-worker-completion.md)
+- [LL-BE-00094 — Fallback deve ser terminal e verdadeiro](../lessons-learned/LL-BE-00094-fallback-must-be-terminal-and-truthful.md)
 
 ---
 

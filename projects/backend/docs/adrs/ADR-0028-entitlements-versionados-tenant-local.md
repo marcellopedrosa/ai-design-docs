@@ -9,8 +9,8 @@ status: "Accepted"
 date: "2026-08-25"
 version: "1.9"
 keywords: "entitlement, entitlement bundle version, contract snapshot, tenant local, immutable, catalog, plan limits, no fallback, no coalesce"
-related_files: "docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/adrs/ADR-0010-tenant-plan-parametrization.md`, `docs/adrs/ADR-0019-database-per-tenant.md`, `docs/adrs/ADR-0027-catalogo-global-faturamento-local.md`, `docs/adrs/ADR-0029-taxonomia-tipificada-entitlements.md`, `docs/adrs/ADR-0030-composicao-deterministica-enforcement-entitlements.md`, `docs/adrs/ADR-0032-adocao-versionada-grandfathering-entitlements.md`, `docs/adrs/ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md`, `docs/adrs/ADR-0035-migracao-evidence-first-entitlements-legados.md`, `docs/adrs/ADR-0036-cache-lkg-fail-safe-entitlements.md`, `docs/adrs/ADR-0037-boundary-fisico-entitlements-billing.md"
-code_references: "Estado legado em `TenantSettings`, `TenantApiImpl`, `Plan`, `SubscriptionPlan`, `BillingApiAdapter`, `TenantPlanInvoiceSourceAdapter` e migrations `tenant/V10` e `billing/V2`; boundary e destinos planejados sob `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados."
+related_files: "README.md, ../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md, ADR-0010-tenant-plan-parametrization.md, ADR-0019-database-per-tenant.md, ADR-0027-catalogo-global-faturamento-local.md, ADR-0029-taxonomia-tipificada-entitlements.md, ADR-0030-composicao-deterministica-enforcement-entitlements.md, ADR-0032-adocao-versionada-grandfathering-entitlements.md, ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md, ADR-0035-migracao-evidence-first-entitlements-legados.md, ADR-0036-cache-lkg-fail-safe-entitlements.md, ADR-0037-boundary-fisico-entitlements-billing.md"
+code_references: "Estado legado em `TenantSettings`, `TenantApiImpl`, `Plan`, `SubscriptionPlan`, `BillingApiAdapter`, `TenantPlanInvoiceSourceAdapter` e migrations `tenant/V10` e `billing/V2`; boundary e destinos planejados sob `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados."
 principal_statement: "Entitlements publicados são versões globais imutáveis e cada contratação ou amendment materializa um snapshot completo no banco dedicado do tenant; a avaliação operacional usa somente projeção local derivada desse snapshot, sem catálogo vivo, `COALESCE` contra defaults mutáveis, fallback hardcoded ou enum como autoridade."
 ---
 
@@ -22,8 +22,8 @@ principal_statement: "Entitlements publicados são versões globais imutáveis e
 - Scope: `EntitlementBundleVersion` no catálogo global, `ContractEntitlementSnapshot` no banco dedicado do tenant e projeção tenant-local derivada para avaliação operacional.
 - Non-objectives: Definir termos comerciais e restrições operacionais, semântica de capability/quota/enforcement, grandfathering dos tenants legados, upgrade/downgrade, migração/cutover, resposta exata à indisponibilidade, boundary modular definitivo, DDL, OpenAPI ou autorizar implementação.
 - Keywords: entitlement, entitlement bundle version, contract snapshot, tenant local, immutable, catalog, plan limits, no fallback, no coalesce
-- Related Files: `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/adrs/ADR-0010-tenant-plan-parametrization.md`, `docs/adrs/ADR-0019-database-per-tenant.md`, `docs/adrs/ADR-0027-catalogo-global-faturamento-local.md`, `docs/adrs/ADR-0029-taxonomia-tipificada-entitlements.md`, `docs/adrs/ADR-0030-composicao-deterministica-enforcement-entitlements.md`, `docs/adrs/ADR-0032-adocao-versionada-grandfathering-entitlements.md`, `docs/adrs/ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md`, `docs/adrs/ADR-0035-migracao-evidence-first-entitlements-legados.md`, `docs/adrs/ADR-0036-cache-lkg-fail-safe-entitlements.md`, `docs/adrs/ADR-0037-boundary-fisico-entitlements-billing.md`
-- Code References: Estado legado em `TenantSettings`, `TenantApiImpl`, `Plan`, `SubscriptionPlan`, `BillingApiAdapter`, `TenantPlanInvoiceSourceAdapter` e migrations `tenant/V10` e `billing/V2`; boundary e destinos planejados sob `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados.
+- Related Files: `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md`, `ADR-0010-tenant-plan-parametrization.md`, `ADR-0019-database-per-tenant.md`, `ADR-0027-catalogo-global-faturamento-local.md`, `ADR-0029-taxonomia-tipificada-entitlements.md`, `ADR-0030-composicao-deterministica-enforcement-entitlements.md`, `ADR-0032-adocao-versionada-grandfathering-entitlements.md`, `ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md`, `ADR-0035-migracao-evidence-first-entitlements-legados.md`, `ADR-0036-cache-lkg-fail-safe-entitlements.md`, `ADR-0037-boundary-fisico-entitlements-billing.md`
+- Code References: Estado legado em `TenantSettings`, `TenantApiImpl`, `Plan`, `SubscriptionPlan`, `BillingApiAdapter`, `TenantPlanInvoiceSourceAdapter` e migrations `tenant/V10` e `billing/V2`; boundary e destinos planejados sob `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados.
 - Principal Decision: Entitlements publicados são versões globais imutáveis e cada contratação ou amendment materializa um snapshot completo no banco dedicado do tenant; a avaliação operacional usa somente projeção local derivada desse snapshot, sem catálogo vivo, `COALESCE` contra defaults mutáveis, fallback hardcoded ou enum como autoridade.
 - Date: 2026-08-25
 - Status: Accepted
@@ -116,7 +116,7 @@ subdecisões seguintes; `D-04.2-B` foi posteriormente aceita pelo ADR-0029,
 `D-04.2-F` pelo ADR-0035, `D-04.2-G` pelo ADR-0036 e `D-04.2-H` pelo ADR-0037.
 Nenhuma delas isoladamente removeu o freeze então vigente. A autorização humana
 posterior registrou `D-00 = RELEASED_WITH_SCOPE — HUMAN_EXPLICIT — TP-00013
-local-only` no [TP-00013](../delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md).
+local-only` no [TP-00013](../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md).
 
 ---
 
@@ -445,7 +445,7 @@ A validação documental imediata desta decisão é `./infra/scripts/validate-do
 - [UC-00038 - Catálogo, pricing e promoções](../product/use-cases/UC-00038-billing-catalog-pricing-promotions.md)
 - [UC-00039 - Contratos, assinaturas e amendments](../product/use-cases/UC-00039-billing-contract-subscription-amendments.md)
 - [UC-00040 - Uso, rating e fechamento](../product/use-cases/UC-00040-billing-usage-rating-invoice-close.md)
-- [TP-00013 - Enterprise Billing Implementation](../delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md)
+- [TP-00013 - Enterprise Billing Implementation](../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md)
 - [Manifesto de módulos](../architecture/module-registry.md)
 
 ---
@@ -487,7 +487,7 @@ permanecem gates ativos, sem alterar a origem humana de `D-04.2-A`.
 Esta decisão reside em:
 
 ```text
-docs/adrs/ADR-0028-entitlements-versionados-tenant-local.md
+ADR-0028-entitlements-versionados-tenant-local.md
 ```
 
 Alvos físicos de software, schemas e contratos permanecem planejados e serão

@@ -9,8 +9,8 @@ status: "Accepted"
 date: "2026-08-25"
 version: "2.0"
 keywords: "inadimplência, dunning, grace, carência, suspensão, recovery, entitlement, tenant, escritório, business plane, recovery plane, `PAYMENT_DELINQUENCY`, policy versionada, effective-dated, ASAAS, integração, webhook, idempotência"
-related_files: "harness/governance/decisions/ADR-0000-governanca-do-harness-documental.md`, `docs/adrs/ADR-0005-multi-tenancy-architecture.md`, `docs/adrs/ADR-0006-audit-compliance.md`, `docs/adrs/ADR-0010-tenant-plan-parametrization.md`, `docs/adrs/ADR-0011-resilience-retry-circuit-breaker.md`, `docs/adrs/ADR-0012-error-handling-observability.md`, `docs/adrs/ADR-0019-database-per-tenant.md`, `docs/adrs/ADR-0023-agnostic-payment-provider-integration.md`, `docs/adrs/ADR-0024-seguranca-tokenizacao-cartao-recorrente.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00042-billing-payment-reconciliation-dunning.md`, `docs/delivery/plans/TP-00011-billing-asaas-first-release-task-plan.md`, `docs/delivery/plans/implementation_plans/backend/IP-BE-11.3.2-dunning-grace-and-suspension.md`, `docs/architecture/module-registry.md"
-code_references: "Baseline em `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/`, `contexts/tenant/`, `contexts/omnichannel/` e demais entry points de integração; símbolos atuais `Subscription`, `BillingApi`, `BillingApiAdapter`, `SuspendOverdueTenantUseCase`, `SubscriptionSuspendedEvent` e `Tenant.suspend()`; alvos planejados `DunningPolicy`, `DunningCase`, `TenantAccessPolicy`, `EntitlementRestriction` e contratos públicos idempotentes de restrição/recuperação."
+related_files: "README.md, ADR-0005-multi-tenancy-architecture.md, ADR-0006-audit-compliance.md, ADR-0010-tenant-plan-parametrization.md, ADR-0011-resilience-retry-circuit-breaker.md, ADR-0012-error-handling-observability.md, ADR-0019-database-per-tenant.md, ADR-0023-agnostic-payment-provider-integration.md, ADR-0024-seguranca-tokenizacao-cartao-recorrente.md, ../../../docs/specs/TP-00011-billing-asaas-first-release-task-plan.md, ../specs/IP-BE-11.3.2-dunning-grace-and-suspension.md"
+code_references: "Baseline em `app/src/main/java/br/com/duoset/saas_service/contexts/billing/`, `contexts/tenant/`, `contexts/omnichannel/` e demais entry points de integração; símbolos atuais `Subscription`, `BillingApi`, `BillingApiAdapter`, `SuspendOverdueTenantUseCase`, `SubscriptionSuspendedEvent` e `Tenant.suspend()`; alvos planejados `DunningPolicy`, `DunningCase`, `TenantAccessPolicy`, `EntitlementRestriction` e contratos públicos idempotentes de restrição/recuperação."
 principal_statement: "`PAYMENT_DELINQUENCY` produz o eixo separado `FINANCIAL_ACCESS_RESTRICTION`: após sete dias corridos desde `dueAt/overdueAt` e avisos in-app + email nos marcos 0/+3/+6 com evidência obrigatória, Billing aplica somente `RESTRICTED`, bloqueia novas operações pagas/de custo externo e preserva o recovery plane; apenas `PAYMENT_EFFECTIVE` reconciliado, alocado e com saldo elegível zero remove causalmente seus efeitos."
 ---
 
@@ -22,8 +22,8 @@ principal_statement: "`PAYMENT_DELINQUENCY` produz o eixo separado `FINANCIAL_AC
 - Scope: `contexts.billing`, policy de entitlement/acesso, `contexts.tenant`, `contexts.omnichannel`, `contexts.fiscal`, `contexts.client`, `contexts.certificate`, `contexts.notification`, integrações externas, jobs assíncronos, frontend, dunning, grace, suspensão, recuperação, auditoria, observabilidade e isolamento multitenancy.
 - Non-objectives: Não implementar, comunicar clientes ou habilitar produção; não definir copy final, retenção legal ou SLO operacional de D-14; não suspender a entidade administrativa `Tenant`; não substituir ADR-0023/ADR-0024; não tratar fraude, abuso, segurança, decisão judicial ou encerramento contratual como inadimplência.
 - Keywords: inadimplência, dunning, grace, carência, suspensão, recovery, entitlement, tenant, escritório, business plane, recovery plane, `PAYMENT_DELINQUENCY`, policy versionada, effective-dated, ASAAS, integração, webhook, idempotência
-- Related Files: `harness/governance/decisions/ADR-0000-governanca-do-harness-documental.md`, `docs/adrs/ADR-0005-multi-tenancy-architecture.md`, `docs/adrs/ADR-0006-audit-compliance.md`, `docs/adrs/ADR-0010-tenant-plan-parametrization.md`, `docs/adrs/ADR-0011-resilience-retry-circuit-breaker.md`, `docs/adrs/ADR-0012-error-handling-observability.md`, `docs/adrs/ADR-0019-database-per-tenant.md`, `docs/adrs/ADR-0023-agnostic-payment-provider-integration.md`, `docs/adrs/ADR-0024-seguranca-tokenizacao-cartao-recorrente.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00042-billing-payment-reconciliation-dunning.md`, `docs/delivery/plans/TP-00011-billing-asaas-first-release-task-plan.md`, `docs/delivery/plans/implementation_plans/backend/IP-BE-11.3.2-dunning-grace-and-suspension.md`, `docs/architecture/module-registry.md`
-- Code References: Baseline em `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/`, `contexts/tenant/`, `contexts/omnichannel/` e demais entry points de integração; símbolos atuais `Subscription`, `BillingApi`, `BillingApiAdapter`, `SuspendOverdueTenantUseCase`, `SubscriptionSuspendedEvent` e `Tenant.suspend()`; alvos planejados `DunningPolicy`, `DunningCase`, `TenantAccessPolicy`, `EntitlementRestriction` e contratos públicos idempotentes de restrição/recuperação.
+- Related Files: `harness/governance/decisions/ADR-0000-governanca-do-harness-documental.md`, `ADR-0005-multi-tenancy-architecture.md`, `ADR-0006-audit-compliance.md`, `ADR-0010-tenant-plan-parametrization.md`, `ADR-0011-resilience-retry-circuit-breaker.md`, `ADR-0012-error-handling-observability.md`, `ADR-0019-database-per-tenant.md`, `ADR-0023-agnostic-payment-provider-integration.md`, `ADR-0024-seguranca-tokenizacao-cartao-recorrente.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00042-billing-payment-reconciliation-dunning.md`, `../../../docs/specs/TP-00011-billing-asaas-first-release-task-plan.md`, `../specs/IP-BE-11.3.2-dunning-grace-and-suspension.md`, `docs/architecture/module-registry.md`
+- Code References: Baseline em `app/src/main/java/br/com/duoset/saas_service/contexts/billing/`, `contexts/tenant/`, `contexts/omnichannel/` e demais entry points de integração; símbolos atuais `Subscription`, `BillingApi`, `BillingApiAdapter`, `SuspendOverdueTenantUseCase`, `SubscriptionSuspendedEvent` e `Tenant.suspend()`; alvos planejados `DunningPolicy`, `DunningCase`, `TenantAccessPolicy`, `EntitlementRestriction` e contratos públicos idempotentes de restrição/recuperação.
 - Principal Decision: `PAYMENT_DELINQUENCY` produz o eixo separado `FINANCIAL_ACCESS_RESTRICTION`: após sete dias corridos desde `dueAt/overdueAt` e avisos in-app + email nos marcos 0/+3/+6 com evidência obrigatória, Billing aplica somente `RESTRICTED`, bloqueia novas operações pagas/de custo externo e preserva o recovery plane; apenas `PAYMENT_EFFECTIVE` reconciliado, alocado e com saldo elegível zero remove causalmente seus efeitos.
 - Date: 2026-08-25
 - Status: Accepted
@@ -87,8 +87,8 @@ A pergunta deste ADR é independente do meio:
 | [ADR-0024](ADR-0024-seguranca-tokenizacao-cartao-recorrente.md) | Permite recorrência hospedada sem PAN/CVV/token local e encaminha recusas à policy aprovada. | Declara dunning como non-objective. |
 | [REQ-00042](../product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md) | `FR-EBILL-128` e `131` exigem dunning, grace e restrição/recuperação configuráveis; `BR-EBILL-032` separa acesso do gateway. | Deve permanecer reconciliado com os defaults aceitos de D-09 sem afirmar implementação. |
 | [UC-00042](../product/use-cases/UC-00042-billing-payment-reconciliation-dunning.md) | Desenha `DunningCase` e recuperação idempotente. | Deve refletir `FINANCIAL_ACCESS_RESTRICTION`, notices/evidence e recovery de D-09. |
-| [TP-00011](../delivery/plans/TP-00011-billing-asaas-first-release-task-plan.md) | Torna grace/dunning/restrição o gate `0.5` e a atividade `3.2`. | D-09 fecha a decisão; evidência de implementação/rollout permanece bloqueadora. |
-| [IP-BE-11.3.2-dunning-grace-and-suspension](../delivery/plans/implementation_plans/backend/IP-BE-11.3.2-dunning-grace-and-suspension.md) | Planeja policy, state machine, scheduler, efeitos e recuperação. | Deve materializar esta decisão; plano não prova código, testes ou operação. |
+| [TP-00011](../../../docs/specs/TP-00011-billing-asaas-first-release-task-plan.md) | Torna grace/dunning/restrição o gate `0.5` e a atividade `3.2`. | D-09 fecha a decisão; evidência de implementação/rollout permanece bloqueadora. |
+| [IP-BE-11.3.2-dunning-grace-and-suspension](../specs/IP-BE-11.3.2-dunning-grace-and-suspension.md) | Planeja policy, state machine, scheduler, efeitos e recuperação. | Deve materializar esta decisão; plano não prova código, testes ou operação. |
 
 ## 1.3 Evidência e dívida AS-IS
 
@@ -1019,14 +1019,14 @@ target.
 - [REQ-00042 - Enterprise Multitenant Billing](../product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md)
 - [UC-00039 - Contract and Subscription Amendments](../product/use-cases/UC-00039-billing-contract-subscription-amendments.md)
 - [UC-00042 - Payment, Reconciliation and Dunning](../product/use-cases/UC-00042-billing-payment-reconciliation-dunning.md)
-- [TP-00011 - Billing ASAAS First Release](../delivery/plans/TP-00011-billing-asaas-first-release-task-plan.md)
-- [IP-BE-11.3.1-payment-entitlement-activation - Payment Entitlement Activation](../delivery/plans/implementation_plans/backend/IP-BE-11.3.1-payment-entitlement-activation.md)
-- [IP-BE-11.3.2-dunning-grace-and-suspension - Dunning, Grace and Suspension](../delivery/plans/implementation_plans/backend/IP-BE-11.3.2-dunning-grace-and-suspension.md)
-- [IP-FE-11.3.3-billing-api-compatibility-and-ui-cutover - Billing API and UI Cutover](../delivery/plans/implementation_plans/frontend/IP-FE-11.3.3-billing-api-compatibility-and-ui-cutover.md)
+- [TP-00011 - Billing ASAAS First Release](../../../docs/specs/TP-00011-billing-asaas-first-release-task-plan.md)
+- [IP-BE-11.3.1-payment-entitlement-activation - Payment Entitlement Activation](../specs/IP-BE-11.3.1-payment-entitlement-activation.md)
+- [IP-BE-11.3.2-dunning-grace-and-suspension - Dunning, Grace and Suspension](../specs/IP-BE-11.3.2-dunning-grace-and-suspension.md)
+- [IP-FE-11.3.3-billing-api-compatibility-and-ui-cutover - Billing API and UI Cutover](../../../frontend/docs/specs/IP-FE-11.3.3-billing-api-compatibility-and-ui-cutover.md)
 - [Module Registry](../architecture/module-registry.md)
 - [Security Standard](../agents/standards/security-standard.md)
-- [Modulith Standard](../agents/standards/modulith-standard.md)
-- [Backend Testing Standard](../agents/standards/backend-testing-standard.md)
+- [Modulith Standard](../../../docs/agents/standards/modulith-standard.md)
+- [Backend Testing Standard](../../../docs/agents/standards/backend-testing-standard.md)
 
 ---
 
@@ -1076,9 +1076,9 @@ docs/
 ├── use_cases/
 │   └── UC-00042-billing-payment-reconciliation-dunning.md
 └── task_plans/
-    ├── TP-00011-billing-asaas-first-release-task-plan.md
+    ├── ../../../docs/specs/TP-00011-billing-asaas-first-release-task-plan.md
     └── implementation_plans/backend/
-        └── IP-BE-11.3.2-dunning-grace-and-suspension.md
+        └── ../specs/IP-BE-11.3.2-dunning-grace-and-suspension.md
 ```
 
 Naming convention: `ADR-NNNN-short-title.md`.

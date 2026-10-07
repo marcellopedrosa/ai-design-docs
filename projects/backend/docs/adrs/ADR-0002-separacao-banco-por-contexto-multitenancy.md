@@ -9,7 +9,7 @@ status: "Partially Superseded"
 date: "2026-03-08"
 version: "1.1"
 keywords: "adr, decisao, arquitetura, multi, tenant, database, isolation, strategy, and, bounded, context, separation"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0001-technology-stack-and-architecture.md, docs/adrs/ADR-0005-multi-tenancy-architecture.md, docs/adrs/ADR-0052-parametros-pool-conexao-por-tenant.md, docs/product/business/product-vision.md, docs/agents/README.md"
+related_files: "README.md, ADR-0001-technology-stack-and-architecture.md, ADR-0005-multi-tenancy-architecture.md, ADR-0052-parametros-pool-conexao-por-tenant.md"
 code_references: "@Filter, @Configuration, TenantAwareEntity, TenantContext, TenantFilter"
 principal_statement: "The system will use a **discriminator-based multi-tenancy** strategy (`tenant_id` column in every table, row-level isolation via Hibernate `@Filter`) across all bounded contexts. Each bounded context will have its own **dedicated PostgreSQL database** from day one, enabling zero-migration microservice extraction. Communication between bounded contexts will use Spring Modulith Events exclusively — no cross-database JOINs."
 ---
@@ -374,12 +374,12 @@ Mitigation: `TenantFilter` clears `TenantContext` in the `finally` block of ever
 
 # 12. Related ADRs
 
-- [ADR-0001 - Technology Stack and Architecture Foundation](./ADR-0001-technology-stack-and-architecture.md) — Defines Spring Boot 4.x, Spring Modulith, PostgreSQL, Clean Architecture.
+- [ADR-0001 - Technology Stack and Architecture Foundation](ADR-0001-technology-stack-and-architecture.md) — Defines Spring Boot 4.x, Spring Modulith, PostgreSQL, Clean Architecture.
 
 - (Future) ADR-0003 — Authentication and Authorization with Keycloak.
 - (Future) ADR-0004 — WhatsApp Integration Architecture.
-- [ADR-0005 - Multi-Tenancy Architecture](./ADR-0005-multi-tenancy-architecture.md)
-- [ADR-0052 - Pools de conexão exclusivos e configuráveis por tenant](./ADR-0052-parametros-pool-conexao-por-tenant.md) — supersedes only uniform numeric sizing when applied to dedicated tenant pools.
+- [ADR-0005 - Multi-Tenancy Architecture](ADR-0005-multi-tenancy-architecture.md)
+- [ADR-0052 - Pools de conexão exclusivos e configuráveis por tenant](ADR-0052-parametros-pool-conexao-por-tenant.md) — supersedes only uniform numeric sizing when applied to dedicated tenant pools.
 - (Future) ADR-0006 — SERPRO Integra Contador Integration Pattern.
 
 ---

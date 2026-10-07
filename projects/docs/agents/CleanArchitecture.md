@@ -44,7 +44,7 @@ CleanArchitecture contributes to the Software Factory ecosystem as the guardian 
 
 ## 3. Core Responsibilities
 
-> **📘 REFERENCE:** CleanArchitecture **SHOULD** be aware of [`standards/java-standard.md`](./standards/java-standard.md) for Java naming conventions, and [`standards/ddd-clean-architecture-standard.md`](./standards/ddd-clean-architecture-standard.md) for the canonical bounded context structure, package layout (`br.com.duoset.saas_service.contexts.{context}/`), layer-specific class suffixes, Dependency Rule, and module relationships.
+> **📘 REFERENCE:** CleanArchitecture **SHOULD** be aware of [`standards/java-standard.md`](standards/java-standard.md) for Java naming conventions, and [`standards/ddd-clean-architecture-standard.md`](standards/ddd-clean-architecture-standard.md) for the canonical bounded context structure, package layout (`br.com.duoset.saas_service.contexts.{context}/`), layer-specific class suffixes, Dependency Rule, and module relationships.
 
 - Define bounded contexts for the SAAS Service platform based on domain analysis and business requirements.
 - Map each bounded context to a Spring Modulith module with explicit public API boundaries.

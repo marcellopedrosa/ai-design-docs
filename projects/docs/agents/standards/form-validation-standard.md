@@ -9,7 +9,7 @@ status: "Active"
 date: "2026-08-25"
 version: "1.4"
 keywords: "form, validation, standard, standard"
-related_files: "./README.md, ./component-design-standard.md, ./i18n-standard.md"
+related_files: "./README.md, component-design-standard.md, i18n-standard.md"
 code_references: "backend/, frontend/"
 principal_statement: "As regras de Form Validation aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
@@ -18,7 +18,7 @@ principal_statement: "As regras de Form Validation aplicam-se somente ao escopo 
 
 > **Mandatory rules** for building client-side form validation with internationalized error messages. This standard defines the integration pattern between **Zod** (schema validation), **React Hook Form** (form state), and **next-intl** (i18n), ensuring all validation messages are locale-aware across every screen in the application.
 
-> **Prerequisite:** Read [`component-design-standard.md`](./component-design-standard.md) (Input/Select error prop API) and [`i18n-standard.md`](./i18n-standard.md) (all user-facing text through `t()`).
+> **Prerequisite:** Read [`component-design-standard.md`](component-design-standard.md) (Input/Select error prop API) and [`i18n-standard.md`](i18n-standard.md) (all user-facing text through `t()`).
 
 ---
 

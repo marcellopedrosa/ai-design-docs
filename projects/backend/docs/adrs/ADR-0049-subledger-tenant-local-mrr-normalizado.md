@@ -9,8 +9,8 @@ status: "Accepted"
 date: "2026-08-25"
 version: "1.2"
 keywords: "billing subledger, double-entry, journal, tenant-local, MRR, ARR, churn, expansion, contraction, analytics, outbox, BRL"
-related_files: "docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00045-billing-financial-close-reporting.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/delivery/plans/implementation_plans/backend/IP-BE-13.8.1-billing-financial-close-reporting.md`, `docs/delivery/plans/implementation_plans/frontend/IP-FE-13.8.1-billing-financial-close-reporting.md`, `docs/adrs/ADR-0019-database-per-tenant.md`, `docs/adrs/ADR-0027-catalogo-global-faturamento-local.md`, `docs/adrs/ADR-0038-pricing-tipado-moeda-cadencia.md`, `docs/adrs/ADR-0044-lifecycle-contratual-proration-assinaturas.md"
-code_references: "Destinos planejados em `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` para domain/application/ports/adapters de subledger e analytics; rotas administrativas e tenant-scoped finais ainda nao existem e dependem de OpenAPI aprovado."
+related_files: "README.md, ../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md, ../specs/IP-BE-13.8.1-billing-financial-close-reporting.md, ../../../frontend/docs/specs/IP-FE-13.8.1-billing-financial-close-reporting.md, ADR-0019-database-per-tenant.md, ADR-0027-catalogo-global-faturamento-local.md, ADR-0038-pricing-tipado-moeda-cadencia.md, ADR-0044-lifecycle-contratual-proration-assinaturas.md"
+code_references: "Destinos planejados em `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` para domain/application/ports/adapters de subledger e analytics; rotas administrativas e tenant-scoped finais ainda nao existem e dependem de OpenAPI aprovado."
 principal_statement: "Billing tera subledger gerencial append-only, tenant-local, double-entry e BRL-only dentro do monolito/DB existentes; MRR v1 sera derivado de revisoes contratuais recorrentes pre-tax e analytics global sera uma projecao minimizada por outbox, nunca um scan cross-tenant ou livro contabil estatutario."
 ---
 
@@ -22,8 +22,8 @@ principal_statement: "Billing tera subledger gerencial append-only, tenant-local
 - Scope: Journal append-only, partidas dobradas, posting intents, reversoes, BRL, projecao analitica global, MRR, ARR, expansion, contraction, churn, autorizacao de rotas e capabilities contabeis diferidas.
 - Non-objectives: Implementar codigo, DDL, OpenAPI, UI, data warehouse, ERP ou plano de contas; definir reconhecimento estatutario de receita, fechamento contabil oficial, cambio, multi-moeda ou parecer contabil.
 - Keywords: billing subledger, double-entry, journal, tenant-local, MRR, ARR, churn, expansion, contraction, analytics, outbox, BRL
-- Related Files: `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00045-billing-financial-close-reporting.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/delivery/plans/implementation_plans/backend/IP-BE-13.8.1-billing-financial-close-reporting.md`, `docs/delivery/plans/implementation_plans/frontend/IP-FE-13.8.1-billing-financial-close-reporting.md`, `docs/adrs/ADR-0019-database-per-tenant.md`, `docs/adrs/ADR-0027-catalogo-global-faturamento-local.md`, `docs/adrs/ADR-0038-pricing-tipado-moeda-cadencia.md`, `docs/adrs/ADR-0044-lifecycle-contratual-proration-assinaturas.md`
-- Code References: Destinos planejados em `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` para domain/application/ports/adapters de subledger e analytics; rotas administrativas e tenant-scoped finais ainda nao existem e dependem de OpenAPI aprovado.
+- Related Files: `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00045-billing-financial-close-reporting.md`, `../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md`, `../specs/IP-BE-13.8.1-billing-financial-close-reporting.md`, `../../../frontend/docs/specs/IP-FE-13.8.1-billing-financial-close-reporting.md`, `ADR-0019-database-per-tenant.md`, `ADR-0027-catalogo-global-faturamento-local.md`, `ADR-0038-pricing-tipado-moeda-cadencia.md`, `ADR-0044-lifecycle-contratual-proration-assinaturas.md`
+- Code References: Destinos planejados em `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` para domain/application/ports/adapters de subledger e analytics; rotas administrativas e tenant-scoped finais ainda nao existem e dependem de OpenAPI aprovado.
 - Principal Decision: Billing tera subledger gerencial append-only, tenant-local, double-entry e BRL-only dentro do monolito/DB existentes; MRR v1 sera derivado de revisoes contratuais recorrentes pre-tax e analytics global sera uma projecao minimizada por outbox, nunca um scan cross-tenant ou livro contabil estatutario.
 - Date: 2026-08-25
 - Status: Accepted
@@ -387,7 +387,7 @@ Testes executaveis nao foram criados porque esta mudanca e documental.
 
 - [REQ-00042](../product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md)
 - [UC-00045](../product/use-cases/UC-00045-billing-financial-close-reporting.md)
-- [TP-00013](../delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md)
+- [TP-00013](../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md)
 - [Module Registry](../architecture/module-registry.md)
 
 ---

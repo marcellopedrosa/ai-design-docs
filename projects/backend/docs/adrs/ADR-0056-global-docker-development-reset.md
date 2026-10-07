@@ -10,7 +10,7 @@ version: 1.0
 date: 2026-10-02
 last_reviewed: 2026-10-02
 keywords: docker, reset, desenvolvimento, destrutivo, host
-related_files: ADR-0016-infrastructure-environment-provisioning.md, ../product/requirements/REQ-00045-local-development-host-bootstrap.md, ../delivery/plans/TP-00073-outbound-hmac-keyring-generator.md
+related_files: "README.md"
 code_references: ../../reset-dev-bot.sh, ../../infra/scripts/tests/reset-dev-bot-test.sh
 principal_statement: O reset DEV explicitamente confirmado limpa recursos de todo o daemon Docker local, inclusive de outros projetos, sem reconstruir automaticamente a stack.
 ---

@@ -9,7 +9,7 @@ status: "Superseded"
 date: "2026-03-11"
 version: "1.2"
 keywords: "adr, decisao, arquitetura, stripe, billing, subscription, management, architecture"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0023-agnostic-payment-provider-integration.md, docs/adrs/ADR-0001-technology-stack-and-architecture.md, docs/adrs/ADR-0002-separacao-banco-por-contexto-multitenancy.md, docs/adrs/ADR-0004-whatsapp-integration-architecture.md, docs/adrs/ADR-0005-multi-tenancy-architecture.md, docs/adrs/ADR-0007-multi-provider-llm-integration.md, docs/product/business/product-vision.md, docs/product/requirements/REQ-00005-plan-feature-matrix.md"
+related_files: "README.md, ADR-0023-agnostic-payment-provider-integration.md, ADR-0001-technology-stack-and-architecture.md, ADR-0002-separacao-banco-por-contexto-multitenancy.md, ADR-0004-whatsapp-integration-architecture.md, ADR-0005-multi-tenancy-architecture.md, ADR-0007-multi-provider-llm-integration.md"
 code_references: "PaymentGatewayPort, StripePaymentAdapter, SubscriptionActivatedEvent, SubscriptionSuspendedEvent, PaymentReceivedEvent, BillingService, StripeWebhookController, BillingEvent, SubscriptionCanceledEvent, PlanChangedEvent, PaymentFailedEvent"
 principal_statement: "A gestão de assinaturas, faturamento recorrente e cobrança de excedentes será implementada via integração com **Stripe Billing** usando o modelo de **Stripe Subscriptions + Usage-Based Billing**. A integração seguirá Clean Architecture com um outbound port (`PaymentGatewayPort`) no módulo Billing, e um adapter (`StripePaymentAdapter`) na camada de infraestrutura. Webhooks da Stripe serão usados para manter o estado da assinatura sincronizado. Pix e Boleto Bancário serão configurados como métodos de pagamento via Stripe."
 ---
@@ -456,11 +456,11 @@ Mitigation: Validação de Documento do escritório (Documento obrigatório no c
 
 # 12. Related ADRs
 
-- [ADR-0001 — Technology Stack and Architecture Foundation](./ADR-0001-technology-stack-and-architecture.md) — Java 21, Spring Boot 4.x, Spring Modulith, VPS única.
-- [ADR-0002 — Multi-Tenant Database Isolation](./ADR-0002-separacao-banco-por-contexto-multitenancy.md) — Database `saas_billing` para o módulo Billing.
-- [ADR-0004 — WhatsApp Integration Architecture](./ADR-0004-whatsapp-integration-architecture.md) — Contadores de mensagens WhatsApp alimentam usage-based billing.
-- [ADR-0005 — Multi-Tenancy Architecture](./ADR-0005-multi-tenancy-architecture.md) — Keycloak, plano do tenant, realm isolation.
-- [ADR-0007 — Multi-Provider LLM Integration](./ADR-0007-multi-provider-llm-integration.md) — `llm_usage_log` alimenta usage-based billing para tokens LLM.
+- [ADR-0001 — Technology Stack and Architecture Foundation](ADR-0001-technology-stack-and-architecture.md) — Java 21, Spring Boot 4.x, Spring Modulith, VPS única.
+- [ADR-0002 — Multi-Tenant Database Isolation](ADR-0002-separacao-banco-por-contexto-multitenancy.md) — Database `saas_billing` para o módulo Billing.
+- [ADR-0004 — WhatsApp Integration Architecture](ADR-0004-whatsapp-integration-architecture.md) — Contadores de mensagens WhatsApp alimentam usage-based billing.
+- [ADR-0005 — Multi-Tenancy Architecture](ADR-0005-multi-tenancy-architecture.md) — Keycloak, plano do tenant, realm isolation.
+- [ADR-0007 — Multi-Provider LLM Integration](ADR-0007-multi-provider-llm-integration.md) — `llm_usage_log` alimenta usage-based billing para tokens LLM.
 
 ---
 

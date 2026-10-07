@@ -9,8 +9,8 @@ status: "Accepted"
 date: "2026-08-23"
 version: "1.1"
 keywords: "IaC, OpenTofu, Terraform, Ansible, infra, state, locking, KMS, secrets, brownfield, Hostinger, GitHub, AWS, HML"
-related_files: "docs/adrs/ADR-0031-governanca-topologia-infraestrutura.md`, `artefatos de análise/ANL-00042-infrastructure-as-is-iac-gap-analysis.md`, `artefatos de análise/ANL-00043-infrastructure-iac-options-security-analysis.md`, `docs/delivery/plans/TP-00016-infrastructure-iac-target-architecture.md`, `docs/delivery/reports/RPT-0004-frontend-backend-cibersecurity.md`, `docs/delivery/plans/TP-00006-frontend-backend-cibersecurity-implementation-plan.md`, `docs/architecture/module-registry.md`, `infra/README.md"
-code_references: "target futuro `infra/iac/`; `infra/`, `docker-compose.yml`, `docker-compose.hml.yml`, `docker-compose.prd.yml`, `.github/workflows/`, `backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/`"
+related_files: "README.md, ADR-0031-governanca-topologia-infraestrutura.md, ../../../docs/specs/TP-00016-infrastructure-iac-target-architecture.md, ../../../docs/specs/TP-00006-frontend-backend-cibersecurity-implementation-plan.md"
+code_references: "target futuro `infra/iac/`; `infra/`, `docker-compose.yml`, `docker-compose.hml.yml`, `docker-compose.prd.yml`, `.github/workflows/`, `app/src/main/java/br/com/duoset/saas_service/contexts/tenant/`"
 principal_statement: "A arquitetura adotada mantém `infra/` como umbrella, reserva uma futura subárvore `infra/iac/` para a fundação externa, prefere OpenTofu de forma condicional com Terraform como fallback, adia Ansible e exige state/segredos/brownfield/pipeline seguros antes de qualquer piloto."
 ---
 
@@ -22,8 +22,8 @@ principal_statement: "A arquitetura adotada mantém `infra/` como umbrella, rese
 - Scope: Recursos de provider, GitHub e AWS; layout futuro dentro de `infra/`; engine IaC; state, locking, encryption, secrets, brownfield, HML, pipeline, drift, recovery e gates humanos.
 - Non-objectives: Aprovar produção ou piloto; criar `infra/iac/`; instalar ferramentas/providers; escrever configuração; importar/adotar recursos; executar `init`, `plan`, `apply`, `destroy`, deploy ou acessar ambiente/secret.
 - Keywords: IaC, OpenTofu, Terraform, Ansible, infra, state, locking, KMS, secrets, brownfield, Hostinger, GitHub, AWS, HML
-- Related Files: `docs/adrs/ADR-0031-governanca-topologia-infraestrutura.md`, `artefatos de análise/ANL-00042-infrastructure-as-is-iac-gap-analysis.md`, `artefatos de análise/ANL-00043-infrastructure-iac-options-security-analysis.md`, `docs/delivery/plans/TP-00016-infrastructure-iac-target-architecture.md`, `docs/delivery/reports/RPT-0004-frontend-backend-cibersecurity.md`, `docs/delivery/plans/TP-00006-frontend-backend-cibersecurity-implementation-plan.md`, `docs/architecture/module-registry.md`, `infra/README.md`
-- Code References: target futuro `infra/iac/`; `infra/`, `docker-compose.yml`, `docker-compose.hml.yml`, `docker-compose.prd.yml`, `.github/workflows/`, `backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/`
+- Related Files: `ADR-0031-governanca-topologia-infraestrutura.md`, `artefatos de análise/ANL-00042-infrastructure-as-is-iac-gap-analysis.md`, `artefatos de análise/ANL-00043-infrastructure-iac-options-security-analysis.md`, `../../../docs/specs/TP-00016-infrastructure-iac-target-architecture.md`, `docs/delivery/reports/RPT-0004-frontend-backend-cibersecurity.md`, `../../../docs/specs/TP-00006-frontend-backend-cibersecurity-implementation-plan.md`, `docs/architecture/module-registry.md`, `infra/README.md`
+- Code References: target futuro `infra/iac/`; `infra/`, `docker-compose.yml`, `docker-compose.hml.yml`, `docker-compose.prd.yml`, `.github/workflows/`, `app/src/main/java/br/com/duoset/saas_service/contexts/tenant/`
 - Principal Decision: A arquitetura adotada mantém `infra/` como umbrella, reserva uma futura subárvore `infra/iac/` para a fundação externa, prefere OpenTofu de forma condicional com Terraform como fallback, adia Ansible e exige state/segredos/brownfield/pipeline seguros antes de qualquer piloto.
 - Date: 2026-08-23
 - Status: Accepted
@@ -355,7 +355,7 @@ rollback operacional porque nenhum recurso foi alterado.
 
 # 13. References
 
-- [TP-00016 — Etapa 2](../delivery/plans/TP-00016-infrastructure-iac-target-architecture.md)
+- [TP-00016 — Etapa 2](../../../docs/specs/TP-00016-infrastructure-iac-target-architecture.md)
 - ANL-00042 — AS-IS e gaps
 - ANL-00043 — opções e segurança
 - [RPT-0004 — cibersegurança](../delivery/reports/RPT-0004-frontend-backend-cibersecurity.md)

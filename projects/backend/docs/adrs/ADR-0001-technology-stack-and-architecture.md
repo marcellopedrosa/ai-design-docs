@@ -10,7 +10,7 @@ date: "2026-03-06"
 last_reviewed: "2026-08-28"
 version: "1.1"
 keywords: "adr, decisao, arquitetura, technology, stack, and, architecture, foundation"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0005-multi-tenancy-architecture.md, docs/adrs/ADR-0053-adocao-java-25-backend.md, artefatos de análise/ANL-00050-java-25-backend-impact-analysis.md, docs/product/business/product-vision.md, docs/agents/README.md"
+related_files: "README.md, ADR-0005-multi-tenancy-architecture.md, ADR-0053-adocao-java-25-backend.md"
 code_references: "backend/, frontend/, docker-compose.yml"
 principal_statement: "The Spring Boot 4, Spring Modulith, Clean Architecture, DDD, SOLID, OpenAPI, Docker Compose and evolutionary-modulith foundation remains accepted; ADR-0053 supersedes only Java 21 as the target toolchain/runtime and its version-dependent concurrency and runtime-efficiency prescriptions."
 ---
@@ -371,11 +371,11 @@ Mitigation: @ComplianceAgent audits data flows. Tenant data isolation enforced a
 
 # 12. Related ADRs
 
-- [ADR-0053 - Adoção de Java 25, virtual threads e eficiência do backend](./ADR-0053-adocao-java-25-backend.md) — partially supersedes the Java 21 toolchain/runtime and version-dependent concurrency/efficiency scope.
+- [ADR-0053 - Adoção de Java 25, virtual threads e eficiência do backend](ADR-0053-adocao-java-25-backend.md) — partially supersedes the Java 21 toolchain/runtime and version-dependent concurrency/efficiency scope.
 - (Future) ADR-0002 - Multi-Tenant Database Isolation Strategy
 - (Future) ADR-0003 - Authentication and Authorization with Keycloak
 - (Future) ADR-0004 - WhatsApp Integration Architecture
-- [ADR-0005 - Multi-Tenancy Architecture](./ADR-0005-multi-tenancy-architecture.md)
+- [ADR-0005 - Multi-Tenancy Architecture](ADR-0005-multi-tenancy-architecture.md)
 - (Future) ADR-0006 - SERPRO Integra Contador Integration Pattern
 - (Future) ADR-0007 - Observability and Monitoring Stack
 
@@ -386,7 +386,7 @@ Mitigation: @ComplianceAgent audits data flows. Tenant data isolation enforced a
 - [Spring Modulith Documentation](https://docs.spring.io/spring-modulith/reference/)
 - [Spring Boot 3.x Reference](https://docs.spring.io/spring-boot/docs/current/reference/html/)
 - [Java 21 Virtual Threads (JEP 444)](https://openjdk.org/jeps/444)
-- [ADR-0053 - Java 25 target and staged virtual-thread adoption](./ADR-0053-adocao-java-25-backend.md)
+- [ADR-0053 - Java 25 target and staged virtual-thread adoption](ADR-0053-adocao-java-25-backend.md)
 - ANL-00050 - Java 25 backend impact analysis
 - [Clean Architecture - Robert C. Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Domain-Driven Design - Eric Evans](https://www.domainlanguage.com/ddd/)

@@ -9,7 +9,7 @@ status: "Active"
 date: "2026-08-25"
 version: "1.4"
 keywords: "data, grid, standard, standard"
-related_files: "./README.md, ./state-management-standard.md"
+related_files: "./README.md, state-management-standard.md"
 code_references: "backend/, frontend/"
 principal_statement: "As regras de Data Grid & List aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
@@ -18,7 +18,7 @@ principal_statement: "As regras de Data Grid & List aplicam-se somente ao escopo
 
 > **Mandatory rules** for building data grids, lists, and tables. This standard defines the mandatory inclusion of pagination and search filters across ALL screens displaying business entities, ensuring a consistent user experience and scalable data fetching.
 
-> **Prerequisite:** Read [`state-management-standard.md`](./state-management-standard.md) for rules on storing pagination state in the URL (optional but recommended for deep linking) or local state.
+> **Prerequisite:** Read [`state-management-standard.md`](state-management-standard.md) for rules on storing pagination state in the URL (optional but recommended for deep linking) or local state.
 
 ---
 

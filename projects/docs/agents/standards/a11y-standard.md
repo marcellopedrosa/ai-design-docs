@@ -9,7 +9,7 @@ status: "Active"
 date: "2026-08-25"
 version: "1.4"
 keywords: "a11y, standard, standard"
-related_files: "./README.md, ./component-design-standard.md, ./i18n-standard.md"
+related_files: "./README.md, component-design-standard.md, i18n-standard.md"
 code_references: "frontend/"
 principal_statement: "As regras de Accessibility (a11y) aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
@@ -18,7 +18,7 @@ principal_statement: "As regras de Accessibility (a11y) aplicam-se somente ao es
 
 > **Mandatory rules** for WCAG 2.1 AA accessibility compliance. This standard defines ARIA patterns, keyboard navigation, screen reader support, focus management, color contrast requirements, semantic HTML, and accessibility testing.
 
-> **Prerequisite:** Read [`component-design-standard.md`](./component-design-standard.md) (component ARIA table) and [`i18n-standard.md`](./i18n-standard.md) (translatable accessible labels).
+> **Prerequisite:** Read [`component-design-standard.md`](component-design-standard.md) (component ARIA table) and [`i18n-standard.md`](i18n-standard.md) (translatable accessible labels).
 
 ---
 

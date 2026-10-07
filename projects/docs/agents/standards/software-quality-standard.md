@@ -9,7 +9,7 @@ status: Active
 date: 2026-09-08
 version: 1.3
 keywords: quality-gate, teste, qa, clear, cobertura, métricas, comentários, tamanho-de-arquivo, loop-corretivo, git, readiness, escopo-atomico
-related_files: harness/governance/decisions/ADR-0000-governanca-do-harness-documental.md, ./software-engineering-lifecycle.md, ./implementation-readiness-standard.md, ./backend-testing-standard.md, ./frontend-testing-standard.md
+related_files: harness/governance/decisions/ADR-0000-governanca-do-harness-documental.md, ./software-engineering-lifecycle.md, ./implementation-readiness-standard.md, backend-testing-standard.md, frontend-testing-standard.md
 code_references: infra/scripts/validate-quality-metrics.mjs, validate-quality-metrics.test.mjs, infra/scripts/validate-plan-granularity.mjs, validate-plan-granularity.test.mjs, infra/scripts/validate-quality-metrics.mjs, infra/scripts/validate-plan-granularity.mjs, infra/scripts/validate-quality-gates.sh, infra/scripts/tests/validate-quality-gates-test.sh, backend/pom.xml, frontend/vitest.config.ts, frontend/tsconfig.quality.json, website/vitest.config.ts
 principal_statement: Testes verdes demonstram comportamento observado; o Quality Gate mede cobertura e manutenibilidade no escopo atômico, exige correção iterativa de resultados inaceitáveis e somente autoriza entrega Git quando todos os gates aplicáveis estão em PASS.
 ---

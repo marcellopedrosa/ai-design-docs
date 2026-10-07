@@ -10,8 +10,8 @@ date: "2026-08-25"
 version: "1.10"
 last_reviewed: "2026-09-10"
 keywords: "billing security, RBAC, Keycloak, segregation of duties, SoD, four-eyes, maker-checker, approval seal, MFA, break-glass, cross-tenant"
-related_files: "docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md, docs/product/requirements/REQ-00054-super-admin-unified-billing-price-version.md, docs/product/requirements/REQ-00059-temporary-all-roles-mfa-disablement.md, artefatos de análise/ANL-00051-super-admin-dev-mfa-usage-inventory.md, docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md, docs/product/use-cases/UC-00041-billing-invoice-correction-reissue.md, docs/product/use-cases/UC-00042-billing-payment-reconciliation-dunning.md, docs/product/use-cases/UC-00043-billing-credits-refunds-disputes.md, docs/product/use-cases/UC-00044-billing-tax-fiscal-documents.md, docs/product/use-cases/UC-00045-billing-financial-close-reporting.md, docs/product/use-cases/UC-00048-super-admin-billing-catalog-price-versions.md, docs/product/use-cases/UC-00049-super-admin-tenant-contract-add-ons-discounts.md, docs/product/use-cases/UC-00050-super-admin-billing-preview-invoice-close.md, docs/product/use-cases/UC-00053-manage-payment-provider-configuration.md, docs/product/use-cases/UC-00054-inspect-payment-provider-interactions.md, docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md, docs/delivery/plans/TP-00038-billing-contract-context-temporary-mfa-disablement.md, docs/delivery/plans/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md, docs/adrs/ADR-0005-multi-tenancy-architecture.md, docs/adrs/ADR-0009-dynamic-rbac-evolution.md, docs/adrs/ADR-0018-keycloak-realm-provisioning-automation.md, docs/adrs/ADR-0026-billing-api-tenant-admin-cutover.md, docs/adrs/ADR-0055-payment-provider-operational-control-plane.md, docs/architecture/rbac-access-control-matrix.md"
-code_references: "AS-IS em backend/src/main/java/br/com/duoset/saas_service/contexts/billing/, backend/src/main/java/br/com/duoset/saas_service/infrastructure/security/, backend/src/main/resources/application.yml, backend/src/main/resources/application-dev.yml, backend/src/main/resources/db/migration/tenant/, frontend/src/components/billing/, frontend/src/schemas/billingManagementSchemas.ts, frontend/src/lib/permissions.ts, frontend/src/lib/effective-roles.ts, frontend/src/lib/protected-routes.ts, frontend/src/lib/menu-config.ts, .env.example, docker-compose.yml, docker-compose.override.yml, infra/deploy/production.env.example e configuracao Keycloak; authorities, approval aggregates/ports e guards finos desta ADR permanecem destinos planejados."
+related_files: "README.md, ../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md, ../../../docs/specs/TP-00038-billing-contract-context-temporary-mfa-disablement.md, ../../../docs/specs/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md, ADR-0005-multi-tenancy-architecture.md, ADR-0009-dynamic-rbac-evolution.md, ADR-0018-keycloak-realm-provisioning-automation.md, ADR-0026-billing-api-tenant-admin-cutover.md, ADR-0055-payment-provider-operational-control-plane.md"
+code_references: "AS-IS em app/src/main/java/br/com/duoset/saas_service/contexts/billing/, app/src/main/java/br/com/duoset/saas_service/infrastructure/security/, app/src/main/resources/application.yml, app/src/main/resources/application-dev.yml, app/src/main/resources/db/migration/tenant/, frontend/src/components/billing/, frontend/src/schemas/billingManagementSchemas.ts, frontend/src/lib/permissions.ts, frontend/src/lib/effective-roles.ts, frontend/src/lib/protected-routes.ts, frontend/src/lib/menu-config.ts, .env.example, docker-compose.yml, docker-compose.override.yml, infra/deploy/production.env.example e configuracao Keycloak; authorities, approval aggregates/ports e guards finos desta ADR permanecem destinos planejados."
 principal_statement: "Billing usa authorities finas e auditoria; D-13.3 remove a exigência de segundo aprovador para SUPER_ADMIN e D-13.5 dispensa MFA de todas as roles em DEV, HML e PRD, preservando RBAC, histórico, escopo e transições explícitas."
 ---
 
@@ -23,8 +23,8 @@ principal_statement: "Billing usa authorities finas e auditoria; D-13.3 remove a
 - Scope: Keycloak, authorities finas, capabilities operacionais, acesso cross-tenant, purpose, transições explícitas, MFA step-up, break-glass e auditoria.
 - Non-objectives: Implementar realm, roles, annotations, endpoints, UI ou audit store; criar dynamic policy engine; definir identidade dos ocupantes, processo de RH ou threshold financeiro futuro; conceder acesso a producao.
 - Keywords: billing security, RBAC, Keycloak, segregation of duties, SoD, four-eyes, maker-checker, approval seal, MFA, break-glass, cross-tenant
-- Related Files: `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/requirements/REQ-00054-super-admin-unified-billing-price-version.md`, [REQ-00059](../product/requirements/REQ-00059-temporary-all-roles-mfa-disablement.md), ANL-00051, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/delivery/plans/TP-00038-billing-contract-context-temporary-mfa-disablement.md`, [TP-00047](../delivery/plans/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md), casos de uso de Billing, ADRs de IAM/RBAC e `docs/architecture/rbac-access-control-matrix.md`.
-- Code References: AS-IS em `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/`, `backend/src/main/java/br/com/duoset/saas_service/infrastructure/security/`, `backend/src/main/resources/application.yml`, `backend/src/main/resources/application-dev.yml`, `backend/src/main/resources/db/migration/tenant/`, `frontend/src/components/billing/`, `frontend/src/schemas/billingManagementSchemas.ts`, `.env.example`, `docker-compose.yml`, `docker-compose.override.yml`, `infra/deploy/production.env.example` e configuração Keycloak.
+- Related Files: `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/requirements/REQ-00054-super-admin-unified-billing-price-version.md`, [REQ-00059](../product/requirements/REQ-00059-temporary-all-roles-mfa-disablement.md), ANL-00051, `../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md`, `../../../docs/specs/TP-00038-billing-contract-context-temporary-mfa-disablement.md`, [TP-00047](../../../docs/specs/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md), casos de uso de Billing, ADRs de IAM/RBAC e `docs/architecture/rbac-access-control-matrix.md`.
+- Code References: AS-IS em `app/src/main/java/br/com/duoset/saas_service/contexts/billing/`, `app/src/main/java/br/com/duoset/saas_service/infrastructure/security/`, `app/src/main/resources/application.yml`, `app/src/main/resources/application-dev.yml`, `app/src/main/resources/db/migration/tenant/`, `frontend/src/components/billing/`, `frontend/src/schemas/billingManagementSchemas.ts`, `.env.example`, `docker-compose.yml`, `docker-compose.override.yml`, `infra/deploy/production.env.example` e configuração Keycloak.
 - Principal Decision: Billing usa Keycloak, authorities finas, tenant/purpose scope e auditoria. `D-13.3` remove a exigência de checker distinto para operações de `SUPER_ADMIN` em DEV, HML e PRD; qualquer `SUPER_ADMIN` autorizado executa transições explícitas dentro da alçada, com identificação no log e sem publicação automática.
 - Date: 2026-08-25
 - Status: Accepted
@@ -483,9 +483,9 @@ de um efeito financeiro continua distinta.
 9. habilitar somente por rollout/evidence gates do ADR-0051 e owner review.
 
 O recorte contratual histórico de `D-13.1` é rastreado pelo
-[TP-00038](../delivery/plans/TP-00038-billing-contract-context-temporary-mfa-disablement.md).
+[TP-00038](../../../docs/specs/TP-00038-billing-contract-context-temporary-mfa-disablement.md).
 O desligamento temporário completo de `D-13.2` é coordenado pelo
-[TP-00047](../delivery/plans/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md),
+[TP-00047](../../../docs/specs/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md),
 com inventário no ANL-00051, toggle default-on/fail-closed, famílias fechadas,
 persistência explícita da decisão e regressão de rollback.
 
@@ -561,9 +561,9 @@ eventuais skips pertencem aos respectivos planos.
 - [REQ-00054](../product/requirements/REQ-00054-super-admin-unified-billing-price-version.md)
 - [REQ-00059](../product/requirements/REQ-00059-temporary-all-roles-mfa-disablement.md)
 - ANL-00051
-- [TP-00013](../delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md)
-- [TP-00038](../delivery/plans/TP-00038-billing-contract-context-temporary-mfa-disablement.md)
-- [TP-00047](../delivery/plans/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md)
+- [TP-00013](../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md)
+- [TP-00038](../../../docs/specs/TP-00038-billing-contract-context-temporary-mfa-disablement.md)
+- [TP-00047](../../../docs/specs/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md)
 - [Module Registry](../architecture/module-registry.md)
 - [Matriz central de RBAC e aplicação no frontend](../architecture/rbac-access-control-matrix.md)
 

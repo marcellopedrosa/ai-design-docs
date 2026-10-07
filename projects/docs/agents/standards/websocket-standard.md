@@ -9,7 +9,7 @@ status: "Active"
 date: "2026-08-25"
 version: "1.4"
 keywords: "websocket, standard, standard"
-related_files: "./README.md, ./keycloak-frontend-standard.md, ./api-client-standard.md"
+related_files: "./README.md, keycloak-frontend-standard.md, api-client-standard.md"
 code_references: "backend/, frontend/, infra/"
 principal_statement: "As regras de WebSocket & Real-time aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
@@ -18,7 +18,7 @@ principal_statement: "As regras de WebSocket & Real-time aplicam-se somente ao e
 
 > **Mandatory rules** for real-time communication in the frontend. This standard defines WebSocket connection lifecycle, authentication, reconnection, event-driven cache invalidation, notification delivery, and tenant isolation.
 
-> **Prerequisite:** Read [`keycloak-frontend-standard.md`](./keycloak-frontend-standard.md) (token injection) and [`api-client-standard.md`](./api-client-standard.md) (React Query cache invalidation).
+> **Prerequisite:** Read [`keycloak-frontend-standard.md`](keycloak-frontend-standard.md) (token injection) and [`api-client-standard.md`](api-client-standard.md) (React Query cache invalidation).
 
 > **Tenant-context amendment (2026-08-22):** tenant JWT identities do not duplicate their claim
 > in a header; `X-Tenant-ID` is exclusive to explicit Super Admin impersonation.

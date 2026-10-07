@@ -9,7 +9,7 @@ status: "Proposed"
 date: "2026-07-16"
 version: "0.1"
 keywords: "Spring AI, ChatClient, LLM, abstração, provider"
-related_files: "docs/adrs/ADR-0007-multi-provider-llm-integration.md`, `docs/adrs/ADR-0021-llm-resilience-fallback-strategy.md"
+related_files: "README.md, ADR-0007-multi-provider-llm-integration.md, ADR-0021-llm-resilience-fallback-strategy.md"
 code_references: "`backend/` - adapters e configuração de integração LLM."
 principal_statement: "Integrações LLM devem depender da abstração `ChatClient`/Spring AI e manter detalhes do fornecedor nos adapters."
 ---
@@ -22,7 +22,7 @@ principal_statement: "Integrações LLM devem depender da abstração `ChatClien
 - Scope: Integrações LLM do backend e seus adapters de provider.
 - Non-objectives: Não definir prompts de negócio, quotas, experiência conversacional ou escolha permanente de fornecedor.
 - Keywords: Spring AI, ChatClient, LLM, abstração, provider
-- Related Files: `docs/adrs/ADR-0007-multi-provider-llm-integration.md`, `docs/adrs/ADR-0021-llm-resilience-fallback-strategy.md`
+- Related Files: `ADR-0007-multi-provider-llm-integration.md`, `ADR-0021-llm-resilience-fallback-strategy.md`
 - Code References: `backend/` - adapters e configuração de integração LLM.
 - Principal Decision: Integrações LLM devem depender da abstração `ChatClient`/Spring AI e manter detalhes do fornecedor nos adapters.
 - Date: 2026-07-16

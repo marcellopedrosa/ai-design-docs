@@ -9,8 +9,8 @@ status: "Proposed"
 date: "2026-04-27"
 version: "1.0"
 keywords: "adr, decisao, arquitetura, transição, para, documento, alfanumérico"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0023-agnostic-payment-provider-integration.md"
-code_references: "frontend/src/lib/validators/documento.ts, frontend/src/components/shared/DocumentoInput.tsx, backend/src/main/java/br/com/duoset/saas_service/shared/types/Documento.java"
+related_files: "README.md, ADR-0023-agnostic-payment-provider-integration.md"
+code_references: "frontend/src/lib/validators/documento.ts, frontend/src/components/shared/DocumentoInput.tsx, app/src/main/java/br/com/duoset/saas_service/shared/types/Documento.java"
 principal_statement: "A opção escolhida é a implementação proativa do Documento Alfanumérico em todas as camadas, com armazenamento textual sem máscara, validação própria e atualização de máscaras e regex conforme a especificação descrita."
 ---
 
@@ -37,7 +37,7 @@ O novo padrão mantém o mesmo tamanho (14 caracteres) e a mesma estrutura de po
 Isso impacta diretamente todo o ecossistema do Contador Fiscal Inteligente, incluindo:
 - **Frontend**: Máscaras de input (`CnpjInput`), expressões regulares de validação no Zod (`Documento_MASK_REGEX`), e o algoritmo de cálculo de Dígito Verificador (DV).
 - **Backend**: Entidades de domínio, contratos de API (DTOs), validações de Beans (ex: `@Documento` do Hibernate Validator que pode ficar defasada), e consultas no banco de dados.
-- **Integrações**: Comunicação com sistemas de terceiros (provider de pagamento definido no [ADR-0023](./ADR-0023-agnostic-payment-provider-integration.md), APIs do Governo e ERPs) que precisam estar preparados para receber letras no Documento.
+- **Integrações**: Comunicação com sistemas de terceiros (provider de pagamento definido no [ADR-0023](ADR-0023-agnostic-payment-provider-integration.md), APIs do Governo e ERPs) que precisam estar preparados para receber letras no Documento.
 
 ---
 

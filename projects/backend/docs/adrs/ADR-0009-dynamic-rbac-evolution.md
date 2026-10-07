@@ -9,7 +9,7 @@ status: "Accepted"
 date: "2026-03-12"
 version: "1.5"
 keywords: "adr, decisao, arquitetura, dynamic, rbac, evolution, strategy"
-related_files: "docs/adrs/README.md, docs/product/requirements/REQ-00003-rbac-profile-responsibility-matrix.md, docs/product/requirements/REQ-00004-rbac-security-mapping.md, docs/adrs/ADR-0001-technology-stack-and-architecture.md, docs/adrs/ADR-0005-multi-tenancy-architecture.md, docs/adrs/ADR-0006-audit-compliance.md, docs/product/requirements/REQ-00005-plan-feature-matrix.md, docs/agents/standards/rbac-frontend-standard.md, docs/agents/standards/keycloak-frontend-standard.md"
+related_files: "README.md, ADR-0001-technology-stack-and-architecture.md, ADR-0005-multi-tenancy-architecture.md, ADR-0006-audit-compliance.md, ../../../docs/agents/standards/rbac-frontend-standard.md, ../../../docs/agents/standards/keycloak-frontend-standard.md"
 code_references: "menuConfig, ConversationAuditSecurityFilter, TenantContextFilter, PermissionPort, RoleAdminPort, AuthorizationService, useMenuConfig"
 principal_statement: "The system will maintain static RBAC as the active solution, with three governing system profiles and the separately inventoried module/technical authorities. `ROLE_TENANT_AUDIT` is the sole entitlement for the Conversation Audit feature and has no implicit inheritance from `ROLE_TENANT_ADMIN` or `ROLE_SUPER_ADMIN`. Local source/configuration gates are closed; persisted Keycloak/session, authenticated backend-real and external rollout gates remain open. When the separate dynamic-RBAC evolution triggers are met, the system will evolve to granular permissions stored in a database, administrable via web panel by the Super Admin and Tenant Admin, with automatic synchronization to Keycloak."
 ---
@@ -47,7 +47,7 @@ and module entitlements such as Fiscal, Certificates and Chatbot remain catalogu
 `Role.java`, realm artifacts and REQ-00003/REQ-00004. A future migration must preserve every
 static role/entitlement mapping, not only the three governing profiles.
 
-These profiles are documented in requirements [REQ-00003](../product/requirements/REQ-00003-rbac-profile-responsibility-matrix.md) (RBAC Matrix × Profile) and [REQ-00004](../product/requirements/REQ-00004-rbac-security-mapping.md) (Frontend × Backend Security Mapping). The mapping `role → route/functionality` is **hardcoded** in the frontend (`PROTECTED_ROUTES`, `menuConfig` following `rbac-frontend-standard.md`) and backend (`@PreAuthorize`).
+These profiles are documented in requirements [REQ-00003](../product/requirements/REQ-00003-rbac-profile-responsibility-matrix.md) (RBAC Matrix × Profile) and [REQ-00004](../product/requirements/REQ-00004-rbac-security-mapping.md) (Frontend × Backend Security Mapping). The mapping `role → route/functionality` is **hardcoded** in the frontend (`PROTECTED_ROUTES`, `menuConfig` following `../../../docs/agents/standards/rbac-frontend-standard.md`) and backend (`@PreAuthorize`).
 
 **Limitations of the current model:**
 
@@ -254,7 +254,7 @@ before code.
 
 **Development Process:**
 - When adding a new functionality: register `Permission` in seed data instead of editing 6+ files
-- Standards updated: `rbac-frontend-standard.md`, `keycloak-frontend-standard.md`
+- Standards updated: `../../../docs/agents/standards/rbac-frontend-standard.md`, `../../../docs/agents/standards/keycloak-frontend-standard.md`
 
 **Data Architecture:**
 - Conceptual schema of the new tables:
@@ -348,7 +348,7 @@ HML, PRD and release remain RED.
 
 The implemented local extension exposes the accepted three governing system profiles through
 hardcoded mappings in:
-- Frontend: `PATHS`, `PROTECTED_ROUTES`, `menuConfig` (`rbac-frontend-standard.md` §10-14)
+- Frontend: `PATHS`, `PROTECTED_ROUTES`, `menuConfig` (`../../../docs/agents/standards/rbac-frontend-standard.md` §10-14)
 - Backend: `@PreAuthorize` annotations (`REQ-00004`)
 
 ### Evolution Triggers
@@ -399,7 +399,7 @@ System continues using `@PreAuthorize` in parallel as fallback.
 2. Replace static `menuConfig` with API consumption (`useMenuConfig` hook).
 3. Replace static `PROTECTED_ROUTES` with API consumption.
 4. Implement admin UI: role and permission management (for Super Admin and Tenant Admin).
-5. Update `rbac-frontend-standard.md` with the new patterns.
+5. Update `../../../docs/agents/standards/rbac-frontend-standard.md` with the new patterns.
 
 **Result:** Frontend 100% dynamic. Menu and routes controlled by the database.
 
@@ -511,8 +511,8 @@ System continues using `@PreAuthorize` in parallel as fallback.
 - [REQ-00005 — Features by Plan Matrix](../product/requirements/REQ-00005-plan-feature-matrix.md)
 
 **Standards:**
-- [rbac-frontend-standard.md](../agents/standards/rbac-frontend-standard.md) — Frontend RBAC standards (future sections 10-14)
-- [keycloak-frontend-standard.md](../agents/standards/keycloak-frontend-standard.md) — Keycloak JS Integration
+- [../../../docs/agents/standards/rbac-frontend-standard.md](../../../docs/agents/standards/rbac-frontend-standard.md) — Frontend RBAC standards (future sections 10-14)
+- [../../../docs/agents/standards/keycloak-frontend-standard.md](../../../docs/agents/standards/keycloak-frontend-standard.md) — Keycloak JS Integration
 
 **External:**
 - [Keycloak Admin REST API](https://www.keycloak.org/docs-api/latest/rest-api/) — Programmatic management API for roles and users

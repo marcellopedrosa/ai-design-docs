@@ -9,8 +9,8 @@ status: "Accepted"
 date: "2026-08-25"
 version: "1.4"
 keywords: "entitlement boundary, Spring Modulith, Billing, Clean Architecture, ports and adapters, platform datasource, tenant database, Flyway, outbox, cutover marker, Redis, TenantScopeGuard, BP Farias"
-related_files: "docs/architecture/module-registry.md`, `docs/product/requirements/REQ-00005-plan-feature-matrix.md`, `docs/product/requirements/REQ-00011-chatbot-usage-limits-and-billing.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/adrs/ADR-0027-catalogo-global-faturamento-local.md`, `docs/adrs/ADR-0028-entitlements-versionados-tenant-local.md`, `docs/adrs/ADR-0029-taxonomia-tipificada-entitlements.md`, `docs/adrs/ADR-0030-composicao-deterministica-enforcement-entitlements.md`, `docs/adrs/ADR-0032-adocao-versionada-grandfathering-entitlements.md`, `docs/adrs/ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md`, `docs/adrs/ADR-0035-migracao-evidence-first-entitlements-legados.md`, `docs/adrs/ADR-0036-cache-lkg-fail-safe-entitlements.md`, `docs/adrs/ADR-0038-pricing-tipado-moeda-cadencia.md"
-code_references: "AS-IS em `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/package-info.java`, `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/BillingApi.java`, `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/internal/`, `backend/src/main/java/br/com/duoset/saas_service/config/persistence/PlatformDataSourceConfig.java`, `backend/src/main/java/br/com/duoset/saas_service/config/persistence/TenantDataSourceConfig.java`, `backend/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantRoutingDataSource.java`, `backend/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantDatabaseRegistry.java` e `backend/src/main/resources/db/migration/billing/`; todos os packages, APIs, adapters, migrations, tabelas, eventos e keyspaces de entitlement desta ADR são destinos planejados e ainda não existem."
+related_files: "README.md, ../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md, ADR-0027-catalogo-global-faturamento-local.md, ADR-0028-entitlements-versionados-tenant-local.md, ADR-0029-taxonomia-tipificada-entitlements.md, ADR-0030-composicao-deterministica-enforcement-entitlements.md, ADR-0032-adocao-versionada-grandfathering-entitlements.md, ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md, ADR-0035-migracao-evidence-first-entitlements-legados.md, ADR-0036-cache-lkg-fail-safe-entitlements.md, ADR-0038-pricing-tipado-moeda-cadencia.md"
+code_references: "AS-IS em `app/src/main/java/br/com/duoset/saas_service/contexts/billing/package-info.java`, `app/src/main/java/br/com/duoset/saas_service/contexts/billing/BillingApi.java`, `app/src/main/java/br/com/duoset/saas_service/contexts/billing/internal/`, `app/src/main/java/br/com/duoset/saas_service/config/persistence/PlatformDataSourceConfig.java`, `app/src/main/java/br/com/duoset/saas_service/config/persistence/TenantDataSourceConfig.java`, `app/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantRoutingDataSource.java`, `app/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantDatabaseRegistry.java` e `app/src/main/resources/db/migration/billing/`; todos os packages, APIs, adapters, migrations, tabelas, eventos e keyspaces de entitlement desta ADR são destinos planejados e ainda não existem."
 principal_statement: "Entitlements permanece um subdomínio coeso no único módulo `contexts.billing`, sem novo módulo, serviço ou banco físico. APIs públicas estreitas protegem o boundary; adapters separados usam o datasource de plataforma para catálogo global e o banco dedicado de cada tenant para autoridade operacional; cache Redis é derivado, e nenhuma operação tenant-local começa sem escopo de tenant validado."
 ---
 
@@ -22,8 +22,8 @@ principal_statement: "Entitlements permanece um subdomínio coeso no único mód
 - Scope: Boundary Spring Modulith, Clean Architecture, packages planejados, APIs Java públicas, ports/adapters, catálogo seller-owned global, persistência tenant-local, migrations Flyway, tabelas-alvo, marker de cutover, transações, outbox, Redis, isolamento multitenant, jobs e condições para extração futura.
 - Non-objectives: Implementar código, DDL, migration, endpoint HTTP, OpenAPI, Redis, evento ou integração; autorizar execução; definir campos finais de DTO/DDL/evento, pricing, rating, invoice, cobrança, provider, lifecycle, reservas de quota definitivas, RBAC/SoD/MFA, SLO, rollout ou operação ASAAS.
 - Keywords: entitlement boundary, Spring Modulith, Billing, Clean Architecture, ports and adapters, platform datasource, tenant database, Flyway, outbox, cutover marker, Redis, TenantScopeGuard, BP Farias
-- Related Files: `docs/architecture/module-registry.md`, `docs/product/requirements/REQ-00005-plan-feature-matrix.md`, `docs/product/requirements/REQ-00011-chatbot-usage-limits-and-billing.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/adrs/ADR-0027-catalogo-global-faturamento-local.md`, `docs/adrs/ADR-0028-entitlements-versionados-tenant-local.md`, `docs/adrs/ADR-0029-taxonomia-tipificada-entitlements.md`, `docs/adrs/ADR-0030-composicao-deterministica-enforcement-entitlements.md`, `docs/adrs/ADR-0032-adocao-versionada-grandfathering-entitlements.md`, `docs/adrs/ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md`, `docs/adrs/ADR-0035-migracao-evidence-first-entitlements-legados.md`, `docs/adrs/ADR-0036-cache-lkg-fail-safe-entitlements.md`, `docs/adrs/ADR-0038-pricing-tipado-moeda-cadencia.md`
-- Code References: AS-IS em `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/package-info.java`, `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/BillingApi.java`, `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/internal/`, `backend/src/main/java/br/com/duoset/saas_service/config/persistence/PlatformDataSourceConfig.java`, `backend/src/main/java/br/com/duoset/saas_service/config/persistence/TenantDataSourceConfig.java`, `backend/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantRoutingDataSource.java`, `backend/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantDatabaseRegistry.java` e `backend/src/main/resources/db/migration/billing/`; todos os packages, APIs, adapters, migrations, tabelas, eventos e keyspaces de entitlement desta ADR são destinos planejados e ainda não existem.
+- Related Files: `docs/architecture/module-registry.md`, `docs/product/requirements/REQ-00005-plan-feature-matrix.md`, `docs/product/requirements/REQ-00011-chatbot-usage-limits-and-billing.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md`, `ADR-0027-catalogo-global-faturamento-local.md`, `ADR-0028-entitlements-versionados-tenant-local.md`, `ADR-0029-taxonomia-tipificada-entitlements.md`, `ADR-0030-composicao-deterministica-enforcement-entitlements.md`, `ADR-0032-adocao-versionada-grandfathering-entitlements.md`, `ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md`, `ADR-0035-migracao-evidence-first-entitlements-legados.md`, `ADR-0036-cache-lkg-fail-safe-entitlements.md`, `ADR-0038-pricing-tipado-moeda-cadencia.md`
+- Code References: AS-IS em `app/src/main/java/br/com/duoset/saas_service/contexts/billing/package-info.java`, `app/src/main/java/br/com/duoset/saas_service/contexts/billing/BillingApi.java`, `app/src/main/java/br/com/duoset/saas_service/contexts/billing/internal/`, `app/src/main/java/br/com/duoset/saas_service/config/persistence/PlatformDataSourceConfig.java`, `app/src/main/java/br/com/duoset/saas_service/config/persistence/TenantDataSourceConfig.java`, `app/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantRoutingDataSource.java`, `app/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantDatabaseRegistry.java` e `app/src/main/resources/db/migration/billing/`; todos os packages, APIs, adapters, migrations, tabelas, eventos e keyspaces de entitlement desta ADR são destinos planejados e ainda não existem.
 - Principal Decision: Entitlements permanece um subdomínio coeso no único módulo `contexts.billing`, sem novo módulo, serviço ou banco físico. APIs públicas estreitas protegem o boundary; adapters separados usam o datasource de plataforma para catálogo global e o banco dedicado de cada tenant para autoridade operacional; cache Redis é derivado, e nenhuma operação tenant-local começa sem escopo de tenant validado.
 - Date: 2026-08-25
 - Status: Accepted
@@ -118,7 +118,7 @@ de módulo. Eventos, commands e detalhes internos permanecem em `internal/`.
 O destino segue a organização layer-first já adotada pelo módulo:
 
 ```text
-backend/src/main/java/br/com/duoset/saas_service/contexts/billing/
+app/src/main/java/br/com/duoset/saas_service/contexts/billing/
   EntitlementDecisionApi.java
   EntitlementAdmissionApi.java
   <DTOs públicos tipados de entitlement>
@@ -182,10 +182,10 @@ distribuída ou transação XA entre platform e tenant.
 
 As migrations planejadas são separadas pela autoridade:
 
-- plataforma: `backend/src/main/resources/db/migration/billing-platform/`, com
+- plataforma: `app/src/main/resources/db/migration/billing-platform/`, com
   tabela de histórico Flyway própria, planejada como
   `flyway_schema_history_billing_platform`;
-- tenant: `backend/src/main/resources/db/migration/billing/`, aplicada pelo
+- tenant: `app/src/main/resources/db/migration/billing/`, aplicada pelo
   registry a cada banco dedicado, preservando seu histórico tenant-local.
 
 Migrations de plataforma nunca são incluídas no loop de bancos dedicados.
@@ -695,14 +695,14 @@ mudança é exclusivamente documental.
 - `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`
 - `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`
 - `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`
-- `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`
-- `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/package-info.java`
-- `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/BillingApi.java`
-- `backend/src/main/java/br/com/duoset/saas_service/config/persistence/PlatformDataSourceConfig.java`
-- `backend/src/main/java/br/com/duoset/saas_service/config/persistence/TenantDataSourceConfig.java`
-- `backend/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantRoutingDataSource.java`
-- `backend/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantDatabaseRegistry.java`
-- `backend/src/main/resources/db/migration/billing/`
+- `../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md`
+- `app/src/main/java/br/com/duoset/saas_service/contexts/billing/package-info.java`
+- `app/src/main/java/br/com/duoset/saas_service/contexts/billing/BillingApi.java`
+- `app/src/main/java/br/com/duoset/saas_service/config/persistence/PlatformDataSourceConfig.java`
+- `app/src/main/java/br/com/duoset/saas_service/config/persistence/TenantDataSourceConfig.java`
+- `app/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantRoutingDataSource.java`
+- `app/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantDatabaseRegistry.java`
+- `app/src/main/resources/db/migration/billing/`
 
 ---
 

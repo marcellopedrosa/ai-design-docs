@@ -9,7 +9,7 @@ status: "Accepted"
 date: "2026-03-11"
 version: "1.2"
 keywords: "adr, decisao, arquitetura, whatsapp, integration, architecture"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0001-technology-stack-and-architecture.md, docs/adrs/ADR-0002-separacao-banco-por-contexto-multitenancy.md, docs/adrs/ADR-0003-multitenancy-schema-vs-tenant-id.md, docs/adrs/ADR-0005-multi-tenancy-architecture.md, docs/product/business/product-vision.md, docs/agents/README.md"
+related_files: "README.md, ADR-0001-technology-stack-and-architecture.md, ADR-0002-separacao-banco-por-contexto-multitenancy.md, ADR-0003-multitenancy-schema-vs-tenant-id.md, ADR-0005-multi-tenancy-architecture.md"
 code_references: "WhatsAppMessagePort, ProcessIncomingMessageUseCase, SendOutboundMessageUseCase, FiscalQueryRequestedEvent, FiscalQueryPort, WhatsAppMetaCloudApiAdapter, WhatsAppWebhookController, FiscalQueryEventAdapter, ValidateAccessUseCase, GetConversationHistoryUseCase, FiscalQueryRequestPort, ConversationRepository"
 principal_statement: "The WhatsApp integration will be implemented as an isolated **Spring Modulith module** (`whatsapp`) following Clean Architecture principles. The module will expose inbound ports (use cases) for message processing and outbound ports for WhatsApp API communication and cross-module queries. The WhatsApp Business API adapter will be implemented behind a `WhatsAppMessagePort` interface, making the provider replaceable. All interactions will be persisted in the `saas_whatsapp` database with `tenant_id` isolation. Cross-module communication (fiscal queries, certificate lookups) will use Spring Modulith Events."
 ---
@@ -48,10 +48,10 @@ Technical constraints:
 
 Related architectural decisions:
 
-- [ADR-0001](./ADR-0001-technology-stack-and-architecture.md) — Technology stack: Java 21, Spring Boot 4.x, Spring Modulith.
-- [ADR-0002](./ADR-0002-separacao-banco-por-contexto-multitenancy.md) — Database isolation: `saas_whatsapp` database for the WhatsApp bounded context.
-- [ADR-0003](./ADR-0003-multitenancy-schema-vs-tenant-id.md) — Multi-tenancy via `tenant_id` row-level isolation.
-- [ADR-0005](./ADR-0005-multi-tenancy-architecture.md) — Three-level tenant isolation (Keycloak + TenantContext + Hibernate @Filter).
+- [ADR-0001](ADR-0001-technology-stack-and-architecture.md) — Technology stack: Java 21, Spring Boot 4.x, Spring Modulith.
+- [ADR-0002](ADR-0002-separacao-banco-por-contexto-multitenancy.md) — Database isolation: `saas_whatsapp` database for the WhatsApp bounded context.
+- [ADR-0003](ADR-0003-multitenancy-schema-vs-tenant-id.md) — Multi-tenancy via `tenant_id` row-level isolation.
+- [ADR-0005](ADR-0005-multi-tenancy-architecture.md) — Three-level tenant isolation (Keycloak + TenantContext + Hibernate @Filter).
 
 ---
 
@@ -423,10 +423,10 @@ Mitigation: All messages encrypted at rest in `saas_whatsapp` database. `tenant_
 
 # 12. Related ADRs
 
-- [ADR-0001 - Technology Stack and Architecture Foundation](./ADR-0001-technology-stack-and-architecture.md) — Java 21, Spring Boot 4.x, Spring Modulith, Clean Architecture.
-- [ADR-0002 - Multi-Tenant Database Isolation Strategy](./ADR-0002-separacao-banco-por-contexto-multitenancy.md) — `saas_whatsapp` database for WhatsApp bounded context.
-- [ADR-0003 - Multi-Tenancy Schema vs tenant_id](./ADR-0003-multitenancy-schema-vs-tenant-id.md) — `tenant_id` row-level isolation for all WhatsApp tables.
-- [ADR-0005 - Multi-Tenancy Architecture](./ADR-0005-multi-tenancy-architecture.md) — Three-level isolation applied to WhatsApp module.
+- [ADR-0001 - Technology Stack and Architecture Foundation](ADR-0001-technology-stack-and-architecture.md) — Java 21, Spring Boot 4.x, Spring Modulith, Clean Architecture.
+- [ADR-0002 - Multi-Tenant Database Isolation Strategy](ADR-0002-separacao-banco-por-contexto-multitenancy.md) — `saas_whatsapp` database for WhatsApp bounded context.
+- [ADR-0003 - Multi-Tenancy Schema vs tenant_id](ADR-0003-multitenancy-schema-vs-tenant-id.md) — `tenant_id` row-level isolation for all WhatsApp tables.
+- [ADR-0005 - Multi-Tenancy Architecture](ADR-0005-multi-tenancy-architecture.md) — Three-level isolation applied to WhatsApp module.
 - (Future) ADR-0006 — SERPRO Integra Contador Integration Pattern (WhatsApp module depends on this for fiscal queries).
 - (Future) ADR-0007 — Observability and Monitoring Stack (WhatsApp metrics and dashboards).
 

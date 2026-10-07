@@ -9,7 +9,7 @@ status: "Active"
 date: "2026-08-25"
 version: "1.5"
 keywords: "modulith, standard, standard"
-related_files: "./README.md, ./ddd-clean-architecture-standard.md, docs/architecture/module-registry.md"
+related_files: "./README.md, ddd-clean-architecture-standard.md, docs/architecture/module-registry.md"
 code_references: "backend/, infra/"
 principal_statement: "As regras de Modulith aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
@@ -48,7 +48,7 @@ Este documento define os padrões técnicos, templates de código e convenções
 
 Cada bounded context definido por `@CleanArchitecture` corresponde a **um módulo Spring Modulith**. O módulo é detectado automaticamente pelo pacote raiz imediato abaixo do pacote da aplicação principal.
 
-> 📘 Consulte [`ddd-clean-architecture-standard.md`](./ddd-clean-architecture-standard.md) para a estrutura completa de pacotes, Bounded Context Map e a estrutura interna de cada módulo.
+> 📘 Consulte [`ddd-clean-architecture-standard.md`](ddd-clean-architecture-standard.md) para a estrutura completa de pacotes, Bounded Context Map e a estrutura interna de cada módulo.
 
 > [!IMPORTANT]
 > O pacote `internal/` é tratado pelo Spring Modulith como **pacote interno**. Classes neste pacote **não podem** ser acessadas por outros módulos. Qualquer violação será detectada por `ApplicationModules.verify()`.
@@ -316,7 +316,7 @@ class ModuleStructureVerificationTest {
 
 ### Conceito
 
-Enquanto o `ModuleStructureVerificationTest` (§4) valida as fronteiras **entre módulos** (inter-module), os testes ArchUnit validam a conformidade das **camadas internas** de cada módulo (intra-module) com a [Dependency Rule da Clean Architecture](./ddd-clean-architecture-standard.md).
+Enquanto o `ModuleStructureVerificationTest` (§4) valida as fronteiras **entre módulos** (inter-module), os testes ArchUnit validam a conformidade das **camadas internas** de cada módulo (intra-module) com a [Dependency Rule da Clean Architecture](ddd-clean-architecture-standard.md).
 
 ```
 ModuleStructureVerificationTest  →  Inter-module (módulos respeitam fronteiras)

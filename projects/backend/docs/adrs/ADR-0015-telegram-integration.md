@@ -10,8 +10,8 @@ date: "2026-05-30"
 last_reviewed: "2026-08-29"
 version: "1.6"
 keywords: "adr, decisao, arquitetura, telegram, integration, architecture"
-related_files: "docs/adrs/README.md, docs/delivery/lessons-learned/backend/LL-BE-00088-conversation-identity-includes-channel-account.md, docs/delivery/lessons-learned/backend/LL-BE-00031-pii-leak-via-exception-messages-audit.md, docs/delivery/lessons-learned/backend/LL-BE-00034-aes-ecb-deterministic-encryption.md, docs/delivery/lessons-learned/backend/LL-BE-00043-circuitbreaker-placement-adr-violation.md, docs/delivery/lessons-learned/backend/LL-BE-00047-adapter-todomain-create-vs-reconstitute.md, docs/delivery/lessons-learned/backend/LL-BE-00048-webmvctest-securityconfig-default-fallback.md, docs/delivery/lessons-learned/backend/LL-BE-00050-triple-audit-duplication-aop-service-event.md, docs/delivery/lessons-learned/backend/LL-BE-00051-omnichannel-chatbot-refactoring.md, docs/delivery/lessons-learned/backend/LL-BE-00093-webhook-ack-is-not-worker-completion.md, docs/product/requirements/REQ-00050-omnichannel-durable-inbound-processing.md, docs/adrs/ADR-0054-omnichannel-tenant-local-durable-inbox.md, docs/delivery/plans/implementation_plans/backend/IP-BE-3.1.9-omnichannel-telegram-integration.md, docs/delivery/plans/implementation_plans/backend/IP-BE-3.2.12-omnichannel-durable-inbound-processing.md"
-code_references: "backend/src/main/java/br/com/duoset/saas_service/contexts/omnichannel/internal/presentation/rest/TelegramWebhookController.java, backend/src/main/java/br/com/duoset/saas_service/contexts/omnichannel/internal/presentation/rest/WhatsAppWebhookController.java, backend/src/main/java/br/com/duoset/saas_service/contexts/omnichannel/internal/application/usecase/AcceptInboundMessageUseCase.java, backend/src/main/java/br/com/duoset/saas_service/contexts/omnichannel/internal/application/service/InboundInboxWorker.java, backend/src/main/resources/db/migration/omnichannel/V45__create_inbound_event_inbox.sql"
+related_files: "README.md, ../lessons-learned/LL-BE-00088-conversation-identity-includes-channel-account.md, ../lessons-learned/LL-BE-00031-pii-leak-via-exception-messages-audit.md, ../lessons-learned/LL-BE-00034-aes-ecb-deterministic-encryption.md, ../lessons-learned/LL-BE-00043-circuitbreaker-placement-adr-violation.md, ../lessons-learned/LL-BE-00047-adapter-todomain-create-vs-reconstitute.md, ../lessons-learned/LL-BE-00048-webmvctest-securityconfig-default-fallback.md, ../lessons-learned/LL-BE-00050-triple-audit-duplication-aop-service-event.md, ../lessons-learned/LL-BE-00051-omnichannel-chatbot-refactoring.md, ../lessons-learned/LL-BE-00093-webhook-ack-is-not-worker-completion.md, ADR-0054-omnichannel-tenant-local-durable-inbox.md, ../specs/IP-BE-3.1.9-omnichannel-telegram-integration.md, ../specs/IP-BE-3.2.12-omnichannel-durable-inbound-processing.md"
+code_references: "app/src/main/java/br/com/duoset/saas_service/contexts/omnichannel/internal/presentation/rest/TelegramWebhookController.java, app/src/main/java/br/com/duoset/saas_service/contexts/omnichannel/internal/presentation/rest/WhatsAppWebhookController.java, app/src/main/java/br/com/duoset/saas_service/contexts/omnichannel/internal/application/usecase/AcceptInboundMessageUseCase.java, app/src/main/java/br/com/duoset/saas_service/contexts/omnichannel/internal/application/service/InboundInboxWorker.java, app/src/main/resources/db/migration/omnichannel/V45__create_inbound_event_inbox.sql"
 principal_statement: "Telegram e WhatsApp usam o mesmo core Omnichannel; mensagens processáveis transferem custódia por commit tenant-local antes do ACK e são concluídas por worker recuperável, conforme a extensão decisória ADR-0054."
 ---
 
@@ -214,7 +214,7 @@ ou recreate que gere outro `channelAccountId` deve adotar uma política explíci
 Nunca se deve reutilizar uma conversa apenas porque `tenantId + channel + remoteId` coincidem. Antes do
 lookup account-aware, o webhook novo reutilizava a referência órfã e o outbound falhava ao resolver a
 credencial pelo ID antigo. A correção isola novos inbounds; o lifecycle da referência histórica continua
-obrigatório. Consulte [LL-BE-00088](../delivery/lessons-learned/backend/LL-BE-00088-conversation-identity-includes-channel-account.md).
+obrigatório. Consulte [LL-BE-00088](../lessons-learned/LL-BE-00088-conversation-identity-includes-channel-account.md).
 
 ### 5.4. Lifecycle e Reconciliação do Webhook
 
@@ -315,15 +315,15 @@ pendentes do [REQ-00050](../product/requirements/REQ-00050-omnichannel-durable-i
   replay convergente do provider.
 
 **Lessons Learned Referências Obrigatórias:**
-- [LL-BE-00031](../delivery/lessons-learned/backend/LL-BE-00031-pii-leak-via-exception-messages-audit.md) — PII Leak via Exception Messages (token no path da URL)
-- [LL-BE-00034](../delivery/lessons-learned/backend/LL-BE-00034-aes-ecb-deterministic-encryption.md) — AES/ECB Encryption (usar AES/GCM para bot token)
-- [LL-BE-00043](../delivery/lessons-learned/backend/LL-BE-00043-circuitbreaker-placement-adr-violation.md) — CircuitBreaker exclusivamente em `adapter.out.external`
-- [LL-BE-00047](../delivery/lessons-learned/backend/LL-BE-00047-adapter-todomain-create-vs-reconstitute.md) — Usar `reconstitute()` nos mappers JPA
-- [LL-BE-00048](../delivery/lessons-learned/backend/LL-BE-00048-webmvctest-securityconfig-default-fallback.md) — `@Import(SecurityConfig.class)` nos testes `@WebMvcTest`
-- [LL-BE-00050](../delivery/lessons-learned/backend/LL-BE-00050-triple-audit-duplication-aop-service-event.md) — Evitar auditoria triplicada
-- [LL-BE-00051](../delivery/lessons-learned/backend/LL-BE-00051-omnichannel-chatbot-refactoring.md) — Lições do Omnichannel Refactoring
-- [LL-BE-00088](../delivery/lessons-learned/backend/LL-BE-00088-conversation-identity-includes-channel-account.md) — Identidade completa, ACK assíncrono e incidente de conversa órfã
-- [LL-BE-00093](../delivery/lessons-learned/backend/LL-BE-00093-webhook-ack-is-not-worker-completion.md) — ACK como transferência de custódia, polling, checkpoint e retry seguro em qualquer canal
+- [LL-BE-00031](../lessons-learned/LL-BE-00031-pii-leak-via-exception-messages-audit.md) — PII Leak via Exception Messages (token no path da URL)
+- [LL-BE-00034](../lessons-learned/LL-BE-00034-aes-ecb-deterministic-encryption.md) — AES/ECB Encryption (usar AES/GCM para bot token)
+- [LL-BE-00043](../lessons-learned/LL-BE-00043-circuitbreaker-placement-adr-violation.md) — CircuitBreaker exclusivamente em `adapter.out.external`
+- [LL-BE-00047](../lessons-learned/LL-BE-00047-adapter-todomain-create-vs-reconstitute.md) — Usar `reconstitute()` nos mappers JPA
+- [LL-BE-00048](../lessons-learned/LL-BE-00048-webmvctest-securityconfig-default-fallback.md) — `@Import(SecurityConfig.class)` nos testes `@WebMvcTest`
+- [LL-BE-00050](../lessons-learned/LL-BE-00050-triple-audit-duplication-aop-service-event.md) — Evitar auditoria triplicada
+- [LL-BE-00051](../lessons-learned/LL-BE-00051-omnichannel-chatbot-refactoring.md) — Lições do Omnichannel Refactoring
+- [LL-BE-00088](../lessons-learned/LL-BE-00088-conversation-identity-includes-channel-account.md) — Identidade completa, ACK assíncrono e incidente de conversa órfã
+- [LL-BE-00093](../lessons-learned/LL-BE-00093-webhook-ack-is-not-worker-completion.md) — ACK como transferência de custódia, polling, checkpoint e retry seguro em qualquer canal
 
 ---
 
@@ -341,7 +341,7 @@ pendentes do [REQ-00050](../product/requirements/REQ-00050-omnichannel-durable-i
 - Phase 1 é non-breaking (colunas novas com default). Rollback = remover a coluna `channel_type` e reverter rename.
 - Phases 2-3 são aditivas (novos controllers/adapters). Rollback = remover os novos arquivos e desativar o endpoint no `SecurityConfig`.
 
-**Implementation Plan Detalhado:** [IP-BE-3.1.9-omnichannel-telegram-integration.md](../delivery/plans/implementation_plans/backend/IP-BE-3.1.9-omnichannel-telegram-integration.md)
+**Implementation Plan Detalhado:** [../specs/IP-BE-3.1.9-omnichannel-telegram-integration.md](../specs/IP-BE-3.1.9-omnichannel-telegram-integration.md)
 
 ---
 
@@ -412,12 +412,12 @@ distribuída são pré-requisitos de qualquer scale-out ou garantia forte de rem
 - [Telegram Bot API — setWebhook](https://core.telegram.org/bots/api#setwebhook)
 - [Telegram Bot API — Update object](https://core.telegram.org/bots/api#update)
 - Enterprise Integration Patterns — Channel Adapters (Hohpe & Woolf)
-- [IP-BE-3.1.9-omnichannel-telegram-integration — Implementation Plan](../delivery/plans/implementation_plans/backend/IP-BE-3.1.9-omnichannel-telegram-integration.md)
-- [LL-BE-00051 — Lesson Learned](../delivery/lessons-learned/backend/LL-BE-00051-omnichannel-chatbot-refactoring.md)
-- [LL-BE-00088 — Lesson Learned](../delivery/lessons-learned/backend/LL-BE-00088-conversation-identity-includes-channel-account.md)
+- [IP-BE-3.1.9-omnichannel-telegram-integration — Implementation Plan](../specs/IP-BE-3.1.9-omnichannel-telegram-integration.md)
+- [LL-BE-00051 — Lesson Learned](../lessons-learned/LL-BE-00051-omnichannel-chatbot-refactoring.md)
+- [LL-BE-00088 — Lesson Learned](../lessons-learned/LL-BE-00088-conversation-identity-includes-channel-account.md)
 - [REQ-00050 — Processamento inbound durável omnichannel](../product/requirements/REQ-00050-omnichannel-durable-inbound-processing.md)
 - [ADR-0054 — Inbox durável omnichannel no banco do tenant](ADR-0054-omnichannel-tenant-local-durable-inbox.md)
-- [LL-BE-00093 — ACK de webhook não é conclusão do worker](../delivery/lessons-learned/backend/LL-BE-00093-webhook-ack-is-not-worker-completion.md)
+- [LL-BE-00093 — ACK de webhook não é conclusão do worker](../lessons-learned/LL-BE-00093-webhook-ack-is-not-worker-completion.md)
 
 ---
 

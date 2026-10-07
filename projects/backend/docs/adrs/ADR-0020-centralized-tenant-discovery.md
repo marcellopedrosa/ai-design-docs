@@ -9,7 +9,7 @@ status: "Proposed"
 date: "2026-07-24"
 version: "1.0"
 keywords: "adr, decisao, arquitetura, centralized, authentication, portal, realm, per, tenant, discovery"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0005-multi-tenancy-architecture.md, docs/adrs/ADR-0018-keycloak-realm-provisioning-automation.md, docs/adrs/ADR-0019-database-per-tenant.md"
+related_files: "README.md, ADR-0005-multi-tenancy-architecture.md, ADR-0018-keycloak-realm-provisioning-automation.md, ADR-0019-database-per-tenant.md"
 code_references: "TenantOnboardingUseCase, TenantContextFilter, TenantContext, TenantDiscoveryController, DiscoverTenantsUseCase"
 principal_statement: "O portal central usa descoberta por e-mail, seleção explícita do workspace e redirecionamento OIDC para o realm Keycloak do tenant escolhido, preservando realm-per-tenant e proteção contra enumeração."
 ---
@@ -400,9 +400,9 @@ Cada Realm deve ter um Client configurado:
 
 # 12. Related ADRs
 
-- [ADR-0005 - Multi-Tenancy Architecture](./ADR-0005-multi-tenancy-architecture.md) — Arquitetura base de multi-tenancy
-- [ADR-0018 - Keycloak Realm Provisioning](./ADR-0018-keycloak-realm-provisioning-automation.md) — Criação automática de Realms
-- [ADR-0019 - Database-per-Tenant](./ADR-0019-database-per-tenant.md) — Isolamento físico de banco de dados
+- [ADR-0005 - Multi-Tenancy Architecture](ADR-0005-multi-tenancy-architecture.md) — Arquitetura base de multi-tenancy
+- [ADR-0018 - Keycloak Realm Provisioning](ADR-0018-keycloak-realm-provisioning-automation.md) — Criação automática de Realms
+- [ADR-0019 - Database-per-Tenant](ADR-0019-database-per-tenant.md) — Isolamento físico de banco de dados
 
 ---
 
@@ -471,4 +471,4 @@ Status: **Proposed**
 
 # 18. Repository Structure
 
-Stored in: `docs/adrs/ADR-0020-centralized-tenant-discovery.md`
+Stored in: `ADR-0020-centralized-tenant-discovery.md`

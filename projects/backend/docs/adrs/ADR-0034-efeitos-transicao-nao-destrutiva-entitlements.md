@@ -9,8 +9,8 @@ status: "Accepted"
 date: "2026-08-25"
 version: "1.5"
 keywords: "entitlement transition, upgrade, downgrade, capacity debt, over limit, non destructive, data impact policy, admission lease, effective at, all or nothing, no retroactive billing"
-related_files: "docs/product/requirements/REQ-00005-plan-feature-matrix.md`, `docs/product/requirements/REQ-00011-chatbot-usage-limits-and-billing.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/adrs/ADR-0030-composicao-deterministica-enforcement-entitlements.md`, `docs/adrs/ADR-0032-adocao-versionada-grandfathering-entitlements.md`, `docs/adrs/ADR-0035-migracao-evidence-first-entitlements-legados.md`, `docs/adrs/ADR-0036-cache-lkg-fail-safe-entitlements.md`, `docs/adrs/ADR-0037-boundary-fisico-entitlements-billing.md"
-code_references: "Estado legado em `Plan`, `SubscriptionPlan`, `TenantSettings`, listeners de consumo e fluxos atuais de subscription; boundary e destinos planejados sob `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados."
+related_files: "README.md, ../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md, ADR-0030-composicao-deterministica-enforcement-entitlements.md, ADR-0032-adocao-versionada-grandfathering-entitlements.md, ADR-0035-migracao-evidence-first-entitlements-legados.md, ADR-0036-cache-lkg-fail-safe-entitlements.md, ADR-0037-boundary-fisico-entitlements-billing.md"
+code_references: "Estado legado em `Plan`, `SubscriptionPlan`, `TenantSettings`, listeners de consumo e fluxos atuais de subscription; boundary e destinos planejados sob `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados."
 principal_statement: "Uma transição canônica é classificada capability a capability e ativada como revisão indivisível; reduções preservam dados e ocupação existentes, representam excesso como dívida de capacidade, restringem apenas novos aumentos conforme o modo e permitem terminar uma operação já admitida por lease curta e versionada, sem reset, exclusão ou efeito financeiro retroativo."
 ---
 
@@ -22,8 +22,8 @@ principal_statement: "Uma transição canônica é classificada capability a cap
 - Scope: Classificação de deltas, atomicidade da revisão, dívida de capacidade, preservação de dados, políticas por capability, operações em voo, admission lease conceitual, concorrência no cutoff, segmentação temporal, preview, revalidação e compensação.
 - Non-objectives: Migrar tenants ou enums legados, definir backfill/shadow/cutover, cache/last-known-good/degraded mode, boundary físico, DDL, OpenAPI, nomes finais de classes/tabelas/eventos, TTLs exatos, retention, pricing, billability, rating, proration, notice period, condição financeira de ativação, alçadas finais, rollout ou autorizar implementação.
 - Keywords: entitlement transition, upgrade, downgrade, capacity debt, over limit, non destructive, data impact policy, admission lease, effective at, all or nothing, no retroactive billing
-- Related Files: `docs/product/requirements/REQ-00005-plan-feature-matrix.md`, `docs/product/requirements/REQ-00011-chatbot-usage-limits-and-billing.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/adrs/ADR-0030-composicao-deterministica-enforcement-entitlements.md`, `docs/adrs/ADR-0032-adocao-versionada-grandfathering-entitlements.md`, `docs/adrs/ADR-0035-migracao-evidence-first-entitlements-legados.md`, `docs/adrs/ADR-0036-cache-lkg-fail-safe-entitlements.md`, `docs/adrs/ADR-0037-boundary-fisico-entitlements-billing.md`
-- Code References: Estado legado em `Plan`, `SubscriptionPlan`, `TenantSettings`, listeners de consumo e fluxos atuais de subscription; boundary e destinos planejados sob `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados.
+- Related Files: `docs/product/requirements/REQ-00005-plan-feature-matrix.md`, `docs/product/requirements/REQ-00011-chatbot-usage-limits-and-billing.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md`, `ADR-0030-composicao-deterministica-enforcement-entitlements.md`, `ADR-0032-adocao-versionada-grandfathering-entitlements.md`, `ADR-0035-migracao-evidence-first-entitlements-legados.md`, `ADR-0036-cache-lkg-fail-safe-entitlements.md`, `ADR-0037-boundary-fisico-entitlements-billing.md`
+- Code References: Estado legado em `Plan`, `SubscriptionPlan`, `TenantSettings`, listeners de consumo e fluxos atuais de subscription; boundary e destinos planejados sob `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados.
 - Principal Decision: Uma transição canônica é classificada capability a capability e ativada como revisão indivisível; reduções preservam dados e ocupação existentes, representam excesso como dívida de capacidade, restringem apenas novos aumentos conforme o modo e permitem terminar uma operação já admitida por lease curta e versionada, sem reset, exclusão ou efeito financeiro retroativo.
 - Date: 2026-08-25
 - Status: Accepted
@@ -508,7 +508,7 @@ A implementação futura deverá provar ao menos:
 - [UC-00038 - Catálogo, pricing e promoções](../product/use-cases/UC-00038-billing-catalog-pricing-promotions.md)
 - [UC-00039 - Contratos, assinaturas e amendments](../product/use-cases/UC-00039-billing-contract-subscription-amendments.md)
 - [UC-00040 - Uso, rating e fechamento](../product/use-cases/UC-00040-billing-usage-rating-invoice-close.md)
-- [TP-00013 - Enterprise Billing Implementation](../delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md)
+- [TP-00013 - Enterprise Billing Implementation](../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md)
 - [Manifesto de módulos](../architecture/module-registry.md)
 
 ---
@@ -545,7 +545,7 @@ ADR. DDL, OpenAPI, implementação e testes herméticos locais estão liberados 
 Esta decisão reside em:
 
 ```text
-docs/adrs/ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md
+ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md
 ```
 
 Os alvos físicos estão registrados no ADR-0037 e podem ser materializados

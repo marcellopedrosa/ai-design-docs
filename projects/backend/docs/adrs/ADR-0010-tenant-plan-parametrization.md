@@ -9,7 +9,7 @@ status: "Accepted"
 date: "2026-08-25"
 version: "3.7"
 keywords: "adr, decisao, arquitetura, tenant, plan, parametrization, and, resource, limit, override, architecture"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0028-entitlements-versionados-tenant-local.md, docs/adrs/ADR-0029-taxonomia-tipificada-entitlements.md, docs/adrs/ADR-0030-composicao-deterministica-enforcement-entitlements.md, docs/adrs/ADR-0032-adocao-versionada-grandfathering-entitlements.md, docs/adrs/ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md, docs/adrs/ADR-0035-migracao-evidence-first-entitlements-legados.md, docs/adrs/ADR-0036-cache-lkg-fail-safe-entitlements.md, docs/adrs/ADR-0037-boundary-fisico-entitlements-billing.md, docs/adrs/ADR-0038-pricing-tipado-moeda-cadencia.md"
+related_files: "README.md, ADR-0028-entitlements-versionados-tenant-local.md, ADR-0029-taxonomia-tipificada-entitlements.md, ADR-0030-composicao-deterministica-enforcement-entitlements.md, ADR-0032-adocao-versionada-grandfathering-entitlements.md, ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md, ADR-0035-migracao-evidence-first-entitlements-legados.md, ADR-0036-cache-lkg-fail-safe-entitlements.md, ADR-0037-boundary-fisico-entitlements-billing.md, ADR-0038-pricing-tipado-moeda-cadencia.md"
 code_references: "EntitlementBundleVersion, ContractEntitlementSnapshot, PriceVersion, PromotionVersion, PromotionCombinationPolicyVersion, FeatureGateService, AuditPort, ResourceLimitService, TenantResourceLimitsChangedEvent, EnforceLimitUseCase, TenantLimitAlertEvent, PlanDefaultsChangedEvent"
 principal_statement: "O ADR permanece Accepted apenas para objetivos não conflitantes; suas cláusulas mutáveis de entitlement, pricing, promoções e Billing foram restringidas ou substituídas pelos ADRs subsequentes até ADR-0051 e não devem ser implementadas como autoridade vigente."
 ---
@@ -29,56 +29,56 @@ principal_statement: "O ADR permanece Accepted apenas para objetivos não confli
 > até 2026-08-25):** este ADR
 > permanece histórico e `Accepted` para objetivos não conflitantes, mas não pode
 > mais ser executado como autoridade mutável de entitlement. O
-> [ADR-0028](./ADR-0028-entitlements-versionados-tenant-local.md) tem precedência
+> [ADR-0028](ADR-0028-entitlements-versionados-tenant-local.md) tem precedência
 > sobre `plan_default_limits` vivo, propagação retroativa, resolução por
 > `COALESCE`, enum/default/hardcode como fallback e `NULL` como autorização
 > implícita. O alvo aprovado é `EntitlementBundleVersion` global imutável,
 > `ContractEntitlementSnapshot` completo tenant-local e projeção local derivada.
-> O [ADR-0029](./ADR-0029-taxonomia-tipificada-entitlements.md) também proíbe
+> O [ADR-0029](ADR-0029-taxonomia-tipificada-entitlements.md) também proíbe
 > override numérico genérico e separa base comercial, add-on, promoção, exceção
 > operacional, restrição de segurança/abuso/compliance e uso observado.
-> O [ADR-0030](./ADR-0030-composicao-deterministica-enforcement-entitlements.md)
+> O [ADR-0030](ADR-0030-composicao-deterministica-enforcement-entitlements.md)
 > substitui semanticamente `last-write-wins`, `NULL=UNLIMITED`, sentinelas e
 > inferência hard/soft por plano por tipos, operadores, estados e modos explícitos.
-> O [ADR-0032](./ADR-0032-adocao-versionada-grandfathering-entitlements.md)
+> O [ADR-0032](ADR-0032-adocao-versionada-grandfathering-entitlements.md)
 > substitui propagação automática, reset implícito e adoção de default vivo por
 > contrato pinned e transição para versão exata mediante policy aceita, nova
 > revisão e novo snapshot tenant-local.
-> O [ADR-0034](./ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md)
+> O [ADR-0034](ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md)
 > invalida reset/delete destrutivo, dual-snapshot grace e retroatividade: redução
 > preserva dados, representa excesso como dívida de capacidade e só permite uma
 > operação anteriormente admitida terminar por lease bounded.
-> O [ADR-0035](./ADR-0035-migracao-evidence-first-entitlements-legados.md)
+> O [ADR-0035](ADR-0035-migracao-evidence-first-entitlements-legados.md)
 > torna enum/settings/default/seed apenas evidência legada, exige manifest exato,
 > backfill/shadow tenant-local e cutover fenced, e proíbe fallback pós-cutover.
-> O [ADR-0036](./ADR-0036-cache-lkg-fail-safe-entitlements.md) substitui qualquer
+> O [ADR-0036](ADR-0036-cache-lkg-fail-safe-entitlements.md) substitui qualquer
 > fail-open/cache/LKG histórico: cache é derivado, somente `UNAVAILABLE` pode
 > considerar LKG positivo low-risk allowlisted, e quota/capacidade/custo,
 > financeiro/provider, administração e risco exigem estado atual. Os TTLs/epochs
 > da ADR-0036 prevalecem e nenhum contexto tenant ausente pode usar datasource
 > compartilhado.
-> O [ADR-0037](./ADR-0037-boundary-fisico-entitlements-billing.md) mantém
+> O [ADR-0037](ADR-0037-boundary-fisico-entitlements-billing.md) mantém
 > Entitlements como slice coeso dentro de `contexts.billing`, substitui as
 > fronteiras físicas históricas por APIs públicas estreitas, adapters
 > platform/tenant, migrations separadas, marker/outbox e cache derivado, e exige
 > `TenantScopeGuard` antes de toda transação tenant-local.
-> O [ADR-0038](./ADR-0038-pricing-tipado-moeda-cadencia.md) substitui preços,
+> O [ADR-0038](ADR-0038-pricing-tipado-moeda-cadencia.md) substitui preços,
 > cadências, timing, aritmética, rounding e overrides negociados implícitos por
 > `PriceVersion` tipada, publicada imutável e pinada no contrato. Somente BRL e os
 > modelos/cadências allowlisted podem ser publicados inicialmente; preço de
 > overage segue o rating/billability já definido em `D-06`/ADR-0045, ainda não
 > implementado.
-> O [ADR-0039](./ADR-0039-taxonomia-beneficios-promocionais.md) substitui
+> O [ADR-0039](ADR-0039-taxonomia-beneficios-promocionais.md) substitui
 > qualquer interpretação de desconto, cortesia ou promoção como override livre:
 > `PromotionVersion` publicada é imutável, benefícios usam tipos fechados e
 > outputs monetários, `PROMOTIONAL_GRANT` e crédito/saldo permanecem separados.
-> O [ADR-0040](./ADR-0040-elegibilidade-promocional-seguranca-cupons.md)
+> O [ADR-0040](ADR-0040-elegibilidade-promocional-seguranca-cupons.md)
 > substitui filtros, segmentos, claims, settings e cupons livres como autoridade
 > promocional: cada promoção fixa policy versionada, somente facts server-derived
 > alimentam a álgebra tri-state e `INDETERMINATE` falha fechado. Código de cupom é
 > identificador opaco tenant/account-scoped, protegido por HMAC sem plaintext e
 > nunca autenticação, grant, reserva ou consumo.
-> O [ADR-0041](./ADR-0041-stacking-waterfall-promocional-deterministico.md)
+> O [ADR-0041](ADR-0041-stacking-waterfall-promocional-deterministico.md)
 > substitui prioridade, combinação ou desconto acumulado implícitos por
 > `PromotionCombinationPolicyVersion` publicada/imutável e função pura sobre
 > `PricingResult` pinado e candidatas `ELIGIBLE`. `PromotionVersion` é pacote
@@ -96,7 +96,7 @@ principal_statement: "O ADR permanece Accepted apenas para objetivos não confli
 
 # 1. Context
 
-O Contador Fiscal Inteligente opera com três planos de assinatura (`START`, `BUSINESS`, `PREMIUM`), cada um com limites quantitativos bem definidos na documentação de requisitos (REQ-00005 §3.2, REQ-00001 BR-015, BR-016). O módulo Billing consolida localmente uso, fatura e cobrança; qualquer interação financeira externa segue o [ADR-0023](./ADR-0023-agnostic-payment-provider-integration.md).
+O Contador Fiscal Inteligente opera com três planos de assinatura (`START`, `BUSINESS`, `PREMIUM`), cada um com limites quantitativos bem definidos na documentação de requisitos (REQ-00005 §3.2, REQ-00001 BR-015, BR-016). O módulo Billing consolida localmente uso, fatura e cobrança; qualquer interação financeira externa segue o [ADR-0023](ADR-0023-agnostic-payment-provider-integration.md).
 
 Limites atuais por plano conforme documentação oficial:
 
@@ -120,7 +120,7 @@ No backend, os planos são representados apenas por Enums sem valores numéricos
 4. **Validar localmente** se uma operação excede o limite antes de gerar a cobrança externa, sem consultar o provider em tempo de request.
 5. **Definir comportamento de upgrade/downgrade** — o que acontece com os overrides quando um tenant muda de plano (REQ-00005 BR-003).
 
-Essa lacuna impacta diretamente o `FeatureGateService` (REQ-00005 §5.2), o `ConsultaFiscalCreditDeductionListener` (billing — task 2.4.5 pendente) e a cadeia local de registro de uso → fechamento de fatura → cobrança pelo provider definido no [ADR-0023](./ADR-0023-agnostic-payment-provider-integration.md).
+Essa lacuna impacta diretamente o `FeatureGateService` (REQ-00005 §5.2), o `ConsultaFiscalCreditDeductionListener` (billing — task 2.4.5 pendente) e a cadeia local de registro de uso → fechamento de fatura → cobrança pelo provider definido no [ADR-0023](ADR-0023-agnostic-payment-provider-integration.md).
 
 ---
 
@@ -154,7 +154,7 @@ Adicionalmente, a semântica de **"Ilimitado"** é representada por `NULL` na co
 # 3. Decision Drivers
 
 - **Modelo de negócio exige flexibilidade de add-ons:** Clientes Business frequentemente contratam "+10 Documentos" ou "+200 consultas/mês" mediante cobrança adicional, sem upgrade obrigatório de plano (REQ-00001 BR-016, REQ-00001 BR-017). O sistema precisa persistir essas exceções por tenant.
-- **Desacoplamento do provider de pagamento:** Validações de limite (rate limiting, bloqueio de cadastro de Documento) devem ser resolvidas localmente com latência sub-milissegundo. Billing é responsável pela fatura e o provider definido no [ADR-0023](./ADR-0023-agnostic-payment-provider-integration.md) executa somente capacidades financeiras externas, sem aplicar limites do produto.
+- **Desacoplamento do provider de pagamento:** Validações de limite (rate limiting, bloqueio de cadastro de Documento) devem ser resolvidas localmente com latência sub-milissegundo. Billing é responsável pela fatura e o provider definido no [ADR-0023](ADR-0023-agnostic-payment-provider-integration.md) executa somente capacidades financeiras externas, sem aplicar limites do produto.
 - **Distinção soft-limit vs hard-limit:** O plano Start bloqueia (hard-limit), enquanto Business permite excedente com cobrança (soft-limit). Esta lógica precisa de dados estruturados no banco, não hardcoded no Enum (REQ-00005 BR-005).
 - **Auditabilidade:** Alterações nos limites de um tenant impactam faturamento e devem ser auditáveis via `AuditPort` (ADR-0006 — ação `tenant:limits_override`).
 - **Upgrade/downgrade previsível:** A mudança de plano deve ter comportamento determinístico sobre os limites vigentes (REQ-00005 BR-003). Separar defaults de overrides torna isso trivial.
@@ -486,14 +486,14 @@ public class ResourceLimitService {
 
 Responsible agents: @DomainExpert, @ImplementerCore, @AdapterDev, @BillingEng
 
-Dependencies: ADR-0005 (multi-tenancy), [ADR-0023](./ADR-0023-agnostic-payment-provider-integration.md) (integração de pagamentos), módulo tenant operacional, módulo billing operacional.
+Dependencies: ADR-0005 (multi-tenancy), [ADR-0023](ADR-0023-agnostic-payment-provider-integration.md) (integração de pagamentos), módulo tenant operacional, módulo billing operacional.
 
 Rollback plan: As novas tabelas são aditivas — não alteram tabelas existentes. Se necessário reverter, os módulos voltam a validar limites por Enum hardcoded (comportamento atual). Flyway migrations são forward-only; rollback via migration reversa dedicada.
 
 ## Phase 2 — Integração com Billing e Usage Reporter (Sprint seguinte)
 
 - Integrar `ResourceLimitService` no `ConsultaFiscalCreditDeductionListener` para decidir soft/hard-block.
-- Integrar o fechamento de usage ao modelo local de fatura e emitir o comando de cobrança pela porta definida no [ADR-0023](./ADR-0023-agnostic-payment-provider-integration.md).
+- Integrar o fechamento de usage ao modelo local de fatura e emitir o comando de cobrança pela porta definida no [ADR-0023](ADR-0023-agnostic-payment-provider-integration.md).
 - Implementar endpoint `PUT /api/v1/admin/tenants/{tenantId}/resource-overrides` com validação de teto de amplificação e integração com `AuditPort`.
 - Cache de `ResourceLimits` com Caffeine (TTL 60s) invalidado por `TenantResourceLimitsChangedEvent`.
 
@@ -573,21 +573,21 @@ Mitigation: `BillingApi` é uma interface pública do módulo billing com métod
 
 # 12. Related ADRs
 
-- [ADR-0001 — Technology Stack and Architecture Foundation](./ADR-0001-technology-stack-and-architecture.md) — Java 21, Spring Boot 4.x, Spring Modulith, VPS única.
-- [ADR-0002 — Multi-Tenant Database Isolation](./ADR-0002-separacao-banco-por-contexto-multitenancy.md) — Database `saas_billing` e `saas_tenant`.
-- [ADR-0005 — Multi-Tenancy Architecture](./ADR-0005-multi-tenancy-architecture.md) — `tenant_id` em toda tabela, `TenantContext`, isolamento.
-- [ADR-0006 — Audit and Compliance Strategy](./ADR-0006-audit-compliance.md) — `AuditPort` para auditoria de alterações de limites.
-- [ADR-0007 — Multi-Provider LLM Integration](./ADR-0007-multi-provider-llm-integration.md) — LLM token quotas por tenant.
-- [ADR-0023 — Integração agnóstica de provedores de pagamento](./ADR-0023-agnostic-payment-provider-integration.md) — Porta de cobrança, seleção do provider, idempotência e reconciliação.
-- [ADR-0008 — Stripe Billing & Subscription Management](./ADR-0008-stripe-billing-subscription.md) — Baseline histórico substituído pelo ADR-0023.
-- [ADR-0009 — Dynamic RBAC Evolution](./ADR-0009-dynamic-rbac-evolution.md) — `ROLE_SUPER_ADMIN` para gerenciamento de overrides.
-- [ADR-0038 — Pricing tipado, moeda e cadência](./ADR-0038-pricing-tipado-moeda-cadencia.md) — Substitui preços/defaults implícitos por modelos allowlisted e `PriceVersion` contratual imutável.
-- [ADR-0039 — Taxonomia tipada de benefícios promocionais](./ADR-0039-taxonomia-beneficios-promocionais.md) — Substitui desconto/promoção por override livre por `PromotionVersion` imutável e benefícios tipados com autoridades separadas.
-- [ADR-0040 — Elegibilidade promocional e segurança de cupons](./ADR-0040-elegibilidade-promocional-seguranca-cupons.md) — Substitui filtros/settings/cupons livres por policy e facts versionados, tri-state fail-closed e verificação HMAC tenant/account-scoped.
-- [ADR-0041 — Stacking e waterfall promocional determinísticos](./ADR-0041-stacking-waterfall-promocional-deterministico.md) — Substitui prioridade, stacking, best price, waterfall e alocação implícitos por policy imutável, ordem canônica e resultado pinado.
-- [ADR-0042 — Capacidade e redemption promocional concorrente](./ADR-0042-capacidade-redemption-promocional-concorrente.md) — Governa reserva stateful atômica, limites, fencing, saga e recombinação bounded.
-- [ADR-0043 — Governança e lifecycle promocional](./ADR-0043-governanca-lifecycle-promocional.md) — Governa publicação, pause, retire, expiry, revoke e compensação promocional.
-- [ADR-0045 — Metering, rating e fechamento](./ADR-0045-metering-rating-fechamento-fatura.md) — Governa quota/admission, uso, billability, rating e fechamento tenant-local.
+- [ADR-0001 — Technology Stack and Architecture Foundation](ADR-0001-technology-stack-and-architecture.md) — Java 21, Spring Boot 4.x, Spring Modulith, VPS única.
+- [ADR-0002 — Multi-Tenant Database Isolation](ADR-0002-separacao-banco-por-contexto-multitenancy.md) — Database `saas_billing` e `saas_tenant`.
+- [ADR-0005 — Multi-Tenancy Architecture](ADR-0005-multi-tenancy-architecture.md) — `tenant_id` em toda tabela, `TenantContext`, isolamento.
+- [ADR-0006 — Audit and Compliance Strategy](ADR-0006-audit-compliance.md) — `AuditPort` para auditoria de alterações de limites.
+- [ADR-0007 — Multi-Provider LLM Integration](ADR-0007-multi-provider-llm-integration.md) — LLM token quotas por tenant.
+- [ADR-0023 — Integração agnóstica de provedores de pagamento](ADR-0023-agnostic-payment-provider-integration.md) — Porta de cobrança, seleção do provider, idempotência e reconciliação.
+- [ADR-0008 — Stripe Billing & Subscription Management](ADR-0008-stripe-billing-subscription.md) — Baseline histórico substituído pelo ADR-0023.
+- [ADR-0009 — Dynamic RBAC Evolution](ADR-0009-dynamic-rbac-evolution.md) — `ROLE_SUPER_ADMIN` para gerenciamento de overrides.
+- [ADR-0038 — Pricing tipado, moeda e cadência](ADR-0038-pricing-tipado-moeda-cadencia.md) — Substitui preços/defaults implícitos por modelos allowlisted e `PriceVersion` contratual imutável.
+- [ADR-0039 — Taxonomia tipada de benefícios promocionais](ADR-0039-taxonomia-beneficios-promocionais.md) — Substitui desconto/promoção por override livre por `PromotionVersion` imutável e benefícios tipados com autoridades separadas.
+- [ADR-0040 — Elegibilidade promocional e segurança de cupons](ADR-0040-elegibilidade-promocional-seguranca-cupons.md) — Substitui filtros/settings/cupons livres por policy e facts versionados, tri-state fail-closed e verificação HMAC tenant/account-scoped.
+- [ADR-0041 — Stacking e waterfall promocional determinísticos](ADR-0041-stacking-waterfall-promocional-deterministico.md) — Substitui prioridade, stacking, best price, waterfall e alocação implícitos por policy imutável, ordem canônica e resultado pinado.
+- [ADR-0042 — Capacidade e redemption promocional concorrente](ADR-0042-capacidade-redemption-promocional-concorrente.md) — Governa reserva stateful atômica, limites, fencing, saga e recombinação bounded.
+- [ADR-0043 — Governança e lifecycle promocional](ADR-0043-governanca-lifecycle-promocional.md) — Governa publicação, pause, retire, expiry, revoke e compensação promocional.
+- [ADR-0045 — Metering, rating e fechamento](ADR-0045-metering-rating-fechamento-fatura.md) — Governa quota/admission, uso, billability, rating e fechamento tenant-local.
 
 ---
 
@@ -596,19 +596,19 @@ Mitigation: `BillingApi` é uma interface pública do módulo billing com métod
 - Business Requirements: [Visão de produto](../product/business/product-vision.md) — Planos Start, Business, Premium e limites.
 - Requirement: [REQ-00001 — WhatsApp Business Integration](../product/requirements/REQ-00001-whatsapp-business-integration.md) — BR-015, BR-016, BR-017 (rate limits, ampliação, excedentes).
 - Requirement: [REQ-00005 — Plan × Feature Matrix](../product/requirements/REQ-00005-plan-feature-matrix.md) — Limites por plano, feature-gating, soft-limits.
-- [ADR-0023 — Integração agnóstica de provedores de pagamento](./ADR-0023-agnostic-payment-provider-integration.md) — Referências externas e requisitos de integração de pagamentos centralizados.
-- [ADR-0028 — Entitlements versionados e snapshots tenant-local](./ADR-0028-entitlements-versionados-tenant-local.md) — Restringe autoridade mutável, herança viva e fallbacks deste ADR.
-- [ADR-0029 — Taxonomia tipificada de entitlements](./ADR-0029-taxonomia-tipificada-entitlements.md) — Proíbe override genérico e separa fontes comerciais, promocionais, operacionais, de risco e uso observado.
-- [ADR-0030 — Composição determinística e enforcement de entitlements](./ADR-0030-composicao-deterministica-enforcement-entitlements.md) — Define tipos/operadores fechados, restrições dominantes, unlimited explícito, estados e modos sem inferência por plano.
-- [ADR-0032 — Adoção versionada e grandfathering de entitlements](./ADR-0032-adocao-versionada-grandfathering-entitlements.md) — Mantém contratos pinned por default e exige versão exata, revisão e snapshot para adoção.
-- [ADR-0034 — Efeitos não destrutivos de transições](./ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md) — Preserva dados/ocupação, representa dívida de capacidade e governa cutoff/operações em voo sem retroatividade.
-- [ADR-0035 — Migração evidence-first de entitlements legados](./ADR-0035-migracao-evidence-first-entitlements-legados.md) — Trata enum/settings/defaults como evidência, exige manifest/backfill/shadow e elimina fallback após cutover.
-- [ADR-0036 — Cache/LKG fail-safe de entitlements](./ADR-0036-cache-lkg-fail-safe-entitlements.md) — Mantém cache derivado, limita LKG positivo a indisponibilidade low-risk allowlisted e exige fail-safe em quota, financeiro, admin e risco.
-- [ADR-0037 — Boundary físico e ownership de entitlements](./ADR-0037-boundary-fisico-entitlements-billing.md) — Mantém o slice em Billing e define APIs, adapters, stores, migrations, tabelas, marker, outbox, cache e tenant guard planejados.
-- [ADR-0038 — Pricing tipado, moeda e cadência](./ADR-0038-pricing-tipado-moeda-cadencia.md) — Governa moeda, cadência, timing, modelos, aritmética, versionamento e simulação de preço.
-- [ADR-0039 — Taxonomia tipada de benefícios promocionais](./ADR-0039-taxonomia-beneficios-promocionais.md) — Governa tipos de benefício, `PROMOTIONAL_GRANT`, funding attribution e separação de crédito/saldo.
-- [ADR-0040 — Elegibilidade promocional e segurança de cupons](./ADR-0040-elegibilidade-promocional-seguranca-cupons.md) — Governa policy/facts de eligibility, tri-state, modos de cupom, HMAC, anti-enumeration, scope e placement dos snapshots aceitos.
-- [ADR-0041 — Stacking e waterfall promocional determinísticos](./ADR-0041-stacking-waterfall-promocional-deterministico.md) — Governa seleção atômica, grupos de exclusividade, ordem de descontos, best price, caps stateless, alocação e hash do resultado promocional.
+- [ADR-0023 — Integração agnóstica de provedores de pagamento](ADR-0023-agnostic-payment-provider-integration.md) — Referências externas e requisitos de integração de pagamentos centralizados.
+- [ADR-0028 — Entitlements versionados e snapshots tenant-local](ADR-0028-entitlements-versionados-tenant-local.md) — Restringe autoridade mutável, herança viva e fallbacks deste ADR.
+- [ADR-0029 — Taxonomia tipificada de entitlements](ADR-0029-taxonomia-tipificada-entitlements.md) — Proíbe override genérico e separa fontes comerciais, promocionais, operacionais, de risco e uso observado.
+- [ADR-0030 — Composição determinística e enforcement de entitlements](ADR-0030-composicao-deterministica-enforcement-entitlements.md) — Define tipos/operadores fechados, restrições dominantes, unlimited explícito, estados e modos sem inferência por plano.
+- [ADR-0032 — Adoção versionada e grandfathering de entitlements](ADR-0032-adocao-versionada-grandfathering-entitlements.md) — Mantém contratos pinned por default e exige versão exata, revisão e snapshot para adoção.
+- [ADR-0034 — Efeitos não destrutivos de transições](ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md) — Preserva dados/ocupação, representa dívida de capacidade e governa cutoff/operações em voo sem retroatividade.
+- [ADR-0035 — Migração evidence-first de entitlements legados](ADR-0035-migracao-evidence-first-entitlements-legados.md) — Trata enum/settings/defaults como evidência, exige manifest/backfill/shadow e elimina fallback após cutover.
+- [ADR-0036 — Cache/LKG fail-safe de entitlements](ADR-0036-cache-lkg-fail-safe-entitlements.md) — Mantém cache derivado, limita LKG positivo a indisponibilidade low-risk allowlisted e exige fail-safe em quota, financeiro, admin e risco.
+- [ADR-0037 — Boundary físico e ownership de entitlements](ADR-0037-boundary-fisico-entitlements-billing.md) — Mantém o slice em Billing e define APIs, adapters, stores, migrations, tabelas, marker, outbox, cache e tenant guard planejados.
+- [ADR-0038 — Pricing tipado, moeda e cadência](ADR-0038-pricing-tipado-moeda-cadencia.md) — Governa moeda, cadência, timing, modelos, aritmética, versionamento e simulação de preço.
+- [ADR-0039 — Taxonomia tipada de benefícios promocionais](ADR-0039-taxonomia-beneficios-promocionais.md) — Governa tipos de benefício, `PROMOTIONAL_GRANT`, funding attribution e separação de crédito/saldo.
+- [ADR-0040 — Elegibilidade promocional e segurança de cupons](ADR-0040-elegibilidade-promocional-seguranca-cupons.md) — Governa policy/facts de eligibility, tri-state, modos de cupom, HMAC, anti-enumeration, scope e placement dos snapshots aceitos.
+- [ADR-0041 — Stacking e waterfall promocional determinísticos](ADR-0041-stacking-waterfall-promocional-deterministico.md) — Governa seleção atômica, grupos de exclusividade, ordem de descontos, best price, caps stateless, alocação e hash do resultado promocional.
 - [Spring Modulith — Exposed Functional API](https://docs.spring.io/spring-modulith/reference/) — Inter-module communication via public APIs.
 
 ---

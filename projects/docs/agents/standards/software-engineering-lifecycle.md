@@ -9,7 +9,7 @@ status: "Active"
 date: "2026-09-08"
 version: "1.11"
 keywords: "software, engineering, lifecycle, standard, openapi, api-contract, contract-first, decomposicao-semantica, metricas, loop-corretivo, entrega-git"
-related_files: "./README.md, ./software-quality-standard.md, ./implementation-readiness-standard.md, ./api-client-standard.md, docs/api_contracts/README.md, docs/product/business/product-vision.md, docs/product/requirements/README.md, harness/templates/TPL-00011-api-contract.md, harness/templates/TPL-00012-prd.md, harness/templates/TPL-00003-requirement.md, harness/templates/TPL-00004-use-case.md, harness/templates/TPL-00005-task-plan.md, harness/templates/TPL-00006-implementation-plan.md, ../AgentOrchestrator.md, ../CodeGuardian.md"
+related_files: "./README.md, ./software-quality-standard.md, ./implementation-readiness-standard.md, api-client-standard.md, docs/api_contracts/README.md, docs/product/business/product-vision.md, docs/product/requirements/README.md, harness/templates/TPL-00011-api-contract.md, harness/templates/TPL-00012-prd.md, harness/templates/TPL-00003-requirement.md, harness/templates/TPL-00004-use-case.md, harness/templates/TPL-00005-task-plan.md, harness/templates/TPL-00006-implementation-plan.md, ../AgentOrchestrator.md, ../CodeGuardian.md"
 code_references: "docs/api_contracts/, infra/scripts/validate-quality-metrics.mjs, backend/, frontend/, website/, infra/scripts/validate-quality-gates.sh"
 principal_statement: "Uma iniciativa só progride com PRD aplicável Validated, decomposição semântica automática, IRG READY e métricas aceitáveis; após Assurance integralmente verde, a branch governada pode ser enviada sem autorizar integração ou deploy."
 ---
@@ -86,7 +86,7 @@ To simplify communication and provide an executive view of the 12-phase lifecycl
 |:--|:--|
 | **Owner** | Human Product Owner, with required domain reviewers |
 | **Gate** | Applicable PRD exists in `docs/product/requirements/` with status `Validated` for the current version and scope |
-| **Artifact** | `projects/backend/docs/prds/PRD-NNNNN-short-title.md` |
+| **Artifact** | `projects/docs/prds/PRD-NNNNN-short-title.md` |
 | **Template** | Must follow `harness/templates/TPL-00012-prd.md` |
 | **Description** | The PRD closes problem, audience, objectives, limits, metrics and product hypotheses before architecture or requirements progress. It groups requirements by reference without copying acceptance criteria, refers to use cases without flows and never decides architecture. A Product Hypothesis `Proposed`, Open Question, metric without decided target/source/owner or missing human approval keeps the gate blocked. |
 
@@ -245,7 +245,7 @@ Every artifact produced in the lifecycle must reference its predecessor(s). The 
 
 ```
 Business Context (`docs/product/business/product-vision.md`)
-  └── Validated PRD (projects/backend/docs/prds/PRD-NNNNN-*.md)
+  └── Validated PRD (projects/docs/prds/PRD-NNNNN-*.md)
         └── ADR (../../adrs/ADR-NNNN-*.md)
               └── Requirement + User Story View (docs/product/requirements/REQ-NNNNN-*.md)
               ├── Adherence Analysis (artefatos de análise/ANL-NNNNN-*.md)
@@ -327,9 +327,9 @@ Business Context (`docs/product/business/product-vision.md`)
 | Business Context | `docs/product/business/product-vision.md` | Product vision, personas, outcomes and subscription plans |
 | Product Requirements Index | `docs/product/requirements/README.md` | Semantic discovery, lifecycle and Product Definition Gate |
 | PRD Template | `harness/templates/TPL-00012-prd.md` | Mandatory AI-safe structure for initiative PRDs |
-| Product Requirements | `projects/backend/docs/prds/PRD-NNNNN-*.md` | Validated problem, audience, outcomes, metrics and hypotheses |
+| Product Requirements | `projects/docs/prds/PRD-NNNNN-*.md` | Validated problem, audience, outcomes, metrics and hypotheses |
 | Implementation Readiness Standard | `./implementation-readiness-standard.md` | Hard gate, uncertainty states, task contract and role boundaries |
-| API Contract Standard | `./api-client-standard.md` | Contract-first, mandatory operation fields, RFC baseline, versioning and parity |
+| API Contract Standard | `api-client-standard.md` | Contract-first, mandatory operation fields, RFC baseline, versioning and parity |
 | API Contracts | `docs/api_contracts/*-vN.openapi.yaml` | Canonical versioned wire protocol for backend HTTP APIs |
 | OpenAPI Contract Template | `harness/templates/TPL-00011-api-contract.md` | Governed skeleton and mandatory official-document reference block |
 | ADRs | `../../adrs/ADR-NNNN-*.md` | Architecture decisions and constraints |

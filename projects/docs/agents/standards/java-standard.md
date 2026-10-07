@@ -9,7 +9,7 @@ status: "Active"
 date: "2026-08-25"
 version: "1.4"
 keywords: "java, standard, standard"
-related_files: "./README.md, ./ddd-clean-architecture-standard.md"
+related_files: "./README.md, ddd-clean-architecture-standard.md"
 code_references: "backend/, infra/"
 principal_statement: "As regras de Java aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
@@ -38,7 +38,7 @@ principal_statement: "As regras de Java aplicam-se somente ao escopo e aos contr
 
 ## Estrutura de Pacotes por Contexto
 
-> 📘 Consulte [`ddd-clean-architecture-standard.md`](./ddd-clean-architecture-standard.md) para a estrutura completa de pacotes, camadas Clean Architecture e Bounded Context Map.
+> 📘 Consulte [`ddd-clean-architecture-standard.md`](ddd-clean-architecture-standard.md) para a estrutura completa de pacotes, camadas Clean Architecture e Bounded Context Map.
 
 ## Padroes de Codigo
 

@@ -11,8 +11,8 @@ version: 1.0
 date: 2026-10-05
 last_reviewed: 2026-10-05
 keywords: onboarding, captcha, recaptcha-v2, website, hml, prd, vps, segredo, deploy, rollback
-related_files: README.md, production-vps-deployment.md, github-production-cicd.md, ../architecture/website-evolution-specification.md, ../product/requirements/REQ-00063-commercial-contact-captcha.md, ../delivery/plans/TP-00074-commercial-contact-captcha.md, ../../website/README.md
-code_references: ../../website/src/components/RecaptchaCheckbox.tsx, ../../website/src/lib/recaptcha.ts, ../../website/src/app/api/contact/route.ts, ../../website/next.config.ts, ../../website/package.json, ../../docker-compose.hml.yml, ../../docker-compose.prd.yml, ../../infra/proxy/nginx.hml.conf, ../../infra/proxy/nginx.prd.conf, ../../infra/deploy/production.env.example
+related_files: README.md, ../../../backend/docs/onboarding/production-vps-deployment.md, ../../../backend/docs/onboarding/github-production-cicd.md, ../architecture/website-evolution-specification.md, ../product/requirements/REQ-00063-commercial-contact-captcha.md, ../../../docs/specs/TP-00074-commercial-contact-captcha.md, ../../app/README.md
+code_references: ../../app/src/components/RecaptchaCheckbox.tsx, ../../app/src/lib/recaptcha.ts, ../../app/src/app/api/contact/route.ts, ../../app/next.config.ts, ../../app/package.json, ../../docker-compose.hml.yml, ../../docker-compose.prd.yml, ../../infra/proxy/nginx.hml.conf, ../../infra/proxy/nginx.prd.conf, ../../infra/deploy/production.env.example
 principal_statement: HML e PRD usam registros reCAPTCHA separados e um runtime Next.js server-side; site key entra no build, secret permanece no BFF e qualquer divergência falha fechado sem encaminhar o contato.
 ---
 
@@ -27,7 +27,7 @@ e termina antes de qualquer ativação pública não autorizada.
 
 O estado atual do repositório impõe um bloqueio explícito:
 
-- `website/` possui o widget e o BFF `POST /api/contact` implementados;
+- `app/` possui o widget e o BFF `POST /api/contact` implementados;
 - `docker-compose.hml.yml`, `docker-compose.prd.yml`, os Nginx ambientais e os
   workflows existentes publicam a aplicação autenticada `frontend/`, não o
   website público;
@@ -39,7 +39,7 @@ O estado atual do repositório impõe um bloqueio explícito:
 Portanto, este documento não autoriza adaptar o `frontend` nem apontar
 `/api/contact` diretamente ao backend. Antes de configurar as chaves reais, a
 Infra deve entregar, por plano `READY` próprio, um runtime Next.js `standalone`
-para `website/`, proxy same-origin e rollback. Até lá, o rollout ambiental está
+para `app/`, proxy same-origin e rollback. Até lá, o rollout ambiental está
 **BLOCKED**, embora o procedimento e as decisões de configuração estejam definidos.
 
 ## 2. Owners e separação de responsabilidades
@@ -395,7 +395,7 @@ proibido.
 
 ### Infraestrutura
 
-- [ ] Runtime Next.js do `website/` existe com healthcheck e rollback.
+- [ ] Runtime Next.js do `app/` existe com healthcheck e rollback.
 - [ ] `/api/contact` permanece same-origin e aponta ao website, não ao backend.
 - [ ] DNS, TLS, proxy, egress e limites foram validados.
 - [ ] Imagem anterior e env/secret correspondente estão recuperáveis.

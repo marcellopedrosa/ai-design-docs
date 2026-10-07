@@ -9,7 +9,7 @@ status: "Active"
 date: "2026-08-25"
 version: "1.4"
 keywords: "ui, ux, standard, standard"
-related_files: "./README.md, ./component-design-standard.md, ./webdesigner-standard.md"
+related_files: "./README.md, component-design-standard.md, webdesigner-standard.md"
 code_references: "frontend/"
 principal_statement: "As regras de UI/UX aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
@@ -18,7 +18,7 @@ principal_statement: "As regras de UI/UX aplicam-se somente ao escopo e aos cont
 
 > **Mandatory rules** for all agents involved in frontend implementation (@FrontendWeb, @WebDesigner, @UIIntegrator). This document defines the visual and behavioral standards for interface development, serving as a source of truth for developers and AI agents to ensure consistency across all system modules.
 
-> **Prerequisite:** Read [`component-design-standard.md`](./component-design-standard.md) (CVA variants, compound components) and [`webdesigner-standard.md`](./webdesigner-standard.md) (design tokens, colors, typography).
+> **Prerequisite:** Read [`component-design-standard.md`](component-design-standard.md) (CVA variants, compound components) and [`webdesigner-standard.md`](webdesigner-standard.md) (design tokens, colors, typography).
 
 ---
 

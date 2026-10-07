@@ -9,8 +9,8 @@ status: "Accepted"
 date: "2026-08-23"
 version: "1.0"
 keywords: "infraestrutura, governança, topologia, infra, IaC, ownership, gate humano, agentes, provisionamento"
-related_files: "docs/delivery/plans/TP-00014-infrastructure-governance-stage-zero.md`, `docs/delivery/plans/TP-00015-infrastructure-as-is-gap-analysis.md`, `artefatos de análise/ANL-00042-infrastructure-as-is-iac-gap-analysis.md`, `docs/architecture/module-registry.md`, `infra/README.md`, `infra/AGENTS.md`, `infra/CLAUDE.md`, `docs/adrs/ADR-0016-infrastructure-environment-provisioning.md"
-code_references: "infra/`, `docker-compose.yml`, `docker-compose.override.yml`, `docker-compose.hml.yml`, `docker-compose.prd.yml`, `.github/workflows/`, `backend/Dockerfile`, `frontend/Dockerfile`, `docker-compose.dev-bot-image.yml"
+related_files: "README.md, ../../../docs/specs/TP-00014-infrastructure-governance-stage-zero.md, ../../../docs/specs/TP-00015-infrastructure-as-is-gap-analysis.md, ADR-0016-infrastructure-environment-provisioning.md"
+code_references: "infra/`, `docker-compose.yml`, `docker-compose.override.yml`, `docker-compose.hml.yml`, `docker-compose.prd.yml`, `.github/workflows/`, `app/Dockerfile`, `frontend/Dockerfile`, `docker-compose.dev-bot-image.yml"
 principal_statement: "`infra/` permanece o pacote operacional umbrella canônico e evolui incrementalmente, mediante inventário AS-IS, fontes de verdade explícitas e gates humanos, sem rename imediato nem alegação de IaC completo."
 ---
 
@@ -22,8 +22,8 @@ principal_statement: "`infra/` permanece o pacote operacional umbrella canônico
 - Scope: `infra/`, arquivos Compose e Dockerfiles da raiz, workflows relacionados, fontes documentais e adaptadores de instrução usados para descobrir essa fronteira.
 - Non-objectives: Definir ferramenta ou arquitetura IaC alvo, backend de state, módulos declarativos, modelo de ambientes, importação brownfield ou executar qualquer mudança operacional.
 - Keywords: infraestrutura, governança, topologia, infra, IaC, ownership, gate humano, agentes, provisionamento
-- Related Files: `docs/delivery/plans/TP-00014-infrastructure-governance-stage-zero.md`, `docs/delivery/plans/TP-00015-infrastructure-as-is-gap-analysis.md`, `artefatos de análise/ANL-00042-infrastructure-as-is-iac-gap-analysis.md`, `docs/architecture/module-registry.md`, `infra/README.md`, `infra/AGENTS.md`, `infra/CLAUDE.md`, `docs/adrs/ADR-0016-infrastructure-environment-provisioning.md`
-- Code References: `infra/`, `docker-compose.yml`, `docker-compose.override.yml`, `docker-compose.hml.yml`, `docker-compose.prd.yml`, `.github/workflows/`, `backend/Dockerfile`, `frontend/Dockerfile`, `infra/docker/dev-bot/Dockerfile`
+- Related Files: `../../../docs/specs/TP-00014-infrastructure-governance-stage-zero.md`, `../../../docs/specs/TP-00015-infrastructure-as-is-gap-analysis.md`, `artefatos de análise/ANL-00042-infrastructure-as-is-iac-gap-analysis.md`, `docs/architecture/module-registry.md`, `infra/README.md`, `infra/AGENTS.md`, `infra/CLAUDE.md`, `ADR-0016-infrastructure-environment-provisioning.md`
+- Code References: `infra/`, `docker-compose.yml`, `docker-compose.override.yml`, `docker-compose.hml.yml`, `docker-compose.prd.yml`, `.github/workflows/`, `app/Dockerfile`, `frontend/Dockerfile`, `infra/docker/dev-bot/Dockerfile`
 - Principal Decision: `infra/` permanece o pacote operacional umbrella canônico e evolui incrementalmente, mediante inventário AS-IS, fontes de verdade explícitas e gates humanos, sem rename imediato nem alegação de IaC completo.
 - Date: 2026-08-23
 - Status: Accepted
@@ -49,7 +49,7 @@ nomenclatura com uma alegação de maturidade técnica. Também criaria churn em
 Compose, workflows, scripts, runbooks e rotas operacionais antes de conhecer seus
 consumidores e estados externos.
 
-O [TP-00014](../delivery/plans/TP-00014-infrastructure-governance-stage-zero.md)
+O [TP-00014](../../../docs/specs/TP-00014-infrastructure-governance-stage-zero.md)
 estabeleceu o marco zero, e o Maintainer Humano de Infraestrutura registrou
 explicitamente “Gate 0 aprovado” em 2026-08-23. Esta ADR promove as decisões
 normativas desse gate à fonte canônica apropriada.
@@ -303,8 +303,8 @@ decisão; não há rollback operacional porque nenhum recurso é alterado.
 
 # 13. References
 
-- [TP-00014 — Marco zero](../delivery/plans/TP-00014-infrastructure-governance-stage-zero.md)
-- [TP-00015 — Inventário AS-IS/gap](../delivery/plans/TP-00015-infrastructure-as-is-gap-analysis.md)
+- [TP-00014 — Marco zero](../../../docs/specs/TP-00014-infrastructure-governance-stage-zero.md)
+- [TP-00015 — Inventário AS-IS/gap](../../../docs/specs/TP-00015-infrastructure-as-is-gap-analysis.md)
 - ANL-00042 — Inventário AS-IS e gaps
 - [Catálogo de infraestrutura](../../infra/README.md)
 - [Manifesto de módulos e pacotes](../architecture/module-registry.md)

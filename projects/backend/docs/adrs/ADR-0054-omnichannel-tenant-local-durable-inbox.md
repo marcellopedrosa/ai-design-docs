@@ -10,8 +10,8 @@ version: 1.5
 date: 2026-08-29
 last_reviewed: 2026-09-03
 keywords: adr, omnichannel, inbox, database-per-tenant, ack, fifo, lease, fencing, retry
-related_files: docs/product/requirements/REQ-00050-omnichannel-durable-inbound-processing.md, docs/adrs/ADR-0011-resilience-retry-circuit-breaker.md, docs/adrs/ADR-0015-telegram-integration.md, docs/adrs/ADR-0019-database-per-tenant.md, docs/delivery/plans/implementation_plans/backend/IP-BE-3.2.12-omnichannel-durable-inbound-processing.md, docs/delivery/plans/implementation_plans/backend/IP-BE-3.2.14-omnichannel-inbox-lease-and-quarantine-recovery.md, docs/delivery/plans/implementation_plans/backend/IP-BE-3.2.15-omnichannel-outbound-parent-lock-inversion.md, docs/delivery/lessons-learned/backend/LL-BE-00091-long-lived-chatbot-transaction-exhausts-tenant-pool.md, docs/delivery/lessons-learned/backend/LL-BE-00093-webhook-ack-is-not-worker-completion.md, docs/delivery/lessons-learned/backend/LL-BE-00097-quarantine-must-not-poison-fifo.md
-code_references: backend/src/main/java/br/com/duoset/saas_service/contexts/omnichannel/, backend/src/main/resources/db/migration/omnichannel/V45__create_inbound_event_inbox.sql
+related_files: "README.md"
+code_references: app/src/main/java/br/com/duoset/saas_service/contexts/omnichannel/, app/src/main/resources/db/migration/omnichannel/V45__create_inbound_event_inbox.sql
 principal_statement: O envelope inbound normalizado será commitado na inbox do banco dedicado do tenant antes do ACK; o control plane manterá apenas a rota WhatsApp, e workers usarão FIFO por conversa, claim não bloqueante, lease/fencing e retry somente antes de efeito potencialmente incerto.
 ---
 
@@ -23,7 +23,7 @@ principal_statement: O envelope inbound normalizado será commitado na inbox do 
 - Scope: custódia, roteamento, concorrência, recuperação e telemetria inbound.
 - Non-objectives: broker externo, payload bruto, replay fiscal incerto, sizing de produção e receipts WhatsApp.
 - Keywords: omnichannel, inbox, tenant, ACK, claim, lease, fencing, FIFO.
-- Related Files: [REQ-00050](../product/requirements/REQ-00050-omnichannel-durable-inbound-processing.md), [ADR-0011](ADR-0011-resilience-retry-circuit-breaker.md), [ADR-0015](ADR-0015-telegram-integration.md), [ADR-0019](ADR-0019-database-per-tenant.md), [IP-BE-3.2.12-omnichannel-durable-inbound-processing](../delivery/plans/implementation_plans/backend/IP-BE-3.2.12-omnichannel-durable-inbound-processing.md) e [LL-BE-00093](../delivery/lessons-learned/backend/LL-BE-00093-webhook-ack-is-not-worker-completion.md).
+- Related Files: [REQ-00050](../product/requirements/REQ-00050-omnichannel-durable-inbound-processing.md), [ADR-0011](ADR-0011-resilience-retry-circuit-breaker.md), [ADR-0015](ADR-0015-telegram-integration.md), [ADR-0019](ADR-0019-database-per-tenant.md), [IP-BE-3.2.12-omnichannel-durable-inbound-processing](../specs/IP-BE-3.2.12-omnichannel-durable-inbound-processing.md) e [LL-BE-00093](../lessons-learned/LL-BE-00093-webhook-ack-is-not-worker-completion.md).
 - Code References: módulo Omnichannel e migration tenant `V45`.
 - Principal Decision: conteúdo inbound pertence ao banco dedicado do tenant e deve estar commitado antes do ACK.
 - Date: 2026-08-29
@@ -216,10 +216,10 @@ não perde a linha. Worker tests comprovam conclusão, backoff e revisão segura
 # 13. References
 
 - [REQ-00050](../product/requirements/REQ-00050-omnichannel-durable-inbound-processing.md)
-- [IP-BE-3.2.12-omnichannel-durable-inbound-processing](../delivery/plans/implementation_plans/backend/IP-BE-3.2.12-omnichannel-durable-inbound-processing.md)
-- [LL-BE-00093](../delivery/lessons-learned/backend/LL-BE-00093-webhook-ack-is-not-worker-completion.md)
-- [LL-BE-00091](../delivery/lessons-learned/backend/LL-BE-00091-long-lived-chatbot-transaction-exhausts-tenant-pool.md)
-- [IP-BE-3.2.15-omnichannel-outbound-parent-lock-inversion](../delivery/plans/implementation_plans/backend/IP-BE-3.2.15-omnichannel-outbound-parent-lock-inversion.md)
+- [IP-BE-3.2.12-omnichannel-durable-inbound-processing](../specs/IP-BE-3.2.12-omnichannel-durable-inbound-processing.md)
+- [LL-BE-00093](../lessons-learned/LL-BE-00093-webhook-ack-is-not-worker-completion.md)
+- [LL-BE-00091](../lessons-learned/LL-BE-00091-long-lived-chatbot-transaction-exhausts-tenant-pool.md)
+- [IP-BE-3.2.15-omnichannel-outbound-parent-lock-inversion](../specs/IP-BE-3.2.15-omnichannel-outbound-parent-lock-inversion.md)
 
 # 14. Decision Lifecycle
 

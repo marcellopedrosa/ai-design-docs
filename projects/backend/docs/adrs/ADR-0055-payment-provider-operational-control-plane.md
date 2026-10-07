@@ -10,8 +10,8 @@ version: 1.8
 date: 2026-09-06
 last_reviewed: 2026-09-11
 keywords: adr, billing, payment-provider, control-plane, asaas, stripe, observabilidade, configuracao, timeline
-related_files: docs/delivery/plans/TP-00039-payment-provider-management-console.md, docs/delivery/plans/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md, docs/product/requirements/REQ-00056-payment-provider-management-observability.md, docs/product/requirements/REQ-00059-temporary-all-roles-mfa-disablement.md, artefatos de análise/ANL-00051-super-admin-dev-mfa-usage-inventory.md, docs/product/use-cases/UC-00053-manage-payment-provider-configuration.md, docs/product/use-cases/UC-00054-inspect-payment-provider-interactions.md, docs/api_contracts/payment-provider-console-v1.openapi.yaml, docs/adrs/ADR-0023-agnostic-payment-provider-integration.md, docs/adrs/ADR-0024-seguranca-tokenizacao-cartao-recorrente.md, docs/adrs/ADR-0026-billing-api-tenant-admin-cutover.md, docs/adrs/ADR-0027-catalogo-global-faturamento-local.md, docs/adrs/ADR-0050-rbac-sod-aprovacoes-financeiras.md, docs/adrs/ADR-0051-slo-capacidade-rollout-billing.md
-code_references: backend/src/main/java/br/com/duoset/saas_service/contexts/billing/, backend/src/main/resources/application.yml, backend/src/main/resources/application-dev.yml, backend/src/main/resources/db/migration/tenant/, frontend/src/app/, frontend/src/components/billing/, frontend/src/services/
+related_files: "README.md"
+code_references: app/src/main/java/br/com/duoset/saas_service/contexts/billing/, app/src/main/resources/application.yml, app/src/main/resources/application-dev.yml, app/src/main/resources/db/migration/tenant/, frontend/src/app/, frontend/src/components/billing/, frontend/src/services/
 principal_statement: O Billing manterá um control plane global, versionado e sem segredos para providers e uma projeção operacional append-only sanitizada; D-13.5 e REQ-00059 dispensam temporariamente MFA de todas as roles em DEV, HML e PRD, enquanto as seis mutações AS-IS continuam exclusivas do Super Admin por RBAC e todo efeito externo permanece sujeito a adapter certificado, kill switch de deploy e autorização ambiental independente.
 ---
 
@@ -23,7 +23,7 @@ principal_statement: O Billing manterá um control plane global, versionado e se
 - Scope: configuração platform-scoped, readiness, referências opacas, projeção operacional, API administrativa e console `Conecta > Pagamentos`.
 - Non-objectives: adapters ASAAS/Stripe, tráfego externo, credenciais reais, Sandbox, produção, fallback automático, replay/reprocessamento operacional de interação/provider e alteração direta de fatos financeiros. Essa exclusão não abrange o replay HTTP idempotente exato das mutações locais definido nesta decisão.
 - Keywords: Billing, payment provider, ASAAS, Stripe, control plane, interaction timeline, observabilidade.
-- Related Files: [TP-00039](../delivery/plans/TP-00039-payment-provider-management-console.md), [TP-00047](../delivery/plans/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md), [REQ-00056](../product/requirements/REQ-00056-payment-provider-management-observability.md), [REQ-00059](../product/requirements/REQ-00059-temporary-all-roles-mfa-disablement.md), ANL-00051, [UC-00053](../product/use-cases/UC-00053-manage-payment-provider-configuration.md), [UC-00054](../product/use-cases/UC-00054-inspect-payment-provider-interactions.md), [Payment Provider Console OpenAPI v1](../../../docs/api_contracts/payment-provider-console-v1.openapi.yaml) e [ADR-0023](ADR-0023-agnostic-payment-provider-integration.md).
+- Related Files: [TP-00039](../../../docs/specs/TP-00039-payment-provider-management-console.md), [TP-00047](../../../docs/specs/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md), [REQ-00056](../product/requirements/REQ-00056-payment-provider-management-observability.md), [REQ-00059](../product/requirements/REQ-00059-temporary-all-roles-mfa-disablement.md), ANL-00051, [UC-00053](../product/use-cases/UC-00053-manage-payment-provider-configuration.md), [UC-00054](../product/use-cases/UC-00054-inspect-payment-provider-interactions.md), [Payment Provider Console OpenAPI v1](../../../docs/api_contracts/payment-provider-console-v1.openapi.yaml) e [ADR-0023](ADR-0023-agnostic-payment-provider-integration.md).
 - Code References: módulo `billing`, migrations globais e frontend administrativo.
 - Principal Decision: separar metadata operacional global e evidência sanitizada dos fatos financeiros tenant-local, sempre fail-closed e sem material secreto; `D-13.5` e REQ-00059 dispensam temporariamente MFA de todas as roles em DEV/HML/PRD, sem remover RBAC nem qualquer outro controle.
 - Date: 2026-09-06
@@ -483,7 +483,7 @@ Sandbox ou produção requer escopo explícito e verificação dos gates própri
    responsáveis produzirem evidência e autorização.
 
 A emenda temporária `D-13.2` é implementada separadamente pelo
-[TP-00047](../delivery/plans/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md),
+[TP-00047](../../../docs/specs/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md),
 sem alterar os gates externos deste plano.
 
 Rollback de código não remove tabelas nem histórico. O desired state pode ser
@@ -551,11 +551,11 @@ deste ADR.
 
 # 13. References
 
-- [TP-00039 — Payment Provider Management Console](../delivery/plans/TP-00039-payment-provider-management-console.md)
+- [TP-00039 — Payment Provider Management Console](../../../docs/specs/TP-00039-payment-provider-management-console.md)
 - [REQ-00056 — Gestão e observabilidade de provedores de pagamento](../product/requirements/REQ-00056-payment-provider-management-observability.md)
 - [REQ-00059 — Dispensa temporária de MFA para todas as roles em DEV, HML e PRD](../product/requirements/REQ-00059-temporary-all-roles-mfa-disablement.md)
 - ANL-00051 — Inventário do uso de MFA para Super Admin em DEV
-- [TP-00047 — Desligamento temporário do MFA do Super Admin em DEV](../delivery/plans/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md)
+- [TP-00047 — Desligamento temporário do MFA do Super Admin em DEV](../../../docs/specs/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md)
 - [UC-00053 — Manage Payment Provider Configuration](../product/use-cases/UC-00053-manage-payment-provider-configuration.md)
 - [UC-00054 — Inspect Payment Provider Interactions](../product/use-cases/UC-00054-inspect-payment-provider-interactions.md)
 - [Payment Provider Console OpenAPI v1](../../../docs/api_contracts/payment-provider-console-v1.openapi.yaml)

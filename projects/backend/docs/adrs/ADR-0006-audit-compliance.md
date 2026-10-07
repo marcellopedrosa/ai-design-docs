@@ -9,7 +9,7 @@ status: "Proposed"
 date: "2026-03-09"
 version: "1.1"
 keywords: "adr, decisao, arquitetura, audit, and, compliance, strategy"
-related_files: "docs/adrs/README.md, docs/product/requirements/REQ-00043-conversation-audit-data-governance.md, docs/adrs/ADR-0001-technology-stack-and-architecture.md, docs/adrs/ADR-0002-separacao-banco-por-contexto-multitenancy.md, docs/adrs/ADR-0003-multitenancy-schema-vs-tenant-id.md, docs/adrs/ADR-0005-multi-tenancy-architecture.md"
+related_files: "README.md, ADR-0001-technology-stack-and-architecture.md, ADR-0002-separacao-banco-por-contexto-multitenancy.md, ADR-0003-multitenancy-schema-vs-tenant-id.md, ADR-0005-multi-tenancy-architecture.md"
 code_references: "AuditPort, AuditService, AuditServiceAdapter, JpaAuditServiceAdapter, CreateTenantUseCase, CreateUserUseCase, UploadCertificateUseCase, RevokeCertificateUseCase, ConsultarSituacaoFiscalUseCase"
 principal_statement: "The system will implement a custom `audit_log` table in the `saas_tenant` database with an application-layer `AuditPort` and an infrastructure-layer `AuditService` adapter. Sensitive actions across all bounded contexts will be audited through explicit port invocation in use cases and an optional `@Audited` AOP annotation. Audit records will capture the authenticated user, tenant, action type, affected resource, timestamp, client IP, and result."
 ---

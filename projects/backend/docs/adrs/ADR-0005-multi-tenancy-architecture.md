@@ -9,7 +9,7 @@ status: "Accepted"
 date: "2026-03-08"
 version: "1.1"
 keywords: "adr, decisao, arquitetura, multi, tenancy, architecture"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0001-technology-stack-and-architecture.md, docs/adrs/ADR-0002-separacao-banco-por-contexto-multitenancy.md, docs/adrs/ADR-0003-multitenancy-schema-vs-tenant-id.md, docs/adrs/ADR-0004-whatsapp-integration-architecture.md, docs/product/business/product-vision.md, docs/agents/README.md"
+related_files: "README.md, ADR-0001-technology-stack-and-architecture.md, ADR-0002-separacao-banco-por-contexto-multitenancy.md, ADR-0003-multitenancy-schema-vs-tenant-id.md, ADR-0004-whatsapp-integration-architecture.md"
 code_references: "TenantContext, @Filter, TenantContextFilter, TenantAwareEntity, @Entity"
 principal_statement: "The system will implement a **three-level multi-tenancy architecture**: (1) Authentication isolation via Keycloak realms per tenant, (2) Application-level isolation via `TenantContext` (ThreadLocal) set by an HTTP filter from the JWT `tenant_id` claim, and (3) Database-level isolation via `tenant_id` column in every table with Hibernate `@Filter` enforcement. Each bounded context has its own PostgreSQL database with a single `public` schema."
 ---
@@ -39,9 +39,9 @@ Business requirements:
 
 Related architectural decisions:
 
-- [ADR-0001](./ADR-0001-technology-stack-and-architecture.md) established Java 21, Spring Boot 4.x, Spring Modulith, PostgreSQL, and Clean Architecture.
-- [ADR-0002](./ADR-0002-separacao-banco-por-contexto-multitenancy.md) established one database per bounded context and `tenant_id` discriminator.
-- [ADR-0003](./ADR-0003-multitenancy-schema-vs-tenant-id.md) analyzed schema-per-tenant vs. `tenant_id` and chose `tenant_id` row-level isolation.
+- [ADR-0001](ADR-0001-technology-stack-and-architecture.md) established Java 21, Spring Boot 4.x, Spring Modulith, PostgreSQL, and Clean Architecture.
+- [ADR-0002](ADR-0002-separacao-banco-por-contexto-multitenancy.md) established one database per bounded context and `tenant_id` discriminator.
+- [ADR-0003](ADR-0003-multitenancy-schema-vs-tenant-id.md) analyzed schema-per-tenant vs. `tenant_id` and chose `tenant_id` row-level isolation.
 
 This ADR defines the **complete multi-tenancy architecture**: isolation levels, authentication flow, tenant context management, data layer configuration, and component design for the SaaS project.
 
@@ -538,10 +538,10 @@ Mitigation: Every entity must extend `TenantAwareEntity`. @CodeGuardian verifies
 
 # 12. Related ADRs
 
-- [ADR-0001 - Technology Stack and Architecture Foundation](./ADR-0001-technology-stack-and-architecture.md) — Defines Spring Boot 4.x, Spring Modulith, PostgreSQL, Clean Architecture.
-- [ADR-0002 - Multi-Tenant Database Isolation Strategy](./ADR-0002-separacao-banco-por-contexto-multitenancy.md) — Establishes database per bounded context and `tenant_id` discriminator.
-- [ADR-0003 - Multi-Tenancy Schema vs tenant_id](./ADR-0003-multitenancy-schema-vs-tenant-id.md) — Detailed analysis choosing `tenant_id` row-level isolation over schema-per-tenant.
-- [ADR-0004 - WhatsApp Integration Architecture](./ADR-0004-whatsapp-integration-architecture.md) — WhatsApp module design with multi-tenant message routing.
+- [ADR-0001 - Technology Stack and Architecture Foundation](ADR-0001-technology-stack-and-architecture.md) — Defines Spring Boot 4.x, Spring Modulith, PostgreSQL, Clean Architecture.
+- [ADR-0002 - Multi-Tenant Database Isolation Strategy](ADR-0002-separacao-banco-por-contexto-multitenancy.md) — Establishes database per bounded context and `tenant_id` discriminator.
+- [ADR-0003 - Multi-Tenancy Schema vs tenant_id](ADR-0003-multitenancy-schema-vs-tenant-id.md) — Detailed analysis choosing `tenant_id` row-level isolation over schema-per-tenant.
+- [ADR-0004 - WhatsApp Integration Architecture](ADR-0004-whatsapp-integration-architecture.md) — WhatsApp module design with multi-tenant message routing.
 - (Future) ADR-0006 — Authentication and Authorization with Keycloak.
 - (Future) ADR-0007 — SERPRO Integra Contador Integration Pattern.
 

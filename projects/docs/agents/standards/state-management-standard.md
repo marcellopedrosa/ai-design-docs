@@ -9,7 +9,7 @@ status: "Active"
 date: "2026-08-25"
 version: "1.4"
 keywords: "state, management, standard, standard"
-related_files: "./README.md, ./nextjs-standard.md, ./api-client-standard.md"
+related_files: "./README.md, nextjs-standard.md, api-client-standard.md"
 code_references: "src/stores/, src/hooks/, src/hooks/queries/, frontend/"
 principal_statement: "As regras de State Management & Hooks aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
@@ -18,7 +18,7 @@ principal_statement: "As regras de State Management & Hooks aplicam-se somente a
 
 > **Mandatory rules** for state management and custom hook architecture. This standard classifies state into categories, defines when to use each tool (React state, Context, Zustand, React Query, URL), and establishes patterns for custom hook design, composition, and testing.
 
-> **Prerequisite:** Read [`nextjs-standard.md`](./nextjs-standard.md) and [`api-client-standard.md`](./api-client-standard.md) first.
+> **Prerequisite:** Read [`nextjs-standard.md`](nextjs-standard.md) and [`api-client-standard.md`](api-client-standard.md) first.
 
 ---
 
@@ -307,7 +307,7 @@ src/stores/
 
 ## 5. URL State
 
-URL state is defined in [`api-client-standard.md`](./api-client-standard.md) Section 9 (`usePagination`). Additionally:
+URL state is defined in [`api-client-standard.md`](api-client-standard.md) Section 9 (`usePagination`). Additionally:
 
 ### useFilters Hook
 

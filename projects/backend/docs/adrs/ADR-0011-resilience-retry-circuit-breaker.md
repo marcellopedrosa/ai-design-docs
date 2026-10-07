@@ -9,7 +9,7 @@ status: "Accepted"
 date: "2026-04-17"
 version: "1.3"
 keywords: "adr, decisao, arquitetura, resilience, strategy, retry, circuit, breaker, and, fault, tolerance, for, external, integrations"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0023-agnostic-payment-provider-integration.md, docs/adrs/ADR-0001-technology-stack-and-architecture.md, docs/adrs/ADR-0002-separacao-banco-por-contexto-multitenancy.md, docs/adrs/ADR-0004-whatsapp-integration-architecture.md, docs/adrs/ADR-0005-multi-tenancy-architecture.md, docs/adrs/ADR-0006-audit-compliance.md, docs/adrs/ADR-0007-multi-provider-llm-integration.md, docs/adrs/ADR-0008-stripe-billing-subscription.md, docs/adrs/ADR-0010-tenant-plan-parametrization.md"
+related_files: "README.md, ADR-0023-agnostic-payment-provider-integration.md, ADR-0001-technology-stack-and-architecture.md, ADR-0002-separacao-banco-por-contexto-multitenancy.md, ADR-0004-whatsapp-integration-architecture.md, ADR-0005-multi-tenancy-architecture.md, ADR-0006-audit-compliance.md, ADR-0007-multi-provider-llm-integration.md, ADR-0008-stripe-billing-subscription.md, ADR-0010-tenant-plan-parametrization.md"
 code_references: "SerproFiscalPort, WhatsAppMessagePort, PaymentProviderPort, LlmResponsePort, FiscalQueryResultEvent, FiscalQueryFailedEvent, BillingReconciliationRequiredEvent, SerproFiscalAdapter, MetaWhatsAppAdapter, GeminiLlmAdapter, OpenAiLlmAdapter, TenantContext"
 principal_statement: "O sistema adotará **Resilience4j** como framework de resiliência, integrado com Spring Boot via `resilience4j-spring-boot3`. Cada outbound port (adapter de integração externa) será protegido por uma combinação configurável de **Circuit Breaker**, **Retry**, **Timeout**, **Bulkhead** e **Rate Limiter**, aplicados na camada de adapter (infraestrutura) via anotações declarativas. Para comunicação inter-módulos, os Spring Modulith Events serão persistidos em banco de dados (`event_publication` table) com reprocessamento automático de eventos falhados. Todas as falhas serão observáveis via métricas Prometheus e logs estruturados com `tenant_id` no MDC."
 ---
@@ -33,7 +33,7 @@ O Contador Fiscal Inteligente depende de **quatro integrações externas crític
 |---|---|---|---|---|
 | **SERPRO Integra Contador** | `fiscal` | `SerproFiscalPort` | `saas_fiscal` | Indisponibilidade frequente (manutenção programada, rate-limiting, timeouts longos) |
 | **Meta Cloud API (WhatsApp)** | `whatsapp` | `WhatsAppMessagePort` | `saas_whatsapp` | Rate-limiting (80 msg/s por WABA), throttling, webhook delivery failures |
-| **Provider de pagamento definido no [ADR-0023](./ADR-0023-agnostic-payment-provider-integration.md)** | `billing` | `PaymentProviderPort` | `saas_billing` | Webhook delivery delays, idempotency conflicts, estado financeiro ambíguo e consistência eventual |
+| **Provider de pagamento definido no [ADR-0023](ADR-0023-agnostic-payment-provider-integration.md)** | `billing` | `PaymentProviderPort` | `saas_billing` | Webhook delivery delays, idempotency conflicts, estado financeiro ambíguo e consistência eventual |
 | **Provedores LLM (Gemini/OpenAI)** | `whatsapp` | `LlmResponsePort` | `saas_whatsapp` | Rate-limiting de tokens, timeouts de inferência (>30s), quota exhaustion |
 
 **O problema:** Atualmente, os ADRs existentes mencionam resiliência de forma pontual — o ADR-0001 cita "circuit breakers" como princípio, o ADR-0004 fala em "fallback graceful" para o chatbot, e o ADR-0007 define fallback em cascata para LLMs. Porém, **nenhum ADR define a estratégia unificada de resiliência**: quais patterns usar, como configurar, como propagar falhas entre módulos via Spring Modulith Events, e como garantir que a VPS única (ADR-0001) não seja derrubada por um efeito cascata.
@@ -447,7 +447,7 @@ graph TD
 |---|---|---|
 | **SERPRO** | `serproFallback()` | Retorna mensagem ao cliente: "⚠️ Os servidores da Receita estão indisponíveis neste momento. Tente novamente em alguns minutos. Código: {correlationId}". Registra `FiscalQueryFailedEvent`. |
 | **WhatsApp (Meta)** | `whatsappFallback()` | Persiste mensagem pendente em tabela `outbound_message_queue` (saas_whatsapp) com status `PENDING_RETRY`. Job agendado reprocessa a cada 60 segundos. |
-| **Provider de pagamento (./ADR-0023-agnostic-payment-provider-integration.md))** | `paymentProviderFallback()` | Preserva o comando e o estado local em Billing, marca resultado ambíguo para reconciliação e publica `BillingReconciliationRequiredEvent`. Não troca automaticamente de provider nem repete mutação financeira sem prova de segurança. |
+| **Provider de pagamento (ADR-0023-agnostic-payment-provider-integration.md))** | `paymentProviderFallback()` | Preserva o comando e o estado local em Billing, marca resultado ambíguo para reconciliação e publica `BillingReconciliationRequiredEvent`. Não troca automaticamente de provider nem repete mutação financeira sem prova de segurança. |
 | **LLM (Gemini)** | `llmFallback()` | Cascata definida no ADR-0007: Gemini → OpenAI → Template fixo sem IA. Se todos falharem, envia dados SERPRO com formatação básica (plain text com emojis hardcoded). |
 
 ## 7.6 Observabilidade
@@ -515,7 +515,7 @@ LLM Considerations:
 
 Safety Considerations:
 
-- Alterações nos parâmetros de Circuit Breaker de qualquer adapter de pagamento (`billing`) requerem revisão humana — configuração incorreta pode causar dupla cobrança ou perda de pagamento. A troca de provider segue exclusivamente o [ADR-0023](./ADR-0023-agnostic-payment-provider-integration.md).
+- Alterações nos parâmetros de Circuit Breaker de qualquer adapter de pagamento (`billing`) requerem revisão humana — configuração incorreta pode causar dupla cobrança ou perda de pagamento. A troca de provider segue exclusivamente o [ADR-0023](ADR-0023-agnostic-payment-provider-integration.md).
 - O cleanup job da tabela `event_publication` deve reter eventos falhados (`completion_date = NULL`) indefinidamente — nunca apagá-los automaticamente. Apenas eventos processados com sucesso podem ser purgados.
 
 ---
@@ -534,7 +534,7 @@ Safety Considerations:
 
 - Anotar `SerproFiscalAdapter` com `@CircuitBreaker("serpro")`, `@Retry("serpro")`, `@TimeLimiter("serpro")`, `@Bulkhead("serpro")`.
 - Anotar `MetaWhatsAppAdapter` com `@CircuitBreaker("whatsapp")`, `@Retry("whatsapp")`, `@RateLimiter("whatsapp-global")`.
-- Decorar cada implementação de `PaymentProviderPort` com instância própria (`payment-provider-{code}`), `@CircuitBreaker`, `@Retry` e `@TimeLimiter`, conforme seleção governada pelo [ADR-0023](./ADR-0023-agnostic-payment-provider-integration.md).
+- Decorar cada implementação de `PaymentProviderPort` com instância própria (`payment-provider-{code}`), `@CircuitBreaker`, `@Retry` e `@TimeLimiter`, conforme seleção governada pelo [ADR-0023](ADR-0023-agnostic-payment-provider-integration.md).
 - Anotar `GeminiLlmAdapter` e `OpenAiLlmAdapter` com `@CircuitBreaker("llm")`, `@Retry("llm-gemini|llm-openai")`, `@Bulkhead("llm")`.
 - Implementar `fallbackMethod` em cada adapter anotado.
 - Responsible: @ImplementerCore, @AdapterDev
@@ -561,7 +561,7 @@ Safety Considerations:
 Dependencies:
 
 - Phase 1 requer ADR-0001 (Spring Boot + Gradle configurados).
-- Phase 2 requer que os adapters de cada outbound port existam (ADR-0004, ADR-0007 e [ADR-0023](./ADR-0023-agnostic-payment-provider-integration.md)).
+- Phase 2 requer que os adapters de cada outbound port existam (ADR-0004, ADR-0007 e [ADR-0023](ADR-0023-agnostic-payment-provider-integration.md)).
 - Phase 3 requer ADR-0005 (TenantContext implementado).
 - Phase 4 requer stack Prometheus/Grafana (ADR-0001).
 
@@ -631,7 +631,7 @@ Mitigation: `TenantAwareRateLimiterFactory` usa cache com TTL (ex: Caffeine com 
 
 Risk 5:
 Description: O fallback do provider de pagamento opera com estado local. Se o circuit breaker ficar aberto por muito tempo, o estado local pode divergir do provider, causando inconsistências em Billing.
-Mitigation: Reconciliação obrigatória quando o circuit breaker transiciona para HALF_OPEN. `BillingReconciliationRequiredEvent` dispara a consulta pelo mesmo provider; qualquer troca segue o procedimento auditado e sem fallback automático do [ADR-0023](./ADR-0023-agnostic-payment-provider-integration.md). Alerta se a reconciliação não completar em 1 hora.
+Mitigation: Reconciliação obrigatória quando o circuit breaker transiciona para HALF_OPEN. `BillingReconciliationRequiredEvent` dispara a consulta pelo mesmo provider; qualquer troca segue o procedimento auditado e sem fallback automático do [ADR-0023](ADR-0023-agnostic-payment-provider-integration.md). Alerta se a reconciliação não completar em 1 hora.
 
 Risk 6:
 Description: Virtual threads do Java 21 interagem de forma inesperada com `synchronized` blocks internos do Resilience4j, causando pinning de carrier threads.
@@ -641,15 +641,15 @@ Mitigation: Resilience4j usa `Semaphore`-based bulkhead (não `synchronized`). V
 
 # 12. Related ADRs
 
-- [ADR-0001 - Technology Stack and Architecture Foundation](./ADR-0001-technology-stack-and-architecture.md) — Define a stack (Java 21, Spring Boot, VPS única) e menciona resilience como princípio. Este ADR concretiza a implementação.
-- [ADR-0002 - Multi-Tenant Database Isolation Strategy](./ADR-0002-separacao-banco-por-contexto-multitenancy.md) — Define databases por contexto. A tabela `event_publication` será criada em cada database.
-- [ADR-0004 - WhatsApp Integration Architecture](./ADR-0004-whatsapp-integration-architecture.md) — Define `WhatsAppMessagePort` como outbound port. Este ADR adiciona resiliência ao adapter.
-- [ADR-0005 - Multi-Tenancy Architecture](./ADR-0005-multi-tenancy-architecture.md) — Define `TenantContext`. Este ADR usa `TenantContext` para rate limiting per-tenant.
-- [ADR-0006 - Audit and Compliance](./ADR-0006-audit-compliance.md) — Circuit breaker open e fallback activation são ações que devem ser registradas no audit log.
-- [ADR-0007 - Multi-Provider LLM Integration](./ADR-0007-multi-provider-llm-integration.md) — Define fallback cascade para LLM. Este ADR adiciona circuit breaker/retry em cada etapa da cascade.
-- [ADR-0023 - Integração agnóstica de provedores de pagamento](./ADR-0023-agnostic-payment-provider-integration.md) — Define `PaymentProviderPort`, seleção de adapters, idempotência, reconciliação e proíbe fallback financeiro automático entre providers.
-- [ADR-0008 - Stripe Billing & Subscription](./ADR-0008-stripe-billing-subscription.md) — Baseline histórico substituído pelo ADR-0023.
-- [ADR-0010 - Tenant Plan Parametrization](./ADR-0010-tenant-plan-parametrization.md) — Limites de plano informam os rate limiters per-tenant e por canal conversacional (ex: `max_chatbot_msg_daily`).
+- [ADR-0001 - Technology Stack and Architecture Foundation](ADR-0001-technology-stack-and-architecture.md) — Define a stack (Java 21, Spring Boot, VPS única) e menciona resilience como princípio. Este ADR concretiza a implementação.
+- [ADR-0002 - Multi-Tenant Database Isolation Strategy](ADR-0002-separacao-banco-por-contexto-multitenancy.md) — Define databases por contexto. A tabela `event_publication` será criada em cada database.
+- [ADR-0004 - WhatsApp Integration Architecture](ADR-0004-whatsapp-integration-architecture.md) — Define `WhatsAppMessagePort` como outbound port. Este ADR adiciona resiliência ao adapter.
+- [ADR-0005 - Multi-Tenancy Architecture](ADR-0005-multi-tenancy-architecture.md) — Define `TenantContext`. Este ADR usa `TenantContext` para rate limiting per-tenant.
+- [ADR-0006 - Audit and Compliance](ADR-0006-audit-compliance.md) — Circuit breaker open e fallback activation são ações que devem ser registradas no audit log.
+- [ADR-0007 - Multi-Provider LLM Integration](ADR-0007-multi-provider-llm-integration.md) — Define fallback cascade para LLM. Este ADR adiciona circuit breaker/retry em cada etapa da cascade.
+- [ADR-0023 - Integração agnóstica de provedores de pagamento](ADR-0023-agnostic-payment-provider-integration.md) — Define `PaymentProviderPort`, seleção de adapters, idempotência, reconciliação e proíbe fallback financeiro automático entre providers.
+- [ADR-0008 - Stripe Billing & Subscription](ADR-0008-stripe-billing-subscription.md) — Baseline histórico substituído pelo ADR-0023.
+- [ADR-0010 - Tenant Plan Parametrization](ADR-0010-tenant-plan-parametrization.md) — Limites de plano informam os rate limiters per-tenant e por canal conversacional (ex: `max_chatbot_msg_daily`).
 
 ---
 
@@ -663,7 +663,7 @@ Mitigation: Resilience4j usa `Semaphore`-based bulkhead (não `synchronized`). V
 - [Release It! — Michael Nygard (2nd Edition)](https://pragprog.com/titles/mnee2/release-it-second-edition/) — Definição original do stability pattern
 - [Resilience4j & Virtual Threads (Java 21)](https://github.com/resilience4j/resilience4j/issues/1937) — Discussão sobre compatibilidade com virtual threads
 - [Meta WhatsApp Business API Rate Limits](https://developers.facebook.com/docs/whatsapp/cloud-api/overview#rate-limits)
-- Requisitos e referências externas de providers de pagamento estão centralizados no [ADR-0023](./ADR-0023-agnostic-payment-provider-integration.md).
+- Requisitos e referências externas de providers de pagamento estão centralizados no [ADR-0023](ADR-0023-agnostic-payment-provider-integration.md).
 - Business Requirements: [Visão de produto](../product/business/product-vision.md)
 
 ---

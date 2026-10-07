@@ -9,7 +9,7 @@ status: "Accepted"
 date: "2026-04-17"
 version: "1.2"
 keywords: "adr, decisao, arquitetura, arquitetura, e, gerenciamento, de, estado, do, frontend, next, js, react"
-related_files: "projects/frontend/docs/adrs/README.md, projects/backend/docs/adrs/ADR-0001-technology-stack-and-architecture.md, projects/backend/docs/adrs/ADR-0005-multi-tenancy-architecture.md, projects/backend/docs/adrs/ADR-0009-dynamic-rbac-evolution.md, projects/backend/docs/adrs/ADR-0010-tenant-plan-parametrization.md, projects/backend/docs/adrs/ADR-0011-resilience-retry-circuit-breaker.md, projects/backend/docs/adrs/ADR-0012-error-handling-observability.md"
+related_files: "README.md, ../../../backend/docs/adrs/ADR-0001-technology-stack-and-architecture.md, ../../../backend/docs/adrs/ADR-0005-multi-tenancy-architecture.md, ../../../backend/docs/adrs/ADR-0009-dynamic-rbac-evolution.md, ../../../backend/docs/adrs/ADR-0010-tenant-plan-parametrization.md, ../../../backend/docs/adrs/ADR-0011-resilience-retry-circuit-breaker.md, ../../../backend/docs/adrs/ADR-0012-error-handling-observability.md"
 code_references: "useQuery"
 principal_statement: "O frontend será construído com **Next.js 16 (App Router)** como meta-framework, seguindo uma **Arquitetura Orientada a Features** para organização de código. O gerenciamento de estado seguirá a separação estrita: **TanStack Query** para server state (dados da API) e **Zustand** exclusivamente para client state efêmero (UI). Formulários serão gerenciados por **React Hook Form + Zod**, com schema factories que recebem a função de tradução `t()` para mensagens i18n. A autenticação multi-tenant será encapsulada por um `AuthProvider` que gerencia o ciclo de vida do Keycloak e resolve o contexto efetivo: identidades tenant usam exclusivamente a claim assinada `tenant_id`; Super Admin global não envia contexto tenant; somente uma impersonação explícita de Super Admin injeta `X-Tenant-ID` pelo `apiClient`. Erros do backend serão parseados como RFC 7807 (ADR-0012) por um hook `useApiError` centralizado."
 ---
@@ -212,7 +212,7 @@ Neutral Consequences:
 ## 7.1 Arquitetura de Diretórios — Feature-First
 
 ```
-frontend/src/
+app/src/
 ├── app/                          # Next.js App Router — APENAS routing e layouts
 │   ├── (public)/                 # Route group: páginas públicas (login, landing)
 │   │   └── login/

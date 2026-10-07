@@ -10,7 +10,7 @@ date: "2026-08-25"
 last_reviewed: "2026-09-13"
 version: "1.11"
 keywords: "development, standard, openapi, api-contract, contract-first, comentarios, tamanho-de-arquivo, git, branch, conventional-commits"
-related_files: "./README.md, ./ddd-clean-architecture-standard.md, ./api-client-standard.md, ./software-quality-standard.md, docs/api_contracts/README.md"
+related_files: "./README.md, ddd-clean-architecture-standard.md, api-client-standard.md, ./software-quality-standard.md, docs/api_contracts/README.md"
 code_references: "docs/api_contracts/, infra/scripts/validate-quality-metrics.mjs, backend/, frontend/, infra/"
 principal_statement: "Código deve permanecer pequeno, legível e mensurável; APIs seguem contract-first e entrega Git autônoma ocorre somente em branch governada após todos os gates aplicáveis em PASS."
 ---
@@ -100,7 +100,7 @@ mvn spotless:apply
 
 ## Estrutura de um Bounded Context
 
-> 📘 Consulte [`ddd-clean-architecture-standard.md`](./ddd-clean-architecture-standard.md) para o diagrama completo de pacotes, camadas Clean Architecture e a estrutura interna de cada Bounded Context.
+> 📘 Consulte [`ddd-clean-architecture-standard.md`](ddd-clean-architecture-standard.md) para o diagrama completo de pacotes, camadas Clean Architecture e a estrutura interna de cada Bounded Context.
 
 
 

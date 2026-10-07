@@ -10,8 +10,8 @@ date: "2026-08-25"
 version: "2.2"
 last_reviewed: "2026-09-04"
 keywords: "billing API, tenant scope, admin scope, BOLA, MRR, MSW, cutover, compatibility, frontend, backend"
-related_files: "docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/delivery/plans/TP-00011-billing-asaas-first-release-task-plan.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/adrs/ADR-0019-database-per-tenant.md`, `docs/adrs/ADR-0023-agnostic-payment-provider-integration.md`, `docs/adrs/ADR-0049-subledger-tenant-local-mrr-normalizado.md"
-code_references: "`backend/src/main/java/br/com/duoset/saas_service/contexts/billing/internal/presentation/rest/BillingController.java`, `frontend/src/services/billingService.ts`, `frontend/src/hooks/queries/useBillingQueries.ts`, `frontend/src/mocks/handlers/billingHandlers.ts`; contratos OpenAPI/DTO exatos permanecem destinos planejados."
+related_files: "README.md, ../../../docs/specs/TP-00011-billing-asaas-first-release-task-plan.md, ../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md, ADR-0019-database-per-tenant.md, ADR-0023-agnostic-payment-provider-integration.md, ADR-0049-subledger-tenant-local-mrr-normalizado.md"
+code_references: "`app/src/main/java/br/com/duoset/saas_service/contexts/billing/internal/presentation/rest/BillingController.java`, `frontend/src/services/billingService.ts`, `frontend/src/hooks/queries/useBillingQueries.ts`, `frontend/src/mocks/handlers/billingHandlers.ts`; contratos OpenAPI/DTO exatos permanecem destinos planejados."
 principal_statement: "Billing separa APIs tenant-scoped em `/api/v1/tenants/{tenantId}/billing/**` e APIs globais em `/api/v1/admin/billing/**`, sem aliases `/api/v1/billing/**` e sem MSW como fallback de runtime; `MRR_V1` gerencial esta definido no ADR-0049, mas sua habilitação permanece indisponível até contrato/runtime/reconciliação/autorização/evidência, embora artefatos locais possam ser implementados sob `D-00`."
 ---
 
@@ -23,8 +23,8 @@ principal_statement: "Billing separa APIs tenant-scoped em `/api/v1/tenants/{ten
 - Scope: Rotas HTTP tenant-scoped e administrativas de Billing, autorizacao por contexto efetivo, compatibilidade pre-producao, consumo frontend e limite contratual de MRR.
 - Non-objectives: Implementar ou habilitar endpoints; definir schemas completos de DTOs; redefinir a formula `MRR_V1` aceita no ADR-0049; alterar pricing, cobranca ASAAS, fiscal ou dados persistidos.
 - Keywords: billing API, tenant scope, admin scope, BOLA, MRR, MSW, cutover, compatibility, frontend, backend
-- Related Files: `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/delivery/plans/TP-00011-billing-asaas-first-release-task-plan.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/adrs/ADR-0019-database-per-tenant.md`, `docs/adrs/ADR-0023-agnostic-payment-provider-integration.md`, `docs/adrs/ADR-0049-subledger-tenant-local-mrr-normalizado.md`
-- Code References: `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/internal/presentation/rest/BillingController.java`, `frontend/src/services/billingService.ts`, `frontend/src/hooks/queries/useBillingQueries.ts`, `frontend/src/mocks/handlers/billingHandlers.ts`; contratos OpenAPI/DTO exatos permanecem destinos planejados.
+- Related Files: `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `../../../docs/specs/TP-00011-billing-asaas-first-release-task-plan.md`, `../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md`, `ADR-0019-database-per-tenant.md`, `ADR-0023-agnostic-payment-provider-integration.md`, `ADR-0049-subledger-tenant-local-mrr-normalizado.md`
+- Code References: `app/src/main/java/br/com/duoset/saas_service/contexts/billing/internal/presentation/rest/BillingController.java`, `frontend/src/services/billingService.ts`, `frontend/src/hooks/queries/useBillingQueries.ts`, `frontend/src/mocks/handlers/billingHandlers.ts`; contratos OpenAPI/DTO exatos permanecem destinos planejados.
 - Principal Decision: Billing separa APIs tenant-scoped em `/api/v1/tenants/{tenantId}/billing/**` e APIs globais em `/api/v1/admin/billing/**`, sem aliases `/api/v1/billing/**` e sem MSW como fallback de runtime; `MRR_V1` gerencial esta definido no ADR-0049, mas sua habilitação permanece indisponível até contrato/runtime/reconciliação/autorização/evidência, embora artefatos locais possam ser implementados sob `D-00`.
 - Date: 2026-08-25
 - Status: Accepted
@@ -108,7 +108,7 @@ Esta decisao de rotas foi aprovada como `D-01` pelo responsavel do produto em
 `AUTH-BILLING-2026-08-25-001`, com revisao humana `NOT_PERFORMED` e
 `Reviewability: OPEN`. A autorização humana separada registrou `D-00 =
 RELEASED_WITH_SCOPE — HUMAN_EXPLICIT — TP-00013 local-only` no
-[TP-00013](../delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md),
+[TP-00013](../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md),
 sem liberar chamadas externas, Sandbox, piloto ou produção.
 
 Em 2026-09-04, o proprietário do SaaS aprovou `D-01.1` com provenance
@@ -273,7 +273,7 @@ aliases globais nem reescreve fatos financeiros.
 
 - [ADR-0000 - Governanca documental](../../harness/governance/decisions/ADR-0000-governanca-do-harness-documental.md)
 - [ADR-0012 - Error handling and observability](ADR-0012-error-handling-observability.md)
-- [ADR-0013 - Frontend architecture](ADR-0013-frontend-architecture-state-management.md)
+- [ADR-0013 - Frontend architecture](../../../frontend/docs/adrs/ADR-0013-frontend-architecture-state-management.md)
 - [ADR-0019 - Database per tenant](ADR-0019-database-per-tenant.md)
 - [ADR-0023 - Integracao agnostica de provedores de pagamento](ADR-0023-agnostic-payment-provider-integration.md)
 - [ADR-0049 - Subledger tenant-local e MRR normalizado](ADR-0049-subledger-tenant-local-mrr-normalizado.md)

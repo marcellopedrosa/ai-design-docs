@@ -10,8 +10,8 @@ date: "2026-08-28"
 last_reviewed: "2026-09-07"
 version: "1.2"
 keywords: "Java 25, LTS, virtual threads, Project Loom, performance, footprint, Maven, Spring Boot, backend"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0001-technology-stack-and-architecture.md, docs/adrs/ADR-0011-resilience-retry-circuit-breaker.md, docs/adrs/ADR-0012-error-handling-observability.md, docs/adrs/ADR-0016-infrastructure-environment-provisioning.md, docs/adrs/ADR-0052-parametros-pool-conexao-por-tenant.md, artefatos de análise/ANL-00050-java-25-backend-impact-analysis.md, docs/product/requirements/REQ-00001-whatsapp-business-integration.md, docs/architecture/module-registry.md, backend/AGENTS.md"
-code_references: "backend/pom.xml, backend/Dockerfile, backend/.mvn/wrapper/maven-wrapper.properties, backend/src/main/resources/application.yml, backend/src/main/java/br/com/duoset/saas_service/shared/config/async/AsyncConfig.java, backend/src/main/java/br/com/duoset/saas_service/shared/config/async/MdcTaskDecorator.java, backend/src/main/java/br/com/duoset/saas_service/shared/types/TenantContext.java, backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/infrastructure/cache/RedisTenantPoolPolicyCacheAdapter.java"
+related_files: "README.md, ADR-0001-technology-stack-and-architecture.md, ADR-0011-resilience-retry-circuit-breaker.md, ADR-0012-error-handling-observability.md, ADR-0016-infrastructure-environment-provisioning.md, ADR-0052-parametros-pool-conexao-por-tenant.md"
+code_references: "app/pom.xml, app/Dockerfile, app/.mvn/wrapper/maven-wrapper.properties, app/src/main/resources/application.yml, app/src/main/java/br/com/duoset/saas_service/shared/config/async/AsyncConfig.java, app/src/main/java/br/com/duoset/saas_service/shared/config/async/MdcTaskDecorator.java, app/src/main/java/br/com/duoset/saas_service/shared/types/TenantContext.java, app/src/main/java/br/com/duoset/saas_service/contexts/tenant/internal/infrastructure/cache/RedisTenantPoolPolicyCacheAdapter.java"
 principal_statement: "Java 25 é o baseline qualificado do backend com platform threads; virtual threads somente serão adotadas por lane de I/O bloqueante após os gates de pools, contexto, deadlines, bulkheads e backpressure, e o enxugamento removerá apenas dependências ou módulos provadamente dispensáveis."
 ---
 
@@ -24,7 +24,7 @@ principal_statement: "Java 25 é o baseline qualificado do backend com platform 
 - Non-objectives: Habilitar virtual threads ou flags experimentais; executar deploy ou produção; trocar Spring Boot, Spring Modulith, Maven, banco, topologia multitenant ou arquitetura modular; prometer ganho sem benchmark reproduzível.
 - Keywords: Java 25, LTS, virtual threads, Project Loom, performance, footprint, Maven, Spring Boot, backend
 - Related Files: [ADR-0001](ADR-0001-technology-stack-and-architecture.md), [ADR-0011](ADR-0011-resilience-retry-circuit-breaker.md), [ADR-0012](ADR-0012-error-handling-observability.md), [ADR-0016](ADR-0016-infrastructure-environment-provisioning.md), [ADR-0052](ADR-0052-parametros-pool-conexao-por-tenant.md), ANL-00050, [REQ-00001](../product/requirements/REQ-00001-whatsapp-business-integration.md), [module registry](../architecture/module-registry.md) e [instruções do backend](../../backend/AGENTS.md).
-- Code References: `backend/pom.xml`, `backend/Dockerfile`, wrapper Maven, `application.yml`, `AsyncConfig`, `MdcTaskDecorator`, `TenantContext`, `RedisTenantPoolPolicyCacheAdapter` e workflows backend/security.
+- Code References: `app/pom.xml`, `app/Dockerfile`, wrapper Maven, `application.yml`, `AsyncConfig`, `MdcTaskDecorator`, `TenantContext`, `RedisTenantPoolPolicyCacheAdapter` e workflows backend/security.
 - Principal Decision: Java 25 é o baseline qualificado do backend com platform threads; virtual threads serão adotadas somente em lanes de I/O bloqueante com contexto, deadlines, bulkheads e backpressure preservados, e o enxugamento removerá apenas dependências ou módulos provadamente dispensáveis.
 - Date: 2026-08-28
 - Status: Accepted
@@ -118,8 +118,8 @@ carga CPU-bound, banco, provedor externo ou pool Hikari em recurso ilimitado.
 O backend adotará Java 25 como versão de compilação (`release 25`) e runtime. A
 mudança final deverá ser atômica entre:
 
-- `backend/pom.xml` e plugins/annotation processors;
-- builder e JRE de `backend/Dockerfile`, ambos com versão e digest compatíveis;
+- `app/pom.xml` e plugins/annotation processors;
+- builder e JRE de `app/Dockerfile`, ambos com versão e digest compatíveis;
 - jobs Java dos workflows backend e security;
 - documentação AS-IS, standards e adaptadores operacionais ativos;
 - imagem de rollback completa.
@@ -556,7 +556,7 @@ lifecycle preexistente, não falha de compatibilidade Java 25.
 Este ADR está armazenado em:
 
 ```text
-docs/adrs/ADR-0053-adocao-java-25-backend.md
+ADR-0053-adocao-java-25-backend.md
 ```
 
 ---

@@ -9,8 +9,8 @@ status: "Accepted"
 date: "2026-08-25"
 version: "2.1"
 keywords: "cartão recorrente, cartão salvo, card-on-file, credencial armazenada, cobrança off-session, ASAAS Checkout, assinatura recorrente, tokenização, creditCardToken, PAN, CVV, PCI DSS, CollectionMandate, PaymentMethodReference, webhook, redaction"
-related_files: "harness/governance/decisions/ADR-0000-governanca-do-harness-documental.md`, `docs/adrs/ADR-0006-audit-compliance.md`, `docs/adrs/ADR-0008-stripe-billing-subscription.md`, `docs/adrs/ADR-0011-resilience-retry-circuit-breaker.md`, `docs/adrs/ADR-0012-error-handling-observability.md`, `docs/adrs/ADR-0019-database-per-tenant.md`, `docs/adrs/ADR-0023-agnostic-payment-provider-integration.md`, `docs/adrs/ADR-0025-suspensao-tenant-inadimplencia-recuperacao.md`, `docs/product/requirements/REQ-00034-phase2-billing-subscription-usage.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00042-billing-payment-reconciliation-dunning.md`, `docs/delivery/plans/TP-00011-billing-asaas-first-release-task-plan.md`, `docs/delivery/plans/implementation_plans/backend/IP-BE-11.2.2-asaas-customer-charge-hosted-payment.md`, `docs/architecture/module-registry.md"
-code_references: "Baseline atual em `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` e `frontend/src/`; destinos planejados `CollectionMandate`, `PaymentMethodReference`, projeção provider-neutral de recorrência, sanitização de webhook e contratos de checkout hospedado, ainda não implementados por este ADR."
+related_files: "README.md, ADR-0006-audit-compliance.md, ADR-0008-stripe-billing-subscription.md, ADR-0011-resilience-retry-circuit-breaker.md, ADR-0012-error-handling-observability.md, ADR-0019-database-per-tenant.md, ADR-0023-agnostic-payment-provider-integration.md, ADR-0025-suspensao-tenant-inadimplencia-recuperacao.md, ../../../docs/specs/TP-00011-billing-asaas-first-release-task-plan.md, ../specs/IP-BE-11.2.2-asaas-customer-charge-hosted-payment.md"
+code_references: "Baseline atual em `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` e `frontend/src/`; destinos planejados `CollectionMandate`, `PaymentMethodReference`, projeção provider-neutral de recorrência, sanitização de webhook e contratos de checkout hospedado, ainda não implementados por este ADR."
 principal_statement: "A recorrência ASAAS é arquiteturalmente aceita somente por Checkout hospedado `RECURRENT` para base fixa determinística, mas sua capability permanece `OFF` até PCI/merchant/Sandbox/rollout; o ASAAS custodia o PAN/instrumento ou credencial tokenizada, CVV jamais é retido, e browser, domínio, APIs de negócio e stores do Hub não aceitam nem armazenam PAN, validade, CVV ou `creditCardToken`. Somente o ingress dedicado de webhook pode encontrar um campo `creditCardToken` enviado pelo provider, de forma efêmera, e DEVE descartá-lo antes de domínio, contrato de API, store, cache, fila, quarentena, DLQ, replay, log, trace ou métrica; componentes variáveis usam checkout hosted avulso por fatura."
 ---
 
@@ -22,8 +22,8 @@ principal_statement: "A recorrência ASAAS é arquiteturalmente aceita somente p
 - Scope: `contexts.billing`, checkout hospedado recorrente, credenciais e referências de pagamento, mandato de cobrança, projeção de assinatura no provider, webhooks, reconciliação, frontend de Billing, isolamento multitenancy, classificação e retenção de dados.
 - Non-objectives: Não implementar ou habilitar o fluxo; não declarar certificação PCI, capability de merchant account ou homologação Sandbox; não escolher preço contratual, política de dunning ou termos jurídicos; não autorizar checkout transparente, captura própria de cartão, armazenamento de PAN/CVV/token ou roteamento automático entre providers.
 - Keywords: cartão recorrente, cartão salvo, card-on-file, credencial armazenada, cobrança off-session, ASAAS Checkout, assinatura recorrente, tokenização, creditCardToken, PAN, CVV, PCI DSS, CollectionMandate, PaymentMethodReference, webhook, redaction
-- Related Files: `harness/governance/decisions/ADR-0000-governanca-do-harness-documental.md`, `docs/adrs/ADR-0006-audit-compliance.md`, `docs/adrs/ADR-0008-stripe-billing-subscription.md`, `docs/adrs/ADR-0011-resilience-retry-circuit-breaker.md`, `docs/adrs/ADR-0012-error-handling-observability.md`, `docs/adrs/ADR-0019-database-per-tenant.md`, `docs/adrs/ADR-0023-agnostic-payment-provider-integration.md`, `docs/adrs/ADR-0025-suspensao-tenant-inadimplencia-recuperacao.md`, `docs/product/requirements/REQ-00034-phase2-billing-subscription-usage.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00042-billing-payment-reconciliation-dunning.md`, `docs/delivery/plans/TP-00011-billing-asaas-first-release-task-plan.md`, `docs/delivery/plans/implementation_plans/backend/IP-BE-11.2.2-asaas-customer-charge-hosted-payment.md`, `docs/architecture/module-registry.md`
-- Code References: Baseline atual em `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` e `frontend/src/`; destinos planejados `CollectionMandate`, `PaymentMethodReference`, projeção provider-neutral de recorrência, sanitização de webhook e contratos de checkout hospedado, ainda não implementados por este ADR.
+- Related Files: `harness/governance/decisions/ADR-0000-governanca-do-harness-documental.md`, `ADR-0006-audit-compliance.md`, `ADR-0008-stripe-billing-subscription.md`, `ADR-0011-resilience-retry-circuit-breaker.md`, `ADR-0012-error-handling-observability.md`, `ADR-0019-database-per-tenant.md`, `ADR-0023-agnostic-payment-provider-integration.md`, `ADR-0025-suspensao-tenant-inadimplencia-recuperacao.md`, `docs/product/requirements/REQ-00034-phase2-billing-subscription-usage.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00042-billing-payment-reconciliation-dunning.md`, `../../../docs/specs/TP-00011-billing-asaas-first-release-task-plan.md`, `../specs/IP-BE-11.2.2-asaas-customer-charge-hosted-payment.md`, `docs/architecture/module-registry.md`
+- Code References: Baseline atual em `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` e `frontend/src/`; destinos planejados `CollectionMandate`, `PaymentMethodReference`, projeção provider-neutral de recorrência, sanitização de webhook e contratos de checkout hospedado, ainda não implementados por este ADR.
 - Principal Decision: A recorrência ASAAS é arquiteturalmente aceita somente por Checkout hospedado `RECURRENT` para base fixa determinística, mas sua capability permanece `OFF` até PCI/merchant/Sandbox/rollout; o ASAAS custodia o PAN/instrumento ou credencial tokenizada, CVV jamais é retido, e browser, domínio, APIs de negócio e stores do Hub não aceitam nem armazenam PAN, validade, CVV ou `creditCardToken`. Somente o ingress dedicado de webhook pode encontrar um campo `creditCardToken` enviado pelo provider, de forma efêmera, e DEVE descartá-lo antes de domínio, contrato de API, store, cache, fila, quarentena, DLQ, replay, log, trace ou métrica; componentes variáveis usam checkout hosted avulso por fatura.
 - Date: 2026-08-25
 - Status: Accepted
@@ -87,8 +87,8 @@ recorrente no ASAAS.
 | [REQ-00034](../product/requirements/REQ-00034-phase2-billing-subscription-usage.md) | Caracteriza o AS-IS aprovado e registra que os modelos auditados não possuem PAN/CVV. | Não existe fluxo financeiro recorrente real nem security scan que prove ausência do dado em todos os canais. |
 | [REQ-00042](../product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md) | Prevê hosted checkout, `CollectionMandate` e referências opacas; `BR-EBILL-033` mantém cartão no ambiente/token do provider. | Deve permanecer reconciliado com base fixa, `PAYMENT_EFFECTIVE` e capability `OFF`, sem inferir implementação. |
 | [UC-00042](../product/use-cases/UC-00042-billing-payment-reconciliation-dunning.md) | Prevê hosted flow sem cartão no Hub, command journal, webhook e reconciliação. | Deve refletir onboarding/substituição/revogação e os evidence gates desta revisão. |
-| [TP-00011](../delivery/plans/TP-00011-billing-asaas-first-release-task-plan.md) | Impõe que PAN/CVV não transitem e que checkout/tokenização dependam de capability aprovada. | Rail/evento foram decididos por D-08; PCI, merchant, Sandbox e rollout continuam bloqueadores. |
-| [IP-BE-11.2.2-asaas-customer-charge-hosted-payment](../delivery/plans/implementation_plans/backend/IP-BE-11.2.2-asaas-customer-charge-hosted-payment.md) | Planeja cartão hospedado e exclui cartão transparente/tokenização do slice. | Só pode incorporar recorrência fixed-base como capability desligada e condicionada aos gates deste ADR. |
+| [TP-00011](../../../docs/specs/TP-00011-billing-asaas-first-release-task-plan.md) | Impõe que PAN/CVV não transitem e que checkout/tokenização dependam de capability aprovada. | Rail/evento foram decididos por D-08; PCI, merchant, Sandbox e rollout continuam bloqueadores. |
+| [IP-BE-11.2.2-asaas-customer-charge-hosted-payment](../specs/IP-BE-11.2.2-asaas-customer-charge-hosted-payment.md) | Planeja cartão hospedado e exclui cartão transparente/tokenização do slice. | Só pode incorporar recorrência fixed-base como capability desligada e condicionada aos gates deste ADR. |
 
 Essa cobertura parcial motivou D-08. A revisão `2.0` agora fecha a decisão
 arquitetural, sem converter lacunas de evidência em implementação ou habilitação.
@@ -958,8 +958,8 @@ este ADR especializa somente custódia, captura e lifecycle de cartão recorrent
 - [REQ-00034 - Billing subscription and usage AS-IS](../product/requirements/REQ-00034-phase2-billing-subscription-usage.md)
 - [REQ-00042 - Enterprise Billing TO-BE](../product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md)
 - [UC-00042 - Payment, reconciliation and dunning](../product/use-cases/UC-00042-billing-payment-reconciliation-dunning.md)
-- [TP-00011 - Billing ASAAS first release](../delivery/plans/TP-00011-billing-asaas-first-release-task-plan.md)
-- [IP-BE-11.2.2-asaas-customer-charge-hosted-payment](../delivery/plans/implementation_plans/backend/IP-BE-11.2.2-asaas-customer-charge-hosted-payment.md)
+- [TP-00011 - Billing ASAAS first release](../../../docs/specs/TP-00011-billing-asaas-first-release-task-plan.md)
+- [IP-BE-11.2.2-asaas-customer-charge-hosted-payment](../specs/IP-BE-11.2.2-asaas-customer-charge-hosted-payment.md)
 - [Module Registry](../architecture/module-registry.md)
 
 ## Official ASAAS references
@@ -1051,9 +1051,9 @@ docs/
 │   ├── REQ-00034-phase2-billing-subscription-usage.md
 │   └── REQ-00042-enterprise-multitenant-billing-invoicing.md
 ├── task_plans/
-│   ├── TP-00011-billing-asaas-first-release-task-plan.md
+│   ├── ../../../docs/specs/TP-00011-billing-asaas-first-release-task-plan.md
 │   └── implementation_plans/backend/
-│       └── IP-BE-11.2.2-asaas-customer-charge-hosted-payment.md
+│       └── ../specs/IP-BE-11.2.2-asaas-customer-charge-hosted-payment.md
 └── use_cases/
     └── UC-00042-billing-payment-reconciliation-dunning.md
 ```

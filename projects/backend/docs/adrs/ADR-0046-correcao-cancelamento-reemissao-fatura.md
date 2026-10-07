@@ -9,8 +9,8 @@ status: "Accepted"
 date: "2026-08-25"
 version: "1.2"
 keywords: "invoice correction, immutable invoice, resend, reprint, representation version, artifact, void, replacement, credit memo, debit memo, correction chain, closed period, provider hold, dunning hold, fiscal hold"
-related_files: "docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00041-billing-invoice-correction-reissue.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/delivery/plans/implementation_plans/backend/IP-BE-13.4.1-billing-invoice-correction-reissue.md`, `docs/delivery/plans/implementation_plans/frontend/IP-FE-13.4.1-billing-invoice-correction-reissue.md`, `docs/adrs/ADR-0023-agnostic-payment-provider-integration.md`, `docs/adrs/ADR-0027-catalogo-global-faturamento-local.md`, `docs/adrs/ADR-0038-pricing-tipado-moeda-cadencia.md`, `docs/adrs/ADR-0044-lifecycle-contratual-proration-assinaturas.md`, `docs/adrs/ADR-0045-metering-rating-fechamento-fatura.md"
-code_references: "AS-IS em `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` e `frontend/src/`; correction documents, chains, artifact port/store, holds, policies e contratos desta ADR sao destinos planejados e ainda nao existem."
+related_files: "README.md, ../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md, ../specs/IP-BE-13.4.1-billing-invoice-correction-reissue.md, ../../../frontend/docs/specs/IP-FE-13.4.1-billing-invoice-correction-reissue.md, ADR-0023-agnostic-payment-provider-integration.md, ADR-0027-catalogo-global-faturamento-local.md, ADR-0038-pricing-tipado-moeda-cadencia.md, ADR-0044-lifecycle-contratual-proration-assinaturas.md, ADR-0045-metering-rating-fechamento-fatura.md"
+code_references: "AS-IS em `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` e `frontend/src/`; correction documents, chains, artifact port/store, holds, policies e contratos desta ADR sao destinos planejados e ainda nao existem."
 principal_statement: "Invoice finalizada nunca tem snapshot, linhas, total ou numero reescritos; reenvio reutiliza exatamente o artifact existente, regeneracao cria nova representation version sem alterar fatos comerciais, `VOID` e permitido somente antes de efeitos downstream e toda correcao material posterior usa replacement ou credit/debit memo causal, forward-only e tenant-local."
 ---
 
@@ -22,8 +22,8 @@ principal_statement: "Invoice finalizada nunca tem snapshot, linhas, total ou nu
 - Scope: Draft revision, invoice finalizada, `DocumentRepresentation`, artifact storage, resend/reprint, regenerate, `VOID`, replacement, credit memo, debit memo, correction chain, applications, closed period, holds de provider/dunning/fiscal, idempotencia e Clean Architecture.
 - Non-objectives: Executar chamadas externas, Sandbox, piloto, producao ou efeito real; cancelar assinatura do ADR-0044; executar charge/payment de `D-08`, dunning de `D-09`, refund de `D-10`, cancelamento/substituicao fiscal de `D-11`, posting contabil estatutario de `D-12`, RBAC/alçadas de `D-13`, rollout de `D-14` ou ampliar a liberacao local-only de `D-00`.
 - Keywords: invoice correction, immutable invoice, resend, reprint, representation version, artifact, void, replacement, credit memo, debit memo, correction chain, closed period, provider hold, dunning hold, fiscal hold
-- Related Files: `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00041-billing-invoice-correction-reissue.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/delivery/plans/implementation_plans/backend/IP-BE-13.4.1-billing-invoice-correction-reissue.md`, `docs/delivery/plans/implementation_plans/frontend/IP-FE-13.4.1-billing-invoice-correction-reissue.md`, `docs/adrs/ADR-0023-agnostic-payment-provider-integration.md`, `docs/adrs/ADR-0027-catalogo-global-faturamento-local.md`, `docs/adrs/ADR-0038-pricing-tipado-moeda-cadencia.md`, `docs/adrs/ADR-0044-lifecycle-contratual-proration-assinaturas.md`, `docs/adrs/ADR-0045-metering-rating-fechamento-fatura.md`
-- Code References: AS-IS em `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` e `frontend/src/`; correction documents, chains, artifact port/store, holds, policies e contratos desta ADR sao destinos planejados e ainda nao existem.
+- Related Files: `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00041-billing-invoice-correction-reissue.md`, `../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md`, `../specs/IP-BE-13.4.1-billing-invoice-correction-reissue.md`, `../../../frontend/docs/specs/IP-FE-13.4.1-billing-invoice-correction-reissue.md`, `ADR-0023-agnostic-payment-provider-integration.md`, `ADR-0027-catalogo-global-faturamento-local.md`, `ADR-0038-pricing-tipado-moeda-cadencia.md`, `ADR-0044-lifecycle-contratual-proration-assinaturas.md`, `ADR-0045-metering-rating-fechamento-fatura.md`
+- Code References: AS-IS em `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` e `frontend/src/`; correction documents, chains, artifact port/store, holds, policies e contratos desta ADR sao destinos planejados e ainda nao existem.
 - Principal Decision: Invoice finalizada nunca tem snapshot, linhas, total ou numero reescritos; reenvio reutiliza exatamente o artifact existente, regeneracao cria nova representation version sem alterar fatos comerciais, `VOID` e permitido somente antes de efeitos downstream e toda correcao material posterior usa replacement ou credit/debit memo causal, forward-only e tenant-local.
 - Date: 2026-08-25
 - Status: Accepted
@@ -531,9 +531,9 @@ locais são autorizados pela liberação separada e escopada de `D-00`.
 
 - [REQ-00042](../product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md)
 - [UC-00041](../product/use-cases/UC-00041-billing-invoice-correction-reissue.md)
-- [TP-00013](../delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md)
-- [IP-BE-13.4.1-billing-invoice-correction-reissue](../delivery/plans/implementation_plans/backend/IP-BE-13.4.1-billing-invoice-correction-reissue.md)
-- [IP-FE-13.4.1-billing-invoice-correction-reissue](../delivery/plans/implementation_plans/frontend/IP-FE-13.4.1-billing-invoice-correction-reissue.md)
+- [TP-00013](../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md)
+- [IP-BE-13.4.1-billing-invoice-correction-reissue](../specs/IP-BE-13.4.1-billing-invoice-correction-reissue.md)
+- [IP-FE-13.4.1-billing-invoice-correction-reissue](../../../frontend/docs/specs/IP-FE-13.4.1-billing-invoice-correction-reissue.md)
 - [Module Registry](../architecture/module-registry.md)
 
 ---

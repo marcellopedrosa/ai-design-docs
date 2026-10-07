@@ -10,7 +10,7 @@ date: "2026-07-12"
 version: "1.1"
 last_reviewed: "2026-09-07"
 keywords: "notification center, outbound, multichannel, tenant, audit"
-related_files: "docs/product/use-cases/UC-00017-gestao-central-de-notificacoes.md, docs/adrs/ADR-0004-whatsapp-integration-architecture.md, docs/adrs/ADR-0018-keycloak-realm-provisioning-automation.md, docs/product/requirements/REQ-00058-keycloak-password-recovery-smtp.md"
+related_files: "README.md, ADR-0004-whatsapp-integration-architecture.md, ADR-0018-keycloak-realm-provisioning-automation.md"
 code_references: "backend/ - contexto de notificacoes e adapters de provider planejados ou vigentes; infra/keycloak/bootstrap/reconcile-realm-smtp.sh - boundary separado de credenciais IAM."
 principal_statement: "Comunicacoes outbound de negócio atravessam a Central de Notificações; mensagens de credencial e recuperação permanecem no Keycloak e usam o SMTP próprio do realm."
 ---
@@ -23,7 +23,7 @@ principal_statement: "Comunicacoes outbound de negócio atravessam a Central de 
 - Scope: Email, SMS, WhatsApp e Telegram, isolamento por tenant, entrega e auditoria.
 - Non-objectives: Nao escolher definitivamente provedores, definir conteúdo funcional de cada mensagem nem intermediar e-mails de credencial emitidos pelo Keycloak.
 - Keywords: notification center, outbound, multichannel, tenant, audit
-- Related Files: `docs/product/use-cases/UC-00017-gestao-central-de-notificacoes.md`, `docs/adrs/ADR-0004-whatsapp-integration-architecture.md`
+- Related Files: `docs/product/use-cases/UC-00017-gestao-central-de-notificacoes.md`, `ADR-0004-whatsapp-integration-architecture.md`
 - Code References: `backend/` - contexto de notificacoes e adapters de provider planejados ou vigentes.
 - Principal Decision: Comunicacoes outbound de negócio atravessam a Central de Notificações; e-mails de credencial permanecem no Keycloak com SMTP por realm.
 - Date: 2026-07-12
@@ -166,10 +166,10 @@ public record NotificationRequest(
 
 # 8. Related ADRs
 
-- [ADR-0001 - Technology Stack and Architecture Foundation](./ADR-0001-technology-stack-and-architecture.md)
-- [ADR-0004 - WhatsApp Integration Architecture](./ADR-0004-whatsapp-integration-architecture.md)
-- [ADR-0005 - Multi-Tenancy Architecture](./ADR-0005-multi-tenancy-architecture.md)
-- [ADR-0018 - Keycloak Realm Provisioning Automation](./ADR-0018-keycloak-realm-provisioning-automation.md)
+- [ADR-0001 - Technology Stack and Architecture Foundation](ADR-0001-technology-stack-and-architecture.md)
+- [ADR-0004 - WhatsApp Integration Architecture](ADR-0004-whatsapp-integration-architecture.md)
+- [ADR-0005 - Multi-Tenancy Architecture](ADR-0005-multi-tenancy-architecture.md)
+- [ADR-0018 - Keycloak Realm Provisioning Automation](ADR-0018-keycloak-realm-provisioning-automation.md)
 - [REQ-00058 - Recuperação de senha Keycloak e SMTP multiambiente](../product/requirements/REQ-00058-keycloak-password-recovery-smtp.md)
 
 ---

@@ -9,8 +9,8 @@ status: "Accepted"
 date: "2026-08-25"
 version: "1.4"
 keywords: "legacy entitlement migration, evidence first, source fingerprint, mapping manifest, backfill, shadow comparison, reconciliation, fenced cutover, quarantine, BP Farias, no fallback"
-related_files: "docs/product/requirements/REQ-00005-plan-feature-matrix.md`, `docs/product/requirements/REQ-00011-chatbot-usage-limits-and-billing.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/adrs/ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md`, `docs/adrs/ADR-0036-cache-lkg-fail-safe-entitlements.md`, `docs/adrs/ADR-0037-boundary-fisico-entitlements-billing.md"
-code_references: "AS-IS em `Tenant.plan`, `SubscriptionPlan`, `tenant_subscriptions`, Billing `subscriptions`, `TenantSettings`, `chatbot_functions.required_plan`, migrations legadas e `TenantPlanInvoiceSourceAdapter`; boundary e destinos planejados sob `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados."
+related_files: "README.md, ../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md, ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md, ADR-0036-cache-lkg-fail-safe-entitlements.md, ADR-0037-boundary-fisico-entitlements-billing.md"
+code_references: "AS-IS em `Tenant.plan`, `SubscriptionPlan`, `tenant_subscriptions`, Billing `subscriptions`, `TenantSettings`, `chatbot_functions.required_plan`, migrations legadas e `TenantPlanInvoiceSourceAdapter`; boundary e destinos planejados sob `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados."
 principal_statement: "Cada tenant legado será migrado isoladamente por inventário e evidência verificável, manifest imutável com target exato, backfill tenant-local e shadow sem efeitos; somente após reconciliação sem divergência material inexplicada ocorrerá cutover fenced para uma única autoridade canônica, sem fallback ao legado e sem participação do ASAAS."
 ---
 
@@ -22,8 +22,8 @@ principal_statement: "Cada tenant legado será migrado isoladamente por inventá
 - Scope: População legada, inventário e classificação de evidências, fingerprint de origem, manifest de mapping versionado, baseline canônico, backfill idempotente, shadow comparison, reconciliação, cutover fenced, tratamento de commit ambíguo, reparo, aposentadoria do fallback e piloto BP Farias.
 - Non-objectives: Definir cache, last-known-good ou degraded mode depois do cutover; aprovar nomes físicos de tabelas, classes, ports, eventos, endpoints ou marker; criar DDL/OpenAPI; escolher TTLs, duração/volume do shadow, cohorts, alçadas finais, retention, backup, cleanup destrutivo, lifecycle, pricing, rating, invoice, cobrança, provider ou autorizar implementação.
 - Keywords: legacy entitlement migration, evidence first, source fingerprint, mapping manifest, backfill, shadow comparison, reconciliation, fenced cutover, quarantine, BP Farias, no fallback
-- Related Files: `docs/product/requirements/REQ-00005-plan-feature-matrix.md`, `docs/product/requirements/REQ-00011-chatbot-usage-limits-and-billing.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/adrs/ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md`, `docs/adrs/ADR-0036-cache-lkg-fail-safe-entitlements.md`, `docs/adrs/ADR-0037-boundary-fisico-entitlements-billing.md`
-- Code References: AS-IS em `Tenant.plan`, `SubscriptionPlan`, `tenant_subscriptions`, Billing `subscriptions`, `TenantSettings`, `chatbot_functions.required_plan`, migrations legadas e `TenantPlanInvoiceSourceAdapter`; boundary e destinos planejados sob `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados.
+- Related Files: `docs/product/requirements/REQ-00005-plan-feature-matrix.md`, `docs/product/requirements/REQ-00011-chatbot-usage-limits-and-billing.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md`, `ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md`, `ADR-0036-cache-lkg-fail-safe-entitlements.md`, `ADR-0037-boundary-fisico-entitlements-billing.md`
+- Code References: AS-IS em `Tenant.plan`, `SubscriptionPlan`, `tenant_subscriptions`, Billing `subscriptions`, `TenantSettings`, `chatbot_functions.required_plan`, migrations legadas e `TenantPlanInvoiceSourceAdapter`; boundary e destinos planejados sob `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados.
 - Principal Decision: Cada tenant legado será migrado isoladamente por inventário e evidência verificável, manifest imutável com target exato, backfill tenant-local e shadow sem efeitos; somente após reconciliação sem divergência material inexplicada ocorrerá cutover fenced para uma única autoridade canônica, sem fallback ao legado e sem participação do ASAAS.
 - Date: 2026-08-25
 - Status: Accepted
@@ -540,7 +540,7 @@ A implementação futura deverá provar ao menos:
 - [UC-00038 - Catálogo, pricing e promoções](../product/use-cases/UC-00038-billing-catalog-pricing-promotions.md)
 - [UC-00039 - Contratos, assinaturas e amendments](../product/use-cases/UC-00039-billing-contract-subscription-amendments.md)
 - [UC-00040 - Uso, rating e fechamento](../product/use-cases/UC-00040-billing-usage-rating-invoice-close.md)
-- [TP-00013 - Enterprise Billing Implementation](../delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md)
+- [TP-00013 - Enterprise Billing Implementation](../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md)
 - [Manifesto de módulos](../architecture/module-registry.md)
 
 ---
@@ -578,7 +578,7 @@ local-only`; implementação/migração herméticas são permitidas, cleanup e e
 Esta decisão reside em:
 
 ```text
-docs/adrs/ADR-0035-migracao-evidence-first-entitlements-legados.md
+ADR-0035-migracao-evidence-first-entitlements-legados.md
 ```
 
 Os alvos físicos estão registrados no ADR-0037 e podem ser materializados

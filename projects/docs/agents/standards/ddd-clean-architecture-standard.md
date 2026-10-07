@@ -9,7 +9,7 @@ status: "Active"
 date: "2026-08-25"
 version: "1.5"
 keywords: "ddd, clean, architecture, standard, standard"
-related_files: "./README.md, ./backend-testing-standard.md, ./java-standard.md, ./modulith-standard.md, ./development-standard.md"
+related_files: "./README.md, backend-testing-standard.md, java-standard.md, modulith-standard.md, ./development-standard.md"
 code_references: "backend/, infra/"
 principal_statement: "As regras de DDD Clean Architecture aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
@@ -395,7 +395,7 @@ src/test/java/br/com/duoset/saas_service/contexts/{context}/
             └── {Event}ListenerTest.java
 ```
 
-> 📘 Consulte [`backend-testing-standard.md`](./backend-testing-standard.md) para padrões detalhados de testes (JUnit 5, Mockito, Testcontainers).
+> 📘 Consulte [`backend-testing-standard.md`](backend-testing-standard.md) para padrões detalhados de testes (JUnit 5, Mockito, Testcontainers).
 
 ---
 
@@ -437,9 +437,9 @@ src/test/java/br/com/duoset/saas_service/contexts/{context}/
 
 | Standard | Complementa |
 |----------|-------------|
-| [`java-standard.md`](./java-standard.md) | Convenções Java: nomenclatura de classes, anotações, Lombok, Records |
-| [`modulith-standard.md`](./modulith-standard.md) | Spring Modulith: `package-info.java`, testes de módulo, eventos, observabilidade |
+| [`java-standard.md`](java-standard.md) | Convenções Java: nomenclatura de classes, anotações, Lombok, Records |
+| [`modulith-standard.md`](modulith-standard.md) | Spring Modulith: `package-info.java`, testes de módulo, eventos, observabilidade |
 | [`development-standard.md`](./development-standard.md) | Guia prático: como criar endpoints, use cases, testes |
-| [`backend-testing-standard.md`](./backend-testing-standard.md) | Testes: JUnit 5, Mockito, Testcontainers, JaCoCo |
+| [`backend-testing-standard.md`](backend-testing-standard.md) | Testes: JUnit 5, Mockito, Testcontainers, JaCoCo |
 
 ---

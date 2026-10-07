@@ -9,7 +9,7 @@ status: "Active"
 date: "2026-08-25"
 version: "1.4"
 keywords: "project, reporting, standard, standard"
-related_files: "./README.md, harness/templates/TPL-00007-progress-report.md, docs/delivery/plans/TP-00001-backend-spring-modulith-task-plan.md, docs/delivery/plans/TP-00002-frontend-nextjs-task-plan.md"
+related_files: "./README.md, harness/templates/TPL-00007-progress-report.md, ../../specs/TP-00001-backend-spring-modulith-task-plan.md, ../../specs/TP-00002-frontend-nextjs-task-plan.md"
 code_references: "backend/, frontend/"
 principal_statement: "As regras de Project Reporting aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
@@ -38,8 +38,8 @@ The **only** authoritative data sources for progress reports are the Task Plan d
 
 | Domain   | Source File |
 |----------|------------|
-| Backend  | `docs/delivery/plans/TP-00001-backend-spring-modulith-task-plan.md` |
-| Frontend | `docs/delivery/plans/TP-00002-frontend-nextjs-task-plan.md` |
+| Backend  | `../../specs/TP-00001-backend-spring-modulith-task-plan.md` |
+| Frontend | `../../specs/TP-00002-frontend-nextjs-task-plan.md` |
 
 > [!CAUTION]
 > The agent must NEVER infer, estimate, or approximate progress data. All values must be extracted directly from the Execution Tracking Matrix tables in the source files above. If a task plan does not exist or is unreadable, the agent must report `N/A` for that domain and escalate.

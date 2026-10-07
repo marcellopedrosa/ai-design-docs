@@ -10,7 +10,7 @@ date: "2026-09-09"
 last_reviewed: "2026-09-10"
 version: "2.2"
 keywords: "api, openapi, contrato, contract-first, rfc-9110, rfc-9457, cliente, backend, frontend"
-related_files: "./README.md, ./implementation-readiness-standard.md, ./keycloak-frontend-standard.md, ./nextjs-standard.md, docs/api_contracts/README.md, harness/templates/TPL-00011-api-contract.md, artefatos de análise/ANL-00055-backend-api-contract-coverage-inventory.md, artefatos de análise/ANL-00057-frontend-backend-api-contract-catalog.md, docs/delivery/plans/TP-00052-backend-api-contract-baseline.md"
+related_files: "./README.md, ./implementation-readiness-standard.md, keycloak-frontend-standard.md, nextjs-standard.md, docs/api_contracts/README.md, harness/templates/TPL-00011-api-contract.md, artefatos de análise/ANL-00055-backend-api-contract-coverage-inventory.md, artefatos de análise/ANL-00057-frontend-backend-api-contract-catalog.md, ../../specs/TP-00052-backend-api-contract-baseline.md"
 code_references: "docs/api_contracts/, validate-api-contract-coverage.mjs, validate-api-contract-coverage.test.mjs, backend/src/main/java/, frontend/src/services/, frontend/src/schemas/, frontend/src/types/, website/src/"
 principal_statement: "Toda especificação que cria, altera ou consome uma API HTTP do backend deve referenciar antes da implementação um contrato OpenAPI canônico, versionado e completo em docs/api_contracts/."
 ---
@@ -21,8 +21,8 @@ principal_statement: "Toda especificação que cria, altera ou consome uma API H
 > handling and data fetching. This standard applies to @RequirementAgent,
 > @AgentOrchestrator, @AdapterDev, @FrontendWeb, @UIIntegrator and @TestAutomator.
 > It extends the `apiClient` pattern from
-> [`keycloak-frontend-standard.md`](./keycloak-frontend-standard.md) and the
-> TanStack Query patterns from [`nextjs-standard.md`](./nextjs-standard.md).
+> [`keycloak-frontend-standard.md`](keycloak-frontend-standard.md) and the
+> TanStack Query patterns from [`nextjs-standard.md`](nextjs-standard.md).
 
 > **Version:** 2.2 — **Last updated:** 2026-09-10. Tenant header handling follows
 > ADR-0013 and REQ-00004. HTTP semantics and errors follow the RFC baseline below.

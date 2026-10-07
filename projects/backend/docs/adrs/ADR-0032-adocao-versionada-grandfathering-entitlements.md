@@ -9,8 +9,8 @@ status: "Accepted"
 date: "2026-08-25"
 version: "1.7"
 keywords: "entitlement adoption, grandfathering, pinned contract, renewal adoption, scheduled transition, exact version, contract revision, tenant-local snapshot, no latest, no fan-out"
-related_files: "docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/adrs/ADR-0027-catalogo-global-faturamento-local.md`, `docs/adrs/ADR-0028-entitlements-versionados-tenant-local.md`, `docs/adrs/ADR-0029-taxonomia-tipificada-entitlements.md`, `docs/adrs/ADR-0030-composicao-deterministica-enforcement-entitlements.md`, `docs/adrs/ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md`, `docs/adrs/ADR-0035-migracao-evidence-first-entitlements-legados.md`, `docs/adrs/ADR-0036-cache-lkg-fail-safe-entitlements.md`, `docs/adrs/ADR-0037-boundary-fisico-entitlements-billing.md`, `docs/adrs/ADR-0038-pricing-tipado-moeda-cadencia.md"
-code_references: "Estado legado em `Plan`, `SubscriptionPlan`, `TenantSettings`, `BillingApiAdapter` e fluxos atuais de subscription; boundary e destinos planejados sob `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados."
+related_files: "README.md, ../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md, ADR-0027-catalogo-global-faturamento-local.md, ADR-0028-entitlements-versionados-tenant-local.md, ADR-0029-taxonomia-tipificada-entitlements.md, ADR-0030-composicao-deterministica-enforcement-entitlements.md, ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md, ADR-0035-migracao-evidence-first-entitlements-legados.md, ADR-0036-cache-lkg-fail-safe-entitlements.md, ADR-0037-boundary-fisico-entitlements-billing.md, ADR-0038-pricing-tipado-moeda-cadencia.md"
+code_references: "Estado legado em `Plan`, `SubscriptionPlan`, `TenantSettings`, `BillingApiAdapter` e fluxos atuais de subscription; boundary e destinos planejados sob `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados."
 principal_statement: "Contratos canônicos permanecem vinculados à versão e ao snapshot materializados; a adoção ocorre somente por política contratual fechada e versão-alvo exata, produzindo nova revisão e novo snapshot tenant-local auditável, nunca por `latest`, publicação, coorte ou mutação retroativa."
 ---
 
@@ -22,8 +22,8 @@ principal_statement: "Contratos canônicos permanecem vinculados à versão e ao
 - Scope: Grandfathering de contratos canônicos, modos fechados de adoção, seleção de versão-alvo, revisão contratual e snapshot tenant-local, agendamento, cancelamento, compensação, coerência com preço e conteúdo mínimo de auditoria.
 - Non-objectives: Migrar tenants do modelo legado, definir upgrade/downgrade e efeitos sobre capacidade/dados, proration, notice period exato, renovação/cancelamento completos, pricing, metering/rating, DDL, OpenAPI, nomes físicos de classes/tabelas/eventos, alçadas finais, rollout ou autorizar implementação.
 - Keywords: entitlement adoption, grandfathering, pinned contract, renewal adoption, scheduled transition, exact version, contract revision, tenant-local snapshot, no latest, no fan-out
-- Related Files: `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/adrs/ADR-0027-catalogo-global-faturamento-local.md`, `docs/adrs/ADR-0028-entitlements-versionados-tenant-local.md`, `docs/adrs/ADR-0029-taxonomia-tipificada-entitlements.md`, `docs/adrs/ADR-0030-composicao-deterministica-enforcement-entitlements.md`, `docs/adrs/ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md`, `docs/adrs/ADR-0035-migracao-evidence-first-entitlements-legados.md`, `docs/adrs/ADR-0036-cache-lkg-fail-safe-entitlements.md`, `docs/adrs/ADR-0037-boundary-fisico-entitlements-billing.md`, `docs/adrs/ADR-0038-pricing-tipado-moeda-cadencia.md`
-- Code References: Estado legado em `Plan`, `SubscriptionPlan`, `TenantSettings`, `BillingApiAdapter` e fluxos atuais de subscription; boundary e destinos planejados sob `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados.
+- Related Files: `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md`, `ADR-0027-catalogo-global-faturamento-local.md`, `ADR-0028-entitlements-versionados-tenant-local.md`, `ADR-0029-taxonomia-tipificada-entitlements.md`, `ADR-0030-composicao-deterministica-enforcement-entitlements.md`, `ADR-0034-efeitos-transicao-nao-destrutiva-entitlements.md`, `ADR-0035-migracao-evidence-first-entitlements-legados.md`, `ADR-0036-cache-lkg-fail-safe-entitlements.md`, `ADR-0037-boundary-fisico-entitlements-billing.md`, `ADR-0038-pricing-tipado-moeda-cadencia.md`
+- Code References: Estado legado em `Plan`, `SubscriptionPlan`, `TenantSettings`, `BillingApiAdapter` e fluxos atuais de subscription; boundary e destinos planejados sob `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` definidos no ADR-0037, ainda não implementados.
 - Principal Decision: Contratos canônicos permanecem vinculados à versão e ao snapshot materializados; a adoção ocorre somente por política contratual fechada e versão-alvo exata, produzindo nova revisão e novo snapshot tenant-local auditável, nunca por `latest`, publicação, coorte ou mutação retroativa.
 - Date: 2026-08-25
 - Status: Accepted
@@ -457,7 +457,7 @@ A implementação futura deverá provar ao menos:
 - [UC-00038 - Catálogo, pricing e promoções](../product/use-cases/UC-00038-billing-catalog-pricing-promotions.md)
 - [UC-00039 - Contratos, assinaturas e amendments](../product/use-cases/UC-00039-billing-contract-subscription-amendments.md)
 - [UC-00040 - Uso, rating e fechamento](../product/use-cases/UC-00040-billing-usage-rating-invoice-close.md)
-- [TP-00013 - Enterprise Billing Implementation](../delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md)
+- [TP-00013 - Enterprise Billing Implementation](../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md)
 - [Manifesto de módulos](../architecture/module-registry.md)
 
 ---
@@ -498,7 +498,7 @@ local-only`; implementação hermética local é permitida e evidências/readine
 Esta decisão reside em:
 
 ```text
-docs/adrs/ADR-0032-adocao-versionada-grandfathering-entitlements.md
+ADR-0032-adocao-versionada-grandfathering-entitlements.md
 ```
 
 Alvos físicos permanecem planejados e somente serão registrados após os gates.

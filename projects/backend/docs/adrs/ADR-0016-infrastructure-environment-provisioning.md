@@ -9,9 +9,9 @@ status: "Partially Superseded"
 date: "2026-06-12"
 version: "1.7"
 keywords: "adr, decisao, arquitetura, infrastructure, environment, provisioning"
-related_files: "docs/adrs/README.md, docs/onboarding/production-vps-deployment.md, docs/onboarding/local-development-host-bootstrap.md, docs/delivery/lessons-learned/backend/LL-BE-00008-postgresql-15-schema-grants.md, docs/delivery/lessons-learned/backend/LL-BE-00009-keycloak-health-check-no-curl.md, docs/delivery/lessons-learned/backend/LL-BE-00010-dev-credentials-externalization.md, docs/delivery/lessons-learned/backend/LL-BE-00011-docker-compose-root-placement.md, docs/delivery/lessons-learned/backend/LL-BE-00026-alertmanager-invalid-discord-configs.md, docs/delivery/lessons-learned/backend/LL-BE-00027-profile-config-fragmentation.md, docs/delivery/lessons-learned/backend/LL-BE-00056-keycloak-local-volume-persistence.md"
+related_files: "README.md, ../onboarding/production-vps-deployment.md, ../onboarding/local-development-host-bootstrap.md, ../lessons-learned/LL-BE-00008-postgresql-15-schema-grants.md, ../lessons-learned/LL-BE-00009-keycloak-health-check-no-curl.md, ../lessons-learned/LL-BE-00010-dev-credentials-externalization.md, ../lessons-learned/LL-BE-00011-docker-compose-root-placement.md, ../lessons-learned/LL-BE-00026-alertmanager-invalid-discord-configs.md, ../lessons-learned/LL-BE-00027-profile-config-fragmentation.md, ../lessons-learned/LL-BE-00056-keycloak-local-volume-persistence.md"
 code_references: "docker-compose.yml, infra/db/init-databases.sql, historical/superseded: infra/keycloak/saas-dev-realm.json, current: historical: infra/keycloak/dev/saas-admin-realm.json, current: historical: infra/keycloak/dev/saas-bpfarias-realm.json, docker-compose.override.yml, docker-compose.dev-bot.yml, /api/v1/telegram/webhook/{tenantId}/{botConfigId}, start-dev-bot.sh, reset-dev-bot.sh, infra/scripts/health-check.sh, infra/scripts/"
-principal_statement: "As decisões históricas de desenvolvimento local e evolução futura permanecem como referência, mas comandos de VPS e produção deste ADR estão superseded e o runbook production-vps-deployment.md é o procedimento operacional vigente."
+principal_statement: "As decisões históricas de desenvolvimento local e evolução futura permanecem como referência, mas comandos de VPS e produção deste ADR estão superseded e o runbook ../onboarding/production-vps-deployment.md é o procedimento operacional vigente."
 ---
 
 # ADR-0016 — Infrastructure Environment Provisioning
@@ -41,7 +41,7 @@ O projeto Contador Fiscal Inteligente opera com uma stack de infraestrutura comp
 
 **Problemas identificados:**
 
-1. **Bloqueios recorrentes no setup local:** Desenvolvedores enfrentam ciclos de "setup → falha → pesquisa → tentativa" a cada novo clone ou troca de branch. As 8 Lessons Learned de infraestrutura (../delivery/lessons-learned/backend/LL-BE-00008-postgresql-15-schema-grants.md), [LL-BE-00009](../delivery/lessons-learned/backend/LL-BE-00009-keycloak-health-check-no-curl.md), [LL-BE-00010](../delivery/lessons-learned/backend/LL-BE-00010-dev-credentials-externalization.md), [LL-BE-00011](../delivery/lessons-learned/backend/LL-BE-00011-docker-compose-root-placement.md), [LL-BE-00026](../delivery/lessons-learned/backend/LL-BE-00026-alertmanager-invalid-discord-configs.md), [LL-BE-00027](../delivery/lessons-learned/backend/LL-BE-00027-profile-config-fragmentation.md), [LL-BE-00056](../delivery/lessons-learned/backend/LL-BE-00056-keycloak-local-volume-persistence.md)) documentam problemas reais que se repetiram múltiplas vezes.
+1. **Bloqueios recorrentes no setup local:** Desenvolvedores enfrentam ciclos de "setup → falha → pesquisa → tentativa" a cada novo clone ou troca de branch. As 8 Lessons Learned de infraestrutura (../lessons-learned/LL-BE-00008-postgresql-15-schema-grants.md), [LL-BE-00009](../lessons-learned/LL-BE-00009-keycloak-health-check-no-curl.md), [LL-BE-00010](../lessons-learned/LL-BE-00010-dev-credentials-externalization.md), [LL-BE-00011](../lessons-learned/LL-BE-00011-docker-compose-root-placement.md), [LL-BE-00026](../lessons-learned/LL-BE-00026-alertmanager-invalid-discord-configs.md), [LL-BE-00027](../lessons-learned/LL-BE-00027-profile-config-fragmentation.md), [LL-BE-00056](../lessons-learned/LL-BE-00056-keycloak-local-volume-persistence.md)) documentam problemas reais que se repetiram múltiplas vezes.
 
 2. **Ausência de documentação para VPS/Cloud:** O [ADR-0001](ADR-0001-technology-stack-and-architecture.md) define "VPS única com Docker Compose" como estratégia de deploy, mas nenhum documento detalha **como** provisionar essa VPS nem os pré-requisitos de hardware/software.
 
@@ -632,7 +632,7 @@ sudo docker volume rm saas-service_postgres-kc-data
 sudo docker compose up -d
 ```
 
-> Referência: [LL-BE-00056](../delivery/lessons-learned/backend/LL-BE-00056-keycloak-local-volume-persistence.md)
+> Referência: [LL-BE-00056](../lessons-learned/LL-BE-00056-keycloak-local-volume-persistence.md)
 
 ## 7.2 — Reset Total (Limpar tudo)
 
@@ -649,19 +649,19 @@ governado pelas seções próprias deste ADR.
 
 | Sintoma | Causa Raiz | Solução | Referência |
 |:---|:---|:---|:---:|
-| **Keycloak: `Invalid user credentials`** | Volume persistente do PostgreSQL-KC ignora `saas-dev-realm.json` atualizado | Reset parcial do Keycloak (Seção 7.1) | [LL-BE-00056](../delivery/lessons-learned/backend/LL-BE-00056-keycloak-local-volume-persistence.md) |
-| **Flyway: `permission denied for schema public`** | PostgreSQL 15+ removeu `CREATE` privilege padrão no schema `public` | Verificar que `init-databases.sql` tem `GRANT ALL ON SCHEMA public` para cada database | [LL-BE-00008](../delivery/lessons-learned/backend/LL-BE-00008-postgresql-15-schema-grants.md) |
-| **Keycloak healthcheck: `exec: curl: not found`** | Imagem Keycloak 26.x é distroless, sem `curl` | Usar healthcheck via raw TCP `/dev/tcp` (já corrigido no `docker-compose.yml` atual) | [LL-BE-00009](../delivery/lessons-learned/backend/LL-BE-00009-keycloak-health-check-no-curl.md) |
+| **Keycloak: `Invalid user credentials`** | Volume persistente do PostgreSQL-KC ignora `saas-dev-realm.json` atualizado | Reset parcial do Keycloak (Seção 7.1) | [LL-BE-00056](../lessons-learned/LL-BE-00056-keycloak-local-volume-persistence.md) |
+| **Flyway: `permission denied for schema public`** | PostgreSQL 15+ removeu `CREATE` privilege padrão no schema `public` | Verificar que `init-databases.sql` tem `GRANT ALL ON SCHEMA public` para cada database | [LL-BE-00008](../lessons-learned/LL-BE-00008-postgresql-15-schema-grants.md) |
+| **Keycloak healthcheck: `exec: curl: not found`** | Imagem Keycloak 26.x é distroless, sem `curl` | Usar healthcheck via raw TCP `/dev/tcp` (já corrigido no `docker-compose.yml` atual) | [LL-BE-00009](../lessons-learned/LL-BE-00009-keycloak-health-check-no-curl.md) |
 | **Backend: HTTP 500 no login** | Redis desligado — cache de sessão inacessível | `sudo docker compose up -d redis` e reiniciar o backend | — |
 | **Warning Lettuce seguido de shutdown gracioso de Tomcat/JPA/Hikari** | O timestamp pode refletir recriação externa pelo Compose; o fechamento Hikari é cleanup e não prova timeout por ociosidade ou falha do pool tenant | Correlacionar lifecycle dos containers e usar o start incremental canônico, que não força a recriação de serviços stateful | [Guia DEV](../onboarding/local-development-host-bootstrap.md) |
 | **Frontend e Grafana na mesma porta** | Ambos mapeados para porta 3000 | Grafana alterado para porta `3001` neste ADR | — |
-| **Profile hml/prd: `No qualifying bean JwtDecoder`** | Keycloak OAuth2 configurado só no `dev.properties`, ausente nos outros profiles | Consolidar configurações em `.yml` por profile | [LL-BE-00027](../delivery/lessons-learned/backend/LL-BE-00027-profile-config-fragmentation.md) |
-| **Alertmanager não sobe** | `discord_configs` inexistente e `${ENV}` não suportado pelo Alertmanager | Usar literal strings ao invés de variáveis de ambiente no config | [LL-BE-00026](../delivery/lessons-learned/backend/LL-BE-00026-alertmanager-invalid-discord-configs.md) |
-| **Credenciais de dev expostas no Compose** | Senhas hardcoded no `docker-compose.yml` | Usar arquivo `.env` na raiz (gitignored) com valores via `${VARIABLE}` | [LL-BE-00010](../delivery/lessons-learned/backend/LL-BE-00010-dev-credentials-externalization.md) |
-| **Docker Compose: paths relativos não resolvem** | `docker-compose.yml` colocado em subpasta `/infra` | Manter na **raiz** do monorepo; `/infra` é só gabinete auxiliar | [LL-BE-00011](../delivery/lessons-learned/backend/LL-BE-00011-docker-compose-root-placement.md) |
+| **Profile hml/prd: `No qualifying bean JwtDecoder`** | Keycloak OAuth2 configurado só no `dev.properties`, ausente nos outros profiles | Consolidar configurações em `.yml` por profile | [LL-BE-00027](../lessons-learned/LL-BE-00027-profile-config-fragmentation.md) |
+| **Alertmanager não sobe** | `discord_configs` inexistente e `${ENV}` não suportado pelo Alertmanager | Usar literal strings ao invés de variáveis de ambiente no config | [LL-BE-00026](../lessons-learned/LL-BE-00026-alertmanager-invalid-discord-configs.md) |
+| **Credenciais de dev expostas no Compose** | Senhas hardcoded no `docker-compose.yml` | Usar arquivo `.env` na raiz (gitignored) com valores via `${VARIABLE}` | [LL-BE-00010](../lessons-learned/LL-BE-00010-dev-credentials-externalization.md) |
+| **Docker Compose: paths relativos não resolvem** | `docker-compose.yml` colocado em subpasta `/infra` | Manter na **raiz** do monorepo; `/infra` é só gabinete auxiliar | [LL-BE-00011](../lessons-learned/LL-BE-00011-docker-compose-root-placement.md) |
 | **Token Telegram rejeitado ao salvar** | Token copiado com espaços extras ou truncado | Colar o token exato do @BotFather, sem espaços nas extremidades | — |
 | **Mensagem não chega ao backend** | túnel diferente de `APP_BASE_URL`, origem sem `https://`, reconciliação desabilitada/falha ou webhook remoto antigo | alinhar a origem, reiniciar o backend, observar a reconciliação/métrica e verificar `getWebhookInfo`; update ativo antecipa retry | [LL-BE-00057](../delivery/lessons-learned/backend/LL-BE-00057-webhook-registration-url-mismatch.md) |
-| **Webhook aparece com `200`, mas mensagens/respostas não avançam** | ACK assíncrono encobre falha do worker; bootstrap legado pode não possuir o keyring HMAC outbound; conversa também pode apontar para config removida | executar novamente `./start-dev-bot.sh` para migrar o bootstrap local, confirmar o init do keyring e então comparar config ativa, `channel_account_id`, logs do worker e timestamps agregados; não inferir sucesso pelo status HTTP | [LL-BE-00088](../delivery/lessons-learned/backend/LL-BE-00088-conversation-identity-includes-channel-account.md) |
+| **Webhook aparece com `200`, mas mensagens/respostas não avançam** | ACK assíncrono encobre falha do worker; bootstrap legado pode não possuir o keyring HMAC outbound; conversa também pode apontar para config removida | executar novamente `./start-dev-bot.sh` para migrar o bootstrap local, confirmar o init do keyring e então comparar config ativa, `channel_account_id`, logs do worker e timestamps agregados; não inferir sucesso pelo status HTTP | [LL-BE-00088](../lessons-learned/LL-BE-00088-conversation-identity-includes-channel-account.md) |
 | **`docker compose up` falha: porta ocupada** | Outro processo já usa a porta requerida | `sudo ss -tlnp \| grep :<porta>` para identificar e `sudo kill <PID>` | — |
 
 ---

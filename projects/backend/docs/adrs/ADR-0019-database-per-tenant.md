@@ -9,7 +9,7 @@ status: "Partially Superseded"
 date: "2026-07-24"
 version: "1.1"
 keywords: "adr, decisao, arquitetura, estratégia, de, single, database, per, tenant"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0052-parametros-pool-conexao-por-tenant.md"
+related_files: "README.md, ADR-0052-parametros-pool-conexao-por-tenant.md"
 code_references: "TenantOnboardingUseCase"
 principal_statement: "A aplicação migrará sua estratégia de persistência para **Single Database-per-Tenant**."
 ---

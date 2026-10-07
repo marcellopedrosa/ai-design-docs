@@ -9,8 +9,8 @@ status: "Accepted"
 date: "2026-08-25"
 version: "1.2"
 keywords: "billing, fatura comercial, NFS-e, fiscal, ruleset, effective-dated, fail-closed, reconciliacao, contingencia, ASAAS"
-related_files: "docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00044-billing-tax-fiscal-documents.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/delivery/plans/implementation_plans/backend/IP-BE-13.7.1-billing-tax-fiscal-documents.md`, `docs/delivery/plans/implementation_plans/frontend/IP-FE-13.7.1-billing-tax-fiscal-documents.md`, `docs/adrs/ADR-0001-technology-stack-and-architecture.md`, `docs/adrs/ADR-0019-database-per-tenant.md`, `docs/adrs/ADR-0023-agnostic-payment-provider-integration.md`, `docs/adrs/ADR-0027-catalogo-global-faturamento-local.md"
-code_references: "AS-IS em `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` e `backend/src/main/java/br/com/duoset/saas_service/contexts/fiscal/`; porta fiscal neutra, adapter e stores descritos neste ADR sao destinos planejados e ainda nao existem."
+related_files: "README.md, ../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md, ../specs/IP-BE-13.7.1-billing-tax-fiscal-documents.md, ../../../frontend/docs/specs/IP-FE-13.7.1-billing-tax-fiscal-documents.md, ADR-0001-technology-stack-and-architecture.md, ADR-0019-database-per-tenant.md, ADR-0023-agnostic-payment-provider-integration.md, ADR-0027-catalogo-global-faturamento-local.md"
+code_references: "AS-IS em `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` e `app/src/main/java/br/com/duoset/saas_service/contexts/fiscal/`; porta fiscal neutra, adapter e stores descritos neste ADR sao destinos planejados e ainda nao existem."
 principal_statement: "Fatura comercial e NFS-e sao entidades e eixos de lifecycle independentes; Billing solicita capacidade fiscal por porta neutra da interface publica de `contexts.fiscal`, com ruleset imutavel e fail-closed, enquanto a automacao NFS-e inicial permanece desligada ate dados, obrigacao, processo e adapter possuirem evidencias de owner competente."
 ---
 
@@ -22,8 +22,8 @@ principal_statement: "Fatura comercial e NFS-e sao entidades e eixos de lifecycl
 - Scope: Fatura comercial, obrigacao fiscal, NFS-e, rulesets fiscais versionados, integracao entre `contexts.billing` e `contexts.fiscal`, estados de solicitacao fiscal, contingencia, reconciliacao, cancelamento e substituicao.
 - Non-objectives: Implementar adapter, DDL, OpenAPI, UI ou processo fiscal; determinar obrigacao tributaria concreta; escolher municipio, regime, layout ou provider; atestar dados legais da GV Software; autorizar cobranca paga em producao.
 - Keywords: billing, fatura comercial, NFS-e, fiscal, ruleset, effective-dated, fail-closed, reconciliacao, contingencia, ASAAS
-- Related Files: `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00044-billing-tax-fiscal-documents.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/delivery/plans/implementation_plans/backend/IP-BE-13.7.1-billing-tax-fiscal-documents.md`, `docs/delivery/plans/implementation_plans/frontend/IP-FE-13.7.1-billing-tax-fiscal-documents.md`, `docs/adrs/ADR-0001-technology-stack-and-architecture.md`, `docs/adrs/ADR-0019-database-per-tenant.md`, `docs/adrs/ADR-0023-agnostic-payment-provider-integration.md`, `docs/adrs/ADR-0027-catalogo-global-faturamento-local.md`
-- Code References: AS-IS em `backend/src/main/java/br/com/duoset/saas_service/contexts/billing/` e `backend/src/main/java/br/com/duoset/saas_service/contexts/fiscal/`; porta fiscal neutra, adapter e stores descritos neste ADR sao destinos planejados e ainda nao existem.
+- Related Files: `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00044-billing-tax-fiscal-documents.md`, `../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md`, `../specs/IP-BE-13.7.1-billing-tax-fiscal-documents.md`, `../../../frontend/docs/specs/IP-FE-13.7.1-billing-tax-fiscal-documents.md`, `ADR-0001-technology-stack-and-architecture.md`, `ADR-0019-database-per-tenant.md`, `ADR-0023-agnostic-payment-provider-integration.md`, `ADR-0027-catalogo-global-faturamento-local.md`
+- Code References: AS-IS em `app/src/main/java/br/com/duoset/saas_service/contexts/billing/` e `app/src/main/java/br/com/duoset/saas_service/contexts/fiscal/`; porta fiscal neutra, adapter e stores descritos neste ADR sao destinos planejados e ainda nao existem.
 - Principal Decision: Fatura comercial e NFS-e sao entidades e eixos de lifecycle independentes; Billing solicita capacidade fiscal por porta neutra da interface publica de `contexts.fiscal`, com ruleset imutavel e fail-closed, enquanto a automacao NFS-e inicial permanece desligada ate dados, obrigacao, processo e adapter possuirem evidencias de owner competente.
 - Date: 2026-08-25
 - Status: Accepted
@@ -355,7 +355,7 @@ documental e nao implementa comportamento.
 
 - [REQ-00042](../product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md)
 - [UC-00044](../product/use-cases/UC-00044-billing-tax-fiscal-documents.md)
-- [TP-00013](../delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md)
+- [TP-00013](../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md)
 - [Module Registry](../architecture/module-registry.md)
 
 ---

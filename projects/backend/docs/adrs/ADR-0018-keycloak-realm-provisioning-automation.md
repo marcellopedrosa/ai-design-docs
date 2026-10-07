@@ -10,7 +10,7 @@ date: "2026-07-24"
 version: "4.1"
 last_reviewed: "2026-09-24"
 keywords: "adr, decisao, arquitetura, automacao, do, provisionamento, de, realms, keycloak"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0005-multi-tenancy-architecture.md, docs/onboarding/keycloak-provisioning-identity.md, docs/product/use-cases/UC-00002-tenant-management.md, docs/product/use-cases/UC-00036-user-profile.md, docs/product/requirements/REQ-00041-chatbot-conversation-audit.md, docs/product/requirements/REQ-00058-keycloak-password-recovery-smtp.md, docs/product/requirements/REQ-00059-temporary-all-roles-mfa-disablement.md, docs/product/requirements/REQ-00061-temporary-tenant-first-login-mfa-disablement.md, artefatos de análise/ANL-00051-super-admin-dev-mfa-usage-inventory.md, artefatos de análise/ANL-00053-keycloak-empty-conditional-2fa-flow.md, artefatos de análise/ANL-00054-tenant-first-login-mfa-inventory.md, docs/delivery/plans/TP-00042-temporary-dev-super-admin-login-mfa-disablement.md, docs/delivery/plans/TP-00044-keycloak-password-recovery-smtp.md, docs/delivery/plans/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md, docs/delivery/plans/TP-00050-temporary-tenant-first-login-mfa-disablement.md, docs/onboarding/conversation-audit-operations-runbook.md, docs/delivery/plans/implementation_plans/backend/IP-BE-5.2.3-keycloak-protocol-mapper-realm-template.md, docs/delivery/lessons-learned/backend/LL-BE-00078-keycloak-service-account-and-onboarding-compensation.md, docs/delivery/lessons-learned/backend/LL-BE-00080-super-admin-token-must-not-carry-tenant-id.md"
+related_files: "README.md, ADR-0005-multi-tenancy-architecture.md, ../onboarding/keycloak-provisioning-identity.md, ../../../docs/specs/TP-00042-temporary-dev-super-admin-login-mfa-disablement.md, ../../../docs/specs/TP-00044-keycloak-password-recovery-smtp.md, ../../../docs/specs/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md, ../../../docs/specs/TP-00050-temporary-tenant-first-login-mfa-disablement.md, ../onboarding/conversation-audit-operations-runbook.md, ../specs/IP-BE-5.2.3-keycloak-protocol-mapper-realm-template.md, ../lessons-learned/LL-BE-00078-keycloak-service-account-and-onboarding-compensation.md, ../lessons-learned/LL-BE-00080-super-admin-token-must-not-carry-tenant-id.md"
 code_references: "TenantProvisionedEvent, RealmProvisioningPort, KeycloakRealmProvisioningAdapter, KeycloakTenantRealmRepresentationFactory, CanonicalAdminIdentityReconciler, KeycloakRealmSmtpProperties, KeycloakConfig, infra/keycloak/bootstrap/migrate-persisted-volume.sh, infra/keycloak/bootstrap/reconcile-super-admin-identity.sh, infra/keycloak/bootstrap/reconcile-realm-smtp.sh, infra/keycloak/bootstrap/reconcile-admin-login-mfa.sh, infra/keycloak/bootstrap/reconcile-tenant-first-login-mfa.sh, MultiRealmJwtConfig, TenantContextFilter, historical: infra/keycloak/dev/saas-admin-realm.json, historical: infra/keycloak/dev/saas-bpfarias-realm.json, historical: infra/keycloak/hml/saas-admin-realm.json, historical: infra/keycloak/hml/saas-bpfarias-realm.json, .env.example, docker-compose.yml, docker-compose.override.yml, docker-compose.hml.yml, docker-compose.prd.yml, infra/deploy/production.env.example, infra/scripts/deploy-production.sh"
 principal_statement: "O backend acessa a Keycloak Admin API exclusivamente com client confidencial e Service Account via OAuth 2.0 Client Credentials; cada realm recebe SMTP ambiental, e os realms administrativos e de tenant preservam sua capacidade MFA sob toggles reversiveis temporariamente desativaveis em DEV, HML e PRD, enquanto credenciais administrativas permanecem restritas ao bootstrap."
 ---
@@ -26,7 +26,7 @@ principal_statement: "O backend acessa a Keycloak Admin API exclusivamente com c
 
 ## 1. Contexto
 
-O projeto usa isolamento de autenticacao por realm e banco dedicado por escritorio, conforme a [ADR-0005](./ADR-0005-multi-tenancy-architecture.md). A criacao de um tenant precisa produzir, como uma unica operacao de negocio:
+O projeto usa isolamento de autenticacao por realm e banco dedicado por escritorio, conforme a [ADR-0005](ADR-0005-multi-tenancy-architecture.md). A criacao de um tenant precisa produzir, como uma unica operacao de negocio:
 
 1. banco PostgreSQL `saas_{slug}`;
 2. migrations e datasource dedicado;
@@ -551,16 +551,16 @@ Nos três ambientes, `saas-admin` contém `djmarcellopedrosa@gmail.com` com `ROL
 - [REQ-00059 - Dispensa temporária de MFA para todas as roles em DEV, HML e PRD](../product/requirements/REQ-00059-temporary-all-roles-mfa-disablement.md)
 - ANL-00051 - Inventário do uso de MFA para Super Admin em DEV
 - ANL-00053 - Falha do login por subfluxo 2FA condicional vazio
-- [TP-00042 - Toggle temporário do MFA no login Super Admin DEV](../delivery/plans/TP-00042-temporary-dev-super-admin-login-mfa-disablement.md)
-- [TP-00047 - Desligamento temporário do MFA do Super Admin em DEV](../delivery/plans/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md)
+- [TP-00042 - Toggle temporário do MFA no login Super Admin DEV](../../../docs/specs/TP-00042-temporary-dev-super-admin-login-mfa-disablement.md)
+- [TP-00047 - Desligamento temporário do MFA do Super Admin em DEV](../../../docs/specs/TP-00047-temporary-super-admin-invoicing-mfa-waiver.md)
 - [REQ-00061 - Desligamento temporario do MFA no primeiro acesso de tenant](../product/requirements/REQ-00061-temporary-tenant-first-login-mfa-disablement.md)
 - ANL-00054 - Inventario do MFA no primeiro acesso de tenant
-- [TP-00050 - Toggle temporario do MFA no primeiro acesso de tenant](../delivery/plans/TP-00050-temporary-tenant-first-login-mfa-disablement.md)
+- [TP-00050 - Toggle temporario do MFA no primeiro acesso de tenant](../../../docs/specs/TP-00050-temporary-tenant-first-login-mfa-disablement.md)
 - [UC-00036 - Autogestão de dados pessoais e senha](../product/use-cases/UC-00036-user-profile.md)
 - [Conversation Audit Operations Runbook](../onboarding/conversation-audit-operations-runbook.md)
-- [IP-BE-5.2.3-keycloak-protocol-mapper-realm-template — Implementation Plan](../delivery/plans/implementation_plans/backend/IP-BE-5.2.3-keycloak-protocol-mapper-realm-template.md)
-- [LL-BE-00078 — Lesson Learned](../delivery/lessons-learned/backend/LL-BE-00078-keycloak-service-account-and-onboarding-compensation.md)
-- [LL-BE-00080 — Lesson Learned](../delivery/lessons-learned/backend/LL-BE-00080-super-admin-token-must-not-carry-tenant-id.md)
+- [IP-BE-5.2.3-keycloak-protocol-mapper-realm-template — Implementation Plan](../specs/IP-BE-5.2.3-keycloak-protocol-mapper-realm-template.md)
+- [LL-BE-00078 — Lesson Learned](../lessons-learned/LL-BE-00078-keycloak-service-account-and-onboarding-compensation.md)
+- [LL-BE-00080 — Lesson Learned](../lessons-learned/LL-BE-00080-super-admin-token-must-not-carry-tenant-id.md)
 
 ## 9. Change Log
 

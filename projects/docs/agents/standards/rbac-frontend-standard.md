@@ -10,16 +10,16 @@ date: "2026-08-25"
 version: "1.8"
 last_reviewed: "2026-09-11"
 keywords: "rbac, frontend, standard, standard"
-related_files: "./README.md, ./keycloak-frontend-standard.md, ./i18n-standard.md, ./nextjs-standard.md, ../../adrs/ADR-0050-rbac-sod-aprovacoes-financeiras.md, docs/architecture/rbac-access-control-matrix.md, docs/product/requirements/REQ-00003-rbac-profile-responsibility-matrix.md, docs/product/requirements/REQ-00004-rbac-security-mapping.md, docs/product/requirements/REQ-00041-chatbot-conversation-audit.md, docs/product/requirements/REQ-00043-conversation-audit-data-governance.md, docs/product/use-cases/UC-00035-chatbot-conversation-audit.md"
+related_files: "./README.md, keycloak-frontend-standard.md, i18n-standard.md, nextjs-standard.md, ../../../backend/docs/adrs/ADR-0050-rbac-sod-aprovacoes-financeiras.md, docs/architecture/rbac-access-control-matrix.md, docs/product/requirements/REQ-00003-rbac-profile-responsibility-matrix.md, docs/product/requirements/REQ-00004-rbac-security-mapping.md, docs/product/requirements/REQ-00041-chatbot-conversation-audit.md, docs/product/requirements/REQ-00043-conversation-audit-data-governance.md, docs/product/use-cases/UC-00035-chatbot-conversation-audit.md"
 code_references: "src/lib/permissions.ts, src/lib/paths.ts, src/lib/protected-routes.ts, src/lib/menu-config.ts, src/i18n/messages/*/navigation.json, src/hooks/useModuleAccess.ts, backend/, frontend/"
 principal_statement: "A política de retenção de /audit é exclusiva da role bruta ROLE_SUPER_ADMIN sob personificação ativa; ROLE_TENANT_ADMIN nunca recebe essa capability, enquanto conversas e aliases permanecem ROLE_TENANT_AUDIT-only."
 ---
 
 # RBAC Frontend Patterns Standard — @FrontendWeb / @UIIntegrator
 
-> **Mandatory rules** for implementing Role-Based Access Control in the frontend UI. This standard builds upon [`keycloak-frontend-standard.md`](./keycloak-frontend-standard.md) (which provides `useAuth`, `hasRole`, `hasEffectiveRole`, `hasScope`, `ProtectedRoute`, `PermissionGate`). This standard defines **how to organize permissions, map them to UI elements, and enforce RBAC across the application**.
+> **Mandatory rules** for implementing Role-Based Access Control in the frontend UI. This standard builds upon [`keycloak-frontend-standard.md`](keycloak-frontend-standard.md) (which provides `useAuth`, `hasRole`, `hasEffectiveRole`, `hasScope`, `ProtectedRoute`, `PermissionGate`). This standard defines **how to organize permissions, map them to UI elements, and enforce RBAC across the application**.
 
-> **Prerequisite:** Read [`keycloak-frontend-standard.md`](./keycloak-frontend-standard.md) first.
+> **Prerequisite:** Read [`keycloak-frontend-standard.md`](keycloak-frontend-standard.md) first.
 
 > **Version:** 1.7 — **Last updated:** 2026-09-09. This revision defines capability-level
 > authorization for the `/audit` shell: Audit reads conversations, while retention is exclusive
@@ -1187,7 +1187,7 @@ Menu labels in the sidebar **must** use `next-intl` translations, integrated wit
 2. `MenuItem.labelKey` matches the **full namespace** path: `'navigation.sidebar.dashboard'`.
 3. When adding a new menu item, the i18n key **must** be added to **all** locale files (`pt-BR`, `en`) simultaneously.
 4. Menu group titles (`MenuGroup.titleKey`) also use i18n keys from `navigation.json`.
-5. This pattern complements the i18n standard (./i18n-standard.md)) — sidebar keys follow the same `namespace.section.key` convention.
+5. This pattern complements the i18n standard (i18n-standard.md)) — sidebar keys follow the same `namespace.section.key` convention.
 
 ---
 
@@ -1285,7 +1285,7 @@ export const config = {
 1. **PATHS constants** must **not** include the locale prefix. The prefix is added at navigation time via `localePath()`.
 2. `localePath()` is the **only** function that prepends the locale to a path. **Never** concatenate locale manually: `` `/${locale}/dashboard` ``.
 3. `PROTECTED_ROUTES` keys use paths **without** locale prefix. The middleware or route guard strips the locale before checking.
-4. When using `next-intl` middleware for locale detection, **combine** it with the security headers middleware from [`nextjs-standard.md`](./nextjs-standard.md).
+4. When using `next-intl` middleware for locale detection, **combine** it with the security headers middleware from [`nextjs-standard.md`](nextjs-standard.md).
 5. `useLocale()` from `next-intl` is the **only** source for the current locale. **Never** parse `window.location.pathname` manually.
 6. If the application does **not** use locale-prefixed URLs (single locale), `localePath()` is still used but returns the path unchanged. This ensures a consistent API for future locale expansion.
 

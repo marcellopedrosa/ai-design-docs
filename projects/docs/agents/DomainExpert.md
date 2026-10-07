@@ -43,7 +43,7 @@ DomainExpert contributes to the Software Factory ecosystem as the guardian of bu
 
 ## 3. Core Responsibilities
 
-> **📘 REFERENCE:** DomainExpert **SHOULD** be aware of [`standards/java-standard.md`](./standards/java-standard.md) to understand the naming conventions and patterns that @ImplementerCore will use when coding domain models. This includes: entity/value object naming (no suffix for domain entities, Records for value objects), package structure (`domain/model/`, `domain/model/valueobjects/`), and factory method patterns.
+> **📘 REFERENCE:** DomainExpert **SHOULD** be aware of [`standards/java-standard.md`](standards/java-standard.md) to understand the naming conventions and patterns that @ImplementerCore will use when coding domain models. This includes: entity/value object naming (no suffix for domain entities, Records for value objects), package structure (`domain/model/`, `domain/model/valueobjects/`), and factory method patterns.
 
 - Analyze business requirements and extract domain concepts: entities, value objects, aggregates, domain services, and domain events.
 - Define the ubiquitous language for each bounded context, ensuring consistent naming across all artifacts.

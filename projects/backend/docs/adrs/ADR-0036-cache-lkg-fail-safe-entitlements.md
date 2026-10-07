@@ -9,7 +9,7 @@ status: "Accepted"
 date: "2026-08-25"
 version: "1.3"
 keywords: "entitlement cache, last known good, LKG, fail safe, fail closed, degraded mode, risk epoch, contract epoch, stale read, cache poisoning, tenant isolation"
-related_files: "docs/product/requirements/REQ-00005-plan-feature-matrix.md`, `docs/product/requirements/REQ-00011-chatbot-usage-limits-and-billing.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/adrs/ADR-0035-migracao-evidence-first-entitlements-legados.md`, `docs/adrs/ADR-0037-boundary-fisico-entitlements-billing.md"
+related_files: "README.md, ../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md, ADR-0035-migracao-evidence-first-entitlements-legados.md, ADR-0037-boundary-fisico-entitlements-billing.md"
 code_references: "AS-IS em `BillingApiAdapter`, `ChatbotFlowUseCase`, `TenantApiImpl`, `TenantRoutingDataSource`, `CacheConfig`, `TenantAwareCacheKey`, `ConversationAuditRetentionPolicyService`, `RedisConversationAuditRetentionPolicyCacheAdapter`, `BoundedConversationAuditRateLimitAdapter` e `BillingController`; cache/LKG canônico ainda não existe, e seu boundary/keyspace planejados seguem o ADR-0037."
 principal_statement: "O snapshot tenant-local permanece autoridade; projeção, cache e LKG são derivados. Somente indisponibilidade técnica comprovada pode considerar LKG positivo, e apenas para operação explicitamente allowlisted de baixo risco; quota/capacidade/custo, mutação ampliativa, financeiro/provider, administração e risco exigem estado atual e falham de forma segura."
 ---
@@ -22,7 +22,7 @@ principal_statement: "O snapshot tenant-local permanece autoridade; projeção, 
 - Scope: Cache de decisão derivado, last-known-good (LKG), classes de operação, estados indeterminados, TTLs máximos, epochs, invalidação, cold start, degraded mode, recuperação, isolamento tenant-local, integridade e observabilidade.
 - Non-objectives: Definir ownership físico, packages, classes, ports, eventos, tabelas, chaves Redis ou marker de cutover; criar DDL, OpenAPI, código ou migrações; aprovar pricing, rating, invoice, cobrança, provider, alçadas finais, rollout, SLOs definitivos ou implementação.
 - Keywords: entitlement cache, last known good, LKG, fail safe, fail closed, degraded mode, risk epoch, contract epoch, stale read, cache poisoning, tenant isolation
-- Related Files: `docs/product/requirements/REQ-00005-plan-feature-matrix.md`, `docs/product/requirements/REQ-00011-chatbot-usage-limits-and-billing.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `docs/delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md`, `docs/adrs/ADR-0035-migracao-evidence-first-entitlements-legados.md`, `docs/adrs/ADR-0037-boundary-fisico-entitlements-billing.md`
+- Related Files: `docs/product/requirements/REQ-00005-plan-feature-matrix.md`, `docs/product/requirements/REQ-00011-chatbot-usage-limits-and-billing.md`, `docs/product/requirements/REQ-00042-enterprise-multitenant-billing-invoicing.md`, `docs/product/use-cases/UC-00038-billing-catalog-pricing-promotions.md`, `docs/product/use-cases/UC-00039-billing-contract-subscription-amendments.md`, `docs/product/use-cases/UC-00040-billing-usage-rating-invoice-close.md`, `../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md`, `ADR-0035-migracao-evidence-first-entitlements-legados.md`, `ADR-0037-boundary-fisico-entitlements-billing.md`
 - Code References: AS-IS em `BillingApiAdapter`, `ChatbotFlowUseCase`, `TenantApiImpl`, `TenantRoutingDataSource`, `CacheConfig`, `TenantAwareCacheKey`, `ConversationAuditRetentionPolicyService`, `RedisConversationAuditRetentionPolicyCacheAdapter`, `BoundedConversationAuditRateLimitAdapter` e `BillingController`; cache/LKG canônico ainda não existe, e seu boundary/keyspace planejados seguem o ADR-0037.
 - Principal Decision: O snapshot tenant-local permanece autoridade; projeção, cache e LKG são derivados. Somente indisponibilidade técnica comprovada pode considerar LKG positivo, e apenas para operação explicitamente allowlisted de baixo risco; quota/capacidade/custo, mutação ampliativa, financeiro/provider, administração e risco exigem estado atual e falham de forma segura.
 - Date: 2026-08-25
@@ -551,7 +551,7 @@ A implementação futura deverá provar ao menos:
 - [UC-00038 - Catálogo, pricing e promoções](../product/use-cases/UC-00038-billing-catalog-pricing-promotions.md)
 - [UC-00039 - Contratos, assinaturas e amendments](../product/use-cases/UC-00039-billing-contract-subscription-amendments.md)
 - [UC-00040 - Uso, rating e fechamento](../product/use-cases/UC-00040-billing-usage-rating-invoice-close.md)
-- [TP-00013 - Enterprise Billing Implementation](../delivery/plans/TP-00013-enterprise-billing-implementation-task-plan.md)
+- [TP-00013 - Enterprise Billing Implementation](../../../docs/specs/TP-00013-enterprise-billing-implementation-task-plan.md)
 - [Manifesto de módulos](../architecture/module-registry.md)
 
 ---
@@ -587,7 +587,7 @@ local-only`; implementação/testes herméticos são permitidos e evidências/re
 Esta decisão reside em:
 
 ```text
-docs/adrs/ADR-0036-cache-lkg-fail-safe-entitlements.md
+ADR-0036-cache-lkg-fail-safe-entitlements.md
 ```
 
 Os alvos físicos estão registrados no ADR-0037 e podem ser materializados

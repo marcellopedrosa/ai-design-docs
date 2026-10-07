@@ -9,7 +9,7 @@ status: "Accepted"
 date: "2026-03-11"
 version: "1.2"
 keywords: "adr, decisao, arquitetura, multi, provider, llm, integration, architecture"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0001-technology-stack-and-architecture.md, docs/adrs/ADR-0004-whatsapp-integration-architecture.md, docs/adrs/ADR-0005-multi-tenancy-architecture.md, docs/product/business/product-vision.md"
+related_files: "README.md, ADR-0001-technology-stack-and-architecture.md, ADR-0004-whatsapp-integration-architecture.md, ADR-0005-multi-tenancy-architecture.md"
 code_references: "LlmResponsePort, WhatsAppMessagePort, SerproGatewayPort, GeminiLlmAdapter, OpenAiLlmAdapter, OllamaLlmAdapter, LlmResponseService, ChatbotFlowService, LlmConfig, FixedTemplateFallbackAdapter"
 principal_statement: "A integração com LLM será implementada como um **outbound port** (`LlmResponsePort`) dentro do módulo WhatsApp, seguindo Clean Architecture. O provedor inicial será **Google Gemini**. A arquitetura suportará múltiplos provedores via adapter pattern, com seleção configurável por tenant e fallback automático. Os prompts para formatação de respostas SERPRO serão armazenados como **templates configuráveis** no banco de dados, editáveis pelo painel administrativo sem alteração de código."
 ---
@@ -583,9 +583,9 @@ Mitigation: Botão "Preview" no painel do super admin global: testa o prompt com
 
 # 13. Related ADRs
 
-- [ADR-0001 — Technology Stack and Architecture Foundation](./ADR-0001-technology-stack-and-architecture.md) — Java 21, Spring Boot 4.x, Spring Modulith, Clean Architecture.
-- [ADR-0004 — WhatsApp Integration Architecture](./ADR-0004-whatsapp-integration-architecture.md) — Módulo WhatsApp, `ChatbotFlowService`, `WhatsAppMessagePort`. A LLM se integra entre o resultado SERPRO e o envio WhatsApp.
-- [ADR-0005 — Multi-Tenancy Architecture](./ADR-0005-multi-tenancy-architecture.md) — Configuração de LLM pode variar por tenant.
+- [ADR-0001 — Technology Stack and Architecture Foundation](ADR-0001-technology-stack-and-architecture.md) — Java 21, Spring Boot 4.x, Spring Modulith, Clean Architecture.
+- [ADR-0004 — WhatsApp Integration Architecture](ADR-0004-whatsapp-integration-architecture.md) — Módulo WhatsApp, `ChatbotFlowService`, `WhatsAppMessagePort`. A LLM se integra entre o resultado SERPRO e o envio WhatsApp.
+- [ADR-0005 — Multi-Tenancy Architecture](ADR-0005-multi-tenancy-architecture.md) — Configuração de LLM pode variar por tenant.
 - (Futuro) ADR-0008 — Function Registry e Menu Dinâmico do Chatbot.
 
 ---
@@ -597,7 +597,7 @@ Mitigation: Botão "Preview" no painel do super admin global: testa o prompt com
 - [Gemini Pricing](https://ai.google.dev/pricing)
 - [OpenAI API](https://platform.openai.com/docs/api-reference)
 - [Ollama](https://ollama.com/) — Run LLMs locally
-- [WhatsApp Integration Architecture — ADR-0004](./ADR-0004-whatsapp-integration-architecture.md)
+- [WhatsApp Integration Architecture — ADR-0004](ADR-0004-whatsapp-integration-architecture.md)
 - Business Requirements: [Visão de produto](../product/business/product-vision.md)
 
 ---

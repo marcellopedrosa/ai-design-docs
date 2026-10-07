@@ -9,8 +9,8 @@ status: "Accepted"
 date: "2026-08-26"
 version: "1.12"
 keywords: "multitenancy, database-per-tenant, HikariCP, connection pool, Super Admin, capacidade, swap atomico, drain, fail-closed"
-related_files: "docs/adrs/README.md, docs/adrs/ADR-0002-separacao-banco-por-contexto-multitenancy.md, docs/adrs/ADR-0005-multi-tenancy-architecture.md, docs/adrs/ADR-0009-dynamic-rbac-evolution.md, docs/adrs/ADR-0012-error-handling-observability.md, docs/adrs/ADR-0019-database-per-tenant.md, docs/product/requirements/REQ-00003-rbac-profile-responsibility-matrix.md, docs/product/requirements/REQ-00004-rbac-security-mapping.md, docs/product/requirements/REQ-00030-multitenancy-isolation-verification.md, docs/product/requirements/REQ-00031-phase2-tenant-lifecycle-and-access.md, docs/product/requirements/REQ-00046-chatbot-tenant-pool-starvation-resilience.md, docs/product/requirements/REQ-00047-super-admin-tenant-pool-policy-administration.md, docs/product/requirements/REQ-00048-tenant-pool-policy-cache-isolation-resilience.md, docs/product/requirements/REQ-00049-tenant-pool-policy-authorized-test-rollout.md, docs/product/requirements/REQ-00051-tenant-pool-policy-managed-runtime-environments.md, docs/product/requirements/REQ-00052-tenant-pool-policy-controlled-hml-prd-rollout.md, docs/architecture/module-registry.md, docs/delivery/plans/TP-00023-tenant-pool-policy-administration.md, docs/delivery/plans/TP-00024-tenant-pool-policy-contract-and-super-admin-ui.md, docs/delivery/plans/TP-00027-tenant-pool-policy-authorized-test-rollout.md, docs/delivery/plans/TP-00029-tenant-pool-policy-managed-runtime-environments.md, docs/delivery/plans/TP-00030-tenant-pool-policy-hml-prd-controlled-rollout.md, docs/delivery/plans/implementation_plans/backend/IP-BE-23.4.3-tenant-pool-policy-managed-runtime-environments.md, docs/delivery/plans/implementation_plans/infra/IP-INFRA-23.5.1-tenant-pool-policy-managed-hml-activation.md, docs/delivery/lessons-learned/backend/LL-BE-00091-long-lived-chatbot-transaction-exhausts-tenant-pool.md"
-code_references: "backend/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantDatabaseRegistry.java, backend/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantRoutingDataSource.java, backend/src/main/java/br/com/duoset/saas_service/shared/tenancy/TenantDatabaseRegistryPort.java, backend/src/main/java/br/com/duoset/saas_service/config/persistence/TenantDataSourceConfig.java, backend/src/main/java/br/com/duoset/saas_service/config/persistence/PlatformDataSourceConfig.java, backend/src/main/resources/application.yml, backend/src/main/resources/application-tenant-pool-smoke.yml, backend/src/main/java/br/com/duoset/saas_service/contexts/tenant/, /api/v1/platform/tenant-pool-policies/{tenantId}"
+related_files: "README.md, ADR-0002-separacao-banco-por-contexto-multitenancy.md, ADR-0005-multi-tenancy-architecture.md, ADR-0009-dynamic-rbac-evolution.md, ADR-0012-error-handling-observability.md, ADR-0019-database-per-tenant.md, ../../../docs/specs/TP-00023-tenant-pool-policy-administration.md, ../../../docs/specs/TP-00024-tenant-pool-policy-contract-and-super-admin-ui.md, ../../../docs/specs/TP-00027-tenant-pool-policy-authorized-test-rollout.md, ../../../docs/specs/TP-00029-tenant-pool-policy-managed-runtime-environments.md, ../../../docs/specs/TP-00030-tenant-pool-policy-hml-prd-controlled-rollout.md, ../specs/IP-BE-23.4.3-tenant-pool-policy-managed-runtime-environments.md, ../../../docs/specs/IP-INFRA-23.5.1-tenant-pool-policy-managed-hml-activation.md, ../lessons-learned/LL-BE-00091-long-lived-chatbot-transaction-exhausts-tenant-pool.md"
+code_references: "app/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantDatabaseRegistry.java, app/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantRoutingDataSource.java, app/src/main/java/br/com/duoset/saas_service/shared/tenancy/TenantDatabaseRegistryPort.java, app/src/main/java/br/com/duoset/saas_service/config/persistence/TenantDataSourceConfig.java, app/src/main/java/br/com/duoset/saas_service/config/persistence/PlatformDataSourceConfig.java, app/src/main/resources/application.yml, app/src/main/resources/application-tenant-pool-smoke.yml, app/src/main/java/br/com/duoset/saas_service/contexts/tenant/, /api/v1/platform/tenant-pool-policies/{tenantId}"
 principal_statement: "Cada tenant tera uma politica completa e versionada no control plane, cache apenas derivado e tenant-scoped, e uma geracao HikariDataSource exclusiva por instancia da aplicacao; somente ROLE_SUPER_ADMIN podera solicitar alteracoes, ativadas por validacao de capacidade, candidato isolado, troca atomica e drenagem, sem compartilhar objetos ou usar fallback de outro tenant ou da plataforma."
 ---
 
@@ -22,7 +22,7 @@ principal_statement: "Cada tenant tera uma politica completa e versionada no con
 - Scope: Control plane de tenants, configuração versionada de HikariCP, cache derivado tenant-scoped da política, RBAC de plataforma, ciclo de vida do `TenantDatabaseRegistry`, capacidade PostgreSQL, auditoria, observabilidade, migração e rollback.
 - Non-objectives: Implementar endpoints, UI, migrations ou código; governar caches funcionais ou permitir TTL/quota de cache por tenant; alterar a decisão database-per-tenant; permitir edição de URL, credenciais, driver ou schema; definir capacidade de produção sem benchmark; adotar PgBouncer ou particionar clusters PostgreSQL.
 - Keywords: multitenancy, database-per-tenant, HikariCP, connection pool, Super Admin, capacidade, swap atômico, drain, fail-closed
-- Related Files: [ADR-0002](ADR-0002-separacao-banco-por-contexto-multitenancy.md), [ADR-0005](ADR-0005-multi-tenancy-architecture.md), [ADR-0009](ADR-0009-dynamic-rbac-evolution.md), [ADR-0012](ADR-0012-error-handling-observability.md), [ADR-0019](ADR-0019-database-per-tenant.md), [REQ-00003](../product/requirements/REQ-00003-rbac-profile-responsibility-matrix.md), [REQ-00004](../product/requirements/REQ-00004-rbac-security-mapping.md), [REQ-00030](../product/requirements/REQ-00030-multitenancy-isolation-verification.md), [REQ-00031](../product/requirements/REQ-00031-phase2-tenant-lifecycle-and-access.md), [REQ-00046](../product/requirements/REQ-00046-chatbot-tenant-pool-starvation-resilience.md), [REQ-00047](../product/requirements/REQ-00047-super-admin-tenant-pool-policy-administration.md), [REQ-00048](../product/requirements/REQ-00048-tenant-pool-policy-cache-isolation-resilience.md), [REQ-00049](../product/requirements/REQ-00049-tenant-pool-policy-authorized-test-rollout.md), [REQ-00051](../product/requirements/REQ-00051-tenant-pool-policy-managed-runtime-environments.md), [REQ-00052](../product/requirements/REQ-00052-tenant-pool-policy-controlled-hml-prd-rollout.md), [TP-00023](../delivery/plans/TP-00023-tenant-pool-policy-administration.md), [TP-00024](../delivery/plans/TP-00024-tenant-pool-policy-contract-and-super-admin-ui.md), [TP-00027](../delivery/plans/TP-00027-tenant-pool-policy-authorized-test-rollout.md), [TP-00029](../delivery/plans/TP-00029-tenant-pool-policy-managed-runtime-environments.md), [TP-00030](../delivery/plans/TP-00030-tenant-pool-policy-hml-prd-controlled-rollout.md), [IP-BE-23.4.3-tenant-pool-policy-managed-runtime-environments](../delivery/plans/implementation_plans/backend/IP-BE-23.4.3-tenant-pool-policy-managed-runtime-environments.md), [module registry](../architecture/module-registry.md), [IP-BE-3.2.10-chatbot-tenant-pool-starvation-remediation](../delivery/plans/implementation_plans/backend/IP-BE-3.2.10-chatbot-tenant-pool-starvation-remediation.md) e [LL-BE-00091 — Transação longa do chatbot esgota o pool tenant](../delivery/lessons-learned/backend/LL-BE-00091-long-lived-chatbot-transaction-exhausts-tenant-pool.md).
+- Related Files: [ADR-0002](ADR-0002-separacao-banco-por-contexto-multitenancy.md), [ADR-0005](ADR-0005-multi-tenancy-architecture.md), [ADR-0009](ADR-0009-dynamic-rbac-evolution.md), [ADR-0012](ADR-0012-error-handling-observability.md), [ADR-0019](ADR-0019-database-per-tenant.md), [REQ-00003](../product/requirements/REQ-00003-rbac-profile-responsibility-matrix.md), [REQ-00004](../product/requirements/REQ-00004-rbac-security-mapping.md), [REQ-00030](../product/requirements/REQ-00030-multitenancy-isolation-verification.md), [REQ-00031](../product/requirements/REQ-00031-phase2-tenant-lifecycle-and-access.md), [REQ-00046](../product/requirements/REQ-00046-chatbot-tenant-pool-starvation-resilience.md), [REQ-00047](../product/requirements/REQ-00047-super-admin-tenant-pool-policy-administration.md), [REQ-00048](../product/requirements/REQ-00048-tenant-pool-policy-cache-isolation-resilience.md), [REQ-00049](../product/requirements/REQ-00049-tenant-pool-policy-authorized-test-rollout.md), [REQ-00051](../product/requirements/REQ-00051-tenant-pool-policy-managed-runtime-environments.md), [REQ-00052](../product/requirements/REQ-00052-tenant-pool-policy-controlled-hml-prd-rollout.md), [TP-00023](../../../docs/specs/TP-00023-tenant-pool-policy-administration.md), [TP-00024](../../../docs/specs/TP-00024-tenant-pool-policy-contract-and-super-admin-ui.md), [TP-00027](../../../docs/specs/TP-00027-tenant-pool-policy-authorized-test-rollout.md), [TP-00029](../../../docs/specs/TP-00029-tenant-pool-policy-managed-runtime-environments.md), [TP-00030](../../../docs/specs/TP-00030-tenant-pool-policy-hml-prd-controlled-rollout.md), [IP-BE-23.4.3-tenant-pool-policy-managed-runtime-environments](../specs/IP-BE-23.4.3-tenant-pool-policy-managed-runtime-environments.md), [module registry](../architecture/module-registry.md), [IP-BE-3.2.10-chatbot-tenant-pool-starvation-remediation](../specs/IP-BE-3.2.10-chatbot-tenant-pool-starvation-remediation.md) e [LL-BE-00091 — Transação longa do chatbot esgota o pool tenant](../lessons-learned/LL-BE-00091-long-lived-chatbot-transaction-exhausts-tenant-pool.md).
 - Code References: `TenantDatabaseRegistry`, `TenantRoutingDataSource`, `TenantDatabaseRegistryPort`, `TenantDataSourceConfig`, `PlatformDataSourceConfig`, `application-tenant-pool-smoke.yml`, `contexts.tenant` e `/api/v1/platform/tenant-pool-policies/{tenantId}`.
 - Principal Decision: Cada tenant terá uma política completa e versionada no control plane, cache apenas derivado e tenant-scoped, e uma geração `HikariDataSource` exclusiva por instância da aplicação; somente `ROLE_SUPER_ADMIN` poderá solicitar alterações, ativadas por validação de capacidade, candidato isolado, troca atômica e drenagem, sem compartilhar objetos ou usar fallback de outro tenant ou da plataforma.
 - Date: 2026-08-26
@@ -72,9 +72,9 @@ testes de isolamento, revisão de segurança e os gates técnicos deste ADR. O
 continua governando a correção localizada de starvation do chatbot; ele não
 substitui o REQ-00047 nem o REQ-00048.
 
-O [TP-00023](../delivery/plans/TP-00023-tenant-pool-policy-administration.md)
+O [TP-00023](../../../docs/specs/TP-00023-tenant-pool-policy-administration.md)
 continua coordenando o runtime backend. O
-[TP-00024](../delivery/plans/TP-00024-tenant-pool-policy-contract-and-super-admin-ui.md)
+[TP-00024](../../../docs/specs/TP-00024-tenant-pool-policy-contract-and-super-admin-ui.md)
 coordena o contrato HTTP backend e o frontend sem antecipar os gates de runtime.
 
 Em 2026-08-28, nova instrução humana aprovou os próximos passos locais e o
@@ -83,7 +83,7 @@ como terceiro componente desta decisão. A autorização permite um profile
 repository-local opt-in, exclusivamente em `dev` ou `test`, com tenants
 sintéticos A/B e guardas fail-closed. Ela não autoriza ambiente DEV compartilhado,
 HML, staging, PRD, produção, infraestrutura ou deploy. O
-[TP-00027](../delivery/plans/TP-00027-tenant-pool-policy-authorized-test-rollout.md)
+[TP-00027](../../../docs/specs/TP-00027-tenant-pool-policy-authorized-test-rollout.md)
 coordena esse recorte e somente planeja um rollout ambiental futuro.
 
 Em 2026-09-01, o owner humano ampliou explicitamente o objetivo repository-local:
@@ -91,7 +91,7 @@ a operacao deve ficar disponivel pela tela durante a execucao normal, sem renova
 lease por launcher nem reiniciar a aplicacao, e o mesmo artefato deve possuir
 contrato fail-closed para DEV, HML e PRD. O
 [REQ-00051](../product/requirements/REQ-00051-tenant-pool-policy-managed-runtime-environments.md)
-e o [TP-00029](../delivery/plans/TP-00029-tenant-pool-policy-managed-runtime-environments.md)
+e o [TP-00029](../../../docs/specs/TP-00029-tenant-pool-policy-managed-runtime-environments.md)
 governam essa ampliacao. A autorizacao permite implementacao e testes
 repository-local; nao autoriza deploy, ativacao externa, segredo/dado real nem
 sizing de HML/PRD sem capacity proof.
@@ -99,13 +99,13 @@ sizing de HML/PRD sem capacity proof.
 Em 2026-09-02, o owner humano aprovou o
 [REQ-00052](../product/requirements/REQ-00052-tenant-pool-policy-controlled-hml-prd-rollout.md)
 como quinto componente operacional e o
-[TP-00030](../delivery/plans/TP-00030-tenant-pool-policy-hml-prd-controlled-rollout.md)
+[TP-00030](../../../docs/specs/TP-00030-tenant-pool-policy-hml-prd-controlled-rollout.md)
 como coordenador do rollout sequencial HML antes de PRD. A autorizacao desta
 revisao permanece **repository-local**: permite documentacao de planejamento, a
 alocacao exata do IP HML registrada no requisito e sua materializacao somente em
 `Proposed`, mas nao autoriza criar efeito ambiental, acessar HML/PRD, executar
 deploy, ler segredo/dado real ou definir sizing sem capacity proof. O
-[IP-INFRA-23.5.1](../delivery/plans/implementation_plans/infra/IP-INFRA-23.5.1-tenant-pool-policy-managed-hml-activation.md)
+[IP-INFRA-23.5.1](../../../docs/specs/IP-INFRA-23.5.1-tenant-pool-policy-managed-hml-activation.md)
 deve receber aprovacoes separadas para `Approved` e `In Progress`; o IP PRD
 permanece nao alocado.
 
@@ -162,7 +162,7 @@ do tenant.
 
 O [REQ-00046](../product/requirements/REQ-00046-chatbot-tenant-pool-starvation-resilience.md)
 governa o corretivo localizado de starvation, enquanto a
-[LL-BE-00091](../delivery/lessons-learned/backend/LL-BE-00091-long-lived-chatbot-transaction-exhausts-tenant-pool.md)
+[LL-BE-00091](../lessons-learned/LL-BE-00091-long-lived-chatbot-transaction-exhausts-tenant-pool.md)
 preserva a evidência histórica direta do incidente com três conexões. Esse
 incidente fundamenta os guardrails de capacidade, admissão e isolamento desta
 decisão, sem determinar sozinho sizing ou valores por tenant. O código visível na
@@ -1211,14 +1211,14 @@ efeito de capacidade. Cache global ou `allEntries` não participa desse caminho.
 - [REQ-00046 - Resiliência contra starvation do pool](../product/requirements/REQ-00046-chatbot-tenant-pool-starvation-resilience.md)
 - [REQ-00047 - Administração de política de pool por tenant](../product/requirements/REQ-00047-super-admin-tenant-pool-policy-administration.md)
 - [REQ-00048 - Isolamento e resiliência do cache da política de pool](../product/requirements/REQ-00048-tenant-pool-policy-cache-isolation-resilience.md)
-- [TP-00023 - Administração de políticas de pool por tenant](../delivery/plans/TP-00023-tenant-pool-policy-administration.md)
-- [IP-BE-3.2.10-chatbot-tenant-pool-starvation-remediation — Remediação do starvation](../delivery/plans/implementation_plans/backend/IP-BE-3.2.10-chatbot-tenant-pool-starvation-remediation.md)
-- [LL-BE-00091 — Evidência histórica do esgotamento do pool tenant pelo chatbot](../delivery/lessons-learned/backend/LL-BE-00091-long-lived-chatbot-transaction-exhausts-tenant-pool.md)
-- [`TenantDatabaseRegistry.java`](../../backend/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantDatabaseRegistry.java)
-- [`TenantRoutingDataSource.java`](../../backend/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantRoutingDataSource.java)
-- [`TenantDatabaseRegistryPort.java`](../../backend/src/main/java/br/com/duoset/saas_service/shared/tenancy/TenantDatabaseRegistryPort.java)
-- [`TenantDataSourceConfig.java`](../../backend/src/main/java/br/com/duoset/saas_service/config/persistence/TenantDataSourceConfig.java)
-- [`PlatformDataSourceConfig.java`](../../backend/src/main/java/br/com/duoset/saas_service/config/persistence/PlatformDataSourceConfig.java)
+- [TP-00023 - Administração de políticas de pool por tenant](../../../docs/specs/TP-00023-tenant-pool-policy-administration.md)
+- [IP-BE-3.2.10-chatbot-tenant-pool-starvation-remediation — Remediação do starvation](../specs/IP-BE-3.2.10-chatbot-tenant-pool-starvation-remediation.md)
+- [LL-BE-00091 — Evidência histórica do esgotamento do pool tenant pelo chatbot](../lessons-learned/LL-BE-00091-long-lived-chatbot-transaction-exhausts-tenant-pool.md)
+- [`TenantDatabaseRegistry.java`](../../app/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantDatabaseRegistry.java)
+- [`TenantRoutingDataSource.java`](../../app/src/main/java/br/com/duoset/saas_service/config/persistence/routing/TenantRoutingDataSource.java)
+- [`TenantDatabaseRegistryPort.java`](../../app/src/main/java/br/com/duoset/saas_service/shared/tenancy/TenantDatabaseRegistryPort.java)
+- [`TenantDataSourceConfig.java`](../../app/src/main/java/br/com/duoset/saas_service/config/persistence/TenantDataSourceConfig.java)
+- [`PlatformDataSourceConfig.java`](../../app/src/main/java/br/com/duoset/saas_service/config/persistence/PlatformDataSourceConfig.java)
 
 ---
 
