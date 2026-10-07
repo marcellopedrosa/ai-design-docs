@@ -1,1 +1,7 @@
 .guard/
+
+/spec-kit/
+
+# Frontend dependencies and generated build artifacts
+projects/frontend/app/node_modules/
+projects/frontend/app/build/
