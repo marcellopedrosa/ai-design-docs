@@ -15,6 +15,52 @@ O harness não substitui nem replica o ciclo do Spec Kit. Ele acrescenta o
 contexto corporativo necessário para organizar documentação, padrões técnicos,
 contratos de API e skills compartilhadas.
 
+## Configuracao inicial do harness
+
+Configure o ambiente nesta ordem:
+
+1. **Instale o Spec Kit.** Consulte a [documentacao oficial de instalacao do Spec Kit](spec-kit/docs/installation.md) para instalar o `specify-cli` e confirmar os pre-requisitos. A [pagina do projeto upstream](https://github.com/github/spec-kit) e a referencia para versoes e atualizacoes.
+2. **Inicialize o Spec Kit na raiz do harness.** A partir desta pasta, selecione a integracao da sua IA:
+
+   ```powershell
+   specify init --here --integration <codex|claude|copilot|gemini|outro>
+   ```
+
+   Use o identificador aceito pela versao instalada do Spec Kit. As skills e os artefatos de integracao do Spec Kit ficam na raiz do harness, em `.agents/`, `.claude/` ou no diretorio equivalente da IA. Nao coloque artefatos de produtos em `spec-kit/.specify/`.
+3. **Configure os presets corporativos.** Instale as skills corporativas para os projetos adotantes, escolhendo `Codex`, `Claude` ou ambos:
+
+   ```powershell
+   powershell -File scripts/install-corporate-skills.ps1 -ProjectRoot projects -Agent Both
+   ```
+
+   Para Linux ou macOS, use o [instalador Bash](scripts/install-corporate-skills.sh). Essas skills sao aplicadas ao escopo dos produtos em `projects/`, e nao ao core em `spec-kit/`.
+4. **Valide a instalacao.** Confira a versao do CLI com `specify version`, revise os artefatos gerados e execute o verificador de [links relativos](corporate-presets/skills/validate-relative-links/scripts/check-links.mjs).
+
+Este repositorio ja versiona o core upstream em `spec-kit/`. Portanto, a instalacao do CLI e a inicializacao sao etapas de configuracao do ambiente; nao reclone nem personalize o conteudo de `spec-kit/` durante o uso normal.
+
+### Organizacao recomendada
+
+O harness possui duas camadas de skills, com responsabilidades e destinos diferentes:
+
+```text
+ai-design-docs/
+├── .agents/ ou .claude/       # skills e integracao do Spec Kit no harness
+├── spec-kit/                  # core upstream, protegido e sem customizacoes
+├── corporate-presets/         # fonte das skills, templates e standards corporativos
+└── projects/
+    ├── .agents/skills/        # skills corporativas para Codex
+    ├── .claude/skills/        # skills corporativas para Claude
+    ├── frontend/              # produto ou dominio frontend
+    └── backend/               # produto ou dominio backend
+```
+
+As skills do Spec Kit orientam o ciclo de especificacao, planejamento, tarefas,
+implementacao e validacao. As skills corporativas complementam esse ciclo com
+padroes, politicas e convencoes da empresa e sao publicadas no escopo de
+`projects/`. Quando `frontend` ou `backend` for um projeto independente, sua
+configuracao especifica pode ser inicializada dentro do respectivo diretorio,
+sem mover o core ou criar regras dentro de `spec-kit/`.
+
 ## Estrutura
 
 ```text
