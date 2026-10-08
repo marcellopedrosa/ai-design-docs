@@ -1,7 +1,0 @@
-.next
-.next-e2e
-node_modules
-playwright-report
-test-results
-site-html
-next-env.d.ts
