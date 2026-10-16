@@ -217,6 +217,9 @@ powershell -File scripts/install-corporate-skills.ps1 -ProjectRoot projects -Age
 bash scripts/install-corporate-skills.sh --project-root projects --agent both
 ```
 
+Para instalação e seleção de skills de projeto via Context7, consulte
+[`projects/AGENTS.md`](projects/AGENTS.md).
+
 ## Fluxo recomendado
 
 1. Consulte `AGENTS.md` e o padrão de estrutura documental.
