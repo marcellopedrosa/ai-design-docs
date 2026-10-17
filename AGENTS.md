@@ -25,3 +25,18 @@ Para seleção progressiva de contexto, siga `corporate-presets/standards/agent-
 Para qualquer changelog de produto, consulte e aplique
 `corporate-presets/standards/static-product-changelog-standard.md`; os
 standards do projeto apenas especializam seus caminhos e componentes.
+
+Todo changelog de produto deve ser composto como snapshot estático e stateless:
+
+- a fonte canônica é o `CHANGELOG.md` da coleção de releases do projeto;
+- a aplicação consome somente um artefato derivado versionado, sem ler o
+  Markdown em runtime e sem chamadas dinâmicas para montar a página;
+- a geração do snapshot não deve ocorrer automaticamente em `build`, `analyze`
+  ou inicialização da aplicação;
+- após cada mudança validada, atualize explicitamente o `CHANGELOG.md` e o
+  snapshot no mesmo diff e execute os verificadores do projeto;
+- a rota e o item de menu devem respeitar a autorização definida pelo projeto;
+  quando o contrato usar `SUPER_ADMIN`, a checagem deve considerar a autoridade
+  bruta do token mesmo durante personificação de tenant;
+- a tela deve exibir versão, data, estado da versão e mudanças agrupadas por
+  release; quando houver versão no menu lateral, use `vX.Y.Z - dd/mm/aaaa`.
