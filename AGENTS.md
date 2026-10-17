@@ -21,3 +21,7 @@ Após criar, mover, renomear ou remover documentos Markdown em `corporate-preset
 Cada coleção documental ativa deve manter um `README.md` como índice semântico imediato, conforme `corporate-presets/standards/documentation-governance-standard.md`.
 
 Para seleção progressiva de contexto, siga `corporate-presets/standards/agent-context-loading-standard.md`.
+
+Para qualquer changelog de produto, consulte e aplique
+`corporate-presets/standards/static-product-changelog-standard.md`; os
+standards do projeto apenas especializam seus caminhos e componentes.
