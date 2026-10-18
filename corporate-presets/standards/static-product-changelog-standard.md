@@ -52,6 +52,28 @@ A tela deve exibir a versão atual, a data da versão atual, uma lista agrupada
 por release, o estado de versão atual e as mudanças concluídas com tipo e
 descrição.
 
+Quando uma mudança alterar infraestrutura, migrations ou scripts operacionais,
+os arquivos relacionados devem ser registrados no Markdown e exibidos de forma
+expansível na tela. Arquivos de código de aplicação (por exemplo `.java`,
+`.ts`, `.tsx`, `.js`, `.css` e `.html`) não entram nessa relação.
+
+### Rastreabilidade de arquivos técnicos
+
+Uma mudança pode ser seguida por um bloco opcional:
+
+```md
+- [x] Corrigido — Atualização na tabela de contratos.
+  Arquivos relacionados:
+  - `projects/.../V1__contracts.sql`
+  - `projects/infra/scripts/init-database.sh`
+```
+
+Somente arquivos de migrations, `projects/infra/`, scripts e configurações de
+infraestrutura (`.sql`, `.sh`, `.yml`, `.yaml`, `.conf`, `.tf`, `.hcl`,
+`Dockerfile`, `docker-compose.*` ou `Makefile`) devem ser listados. O gerador
+de snapshot deve filtrar extensões ou caminhos fora desse escopo, e a interface
+deve usar um componente expansível acessível para não poluir a leitura resumida.
+
 Quando a versão também for exibida no menu lateral, o formato obrigatório é
 `vX.Y.Z - dd/mm/aaaa`, usando a mesma versão e data do snapshot consumido pela
 página. Datas desconhecidas devem ser exibidas como `Data: não registrada`.
