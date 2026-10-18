@@ -23,15 +23,22 @@ Todo produto que expõe um changelog na aplicação deve cumprir estas regras:
 - A fonte canônica das mudanças é um `CHANGELOG.md` armazenado na coleção
   documental de releases do produto, normalmente em
   `<projeto>/docs/releases/CHANGELOG.md`.
-- A página de changelog deve consumir um artefato derivado versionado, como
-  `src/generated/changelog.json`. Ela não pode ler o Markdown em runtime, fazer
+- Quando houver uma interface de changelog, ela deve consumir um artefato
+  intermediário derivado e versionado, como `src/generated/changelog.json`.
+  Esse JSON faz a ponte entre o `CHANGELOG.md` canônico e a tela (por exemplo,
+  um componente `.tsx`); a interface não pode ler o Markdown em runtime, fazer
   chamadas para obter o histórico ou manter estado próprio para compor a tela.
-- O artefato derivado deve ser atualizado explicitamente no mesmo diff da
+- O artefato intermediário deve ser atualizado explicitamente no mesmo diff da
   mudança validada. A geração não deve ocorrer automaticamente em `build`,
   `analyze`, inicialização da aplicação ou outro hook de execução.
 - O JSON gerado não deve ser editado manualmente. O gerador deve filtrar o
   conteúdo autorizado para exibição e o verificador deve detectar snapshot
   desatualizado.
+- O JSON é obrigatório somente quando o produto possui uma interface que o
+  consome. Projetos backend ou serviços sem tela podem manter o
+  `CHANGELOG.md` como fonte canônica e usar apenas os verificadores e artefatos
+  de automação necessários; não devem criar uma tela ou um JSON artificial
+  apenas para satisfazer este standard.
 
 ## Autorização
 
