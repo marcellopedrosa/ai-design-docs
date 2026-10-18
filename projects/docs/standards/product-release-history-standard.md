@@ -25,10 +25,15 @@ para os produtos documentados neste repositório.
 - A coleção de releases do produto deve manter um `CHANGELOG.md` como fonte
   canônica das mudanças, quando o produto possuir uma superfície de changelog.
   A seção `Não lançadas` recebe cada mudança até a decisão de versão.
-- A página de changelog deve consumir um snapshot estático versionado, como
-  `src/generated/changelog.json`. O produto não deve ler o Markdown em runtime,
-  regenerar o snapshot durante `build` ou `analyze`, nem editar o JSON gerado
-  manualmente.
+- Quando o produto possuir interface de changelog, ela deve consumir um
+  snapshot estático versionado, como `src/generated/changelog.json`, que faz a
+  intermediação entre o `CHANGELOG.md` e a tela. O produto não deve ler o
+  Markdown em runtime, regenerar o snapshot durante `build` ou `analyze`, nem
+  editar o JSON gerado manualmente.
+- Em produtos backend ou serviços sem interface, o JSON intermediário não é
+  obrigatório. Nesses casos, o `CHANGELOG.md` continua sendo a fonte canônica,
+  e o domínio deve documentar somente os verificadores e artefatos de
+  automação que realmente utiliza.
 - Os caminhos concretos do changelog, do snapshot, do gerador, dos
   verificadores e dos testes devem ser registrados na documentação do domínio
   que materializa este standard.
