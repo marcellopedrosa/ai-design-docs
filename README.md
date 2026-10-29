@@ -62,7 +62,7 @@ raiz do projeto adotante.
 ### Instalação do Context7
 
 ```bash
-npx ctx7@latest setup --Project
+npx ctx7@latest setup --project
 ```
 
 ### Arquitetural / Projeto
