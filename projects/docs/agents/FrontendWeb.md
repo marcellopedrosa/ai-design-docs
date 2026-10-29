@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-21"
 version: "1.3"
 keywords: "FrontendWeb, Implementacao frontend, agente, openapi, api-contract, contract-first"
-related_files: "README.md, docs/api_contracts/README.md, standards/implementation-readiness-standard.md, standards/frontend-standard.md, standards/data-grid-standard.md, standards/form-validation-standard.md, standards/keycloak-frontend-standard.md, standards/rbac-frontend-standard.md, standards/nextjs-standard.md, standards/api-client-standard.md, standards/frontend-testing-standard.md, standards/state-management-standard.md, standards/i18n-standard.md"
-code_references: "docs/api_contracts/, planned: frontend/src/features/fiscal/ como destino ainda não criado, planned: frontend/src/api/generated/ como destino ainda não criado, backend/, frontend/, infra/"
+related_files: "README.md, standards/implementation-readiness-standard.md, standards/frontend-standard.md, standards/data-grid-standard.md, standards/form-validation-standard.md, standards/keycloak-frontend-standard.md, standards/rbac-frontend-standard.md, standards/nextjs-standard.md, standards/api-client-standard.md, standards/frontend-testing-standard.md, standards/state-management-standard.md, standards/i18n-standard.md"
+code_references: "planned: frontend/src/features/fiscal/ como destino ainda não criado, planned: frontend/src/api/generated/ como destino ainda não criado"
 principal_statement: "Implement reactive user interfaces using React, consuming REST/OpenAPI endpoints from the backend, preserving the authoritative authenticated tenant context, delivering responsive layouts, and maintaining production bundles under 100KB gzipped."
 ---
 

@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-21"
 version: "1.5"
 keywords: "AdapterDev, Adaptadores de entrada e saida, agente, openapi, api-contract, contract-first"
-related_files: "README.md, standards/java-standard.md, standards/ddd-clean-architecture-standard.md, standards/api-client-standard.md, standards/implementation-readiness-standard.md, standards/development-standard.md, standards/backend-testing-standard.md, standards/modulith-standard.md, standards/websocket-standard.md, docs/api_contracts/README.md, ../../backend/docs/adrs/ADR-0006-audit-compliance.md"
-code_references: "docs/api_contracts/, /api/v1/fiscal/consulta, backend/, frontend/, infra/"
+related_files: "README.md, standards/java-standard.md, standards/ddd-clean-architecture-standard.md, standards/api-client-standard.md, standards/implementation-readiness-standard.md, standards/development-standard.md, standards/backend-testing-standard.md, standards/modulith-standard.md, standards/websocket-standard.md"
+code_references: ""
 principal_statement: "Implement all infrastructure adapters in the Clean Architecture infrastructure layer, including REST controllers (inbound adapters with OpenAPI), JPA repositories (outbound adapters with multi-tenant isolation), external API clients (outbound adapters with resilience), OAuth2 integration, caching adapters, and messaging adapters, conforming to port interfaces defined by @CleanArchitecture and implemented by @ImplementerCore."
 ---
 
@@ -102,7 +102,7 @@ AdapterDev receives the following inputs:
 - **Security Configuration:** OAuth2/Keycloak configuration from @SecurityOAuth specifying providers, scopes, JWT claim mappings, and authorization rules.
 - **API Contracts:** Canonical `Active` OpenAPI file in `docs/api_contracts/`, exact `info.version` and `operationId`s, referenced by the approved requirement/use case/plan. A prose-only contract requirement is insufficient.
 - **ADRs:** Architecture Decision Records (`../adrs/`) constraining technology choices and infrastructure patterns.
-- **ADR-0006 (Audit & Compliance):** [`../../backend/docs/adrs/ADR-0006-audit-compliance.md`](../../backend/docs/adrs/ADR-0006-audit-compliance.md) — Defines the `audit_log` table DDL, `JpaAuditServiceAdapter`, `@Audited` AOP aspect, and Flyway migration. AdapterDev **MUST** implement the infrastructure adapter and the AOP aspect as specified in ADR-0006 Sections 9 and 18.
+- **ADR-0006 (Audit & Compliance):** Defines the `audit_log` table DDL, `JpaAuditServiceAdapter`, `@Audited` AOP aspect, and Flyway migration. AdapterDev **MUST** implement the infrastructure adapter and the AOP aspect as specified in ADR-0006 Sections 9 and 18.
 - **Task Directives:** Handoff directives from @AgentOrchestrator specifying adapter implementation tasks.
 
 All specification inputs are expected in Markdown (.md) format. Code inputs are Java source files.

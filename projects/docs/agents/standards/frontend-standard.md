@@ -10,7 +10,7 @@ date: "2026-08-25"
 version: "1.4"
 keywords: "frontend, standard, standard"
 related_files: "./README.md, ../FrontendWeb.md"
-code_references: "frontend/src/services/, /api/v1/fiscal/situacao/${documento}, /api/v1/fiscal/consultas?page=${page}&size=${size}, frontend/src/components/shared/DocumentoInput.tsx, frontend/"
+code_references: "N/A"
 principal_statement: "As regras de Frontend aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

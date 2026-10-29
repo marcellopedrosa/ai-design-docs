@@ -11,7 +11,7 @@ version: "1.5"
 last_reviewed: "2026-09-06"
 keywords: "component, design, standard, date-input, calendar, date-picker"
 related_files: "./README.md, nextjs-standard.md, i18n-standard.md"
-code_references: "frontend/src/components/ui/, frontend/src/components/ui/DateInput/ - destino planejado, frontend/src/components/layout/, frontend/src/components/{module}/, frontend/src/components/shared/"
+code_references: "N/A"
 principal_statement: "Componentes reutilizáveis devem usar os primitives canônicos; todo campo de data civil usa DateInput com o calendário visual DateCalendar."
 ---
 

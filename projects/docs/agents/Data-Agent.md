@@ -10,7 +10,7 @@ date: "2026-08-21"
 version: "1.2"
 keywords: "Data-Agent, Dados e persistencia, agente"
 related_files: "README.md"
-code_references: "planned: backend/src/main/java/br/com/duoset/saas_service/**/batch/fiscal/ como destino ainda não criado, planned: backend/src/main/resources/db/migration/analytics/V1__create_fiscal_analytics.sql como destino ainda não criado, backend/, infra/"
+code_references: "planned: backend/src/main/java/br/com/duoset/saas_service/**/batch/fiscal/ como destino ainda não criado, planned: backend/src/main/resources/db/migration/analytics/V1__create_fiscal_analytics.sql como destino ainda não criado"
 principal_statement: "Implement local ETL pipelines using Spring Batch, configure Change Data Capture (CDC) with Debezium and PostgreSQL logical replication, design data pipelines per bounded context with tenant isolation schemas, and deliver analytical data processing capabilities with zero cloud costs."
 ---
 

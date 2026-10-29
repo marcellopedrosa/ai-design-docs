@@ -10,8 +10,8 @@ date: "2026-08-25"
 version: "1.8"
 last_reviewed: "2026-09-11"
 keywords: "rbac, frontend, standard, standard"
-related_files: "./README.md, keycloak-frontend-standard.md, i18n-standard.md, nextjs-standard.md, ../../../backend/docs/adrs/ADR-0050-rbac-sod-aprovacoes-financeiras.md, docs/architecture/rbac-access-control-matrix.md, docs/product/requirements/REQ-00003-rbac-profile-responsibility-matrix.md, docs/product/requirements/REQ-00004-rbac-security-mapping.md, docs/product/requirements/REQ-00041-chatbot-conversation-audit.md, docs/product/requirements/REQ-00043-conversation-audit-data-governance.md, docs/product/use-cases/UC-00035-chatbot-conversation-audit.md"
-code_references: "src/lib/permissions.ts, src/lib/paths.ts, src/lib/protected-routes.ts, src/lib/menu-config.ts, src/i18n/messages/*/navigation.json, src/hooks/useModuleAccess.ts, backend/, frontend/"
+related_files: "./README.md, keycloak-frontend-standard.md, i18n-standard.md, nextjs-standard.md"
+code_references: "src/i18n/messages/*/navigation.json"
 principal_statement: "A política de retenção de /audit é exclusiva da role bruta ROLE_SUPER_ADMIN sob personificação ativa; ROLE_TENANT_ADMIN nunca recebe essa capability, enquanto conversas e aliases permanecem ROLE_TENANT_AUDIT-only."
 ---
 
@@ -560,7 +560,7 @@ export const ForbiddenPage = () => {
 
 This table must be kept in sync with `@SecurityOAuth`'s Keycloak realm configuration.
 The detailed AS-IS inventory of routes, menus, local guards and known drift is the
-[central RBAC access-control matrix](../../architecture/rbac-access-control-matrix.md).
+central RBAC access-control matrix.
 
 | Role | Module Access | Allowed Scopes | UI Visibility |
 |---|---|---|---|

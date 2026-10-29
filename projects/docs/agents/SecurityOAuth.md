@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-21"
 version: "1.3"
 keywords: "SecurityOAuth, OAuth2 e IAM, agente"
-related_files: "README.md, ../../backend/docs/adrs/ADR-0006-audit-compliance.md, standards/security-standard.md, standards/keycloak-frontend-standard.md, standards/rbac-frontend-standard.md"
-code_references: "backend/, frontend/, infra/"
+related_files: "README.md, standards/security-standard.md, standards/keycloak-frontend-standard.md, standards/rbac-frontend-standard.md"
+code_references: ""
 principal_statement: "Configure and maintain OAuth2 authentication and authorization infrastructure using Keycloak as the identity provider, implement multi-tenant scopes and role-based access control, define security filters and policies, and produce authorization tests to ensure tenant isolation and access control compliance across all bounded contexts."
 ---
 
@@ -77,7 +77,7 @@ SecurityOAuth contributes to the Software Factory ecosystem as the enforcer of i
 SecurityOAuth receives the following inputs:
 
 - **Architecture Decision Records (ADRs):** Multi-tenancy strategy decisions, authentication provider choices, and authorization model decisions from `../adrs/`.
-- **ADR-0006 (Audit & Compliance):** [`../../backend/docs/adrs/ADR-0006-audit-compliance.md`](../../backend/docs/adrs/ADR-0006-audit-compliance.md) — Defines the audit trail mechanism that depends on authenticated user context from JWT claims. SecurityOAuth **MUST** ensure that `AuthenticatedUser` propagates `userId`, `tenantId`, and `clientIp` so that `AuditPort` can record complete audit entries.
+- **ADR-0006 (Audit & Compliance):** Defines the audit trail mechanism that depends on authenticated user context from JWT claims. SecurityOAuth **MUST** ensure that `AuthenticatedUser` propagates `userId`, `tenantId`, and `clientIp` so that `AuditPort` can record complete audit entries.
 - **Module Blueprints:** Use case specifications from @CleanArchitecture defining inbound ports that require authentication and authorization context (e.g., `AuthenticatedUser` parameter).
 - **Domain Model Specifications:** Entity and aggregate definitions from @DomainExpert that include tenant-scoped data access requirements and role-based business rules.
 - **API Endpoint Definitions:** REST endpoint specifications from @AdapterDev (OpenAPI/Swagger) defining which endpoints require authentication, specific roles, or scopes.

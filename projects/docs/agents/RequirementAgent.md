@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-21"
 version: "1.6"
 keywords: "RequirementAgent, Descoberta e validacao de requisitos, agente, openapi, api-contract"
-related_files: "README.md, docs/product/business/product-vision.md, docs/product/requirements/README.md, harness/templates/TPL-00012-prd.md, standards/implementation-readiness-standard.md, standards/api-client-standard.md, docs/api_contracts/README.md, harness/templates/TPL-00011-api-contract.md, harness/templates/TPL-00003-requirement.md, harness/templates/TPL-00004-use-case.md"
-code_references: "docs/api_contracts/, backend/, frontend/, website/, infra/"
+related_files: "README.md, standards/implementation-readiness-standard.md, standards/api-client-standard.md"
+code_references: ""
 principal_statement: "Analyze business context, elicit functional and non-functional requirements, and produce structured requirement documents that serve as the mandatory foundation for all implementation planning in the Software Factory."
 ---
 
@@ -41,9 +41,9 @@ RequirementAgent contributes to the Software Factory ecosystem as follows:
 
 ## 3. Core Responsibilities
 
-- **Analyze business context:** Study and deeply understand all business documents in `docs/product/business/`, including the [Visão de produto](../product/business/product-vision.md), to extract business rules, user flows, subscription plans, and domain constraints.
+- **Analyze business context:** Study and deeply understand the applicable business and product documents to extract business rules, user flows, subscription plans, and domain constraints.
 - **Structure Product Requirements Documents:** For an initiative, use
-  [TPL-00001](../../harness/templates/TPL-00001-prd.md) to draft problem,
+  the applicable corporate PRD template to draft problem,
   audience, outcomes, limits, metrics and product hypotheses in
   `docs/product/requirements/`. Preserve missing evidence as an explicit blocker
   and never validate the PRD on behalf of its human owner.
@@ -241,7 +241,7 @@ RequirementAgent is an early-pipeline agent. It receives inputs primarily from h
 ## 13. Internal Workflow
 
 1. **Receive Input:** Accept a feature request, business context update, or stakeholder clarification.
-2. **Study Business Context:** Read and analyze all relevant documents in `docs/product/business/`, especially the [Visão de produto](../product/business/product-vision.md), to understand the business domain, user flows, subscription plans, and constraints.
+2. **Study Business Context:** Read and analyze all relevant business and product documents to understand the business domain, user flows, subscription plans, and constraints.
 3. **Review Existing ADRs:** Read relevant ADRs in `../adrs/` to understand architectural constraints, technology stack, multi-tenancy strategy, and integration patterns that bound the requirement.
 4. **Review Existing Requirements:** Check `docs/product/requirements/` for related or dependent requirements to avoid duplication and ensure consistency.
 5. **Load Requirements Template:** Read `harness/templates/TPL-00003-requirement.md` to ensure the output follows the exact template structure.
@@ -360,7 +360,7 @@ Feature request from product stakeholder: "The end client (entrepreneur) should 
 
 **Artifacts Generated:**
 
-- `REQ-00001-fiscal-query-via-whatsapp.md` -- Functional requirement covering: chatbot flow (welcome → validate → query → result), acceptance criteria (5 scenarios from the [Visão de produto](../product/business/product-vision.md)), actors (End Client, WhatsApp API, SERPRO), API impact, data model impact (`saas_whatsapp`, `saas_fiscal`), AI agent responsibilities. Status: `Draft`.
+- `REQ-00001-fiscal-query-via-whatsapp.md` -- Functional requirement covering: chatbot flow (welcome → validate → query → result), acceptance criteria, actors (End Client, WhatsApp API, SERPRO), API impact, data model impact (`saas_whatsapp`, `saas_fiscal`), AI agent responsibilities. Status: `Draft`.
 - `REQ-00002-fiscal-query-performance-resilience.md` -- Non-functional requirement covering: SERPRO circuit breaker (Resilience4j), response time targets (< 5s excluding SERPRO), webhook acknowledgment (< 500ms), availability (99.5%), Redis caching for SERPRO results. Status: `Draft`.
 
 **Handoffs Performed:**

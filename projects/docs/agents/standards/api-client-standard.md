@@ -10,8 +10,8 @@ date: "2026-09-09"
 last_reviewed: "2026-09-10"
 version: "2.2"
 keywords: "api, openapi, contrato, contract-first, rfc-9110, rfc-9457, cliente, backend, frontend"
-related_files: "./README.md, ./implementation-readiness-standard.md, keycloak-frontend-standard.md, nextjs-standard.md, docs/api_contracts/README.md, harness/templates/TPL-00011-api-contract.md, artefatos de análise/ANL-00055-backend-api-contract-coverage-inventory.md, artefatos de análise/ANL-00057-frontend-backend-api-contract-catalog.md, ../../specs/TP-00052-backend-api-contract-baseline.md"
-code_references: "docs/api_contracts/, validate-api-contract-coverage.mjs, validate-api-contract-coverage.test.mjs, backend/src/main/java/, frontend/src/services/, frontend/src/schemas/, frontend/src/types/, website/src/"
+related_files: "./README.md, ./implementation-readiness-standard.md, keycloak-frontend-standard.md, nextjs-standard.md"
+code_references: ""
 principal_statement: "Toda especificação que cria, altera ou consome uma API HTTP do backend deve referenciar antes da implementação um contrato OpenAPI canônico, versionado e completo em docs/api_contracts/."
 ---
 

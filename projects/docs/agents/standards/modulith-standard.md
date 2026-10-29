@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-25"
 version: "1.5"
 keywords: "modulith, standard, standard"
-related_files: "./README.md, ddd-clean-architecture-standard.md, docs/architecture/module-registry.md"
-code_references: "backend/, infra/"
+related_files: "./README.md, ddd-clean-architecture-standard.md"
+code_references: ""
 principal_statement: "As regras de Modulith aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

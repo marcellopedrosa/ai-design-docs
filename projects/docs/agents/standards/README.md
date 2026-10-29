@@ -11,14 +11,14 @@ version: 2.6
 date: 2026-09-10
 last_reviewed: 2026-09-28
 keywords: standards, catalogo, nucleo-agnostico, lifecycle, readiness, qualidade, seguranca, appsec, entrega-git, branch, hook, stack, ativacao-condicional
-related_files: ./global/software-engineering-lifecycle.md, ./global/implementation-readiness-standard.md, ./global/software-quality-standard.md, ./global/development-standard.md, ./global/security-standard.md
+related_files: N/A
 code_references: N/A - standards documentais; ativação executável pertence ao projeto adotante.
 principal_statement: Esta coleção pertence ao projeto e indexa os standards locais; corporate-presets fornece o metamodelo e os gates sem assumir seu conteúdo final.
 ---
 
 # Standards
 
-Os [standards globais](global/README.md) são conteúdo deste projeto. O harness
+Os standards desta coleção são conteúdo deste projeto. O harness
 descobre sua localização pelo Registry, mas o projeto responde por sua vigência,
 especialização e critérios locais.
 
@@ -49,14 +49,14 @@ stack, risco ou decisão arquitetural correspondente existir no seu projeto.
 
 | Standard | Escopo | Ativação | Status |
 | --- | --- | --- | --- |
-| [Software Engineering Lifecycle](./global/software-engineering-lifecycle.md) | Sequência C.L.E.A.R. e gates | Mudança de software; fases condicionais podem ser N/A com justificativa | Active |
-| [Implementation Readiness](./global/implementation-readiness-standard.md) | Gate anterior à escrita executável | Todo handoff executável; N/A para alteração sem execução | Active |
-| [Software Quality](./global/software-quality-standard.md) | A1 Test, A2 Quality e A3 Security/Compliance | Mudança de software; alteração exclusivamente documental segue seu gate próprio | Active |
-| [Development](./global/development-standard.md) | Práticas de implementação e manutenção | Toda escrita executável | Active |
-| [Security](./global/security-standard.md) | Menor privilégio, dados e evidência A3 | Mudança de software e documentação operacional; profundidade por risco | Active |
+| [Software Engineering Lifecycle](./software-engineering-lifecycle.md) | Sequência C.L.E.A.R. e gates | Mudança de software; fases condicionais podem ser N/A com justificativa | Active |
+| [Implementation Readiness](./implementation-readiness-standard.md) | Gate anterior à escrita executável | Todo handoff executável; N/A para alteração sem execução | Active |
+| [Software Quality](./software-quality-standard.md) | A1 Test, A2 Quality e A3 Security/Compliance | Mudança de software; alteração exclusivamente documental segue seu gate próprio | Active |
+| [Development](./development-standard.md) | Práticas de implementação e manutenção | Toda escrita executável | Active |
+| [Security](./security-standard.md) | Menor privilégio, dados e evidência A3 | Mudança de software e documentação operacional; profundidade por risco | Active |
 
 O núcleo é agnóstico de linguagem, framework, banco, provedor, protocolo e
-topologia. `security-standard` é o baseline de segurança; `security-gate` aprofunda
+topologia. `security-standard` é o baseline de segurança; `stone-security-gate` aprofunda
 A3 quando o projeto tiver uma superfície de aplicação compatível.
 
 ## Exemplos condicionais para projetos adotantes
@@ -105,14 +105,14 @@ versão, ferramentas, owners, paths e comandos locais.
 5. Um exemplo condicional não aplicável não deve ser criado no projeto.
 6. Regra local pode elevar ou especializar o baseline, mas não o enfraquecer sem
    decisão arquitetural explícita.
-7. Para A3 de aplicação, o `quality-gate` pode acionar `security-gate`; a skill
+7. Para A3 de aplicação, o `quality-gate` pode acionar `stone-security-gate`; a skill
    executa standards selecionados e devolve evidência, sem criar gate autônomo.
 8. Toda criação de exemplo condicional atualiza este catálogo e o README imediato;
    a ausência da capacidade não exige arquivo vazio ou alias.
 
 Entrega Git não é um standard adicional nem uma ativação implícita deste catálogo:
 quando adotada, é uma capacidade operacional sujeita à política, aos gates, ao hook
-local de commit e ao enforcement local descritos pela skill `git-delivery`.
+local de commit e ao enforcement local descritos pela skill `stone-git-delivery`.
 
 ## Change log
 
@@ -120,7 +120,7 @@ local de commit e ao enforcement local descritos pela skill `git-delivery`.
 | --- | --- | --- |
 | 2.6 | 2026-09-28 | Remove standards condicionais do baseline e os documenta como exemplos explícitos para novos projetos adotantes. |
 | 2.5 | 2026-09-28 | Separa o núcleo agnóstico da biblioteca condicional e explicita critérios para adoção e remoção por contexto. |
-| 2.4 | 2026-09-28 | Atualiza a integração dos standards especializados para o subgate `security-gate` do A3. |
+| 2.4 | 2026-09-28 | Atualiza a integração dos standards especializados para o subgate `stone-security-gate` do A3. |
 | 2.3 | 2026-09-28 | Adiciona standards especializados de Application, API e Spring Security e convenção `<capacidade>-security-standard.md`. |
 | 2.2 | 2026-09-13 | Explicita hook local e settings como parte da ativacao opt-in de entrega Git. |
 | 2.1 | 2026-09-13 | Relaciona lifecycle, qualidade e desenvolvimento à capacidade opt-in de entrega Git. |

@@ -10,7 +10,7 @@ date: "2026-08-25"
 version: "1.4"
 keywords: "state, management, standard, standard"
 related_files: "./README.md, nextjs-standard.md, api-client-standard.md"
-code_references: "src/stores/, src/hooks/, src/hooks/queries/, frontend/"
+code_references: ""
 principal_statement: "As regras de State Management & Hooks aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-21"
 version: "1.6"
 keywords: "CodeGuardian, Revisao e qualidade, agente, readiness, cobertura, comentarios, tamanho-de-arquivo, loop-corretivo"
-related_files: "README.md, standards/software-quality-standard.md, standards/implementation-readiness-standard.md, standards/java-standard.md, standards/development-standard.md, standards/security-standard.md, ../../backend/docs/adrs/ADR-0006-audit-compliance.md"
-code_references: "infra/scripts/validate-quality-metrics.mjs, backend/, frontend/, website/, infra/scripts/validate-quality-gates.sh"
+related_files: "README.md, standards/software-quality-standard.md, standards/implementation-readiness-standard.md, standards/java-standard.md, standards/development-standard.md, standards/security-standard.md"
+code_references: ""
 principal_statement: "Audita qualidade com métricas reproduzíveis, incluindo cobertura, tamanho e comentários, e devolve achados corrigíveis ao implementador até PASS ou impasse real."
 ---
 
@@ -101,7 +101,7 @@ CodeGuardian receives the following inputs:
 - **Previous Audit Reports:** Historical quality reports for trend analysis and regression detection are cataloged in `docs/delivery/reports/`.
 - **Remediation Submissions:** Updated source files from @ImplementerCore or @AdapterDev submitted after addressing audit findings, for re-validation.
 - **ADRs:** Architecture Decision Records from `../adrs/` that may influence quality standards or introduce exceptions to default rules.
-- **ADR-0006 (Audit & Compliance):** [`../../backend/docs/adrs/ADR-0006-audit-compliance.md`](../../backend/docs/adrs/ADR-0006-audit-compliance.md) — Defines the catalog of auditable actions (Section 18) and the `@Audited` annotation pattern. CodeGuardian **MUST** verify that all sensitive use cases listed in ADR-0006 carry the `@Audited` annotation or explicitly invoke `AuditPort`. Missing audit coverage is a Critical finding.
+- **ADR-0006 (Audit & Compliance):** Defines the catalog of auditable actions (Section 18) and the `@Audited` annotation pattern. CodeGuardian **MUST** verify that all sensitive use cases listed in ADR-0006 carry the `@Audited` annotation or explicitly invoke `AuditPort`. Missing audit coverage is a Critical finding.
 - **Task Directives:** Handoff directives from @AgentOrchestrator specifying audit scope and priority.
 - **Implementation Readiness Evidence:** `READY` result, exact task, paths and source
   versions attached to the handoff.

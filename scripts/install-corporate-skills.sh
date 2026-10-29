@@ -2,11 +2,11 @@
 set -euo pipefail
 
 usage() {
-  printf 'Usage: bash scripts/install-corporate-skills.sh --project-root PATH [--agent codex|claude|both] [--force]\n' >&2
+  printf 'Usage: bash scripts/install-corporate-skills.sh [--project-root PATH] [--agent codex|claude|both] [--force]\n' >&2
   exit 2
 }
 
-project_root=''
+project_root='.'
 agent='both'
 force=false
 while (($#)); do
@@ -61,7 +61,7 @@ esac
 
 # Check every destination before copying any skill.
 for runtime in "${runtimes[@]}"; do
-  if [[ $runtime == codex ]]; then parent="$project/.agents/skills"; else parent="$project/.claude/skills"; fi
+  parent="$project/.agents/skills"
   for name in "${skills[@]}"; do
     destination="$parent/$name"
     if [[ -L $destination || ( -e $destination && ! -d $destination ) ]]; then
@@ -76,7 +76,7 @@ for runtime in "${runtimes[@]}"; do
 done
 
 for runtime in "${runtimes[@]}"; do
-  if [[ $runtime == codex ]]; then parent="$project/.agents/skills"; else parent="$project/.claude/skills"; fi
+  parent="$project/.agents/skills"
   mkdir -p -- "$parent"
   for name in "${skills[@]}"; do
     destination="$parent/$name"

@@ -10,7 +10,7 @@ date: "2026-08-25"
 version: "1.4"
 keywords: "form, validation, standard, standard"
 related_files: "./README.md, component-design-standard.md, i18n-standard.md"
-code_references: "backend/, frontend/"
+code_references: ""
 principal_statement: "As regras de Form Validation aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

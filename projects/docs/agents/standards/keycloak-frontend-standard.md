@@ -10,7 +10,7 @@ date: "2026-08-25"
 version: "1.4"
 keywords: "keycloak, frontend, standard, standard"
 related_files: "./README.md, ../FrontendWeb.md, ../UIIntegrator.md"
-code_references: "frontend/"
+code_references: ""
 principal_statement: "As regras de Keycloak Frontend aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

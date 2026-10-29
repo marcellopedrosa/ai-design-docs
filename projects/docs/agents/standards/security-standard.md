@@ -10,7 +10,7 @@ date: "2026-08-25"
 version: "1.4"
 keywords: "security, standard, standard"
 related_files: "./README.md"
-code_references: "backend/, frontend/"
+code_references: ""
 principal_statement: "As regras de Security aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

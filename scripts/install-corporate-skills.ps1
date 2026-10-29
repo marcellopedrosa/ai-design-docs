@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory = $true)]
-    [string]$ProjectRoot,
+    [string]$ProjectRoot = '.',
     [ValidateSet('Codex', 'Claude', 'Both')]
     [string]$Agent = 'Both',
     [switch]$Force
@@ -33,8 +33,7 @@ foreach ($skill in $skills) {
 $agents = if ($Agent -eq 'Both') { @('Codex', 'Claude') } else { @($Agent) }
 $operations = @()
 foreach ($runtime in $agents) {
-    $relative = if ($runtime -eq 'Codex') { '.agents\skills' } else { '.claude\skills' }
-    $destinationRoot = Join-Path $project $relative
+    $destinationRoot = Join-Path $project '.agents\skills'
     foreach ($skill in $skills) {
         $destination = Join-Path $destinationRoot $skill.Name
         if ((Test-Path -LiteralPath $destination) -and -not $Force) {

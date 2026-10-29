@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-21"
 version: "1.2"
 keywords: "ModulithConfig, Configura módulos, interfaces nomeadas, eventos e verificações Spring Modulith, agente"
-related_files: "README.md, standards/modulith-standard.md, docs/architecture/module-registry.md"
-code_references: "backend/, infra/"
+related_files: "README.md, standards/modulith-standard.md"
+code_references: ""
 principal_statement: "Structure and configure the modular monolith using Spring Modulith, enforce module boundaries, verify inter-module couplings, manage module declarations, and optimize the modulith configuration for zero-cost local development."
 ---
 

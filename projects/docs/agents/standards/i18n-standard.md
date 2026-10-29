@@ -10,7 +10,7 @@ date: "2026-08-25"
 version: "1.4"
 keywords: "i18n, standard, standard"
 related_files: "./README.md"
-code_references: "src/lib/formatters.ts, backend/, frontend/"
+code_references: ""
 principal_statement: "As regras de Internationalization (i18n) aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

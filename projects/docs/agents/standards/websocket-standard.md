@@ -10,7 +10,7 @@ date: "2026-08-25"
 version: "1.4"
 keywords: "websocket, standard, standard"
 related_files: "./README.md, keycloak-frontend-standard.md, api-client-standard.md"
-code_references: "backend/, frontend/, infra/"
+code_references: ""
 principal_statement: "As regras de WebSocket & Real-time aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

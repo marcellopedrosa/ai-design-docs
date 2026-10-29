@@ -10,7 +10,7 @@ date: "2026-08-25"
 version: "1.4"
 keywords: "data, grid, standard, standard"
 related_files: "./README.md, state-management-standard.md"
-code_references: "backend/, frontend/"
+code_references: ""
 principal_statement: "As regras de Data Grid & List aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

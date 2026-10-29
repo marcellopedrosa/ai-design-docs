@@ -1,6 +1,8 @@
 # Proteção do core
 
-O instalador de skills tem duas versões equivalentes: `install-corporate-skills.ps1` para PowerShell no Windows e `install-corporate-skills.sh` para Bash no Linux e macOS. Veja [o catálogo de skills](../corporate-presets/skills/README.md) para os comandos.
+As skills corporativas ficam disponíveis na raiz do harness. Os scripts
+`install-corporate-skills.ps1` e `install-corporate-skills.sh` sincronizam a
+fonte canônica de `corporate-presets/skills/` com os diretórios dos agentes.
 
 No Linux/macOS, `protect-spec-kit.sh` salva os modos originais em `.guard/` e retira escrita de arquivos e diretórios do core. O desbloqueio restaura esses modos:
 

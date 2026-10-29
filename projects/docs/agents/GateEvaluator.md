@@ -9,9 +9,9 @@ status: Active
 version: 1.0
 date: 2026-09-29
 last_reviewed: 2026-09-29
-keywords: subagente, gate-evaluator, avaliador, isolamento, menor-privilegio, quality-gate, security-gate
-related_files: AgentOrchestrator.md, README.md, standards/software-quality-standard.md, ../../api_contracts/gate-result.schema.json, ../../api_contracts/evidence.schema.json
-code_references: ../../api_contracts/gate-result.schema.json, ../../api_contracts/evidence.schema.json, ../../tooling/hooks/
+keywords: subagente, gate-evaluator, avaliador, isolamento, menor-privilegio, quality-gate, stone-security-gate
+related_files: AgentOrchestrator.md, README.md, standards/software-quality-standard.md
+code_references: N/A
 principal_statement: O GateEvaluator é um subagente de auditoria com ferramentas restritas a leitura e execução controlada de testes, vedado de escrita de código.
 ---
 

@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-21"
 version: "1.3"
 keywords: "UIIntegrator, Integracao UI/API, agente, openapi, api-contract, contract-first"
-related_files: "README.md, docs/api_contracts/README.md, standards/implementation-readiness-standard.md, standards/frontend-standard.md, standards/form-validation-standard.md, standards/keycloak-frontend-standard.md, standards/rbac-frontend-standard.md, standards/nextjs-standard.md, standards/api-client-standard.md, standards/frontend-testing-standard.md, standards/state-management-standard.md, standards/i18n-standard.md, standards/websocket-standard.md, standards/webdesigner-standard.md"
-code_references: "docs/api_contracts/, frontend/src/app/(dashboard)/fiscal/, backend/, frontend/, infra/"
+related_files: "README.md, standards/implementation-readiness-standard.md, standards/frontend-standard.md, standards/form-validation-standard.md, standards/keycloak-frontend-standard.md, standards/rbac-frontend-standard.md, standards/nextjs-standard.md, standards/api-client-standard.md, standards/frontend-testing-standard.md, standards/state-management-standard.md, standards/i18n-standard.md, standards/websocket-standard.md, standards/webdesigner-standard.md"
+code_references: ""
 principal_statement: "Integrate frontend React components with backend REST adapters, manage SPA routing and minimal global state, orchestrate end-to-end tests with Playwright, and optimize for local cold start performance."
 ---
 

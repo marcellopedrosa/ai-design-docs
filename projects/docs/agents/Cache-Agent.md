@@ -10,7 +10,7 @@ date: "2026-08-21"
 version: "1.2"
 keywords: "Cache-Agent, Define estratégia de cache, chaves, invalidação, isolamento e consistência, agente"
 related_files: "README.md"
-code_references: "planned: backend/src/main/java/br/com/duoset/saas_service/**/cache/fiscal/ como destino ainda não criado, planned: backend/src/main/java/br/com/duoset/saas_service/**/cache/ como destino ainda não criado, backend/, infra/"
+code_references: "planned: backend/src/main/java/br/com/duoset/saas_service/**/cache/fiscal/ como destino ainda não criado, planned: backend/src/main/java/br/com/duoset/saas_service/**/cache/ como destino ainda não criado"
 principal_statement: "Configure Dockerized Redis instances, implement multi-tenant Spring Cache with `@Cacheable` annotations, define caching strategies (cache-aside, write-through) per bounded context, optimize TTL policies, and ensure tenant-isolated cache operations with zero cloud costs."
 ---
 

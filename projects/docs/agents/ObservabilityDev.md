@@ -10,7 +10,7 @@ date: "2026-08-21"
 version: "1.3"
 keywords: "ObservabilityDev, Instrumenta métricas, logs e traces nos componentes afetados, agente"
 related_files: "README.md"
-code_references: "src/main/resources/application.yml, /api/v1/fiscal/, src/main/resources, backend/, frontend/, infra/"
+code_references: ""
 principal_statement: "Implement and configure observability infrastructure for the SaaS platform using Spring Boot Actuator metrics, structured logging, and minimal distributed tracing with Micrometer, all optimized for local development with zero cloud costs."
 ---
 

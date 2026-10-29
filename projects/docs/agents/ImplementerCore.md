@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-21"
 version: "1.3"
 keywords: "ImplementerCore, Dominio e aplicacao, agente"
-related_files: "README.md, standards/java-standard.md, standards/ddd-clean-architecture-standard.md, standards/backend-testing-standard.md, standards/modulith-standard.md, ../../backend/docs/adrs/ADR-0006-audit-compliance.md"
-code_references: "backend/, frontend/, infra/"
+related_files: "README.md, standards/java-standard.md, standards/ddd-clean-architecture-standard.md, standards/backend-testing-standard.md, standards/modulith-standard.md"
+code_references: ""
 principal_statement: "Implement the domain and application layers of the Clean Architecture in Java 25 + Spring Boot 4, coding use case interactors, domain services, entities, value objects, and domain events based on validated specifications from @DomainExpert and @CleanArchitecture."
 ---
 
@@ -86,7 +86,7 @@ ImplementerCore receives the following inputs:
 - **Module Blueprints:** Use case specifications (inbound ports, input/output DTOs, outbound port dependencies), package structure, and layer definitions from @CleanArchitecture.
 - **Business Rule Catalogs:** Invariants, pre-conditions, post-conditions, and validation rules from @DomainExpert.
 - **ADRs:** Architecture Decision Records (`../adrs/`) constraining technology choices, patterns, and conventions.
-- **ADR-0006 (Audit & Compliance):** [`../../backend/docs/adrs/ADR-0006-audit-compliance.md`](../../backend/docs/adrs/ADR-0006-audit-compliance.md) — Defines `AuditPort`, `@Audited` annotation, and the catalog of auditable actions. ImplementerCore **MUST** invoke `AuditPort` or annotate use cases with `@Audited` for all sensitive actions listed in ADR-0006 Section 18.
+- **ADR-0006 (Audit & Compliance):** Defines `AuditPort`, `@Audited` annotation, and the catalog of auditable actions. ImplementerCore **MUST** invoke `AuditPort` or annotate use cases with `@Audited` for all sensitive actions listed in ADR-0006 Section 18.
 - **ArchUnit Rule Definitions:** Architectural constraints from @CleanArchitecture that the code must satisfy.
 - **Code Review Feedback:** Quality audit reports from @CodeGuardian with refactoring recommendations.
 - **Task Directives:** Handoff directives from @AgentOrchestrator specifying implementation tasks.

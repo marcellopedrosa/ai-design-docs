@@ -10,7 +10,7 @@ date: "2026-08-25"
 version: "1.5"
 keywords: "frontend, testing, standard, standard"
 related_files: "./README.md, ./software-quality-standard.md"
-code_references: "frontend/src/test/, frontend/src/app/, frontend/vitest.config.ts, frontend/package.json, infra/scripts/validate-quality-gates.sh"
+code_references: ""
 principal_statement: "As regras de Frontend Testing aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

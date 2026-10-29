@@ -54,7 +54,7 @@ convenção do Spec Kit; skills de numeração documental nunca se aplicam a `do
 | Política de colocação ou Git | `corporate-presets/policies/` |
 | Mudança executável | `projects/<dominio>/docs/specs/<feature>/` |
 | Decisão técnica | `projects/<dominio>/docs/adrs/` ou `projects/docs/adrs/` |
-| Validação documental | `validate-relative-links` e `documentation-governance` |
+| Validação documental | `stone-check-relative-links` e `stone-documentation-governance` |
 
 ## Exclusões padrão
 

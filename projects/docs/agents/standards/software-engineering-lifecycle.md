@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-09-08"
 version: "1.11"
 keywords: "software, engineering, lifecycle, standard, openapi, api-contract, contract-first, decomposicao-semantica, metricas, loop-corretivo, entrega-git"
-related_files: "./README.md, ./software-quality-standard.md, ./implementation-readiness-standard.md, api-client-standard.md, docs/api_contracts/README.md, docs/product/business/product-vision.md, docs/product/requirements/README.md, harness/templates/TPL-00011-api-contract.md, harness/templates/TPL-00012-prd.md, harness/templates/TPL-00003-requirement.md, harness/templates/TPL-00004-use-case.md, harness/templates/TPL-00005-task-plan.md, harness/templates/TPL-00006-implementation-plan.md, ../AgentOrchestrator.md, ../CodeGuardian.md"
-code_references: "docs/api_contracts/, infra/scripts/validate-quality-metrics.mjs, backend/, frontend/, website/, infra/scripts/validate-quality-gates.sh"
+related_files: "./README.md, ./software-quality-standard.md, ./implementation-readiness-standard.md, api-client-standard.md, ../AgentOrchestrator.md, ../CodeGuardian.md"
+code_references: ""
 principal_statement: "Uma iniciativa só progride com PRD aplicável Validated, decomposição semântica automática, IRG READY e métricas aceitáveis; após Assurance integralmente verde, a branch governada pode ser enviada sem autorizar integração ou deploy."
 ---
 
@@ -159,7 +159,7 @@ behavior, audience, value, offering or initiative scope always requires a PRD.
 | Attribute | Value |
 |:--|:--|
 | **Owner** | @AgentOrchestrator |
-| **Gate** | Task plan exists, every task has finite contract, API operations are agent-defined/auto-approved when applicable, and `implementation-readiness` records `READY` for the exact source versions and scope |
+| **Gate** | Task plan exists, every task has finite contract, API operations are agent-defined/auto-approved when applicable, and `stone-implementation-readiness` records `READY` for the exact source versions and scope |
 | **Artifact** | `docs/delivery/plans/TP-NNNNN-feature-task-plan.md` |
 | **Description** | @AgentOrchestrator decomposes the approved requirement into semantic units with one observable result and one handoff each, maps What, Where, Depends on, Reuses and Requirements, and defines Gate Audit, Acceptance Tests, Prohibited, Mandatory and finite Definition of Done. A granularity failure is corrected automatically with parent → child mapping, index/dependency updates and a separate IRG rerun for every child; it is not a final `BLOCKED` reason. For API work, every plan binds the canonical path, `info.version`, status and exact `operationId`s and plans parity tests. API contract incompleteness is auto-repaired as `REPAIRING` and never blocks; only a newly discovered product/architecture decision can block. Any assumption `Proposed`, Open Question, missing dependency or non-verifiable DoD still produces `BLOCKED`. |
 
@@ -280,7 +280,7 @@ Business Context (`docs/product/business/product-vision.md`)
    registra resposta, data e evidência no requisito/caso de uso antes de reexecutar
    o gate. A conversa isolada não autoriza implementação.
 11. **Readiness Audit Rule:** @AgentOrchestrator sempre executa a skill
-    `implementation-readiness` antes de todo handoff de implementação; o executor
+    `stone-implementation-readiness` antes de todo handoff de implementação; o executor
     confere o `READY`, e @CodeGuardian registra ausência como blocker processual.
 12. **Finite Task Rule:** Cada task publica What, Where, Depends on, Reuses,
     Requirements, Gate Audit, Acceptance Tests, Prohibited, Mandatory e Definition
@@ -305,7 +305,7 @@ Business Context (`docs/product/business/product-vision.md`)
 
 - Before creating a task plan, verify that Phases 1A, 1B and 2–5 are complete (and Phase 6 if applicable).
 - In the task plan, explicitly reference the artifacts produced in each phase.
-- Before every implementation handoff, invoke `implementation-readiness` and bind
+- Before every implementation handoff, invoke `stone-implementation-readiness` and bind
   the result to the exact task, source versions and paths.
 - If granularity fails, decompose semantically without asking the human how to
   split, update parent → child mappings, indexes and dependencies, and re-run the
@@ -346,7 +346,7 @@ Business Context (`docs/product/business/product-vision.md`)
 | Software Quality Standard | `./software-quality-standard.md` | Separação Teste x QA, matriz, evidência, waivers e resultados |
 | Quality Gate Executor | `infra/scripts/validate-quality-gates.sh` | Orquestra gates por escopo e nível sem descobrir mudanças por Git |
 | Quality Metrics | `infra/scripts/validate-quality-metrics.mjs` e wrapper em `infra/scripts/` | Mede cobertura, tamanho, comentários e branch de entrega nos targets explícitos |
-| Implementation Readiness Skill | `.agents/skills/implementation-readiness/SKILL.md` / `.claude/skills/implementation-readiness/SKILL.md` | Audita READY/BLOCKED antes de todo handoff executável |
+| Implementation Readiness Skill | `.agents/skills/stone-implementation-readiness/SKILL.md` | Audita READY/BLOCKED antes de todo handoff executável |
 
 ---
 

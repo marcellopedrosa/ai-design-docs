@@ -26,15 +26,9 @@ Configure o ambiente nesta ordem:
    specify init --here --integration <codex|claude|copilot|gemini|outro>
    ```
 
-   Use o identificador aceito pela versao instalada do Spec Kit. As skills e os artefatos de integracao do Spec Kit ficam na raiz do harness, em `.agents/`, `.claude/` ou no diretorio equivalente da IA. Nao coloque artefatos de produtos em `spec-kit/.specify/`.
-3. **Configure os presets corporativos.** Instale as skills corporativas para os projetos adotantes, escolhendo `Codex`, `Claude` ou ambos:
-
-   ```powershell
-   powershell -File scripts/install-corporate-skills.ps1 -ProjectRoot projects -Agent Both
-   ```
-
-   Para Linux ou macOS, use o [instalador Bash](scripts/install-corporate-skills.sh). Essas skills sao aplicadas ao escopo dos produtos em `projects/`, e nao ao core em `spec-kit/`.
-4. **Valide a instalacao.** Confira a versao do CLI com `specify version`, revise os artefatos gerados e execute o verificador de [links relativos](corporate-presets/skills/validate-relative-links/scripts/check-links.mjs).
+   Use o identificador aceito pela versao instalada do Spec Kit. As skills e os artefatos de integracao do Spec Kit ficam na raiz do harness, em `.agents/` ou no diretorio equivalente da IA. Nao coloque artefatos de produtos em `spec-kit/.specify/`.
+3. **Use as skills corporativas do harness.** Elas ficam disponíveis na raiz, em `.agents/skills/`, com fonte canônica em `corporate-presets/skills/`.
+4. **Valide a instalacao.** Confira a versao do CLI com `specify version`, revise os artefatos gerados e execute o verificador de [links relativos](corporate-presets/skills/stone-check-relative-links/scripts/check-links.mjs).
 
 Este repositorio ja versiona o core upstream em `spec-kit/`. Portanto, a instalacao do CLI e a inicializacao sao etapas de configuracao do ambiente; nao reclone nem personalize o conteudo de `spec-kit/` durante o uso normal.
 
@@ -44,22 +38,85 @@ O harness possui duas camadas de skills, com responsabilidades e destinos difere
 
 ```text
 ai-design-docs/
-├── .agents/ ou .claude/       # skills e integracao do Spec Kit no harness
+├── .agents/                   # skills compartilhadas e integração dos agentes
 ├── spec-kit/                  # core upstream, protegido e sem customizacoes
 ├── corporate-presets/         # fonte das skills, templates e standards corporativos
 └── projects/
-    ├── .agents/skills/        # skills corporativas para Codex
-    ├── .claude/skills/        # skills corporativas para Claude
     ├── frontend/              # produto ou dominio frontend
     └── backend/               # produto ou dominio backend
 ```
 
 As skills do Spec Kit orientam o ciclo de especificacao, planejamento, tarefas,
 implementacao e validacao. As skills corporativas complementam esse ciclo com
-padroes, politicas e convencoes da empresa e sao publicadas no escopo de
-`projects/`. Quando `frontend` ou `backend` for um projeto independente, sua
+padroes, politicas e convencoes da empresa e ficam centralizadas na raiz do
+harness. Quando `frontend` ou `backend` for um projeto independente, sua
 configuracao especifica pode ser inicializada dentro do respectivo diretorio,
 sem mover o core ou criar regras dentro de `spec-kit/`.
+
+## Skills do Context7
+
+As skills específicas de cada projeto devem ser instaladas dentro da raiz do
+projeto que as utiliza, e não em `projects/`. Execute os comandos a partir da
+raiz do projeto adotante.
+
+### Instalação do Context7
+
+```bash
+npx ctx7@latest setup --Project
+```
+
+### Arquitetural / Projeto
+
+```bash
+npx skills add https://github.com/NetBT/big-bang --skill design-pattern
+npx skills add https://github.com/ciembor/agent-rules-books --skill clean-architecture -a <codex|claude|outros>
+```
+
+### Codificação
+
+```bash
+npx skills add https://github.com/ciembor/agent-rules-books --skill clean-code -a <codex|claude|outros>
+npx skills add https://github.com/ajaywadhara/modern-java --skill modern-java -a <codex|claude|outros>
+```
+
+### Backend
+
+```bash
+npx skills add https://github.com/github/awesome-copilot --skill java-springboot
+npx skills add https://github.com/vercel-labs/agent-skills --skill vercel-react-best-practices
+```
+
+### Frontend
+
+```bash
+npx skills add https://github.com/pymodel/react-frontend-skills --skill nextjs -a <codex|claude|outros>
+```
+
+### Banco de Dados
+
+```bash
+npx skills add https://github.com/mariadb/skills --skill mariadb-query-optimization -a <codex|claude|outros>
+npx skills add https://github.com/github/awesome-copilot --skill postgresql-optimization -a <codex|claude|outros>
+npx skills add github/awesome-copilot --skill sql-optimization
+```
+
+### Testes
+
+```bash
+npx skills add https://github.com/github/anivar/jest-skill --skill jest -a <codex|claude|outros>
+npx skills add microsoft/playwright
+npx skills add https://github.com/giuseppe-trisciuoglio/developer-kit --skill spring-boot-test-patterns
+```
+
+### Segurança
+
+```bash
+npx skills add https://github.com/affaan-m/ecc --skill springboot-security
+npx skills add https://github.com/microsoft/hve-core --skill owasp-top-10
+npx skills add https://github.com/schalkneethling/webdev-agent-skills --skill frontend-security -a <codex|claude|outros>
+npx skills add https://github.com/xirothedev/skills --skill nextjs-secure-bff -a <codex|claude|outros>
+npx skills add https://github.com/owasp/secure-agent-playbook --skill web-security-review -a <codex|claude|outros>
+```
 
 ## Estrutura
 
@@ -88,11 +145,10 @@ operacionais da instancia do Spec Kit, como memoria, scripts e configuracoes.
 Quando a inicializacao ocorrer na raiz do harness, ele fica na raiz. Nao use
 `spec-kit/.specify/` para armazenar documentos de produtos.
 
-### `.agents/` e `.claude/`
+### `.agents/`
 
-Sao diretorios de integracao das ferramentas de IA. Na raiz, recebem as skills
-e configuracoes do Spec Kit para o harness. Em `projects/`, recebem as skills
-corporativas destinadas aos produtos, conforme o agente utilizado.
+É o diretório compartilhado de integração das ferramentas de IA. Contém as
+skills corporativas e as configurações operacionais usadas pelos agentes.
 
 ### `corporate-presets/`
 
@@ -141,7 +197,7 @@ como uma parte do produto sera especificada e implementada.
 
 ### `scripts/`
 
-Contem automacoes do harness, incluindo instalacao das skills corporativas,
+Contem automacoes do harness, incluindo sincronizacao das skills corporativas,
 validacao e protecao do diretorio `spec-kit/`. Os scripts nao substituem os
 comandos oficiais do Spec Kit.
 
@@ -207,18 +263,11 @@ nativos dos agentes. O padrão de criação utiliza como referência principal a
 [documentação do Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview)
 e, como complemento, a [documentação de Skills da OpenAI](https://developers.openai.com/api/docs/guides/tools-skills).
 
-Para instalar as skills em um projeto:
+As skills corporativas do harness ficam em `.agents/skills/` e
+`corporate-presets/skills/`.
 
-```powershell
-powershell -File scripts/install-corporate-skills.ps1 -ProjectRoot projects -Agent Both
-```
-
-```bash
-bash scripts/install-corporate-skills.sh --project-root projects --agent both
-```
-
-Para instalação e seleção de skills de projeto via Context7, consulte
-[`projects/AGENTS.md`](projects/AGENTS.md).
+Para sugestões e instalação de skills de projeto via Context7, consulte a
+seção [Skills do Context7](#skills-do-context7) neste README.
 
 ## Fluxo recomendado
 
@@ -234,7 +283,7 @@ Para instalação e seleção de skills de projeto via Context7, consulte
 O harness possui uma skill para detectar links e referências locais quebradas:
 
 ```bash
-node corporate-presets/skills/validate-relative-links/scripts/check-links.mjs --root .
+node corporate-presets/skills/stone-check-relative-links/scripts/check-links.mjs --root .
 ```
 
 O diretório `spec-kit/` é validado separadamente quando necessário, mas não deve

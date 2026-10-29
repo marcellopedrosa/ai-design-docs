@@ -1,9 +1,0 @@
-{
-  "gate": "quality-gate",
-  "executor": "quality-gate",
-  "status": "INVALID_STATUS",
-  "task_id": "TASK-100",
-  "scope_fingerprint": "sha256:abc1234567890",
-  "handoff": "AgentOrchestrator",
-  "extra_unauthorized_field": true
-}
