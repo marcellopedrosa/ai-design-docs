@@ -10,7 +10,7 @@ date: "2026-08-21"
 version: "1.2"
 keywords: "Monitoring-Agent, Configura dashboards, alertas e evidências operacionais de monitoramento, agente"
 related_files: "README.md"
-code_references: "backend/, infra/"
+code_references: ""
 principal_statement: "Build and maintain the local Prometheus/Grafana monitoring stack, configure dashboards for Spring Boot Actuator endpoints and SLI metrics, define simple SLOs, and set up free alerting via Slack or Discord webhooks, all running locally via Docker Compose with zero cloud costs."
 ---
 

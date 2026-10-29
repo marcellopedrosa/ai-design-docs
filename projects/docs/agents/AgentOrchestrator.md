@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-21"
 version: "1.8"
 keywords: "AgentOrchestrator, Coordenacao e handoffs, agente, openapi, api-contract, decomposicao-semantica, quality-loop, entrega-git"
-related_files: "README.md, docs/product/requirements/README.md, docs/api_contracts/README.md, standards/software-engineering-lifecycle.md, standards/implementation-readiness-standard.md, standards/api-client-standard.md, standards/development-standard.md, standards/project-reporting-standard.md, harness/templates/TPL-00005-task-plan.md, harness/templates/TPL-00006-implementation-plan.md, harness/templates/TPL-00007-progress-report.md"
-code_references: "AGENTS.md, CLAUDE.md, docs/api_contracts/, ../../../.agents/skills/stone-implementation-readiness/SKILL.md, .agents/skills/quality-gate/SKILL.md, infra/scripts/validate-quality-metrics.mjs, backend/, frontend/, website/, infra/"
+related_files: "README.md, standards/software-engineering-lifecycle.md, standards/implementation-readiness-standard.md, standards/api-client-standard.md, standards/development-standard.md, standards/project-reporting-standard.md"
+code_references: "../../../.agents/skills/stone-implementation-readiness/SKILL.md"
 principal_statement: "Coordena unidades atômicas até métricas aceitáveis e autoriza o handoff de entrega Git somente após todos os gates aplicáveis em PASS."
 ---
 
@@ -132,7 +132,7 @@ AgentOrchestrator produces the following artifacts:
 - **Handoff Directives:** Structured Markdown instructions sent to the target agent, including context, input artifacts, expected output, and deadline constraints.
 - **Task Ledger:** A running Markdown log of all task assignments, status changes, handoffs, and completions across the factory.
 - **Factory Status Report:** An aggregated view of all active tasks, agent states, blockers, and overall pipeline progress (internal factory use).
-- **Project Progress Report:** A formal stakeholder-facing progress report covering Backend and Frontend domains with planned vs. completed analysis and Mermaid pie charts. AgentOrchestrator MUST follow the [`standards/project-reporting-standard.md`](standards/project-reporting-standard.md) for data extraction, mathematical validation, and output workflow, and use [`TPL-00008-report.md`](../../harness/templates/TPL-00008-report.md) for the document skeleton. Reports are saved in `docs/delivery/reports/`.
+- **Project Progress Report:** A formal stakeholder-facing progress report covering Backend and Frontend domains with planned vs. completed analysis and Mermaid pie charts. AgentOrchestrator MUST follow the [`standards/project-reporting-standard.md`](standards/project-reporting-standard.md) for data extraction, mathematical validation, and output workflow. Reports are saved in `docs/delivery/reports/`.
 - **Escalation Tickets:** Structured Markdown documents describing unresolved conflicts, missing dependencies, or budget overruns that require human or higher-level intervention.
 - **Readiness Audit:** `READY` or `BLOCKED` evidence, including applicable PRD and
   version or justified `not applicable`, recorded in Task Plan, Implementation Plan

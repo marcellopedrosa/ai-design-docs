@@ -10,7 +10,7 @@ date: "2026-08-21"
 version: "1.2"
 keywords: "SecurityAgent, Verificacao de seguranca, agente"
 related_files: "README.md, standards/iac-supply-chain-standard.md, standards/security-standard.md"
-code_references: "backend/, infra/"
+code_references: ""
 principal_statement: "Implement OWASP Top 10 vulnerability scanning, dependency vulnerability checks using Trivy and Grype, automated penetration testing scripts, security headers validation, and continuous security assessment -- all with zero cloud costs using open-source tooling."
 ---
 

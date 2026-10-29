@@ -10,7 +10,7 @@ date: "2026-08-25"
 version: "1.4"
 keywords: "ui, ux, standard, standard"
 related_files: "./README.md, component-design-standard.md, webdesigner-standard.md"
-code_references: "frontend/"
+code_references: ""
 principal_statement: "As regras de UI/UX aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

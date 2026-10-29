@@ -10,7 +10,7 @@ date: "2026-08-21"
 version: "1.2"
 keywords: "K8s-Agent, Projeta e revisa manifests, workloads e políticas de execução em Kubernetes, agente"
 related_files: "README.md"
-code_references: "backend/, frontend/, infra/"
+code_references: ""
 principal_statement: "Prepare and manage Kubernetes infrastructure using Minikube or Docker Desktop K8s for local development, create multi-tenant Helm charts, configure HPA and Istio for staging environments, and provide local development port-forward workflows -- activated when the platform migrates from the modular monolith to microservices."
 ---
 

@@ -10,7 +10,7 @@ date: "2026-08-25"
 version: "1.4"
 keywords: "webdesigner, standard, standard"
 related_files: "./README.md, ../WebDesigner.md"
-code_references: "frontend/"
+code_references: ""
 principal_statement: "As regras de WebDesigner aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

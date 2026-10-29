@@ -10,7 +10,7 @@ date: "2026-08-21"
 version: "1.4"
 keywords: "DevOps-Agent, CI/CD e ambientes, agente, quality-metrics, branch, push"
 related_files: "README.md, standards/software-quality-standard.md, standards/development-standard.md, standards/iac-supply-chain-standard.md"
-code_references: ".github/workflows/, infra/scripts/validate-quality-metrics.mjs, infra/scripts/validate-quality-gates.sh, backend/, frontend/, website/, infra/"
+code_references: ""
 principal_statement: "Mantém o quality profile portátil e a certificação de branch na automação, sem ampliar a autorização de push para integração ou deploy."
 ---
 

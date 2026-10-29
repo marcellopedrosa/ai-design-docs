@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-09-08"
 version: "1.11"
 keywords: "software, engineering, lifecycle, standard, openapi, api-contract, contract-first, decomposicao-semantica, metricas, loop-corretivo, entrega-git"
-related_files: "./README.md, ./software-quality-standard.md, ./implementation-readiness-standard.md, api-client-standard.md, docs/api_contracts/README.md, docs/product/business/product-vision.md, docs/product/requirements/README.md, harness/templates/TPL-00011-api-contract.md, harness/templates/TPL-00012-prd.md, harness/templates/TPL-00003-requirement.md, harness/templates/TPL-00004-use-case.md, harness/templates/TPL-00005-task-plan.md, harness/templates/TPL-00006-implementation-plan.md, ../AgentOrchestrator.md, ../CodeGuardian.md"
-code_references: "docs/api_contracts/, infra/scripts/validate-quality-metrics.mjs, backend/, frontend/, website/, infra/scripts/validate-quality-gates.sh"
+related_files: "./README.md, ./software-quality-standard.md, ./implementation-readiness-standard.md, api-client-standard.md, ../AgentOrchestrator.md, ../CodeGuardian.md"
+code_references: ""
 principal_statement: "Uma iniciativa só progride com PRD aplicável Validated, decomposição semântica automática, IRG READY e métricas aceitáveis; após Assurance integralmente verde, a branch governada pode ser enviada sem autorizar integração ou deploy."
 ---
 

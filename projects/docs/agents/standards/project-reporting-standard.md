@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-25"
 version: "1.4"
 keywords: "project, reporting, standard, standard"
-related_files: "./README.md, harness/templates/TPL-00007-progress-report.md, ../../specs/TP-00001-backend-spring-modulith-task-plan.md, ../../specs/TP-00002-frontend-nextjs-task-plan.md"
-code_references: "backend/, frontend/"
+related_files: "./README.md"
+code_references: ""
 principal_statement: "As regras de Project Reporting aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 
@@ -18,7 +18,7 @@ principal_statement: "As regras de Project Reporting aplicam-se somente ao escop
 
 > **Mandatory rules** for the agent responsible for generating project progress reports (@AgentOrchestrator). This document defines the operational workflow, data extraction rules, mathematical validation criteria, and output constraints that must be followed to produce accurate, reproducible, and hallucination-free progress reports.
 
-> **Prerequisite:** Read [`TPL-00008-report.md`](../../../harness/templates/TPL-00008-report.md) (report skeleton and naming convention).
+> **Prerequisite:** Use the applicable corporate report template and naming convention.
 
 ---
 

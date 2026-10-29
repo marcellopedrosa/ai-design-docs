@@ -10,7 +10,7 @@ date: "2026-08-25"
 version: "1.5"
 keywords: "ddd, clean, architecture, standard, standard"
 related_files: "./README.md, backend-testing-standard.md, java-standard.md, modulith-standard.md, ./development-standard.md"
-code_references: "backend/, infra/"
+code_references: ""
 principal_statement: "As regras de DDD Clean Architecture aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

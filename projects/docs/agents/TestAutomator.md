@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-21"
 version: "1.5"
 keywords: "TestAutomator, Estrategia e automacao de testes, agente, openapi, api-contract, cobertura, quality-metrics"
-related_files: "README.md, docs/api_contracts/README.md, standards/api-client-standard.md, standards/implementation-readiness-standard.md, standards/backend-testing-standard.md, standards/java-standard.md, standards/frontend-testing-standard.md, standards/software-quality-standard.md, ../../backend/docs/adrs/ADR-0006-audit-compliance.md"
-code_references: "docs/api_contracts/, infra/scripts/validate-quality-metrics.mjs, backend/src/test/, frontend/, website/, infra/scripts/validate-quality-gates.sh"
+related_files: "README.md, standards/api-client-standard.md, standards/implementation-readiness-standard.md, standards/backend-testing-standard.md, standards/java-standard.md, standards/frontend-testing-standard.md, standards/software-quality-standard.md"
+code_references: ""
 principal_statement: "Produz testes e relatórios atuais de cobertura que alimentam o profile métrico fail-closed e reexecuta a prova afetada após cada correção."
 ---
 
@@ -115,7 +115,7 @@ TestAutomator receives the following inputs:
 - **Repository Interfaces:** Output port definitions from @ImplementerCore and implementations from @AdapterDev for integration testing.
 - **Security Configuration:** OAuth2 scopes and RBAC roles from @SecurityOAuth for security test setup.
 - **Compliance Test Specifications:** Compliance verification criteria from @ComplianceAgent for consent, erasure, and retention testing.
-- **ADR-0006 (Audit & Compliance):** [`../../backend/docs/adrs/ADR-0006-audit-compliance.md`](../../backend/docs/adrs/ADR-0006-audit-compliance.md) — Defines the catalog of auditable actions (Section 18). TestAutomator **MUST** write tests verifying that every auditable action produces exactly one `audit_log` record with correct `user_id`, `tenant_id`, `action`, and `resource_id`.
+- **ADR-0006 (Audit & Compliance):** Defines the catalog of auditable actions (Section 18). TestAutomator **MUST** write tests verifying that every auditable action produces exactly one `audit_log` record with correct `user_id`, `tenant_id`, `action`, and `resource_id`.
 - **Pipeline Test Specifications:** Batch job and CDC pipeline test criteria from @Data-Agent for pipeline testing.
 - **Saga Test Specifications:** Saga flow test scenarios from @Kafka-Agent for distributed transaction testing.
 - **Cache Test Specifications:** Cache behavior criteria from @Cache-Agent for cache hit/miss, eviction, and tenant isolation testing.

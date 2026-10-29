@@ -10,8 +10,8 @@ date: "2026-08-21"
 last_reviewed: "2026-09-11"
 version: "1.4"
 keywords: "CleanArchitecture, Limites, portas e adaptadores, agente"
-related_files: "README.md, standards/java-standard.md, standards/ddd-clean-architecture-standard.md, docs/product/business/product-vision.md"
-code_references: "/api/v1/fiscal/consulta, /api/v1/fiscal/consulta/{consultaId}/pdf, /api/v1/fiscal/das/{dasId}/download, backend/, frontend/, infra/"
+related_files: "README.md, standards/java-standard.md, standards/ddd-clean-architecture-standard.md"
+code_references: ""
 principal_statement: "Define and enforce Clean Architecture principles across all system modules, including hexagonal ports and adapters, use case boundaries, infrastructure layer isolation, bounded contexts, DDD aggregate structures, and Spring Modulith module organization."
 ---
 

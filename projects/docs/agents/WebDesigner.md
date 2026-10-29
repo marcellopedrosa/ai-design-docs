@@ -10,7 +10,7 @@ date: "2026-08-21"
 version: "1.2"
 keywords: "WebDesigner, Design de interfaces, agente"
 related_files: "README.md, standards/webdesigner-standard.md, standards/nextjs-standard.md, standards/i18n-standard.md, standards/component-design-standard.md, standards/a11y-standard.md, standards/ui-ux-standard.md"
-code_references: "backend/, frontend/, infra/"
+code_references: ""
 principal_statement: "Create wireframes, define and maintain the design system (Tailwind CSS / CSS custom properties), produce responsive component specifications with WCAG 2.1 accessibility compliance, and hand off design artifacts to @FrontendWeb for implementation, all using mobile-first principles and zero-cost local tooling."
 ---
 

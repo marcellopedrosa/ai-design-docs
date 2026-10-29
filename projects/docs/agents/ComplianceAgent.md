@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-21"
 version: "1.2"
 keywords: "ComplianceAgent, Compliance e LGPD, agente"
-related_files: "README.md, ../../backend/docs/adrs/ADR-0006-audit-compliance.md, docs/product/requirements/REQ-00043-conversation-audit-data-governance.md"
-code_references: "backend/, frontend/, infra/"
+related_files: "README.md"
+code_references: ""
 principal_statement: "Implement LGPD/GDPR compliance checks, consent tracking mechanisms, right-to-erasure workflows, audit trail generation, and data retention policies per bounded context, ensuring the SaaS platform meets regulatory requirements with zero cloud costs."
 ---
 
@@ -107,8 +107,8 @@ ComplianceAgent receives the following inputs:
 - **Security Configuration:** OAuth2 scopes and RBAC policies from @SecurityOAuth for access control compliance verification.
 - **Legal Requirements:** LGPD/GDPR regulatory requirements, data retention legal obligations (e.g., fiscal data 5-year retention), and DPO guidelines.
 - **ADRs:** Architecture Decision Records from `../adrs/` constraining data handling practices.
-- **ADR-0006 (Audit & Compliance):** [`../../backend/docs/adrs/ADR-0006-audit-compliance.md`](../../backend/docs/adrs/ADR-0006-audit-compliance.md) — Proposes the `audit_log` architecture and `AuditPort`; it does not set current retention periods.
-- **REQ-00043 (Conversation Audit Data Governance):** [`docs/product/requirements/REQ-00043-conversation-audit-data-governance.md`](../product/requirements/REQ-00043-conversation-audit-data-governance.md) — Canonical requirement for Conversation Audit retention, erasure/anonymization, receipts, performance evidence and environment gates. ComplianceAgent **MUST** review re-identification risk and the evidence of its exact purge scope.
+- **ADR-0006 (Audit & Compliance):** Proposes the `audit_log` architecture and `AuditPort`; it does not set current retention periods.
+- **REQ-00043 (Conversation Audit Data Governance):** Canonical requirement for Conversation Audit retention, erasure/anonymization, receipts, performance evidence and environment gates. ComplianceAgent **MUST** review re-identification risk and the evidence of its exact purge scope.
 - **Task Directives:** Handoff directives from @AgentOrchestrator specifying compliance scope and priority.
 
 All specification inputs are expected in Markdown (.md) format.

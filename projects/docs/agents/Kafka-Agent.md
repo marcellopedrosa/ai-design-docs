@@ -10,7 +10,7 @@ date: "2026-08-21"
 version: "1.2"
 keywords: "Kafka-Agent, Projeta e valida tópicos, produtores, consumidores e resiliência da mensageria Kafka, agente"
 related_files: "README.md"
-code_references: "planned: backend/src/main/java/br/com/duoset/saas_service/**/messaging/fiscal/ como destino ainda não criado, backend/, frontend/, infra/"
+code_references: "planned: backend/src/main/java/br/com/duoset/saas_service/**/messaging/fiscal/ como destino ainda não criado"
 principal_statement: "Configure local Kafka (Confluent Docker) or RabbitMQ for domain event routing, translate Event Storming outputs into Clean Architecture saga implementations, manage dead letter queues with low-cost infrastructure, and enable asynchronous inter-service communication -- activated when the platform migrates from the modular monolith to microservices."
 ---
 

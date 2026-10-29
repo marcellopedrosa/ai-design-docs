@@ -11,7 +11,7 @@ version: "1.11"
 last_reviewed: "2026-09-12"
 keywords: "backend, testing, standard, standard"
 related_files: "./README.md, ./software-quality-standard.md"
-code_references: "backend/src/test/java/br/com/duoset/saas_service/architecture/, backend/pom.xml, backend/mvnw, infra/scripts/validate-quality-gates.sh"
+code_references: ""
 principal_statement: "As regras de Backend Testing aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

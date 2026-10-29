@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-21"
 version: "1.2"
 keywords: "MultiTenantEng, Isolamento multitenant, agente"
-related_files: "README.md, docs/product/business/product-vision.md"
-code_references: "backend/, infra/"
+related_files: "README.md"
+code_references: ""
 principal_statement: "Design and implement tenant isolation strategies at the database and application infrastructure layers, manage tenant-aware schema migrations, and ensure complete data separation between accounting firms (tenants) with minimal cost and operational overhead."
 ---
 

@@ -10,7 +10,7 @@ date: "2026-08-25"
 version: "1.4"
 keywords: "a11y, standard, standard"
 related_files: "./README.md, component-design-standard.md, i18n-standard.md"
-code_references: "frontend/"
+code_references: ""
 principal_statement: "As regras de Accessibility (a11y) aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

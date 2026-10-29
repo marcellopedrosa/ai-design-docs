@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-21"
 version: "1.3"
 keywords: "DomainExpert, Modelagem de dominio, agente"
-related_files: "README.md, standards/java-standard.md, docs/product/business/product-vision.md"
-code_references: "backend/, frontend/, infra/"
+related_files: "README.md, standards/java-standard.md"
+code_references: ""
 principal_statement: "Model entities, value objects, aggregates, domain services, and domain events for each bounded context, ensuring that all business rules, invariants, and tenant isolation requirements are correctly captured before implementation begins."
 ---
 

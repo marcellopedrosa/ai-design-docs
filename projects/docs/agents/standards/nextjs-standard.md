@@ -10,7 +10,7 @@ date: "2026-08-25"
 version: "1.4"
 keywords: "nextjs, standard, standard"
 related_files: "./README.md, frontend-standard.md, keycloak-frontend-standard.md, rbac-frontend-standard.md"
-code_references: "src/app/, src/app/not-found.tsx, src/lib/env.ts, src/hooks/queries/, condicional - src/app/(group)/route/ representa um placeholder de route group, condicional - src/app/(group)/ representa um placeholder de route group, src/components/[feature]/, src/services/, src/types/, src/components/, frontend/"
+code_references: "condicional - src/app/(group)/route/ representa um placeholder de route group, condicional - src/app/(group)/ representa um placeholder de route group"
 principal_statement: "As regras de Next.js App Router aplicam-se somente ao escopo e aos controles declarados neste standard."
 ---
 

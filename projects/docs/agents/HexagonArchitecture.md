@@ -9,8 +9,8 @@ status: "Active"
 date: "2026-08-21"
 version: "1.3"
 keywords: "HexagonArchitecture, Arquitetura hexagonal, agente"
-related_files: "README.md, standards/ddd-clean-architecture-standard.md, docs/product/business/product-vision.md"
-code_references: "backend/, frontend/, infra/"
+related_files: "README.md, standards/ddd-clean-architecture-standard.md"
+code_references: ""
 principal_statement: "Define and enforce hexagonal architecture boundaries, bounded contexts, ports, adapters, and DDD aggregate structures across all Spring Modulith modules."
 ---
 
