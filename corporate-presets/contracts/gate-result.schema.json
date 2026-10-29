@@ -15,12 +15,12 @@
   "properties": {
     "gate": {
       "type": "string",
-      "enum": ["A1", "A2", "A3", "quality-gate", "git-delivery", "governanca-documental"],
+      "enum": ["A1", "A2", "A3", "quality-gate", "stone-git-delivery", "governanca-documental"],
       "description": "Identificador do gate avaliado."
     },
     "executor": {
       "type": "string",
-      "description": "Nome da skill ou ferramenta executora (ex: quality-gate, security-gate)."
+      "description": "Nome da skill ou ferramenta executora (ex: quality-gate, stone-security-gate)."
     },
     "status": {
       "type": "string",

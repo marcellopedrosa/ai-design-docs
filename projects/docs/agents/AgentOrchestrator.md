@@ -10,7 +10,7 @@ date: "2026-08-21"
 version: "1.8"
 keywords: "AgentOrchestrator, Coordenacao e handoffs, agente, openapi, api-contract, decomposicao-semantica, quality-loop, entrega-git"
 related_files: "README.md, docs/product/requirements/README.md, docs/api_contracts/README.md, standards/software-engineering-lifecycle.md, standards/implementation-readiness-standard.md, standards/api-client-standard.md, standards/development-standard.md, standards/project-reporting-standard.md, harness/templates/TPL-00005-task-plan.md, harness/templates/TPL-00006-implementation-plan.md, harness/templates/TPL-00007-progress-report.md"
-code_references: "AGENTS.md, CLAUDE.md, docs/api_contracts/, ../../.agents/skills/implementation-readiness/SKILL.md, .agents/skills/quality-gate/SKILL.md, infra/scripts/validate-quality-metrics.mjs, backend/, frontend/, website/, infra/"
+code_references: "AGENTS.md, CLAUDE.md, docs/api_contracts/, ../../../.agents/skills/stone-implementation-readiness/SKILL.md, .agents/skills/quality-gate/SKILL.md, infra/scripts/validate-quality-metrics.mjs, backend/, frontend/, website/, infra/"
 principal_statement: "Coordena unidades atômicas até métricas aceitáveis e autoriza o handoff de entrega Git somente após todos os gates aplicáveis em PASS."
 ---
 
@@ -48,7 +48,7 @@ AgentOrchestrator contributes to the Software factory ecosystem by acting as the
   record a specific `PRD not applicable` justification. A technical implementation
   status never substitutes product validation.
 - **Always audit implementation readiness:** Before every implementation handoff,
-  AgentOrchestrator MUST invoke `implementation-readiness`, bind the result to the
+  AgentOrchestrator MUST invoke `stone-implementation-readiness`, bind the result to the
   exact source versions and task paths, and dispatch only when it is `READY`.
 - **Automatically correct granularity:** A non-atomic task or Implementation Plan
   is semantically decomposed before the final IRG result. AgentOrchestrator
@@ -102,7 +102,7 @@ AgentOrchestrator receives the following inputs:
 - **Software Engineering Lifecycle (Primary Reference):** The lifecycle standard defined in [`software-engineering-lifecycle.md`](./standards/software-engineering-lifecycle.md) governs the sequence of phases, gate conditions, and required artifacts for any feature or capability.
 - **Implementation Readiness Standard and Skill:**
   [`implementation-readiness-standard.md`](./standards/implementation-readiness-standard.md)
-  defines the hard gate; the paired `implementation-readiness` skill executes it.
+  defines the hard gate; the paired `stone-implementation-readiness` skill executes it.
 - **Canonical API Contracts:** Versioned OpenAPI files in `docs/api_contracts/` are
   mandatory inputs for every backend provider and frontend/website/API consumer
   task; generated documentation or controller annotations cannot replace them.
@@ -315,7 +315,7 @@ All agents in the factory depend on AgentOrchestrator for task assignment, coord
    and re-audit every resulting unit. Size or file count alone does not force a
    split.
 6. **Resolve Dependencies:** Identify dependencies between subtasks and determine execution order (sequential or parallel).
-7. **Audit Readiness:** Invoke `implementation-readiness` for the exact task and
+7. **Audit Readiness:** Invoke `stone-implementation-readiness` for the exact task and
    source versions. Record `BLOCKED` and ask the human/owner for every unresolved
    assumption or question; update the canonical source and repeat until `READY`.
 8. **Estimate Token Cost:** Estimate token consumption per subtask and validate against per-agent and per-sprint budgets (less than 5,000 tokens per agent per sprint).

@@ -44,7 +44,7 @@ evidência e todos os gates aplicáveis precisam estar aprovados para avançar.
 
 ### 2.1 Precondição de readiness e fronteira da decomposição
 
-Antes de A1 ou A2, o handoff deve conter `implementation-readiness` `READY` vigente
+Antes de A1 ou A2, o handoff deve conter `stone-implementation-readiness` `READY` vigente
 para o mesmo task ID, versões, escopo e paths implementados. Ausência, `BLOCKED`,
 evidência stale ou divergência produz `BLOCKED` processual e devolve a mudança à
 Phase 7 do lifecycle.

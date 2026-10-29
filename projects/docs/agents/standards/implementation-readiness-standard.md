@@ -9,9 +9,9 @@ status: Active
 date: 2026-09-08
 last_reviewed: 2026-09-10
 version: 1.7
-keywords: implementation-readiness, product-definition-gate, prd, definition-of-ready, assumptions, open-questions, task-contract, decomposicao-semantica, openapi, api-contract, clear
+keywords: stone-implementation-readiness, product-definition-gate, prd, definition-of-ready, assumptions, open-questions, task-contract, decomposicao-semantica, openapi, api-contract, clear
 related_files: harness/governance/decisions/ADR-0000-governanca-do-harness-documental.md, docs/product/requirements/README.md, ./software-engineering-lifecycle.md, ./software-quality-standard.md, api-client-standard.md, docs/api_contracts/README.md, harness/templates/TPL-00011-api-contract.md, harness/templates/TPL-00012-prd.md, harness/templates/TPL-00003-requirement.md, harness/templates/TPL-00004-use-case.md, harness/templates/TPL-00005-task-plan.md, harness/templates/TPL-00006-implementation-plan.md, ../AgentOrchestrator.md, ../RequirementAgent.md, ../CodeGuardian.md
-code_references: AGENTS.md, CLAUDE.md, docs/api_contracts/, .agents/skills/implementation-readiness/SKILL.md, .claude/skills/implementation-readiness/SKILL.md
+code_references: AGENTS.md, CLAUDE.md, docs/api_contracts/, ../../../../.agents/skills/stone-implementation-readiness/SKILL.md
 principal_statement: PRD aplicável Validated e Requirement Approved são necessários, mas insuficientes; granularidade inadequada é corrigida automaticamente antes do resultado, trabalho com API HTTP exige OpenAPI canônico completo e causas pendentes reais produzem BLOCKED.
 ---
 
@@ -202,7 +202,7 @@ atômicos.
 | Papel | Responsabilidade |
 | --- | --- |
 | `RequirementAgent` | Estruturar PRD e requisitos, classificar hipóteses/incertezas, buscar fonte canônica e solicitar decisão humana; não validar o próprio PRD nem aprovar a própria resposta. |
-| `AgentOrchestrator` | Invocar sempre a skill `implementation-readiness`; corrigir automaticamente toda falha de granularidade; reauditar cada unidade resultante; registrar o resultado no ledger/plano e não despachar implementação em `BLOCKED`. |
+| `AgentOrchestrator` | Invocar sempre a skill `stone-implementation-readiness`; corrigir automaticamente toda falha de granularidade; reauditar cada unidade resultante; registrar o resultado no ledger/plano e não despachar implementação em `BLOCKED`. |
 | Agente executor | Conferir `READY` válido antes de editar código/configuração; recusar handoff ausente, vencido ou divergente. |
 | `CodeGuardian` | Na auditoria de código, verificar a evidência de prontidão; ausência é finding processual bloqueante e retorna ao Orchestrator. Não decide requisito. |
 | Humano/owner | Responder decisões de produto, risco ou escopo e aprovar requisitos; sua resposta deve ser materializada. |

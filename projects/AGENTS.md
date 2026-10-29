@@ -14,8 +14,8 @@ esse documento antes de criar uma nova coleção documental.
 
 Para classificar pedidos e reunir contexto, consulte `docs/agents/AgentOrchestrator.md`. Esse papel usa os processos do Spec Kit e não os substitui.
 
-Skills corporativas disponíveis para este projeto ficam em `.agents/skills/` (Codex) e `.claude/skills/` (Claude Code). A fonte compartilhada está em `../corporate-presets/skills/`.
+Skills corporativas compartilhadas pelo harness ficam em `../.agents/skills/`. A fonte compartilhada está em `../corporate-presets/skills/`.
 
-As skills operacionais disponíveis incluem `implementation-readiness`, `git-delivery`,
-`security-gate`, `documentation-governance`, `document-number-sequence` e
-`validate-relative-links`. `document-number-sequence` nunca se aplica a `docs/specs/`.
+As skills operacionais disponíveis incluem `stone-implementation-readiness`, `stone-git-delivery`,
+`stone-security-gate`, `stone-documentation-governance`, `stone-document-number-sequence` e
+`stone-check-relative-links`. `stone-document-number-sequence` nunca se aplica a `docs/specs/`.

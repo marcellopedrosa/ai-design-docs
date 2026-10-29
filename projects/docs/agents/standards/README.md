@@ -56,7 +56,7 @@ stack, risco ou decisão arquitetural correspondente existir no seu projeto.
 | [Security](./global/security-standard.md) | Menor privilégio, dados e evidência A3 | Mudança de software e documentação operacional; profundidade por risco | Active |
 
 O núcleo é agnóstico de linguagem, framework, banco, provedor, protocolo e
-topologia. `security-standard` é o baseline de segurança; `security-gate` aprofunda
+topologia. `security-standard` é o baseline de segurança; `stone-security-gate` aprofunda
 A3 quando o projeto tiver uma superfície de aplicação compatível.
 
 ## Exemplos condicionais para projetos adotantes
@@ -105,14 +105,14 @@ versão, ferramentas, owners, paths e comandos locais.
 5. Um exemplo condicional não aplicável não deve ser criado no projeto.
 6. Regra local pode elevar ou especializar o baseline, mas não o enfraquecer sem
    decisão arquitetural explícita.
-7. Para A3 de aplicação, o `quality-gate` pode acionar `security-gate`; a skill
+7. Para A3 de aplicação, o `quality-gate` pode acionar `stone-security-gate`; a skill
    executa standards selecionados e devolve evidência, sem criar gate autônomo.
 8. Toda criação de exemplo condicional atualiza este catálogo e o README imediato;
    a ausência da capacidade não exige arquivo vazio ou alias.
 
 Entrega Git não é um standard adicional nem uma ativação implícita deste catálogo:
 quando adotada, é uma capacidade operacional sujeita à política, aos gates, ao hook
-local de commit e ao enforcement local descritos pela skill `git-delivery`.
+local de commit e ao enforcement local descritos pela skill `stone-git-delivery`.
 
 ## Change log
 
@@ -120,7 +120,7 @@ local de commit e ao enforcement local descritos pela skill `git-delivery`.
 | --- | --- | --- |
 | 2.6 | 2026-09-28 | Remove standards condicionais do baseline e os documenta como exemplos explícitos para novos projetos adotantes. |
 | 2.5 | 2026-09-28 | Separa o núcleo agnóstico da biblioteca condicional e explicita critérios para adoção e remoção por contexto. |
-| 2.4 | 2026-09-28 | Atualiza a integração dos standards especializados para o subgate `security-gate` do A3. |
+| 2.4 | 2026-09-28 | Atualiza a integração dos standards especializados para o subgate `stone-security-gate` do A3. |
 | 2.3 | 2026-09-28 | Adiciona standards especializados de Application, API e Spring Security e convenção `<capacidade>-security-standard.md`. |
 | 2.2 | 2026-09-13 | Explicita hook local e settings como parte da ativacao opt-in de entrega Git. |
 | 2.1 | 2026-09-13 | Relaciona lifecycle, qualidade e desenvolvimento à capacidade opt-in de entrega Git. |
